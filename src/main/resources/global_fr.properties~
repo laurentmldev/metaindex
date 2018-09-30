@@ -1,0 +1,62 @@
+#Global messages
+global.profile = Profil
+global.submit = Envoyer
+global.cancel= Annuler
+global.welcomeTitle = Bienvenue sur MetaIndex
+global.error = Une erreur est survenue pendant l'operation, merci de réessayer un peu plus tard.
+
+# Main Menu
+mainmenu.home = Home
+mainmenu.workzone = Table de Travail
+mainmenu.community = Groupe
+mainmenu.metaindex = MetaIndex
+ 
+#Errors Pages Messages
+error.title = Woops, nous avons rencontré un petit problème. Désolé!
+error.DBprocess = Une error est apparue pendant l'opération sur la base de données
+error.DBconnect = Désolé, la base de donnée est inaccessible
+
+# Session messages
+session.welcome = Données de Connexion
+session.loginerror = Désolé, utilisateur ou mot de passe invalide!  
+session.login = Connexion
+session.logout = Quitter
+session.username = Utilisateur
+session.password = Mot de Passe
+session.logoutmessage = Votre session a été déconnectée. A bientôt !
+
+# Profile messages
+profile.title=Profile MetaIndex
+profile.linkname=Profile
+profile.details=D�tails Personnels
+profile.joinNewCommunity=Rejoindre une Nouvelle Communauté
+profile.communitiesList=Vos Communautés 
+profile.edit=Edition de votre Profile
+profile.create=Créer un Profile
+profile.username = Utilisateur
+profile.password = Mot de Passe
+profile.email = Email
+profile.language = Langue
+profile.theme = Thème
+profile.acceptConditions = J''accèpte les Conditions
+createProfile.success=Votre compte a été créé. Merci de vous connecter!
+createProfile.error.emptyusername=Vous devez entrer un nom d''utilisateur
+createProfile.error.emptyemail=Vous devez entrer une adresse email
+createProfile.error.emptypassword=Vous devez entrer un mot de passe
+createProfile.error.emptytermsandconditions=Vous devez accepter les conditions d''utilisation
+createProfile.title=Création de votre Profile
+createProfile.error=Désolé, un problème est apparu lors de la création de votre profile
+createProfile.error.invalidemail=Vous devez entrer une adresse email valide
+createProfile.error.existingNameEmail=Un utilisateur avec le même nom ou adresse email existe déjà
+editProfile.title=Edition de votre Profile
+editProfile.error=Erreur à la mise à jour de votre profile. Merci de vérifier vos informations
+editProfile.joinCommunity=Joindre une Nouvelle Communauté
+
+# Community Messages
+createCommunity.success=Communauté créée avec succès
+createCommunity.error=Désolé, un problème est apparu, impossible de créer la communauté
+createCommunity.error.existingCommunity=Désolé, cette communauté existe déjà
+updateCommunity.success=Communauté mise à jour
+community.db_error=Désolé, impossible de récupérer les données de la communauté 
+community.decode_error=Désolé, impossible de décoder les données de la communauté
+updateTerm.success=Terme mis à jour

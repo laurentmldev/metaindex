@@ -1,0 +1,65 @@
+#User Session messages
+#Global messages
+global.profile = Profile
+global.submit = Submit
+global.cancel= Cancel
+global.welcomeTitle = Welcome to MetaIndex
+global.error = An error occured during processing. Please try again a bit later 
+
+# Main Menu
+mainmenu.home = Home
+mainmenu.workzone = WorkZone
+mainmenu.community = Community
+mainmenu.metaindex = MetaIndex
+ 
+#Errors Pages Messages
+error.title = Woops, we could not perform required operation. Sorry!
+error.DBprocess = Unable to perform database operations
+error.DBconnect = Unable to reach our database, sorry
+
+# Session Login messages
+session.welcome = Please Enter Your Credentials
+session.loginerror = Sorry, invalid credentials.  
+session.login = Login
+session.logout = Logout
+session.username = Username
+session.password = Password
+session.logoutmessage = You have been logged out. See you soon !
+
+# Profile messages
+profile.title=MetaIndex Profile
+profile.linkname=Profile
+profile.joinNewCommunity=Join New Community
+profile.details=Personnal Details 
+profile.communitiesList=Your Communities
+profile.edit=Edit your Profile
+profile.create=Sign In!
+profile.username = Username
+profile.password = Password
+profile.email = Email
+profile.language = Language
+profile.theme = Theme
+profile.acceptConditions = I Accept Terms and Conditions
+createProfile.title=Create Your Profile
+createProfile.success=Profile created! Please Login
+
+createProfile.error.emptyusername=You must enter a username
+createProfile.error.emptyemail=You must enter an email
+createProfile.error.emptypassword=You must enter a password
+createProfile.error.emptytermsandconditions=You must accept terms and conditions
+
+createProfile.error=Sorry, a problem occured while creating your profile
+createProfile.error.invalidemail=You must enter a valid e-mail address
+createProfile.error.existingNameEmail=A user with same Username or Email already exist. Please use different credentials
+editProfile.title=Edit Your Profile
+editProfile.error=Error while updating your profile. Please check given data 
+editProfile.joinCommunity=Join a New Community 
+
+# Community Messages
+createCommunity.success=Community successfully created
+createCommunity.error=Sorry, a problem occured, unable to create community
+createCommunity.error.existingCommunity=Sorry, community already exist
+updateCommunity.success=Community data successfully updated
+community.db_error=Sorry, could not retrieve community data from database
+community.decode_error=Sorry, could not decode community data from database
+updateTerm.success=Term data successfully updated
