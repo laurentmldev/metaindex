@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,7 +51,7 @@ public class CsvDumper<T extends IFieldValueMapObject> extends AStreamHandler<T>
 
 		try {
 			_outputstream = new FileOutputStream(this.getTargetFileName());
-			String headerLine="#_id";
+			String headerLine="_id";
 			for (String csvCol : this.getCsvColumnsList()) { headerLine+=this.getSeparator()+csvCol; }
 			_linesToWrite.add(headerLine);
 			flush();
@@ -69,14 +71,20 @@ public class CsvDumper<T extends IFieldValueMapObject> extends AStreamHandler<T>
 	public void handle(T d) {
 		String curCsvLine=d.getId();
 		Integer colIdx=0;
+		
+		
 		for (String csvCol : this.getCsvColumnsList()) {
 			curCsvLine+=this.getSeparator();
 			Object val = d.getValue(csvCol);
 			if (val!=null) { 
 				String valStr=val.toString();
+				
+				// when value is multi-line, replace carriage return by a special string 
+				valStr=valStr.replace("\n",ACsvParser.MX_CR_ESCAPE_STR);
+				
 				if (valStr.contains(this.getSeparator())) { 
 					if (valStr.contains(this.getStrMarker())) {
-						valStr.replaceAll(this.getStrMarker(), "\\"+this.getStrMarker());
+						valStr.replace(this.getStrMarker(), "\\"+this.getStrMarker());
 					}
 					valStr=this.getStrMarker()+valStr+this.getStrMarker();  
 				}

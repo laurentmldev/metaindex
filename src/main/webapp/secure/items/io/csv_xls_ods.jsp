@@ -464,7 +464,7 @@ MxGuiLeftBar.showDownloadCsvPrevisu=function() {
  		  </label>
  		  
  		  <div id="datafile_contents_previsu_body" style="display:none">
- 		  		 <div><span class="_filename_"></span> : <span class="_nbEntries_"></span> <s:text name="Items.serverside.uploadItems.entries" /></div>
+ 		  		 <div><span class="_filename_"></span> : <span class="_nbEntries_"></span> <s:text name="Items.serverside.uploadItems.lines" /></div>
  		  		 <table style="margin-top:1rem;" class="_csv_columns_tbl_">
  		  		 	<tr><th style="padding-right:1rem;min-width:2rem;"></th>
  		  		 		<th><s:text name="Items.serverside.uploadItems.fileColumn"/></th>

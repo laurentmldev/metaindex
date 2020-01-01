@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import com.sun.org.apache.xml.internal.security.utils.Base64;
+import java.util.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -46,7 +46,7 @@ public class AMxWSController {
 		this.messageSender = messageSender;		
 	}		
 	
-	protected byte[] compressString(final String data, final String encoding)
+	protected static byte[] compressString(final String data, final String encoding)
 		    throws IOException
 		{
 		    if (data == null || data.length() == 0)
@@ -65,7 +65,7 @@ public class AMxWSController {
 		    }
 		}
 	
-	protected String uncompressString(final byte[] data, final String encoding)
+	protected static String uncompressString(final byte[] data, final String encoding)
 		    throws IOException
 		{
 		    if (data == null || data.length == 0)
@@ -115,20 +115,35 @@ public class AMxWSController {
 	
 	protected SimpMessageSendingOperations messageSender;	
 	
-	protected String getCompressedString(String str) throws IOException  {
-		return Base64.encode(compressString(str,"UTF-8"));		
+	protected static String getCompressedString(String str) throws IOException  {
+		return Base64.getEncoder().encodeToString(compressString(str,"UTF-8"));		
+	}
+	protected static String getUncompressedString(String str) throws IOException  {
+		try {
+			byte[] decodedRawBytes=Base64.getDecoder().decode(str);
+			//String res = new String(decodedRawBytes);
+			String res=uncompressString(decodedRawBytes,"UTF-8");
+			return res;
+			
+		} catch (Exception e) {
+			throw new IOException("Unable to decode received B64 compressed string");
+		} 		
 	}
 	
-	protected String getCompressedRawString(Object object) throws IOException  {
+	protected static String getCompressedRawString(Object object) throws IOException  {
 		ObjectMapper mapper = new ObjectMapper();
 		String txtJsonToSend = mapper.writeValueAsString(object);
 		String compressedMsg = getCompressedString(txtJsonToSend);
 		return compressedMsg;
 	}
-	protected String getRawString(Object object) throws IOException  {
+	protected static String getRawString(Object object) throws IOException  {
 		ObjectMapper mapper = new ObjectMapper();
 		String txtJsonToSend = mapper.writeValueAsString(object);
 		return txtJsonToSend;
+	}
+	public static String getUncompressedRawString(String object) throws IOException  {
+		String uncompressedString = getUncompressedString(object);
+		return uncompressedString;
 	}
 	protected void sendListToUser(String userName, String wsQueueName, 
 										@SuppressWarnings("rawtypes") List answeredList,
@@ -155,7 +170,7 @@ public class AMxWSController {
 		}
 		
 		else {
-			String compressedMsg = Base64.encode(compressString(txtJsonToSend,"UTF-8"));
+			String compressedMsg = Base64.getEncoder().encodeToString(compressString(txtJsonToSend,"UTF-8"));
 			this.messageSender.convertAndSendToUser(userName,wsQueueName, compressedMsg);
 		}		
 	}

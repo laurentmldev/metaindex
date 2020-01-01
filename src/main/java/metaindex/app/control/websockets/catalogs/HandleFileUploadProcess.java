@@ -1,9 +1,5 @@
 package metaindex.app.control.websockets.catalogs;
 
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-
 /*
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -20,6 +16,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import java.util.ArrayList;
 
 import metaindex.app.Globals;
 import metaindex.data.userprofile.IUserProfileData;

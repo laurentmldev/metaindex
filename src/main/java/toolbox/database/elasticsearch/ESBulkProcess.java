@@ -74,6 +74,7 @@ public class ESBulkProcess extends AProcessingTask   {
 	    public void afterBulk(long executionId, BulkRequest request,
 	            BulkResponse response) {
 	    		    	
+	    	log.error("	### bulk response");
 	    		List<String> errors = new ArrayList<String>();	    		
 	    		for (BulkItemResponse bulkItemResponse : response) {
 	    			_bulkItemIndex++;
@@ -181,7 +182,7 @@ public class ESBulkProcess extends AProcessingTask   {
 	}
 	
 	public void postDataToIndexOrUpdate(List<IDbItem> d) throws DataProcessException {
-		//log.error("### posting "+d.size()+" items");
+		log.error("### posting "+d.size()+" items");
 		if (!isRunning()) {
 			throw new DataProcessException("Processing not ready, unable to post data before");
 		}
@@ -237,6 +238,7 @@ public class ESBulkProcess extends AProcessingTask   {
 			UpdateRequest request = new UpdateRequest().id(docId).doc(itemToUpdate.getData());
 			IndexRequest insertIfNotExistRequest = new IndexRequest().id(docId).source(itemToUpdate.getData());
 			request.upsert(insertIfNotExistRequest);
+			log.error("	### sending");
 			_processor.add(request);
 		}
 		if (errors.size()>0) { sendErrorMessageToUser("Some data could not be updated",errors); }
@@ -277,6 +279,7 @@ public class ESBulkProcess extends AProcessingTask   {
 			}
 		}
 
+		log.error("### stopping");
 		stop();
 
 	}

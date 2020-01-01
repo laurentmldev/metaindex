@@ -23,7 +23,7 @@ function stripStr(str) { return str.replace(/^\s*/,"").replace(/\s*$/,""); }
 // shouldn't be too big otherwise risk of WS deconnexion because max. size limit reached.
 var MX_WS_FIELD_VALUE_MAX_CHARS = 5000;
 var MX_WS_UPLOAD_FILE_MAX_LINES = 500;
-var MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE = 50000;
+var MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE = 3000;//50000 tmp lml;
 var MX_WS_UPLOAD_FILE_SEND_PERIOD_MS = 30;
 
 var MX_DOWNSTREAM_MSG="down";
@@ -849,24 +849,55 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			myself._callback_UploadCsv(parsedMsg); 
 		}
     	
-    	while (curLineNb<csvRows.length) {
+    	let totalNbValidLines=csvRows.length-1;
+    	let nbLinesSent=0;
+    	// count total number of valid lines (without spaces nor comments)
+    	for (var idx=1;idx<csvRows.length;idx++) {
+    		let curLine=csvRows[idx];
+    		if (curLine.length==0 || curLine[0]=='#') {
+    			totalNbValidLines--;
+    		}
+    	}
+    	while (nbLinesSent<totalNbValidLines) {    		
+    		let curLine=csvRows[curLineNb];
+    		
     		// ignore first line (header)
-    		if (curLineNb==0) { curLineNb++; continue; }
+    		if (curLineNb==0||curLine.length==0||curLine[0]=='#') { curLineNb++; continue; }
+    		nbLinesSent++;
     		
-    		curLinesWsBuffer.push(csvRows[curLineNb]);
+    		curLinesWsBuffer.push(curLine);
     		
-    		if (curLineNb % MX_WS_UPLOAD_FILE_MAX_LINES==0 || curLineNb==csvRows.length-1) {
-    			//console.log("sending "+curLinesWsBuffer.length+" lines : "+curLinesWsBuffer);
+    		if (curLineNb % MX_WS_UPLOAD_FILE_MAX_LINES==0 || nbLinesSent==totalNbValidLines) {
+    			//console.log("### sending "+curLinesWsBuffer.length+" lines ("+(nbLinesSent)+" / "+(totalNbValidLines)+")");
     			//console.log(curLinesWsBuffer);
     			
-    			let jsonData = { 
-    				 "csvLines" : curLinesWsBuffer,
-					 "processingTaskId" : serverProcessingTaskId,
-					 "totalNbLines" : csvRows.length,
-    				};
-    			
-    			myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
-    			myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/upload_filter_file_contents", {},JSON.stringify(jsonData));
+    			let strJsonArrayCsvLines=JSON.stringify(curLinesWsBuffer);
+    			let bytesGzip = pako.gzip(strJsonArrayCsvLines,{ to: 'string' });    			
+    			let base64BufferCsvLines = window.btoa(bytesGzip);    			
+    			    			
+    			let remainingDataToSend=base64BufferCsvLines;
+    			let totalNbChunks=Math.ceil(remainingDataToSend.length/MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE);
+    			let curChunkNb=0;
+    			while (remainingDataToSend.length>0) {
+    				curChunkNb=curChunkNb+1;
+    				let curChunktoSend=remainingDataToSend.substr(0,MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE-1);
+    				remainingDataToSend=remainingDataToSend.substr(MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE-1);
+    				
+    				//console.log("sending CSV chunk "+curChunkNb+"/"+totalNbChunks+": "
+    				//		+remainingDataToSend.length+"B remaining after that one");
+    				
+	    			let jsonData = { 
+	    				 "compressedCsvLineStr" : curChunktoSend,
+						 "processingTaskId" : serverProcessingTaskId,
+						 "totalNbLines" : totalNbValidLines,
+						 "totalNbChunks" : totalNbChunks,
+						 "curChunkNb" : curChunkNb
+	    				};
+	    				    			
+	    			myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
+	    			myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/upload_filter_file_contents", {},
+	    					JSON.stringify(jsonData));
+    			}
     			curLinesWsBuffer=[];
     		}
     		curLineNb++;	    		

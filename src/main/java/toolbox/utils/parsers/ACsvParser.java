@@ -37,6 +37,7 @@ public abstract class ACsvParser<TTo> implements IFieldsListParser<String,TTo> {
 	private Log log = LogFactory.getLog(ACsvParser.class);
 	
 	private static final String MX_SEP_ESCAPE_STR="__MX_ESCAPED_SEPARATOR__";
+	public static final String MX_CR_ESCAPE_STR="__MX_CR__";
 	private static final String MX_CLEAR_CELL_STR="__empty__";
 	private String _csvSeparator=";";
 	private String _commentsMarker="#";
@@ -93,12 +94,18 @@ public abstract class ACsvParser<TTo> implements IFieldsListParser<String,TTo> {
 	
 	}	
 	
-	private Object parseStrField(String csvContents) throws ParseException { 
+	private Object parseStrField(String csvContents) throws ParseException {
+		
+		// remove wrapping quotes if any
+		if (csvContents.startsWith("\"") && csvContents.endsWith("\"")) {
+			return csvContents.substring(1, csvContents.length()-1);
+		}
+					
 		return csvContents; 
 	}
 	
 	private Object parseNumberFieldContents(String csvContents) throws ParseException { 
-		csvContents=csvContents.replaceAll(",","."); // handle bloody Excel text-export format
+		csvContents=csvContents.replace(",","."); // handle bloody Excel text-export format
 		try { return Integer.parseUnsignedInt(csvContents); }
 		catch (Exception e1) { try { return Integer.parseInt(csvContents); }
 		catch (Exception e2) { try { return Double.parseDouble(csvContents); }
@@ -125,7 +132,7 @@ public abstract class ACsvParser<TTo> implements IFieldsListParser<String,TTo> {
 		// clean input line from separators within quotes
 		Matcher m = Pattern.compile(_stringIdentifier+"[^"+_stringIdentifier+"]+"+_stringIdentifier).matcher(csvLine);
 		while(m.find()) {
-			String escaped_col = m.group().replaceAll(this.getCsvSeparator(), MX_SEP_ESCAPE_STR);
+			String escaped_col = m.group().replace(this.getCsvSeparator(), MX_SEP_ESCAPE_STR);
 			csvLine=csvLine.replaceAll(Pattern.quote(m.group()),escaped_col);
 		}		
 		
@@ -154,6 +161,9 @@ public abstract class ACsvParser<TTo> implements IFieldsListParser<String,TTo> {
 			
 			// restore escaped separator
 			curColContents=curColContents.replaceAll(MX_SEP_ESCAPE_STR, this.getCsvSeparator());
+			
+			// restore new lines
+			curColContents=curColContents.replaceAll(MX_CR_ESCAPE_STR, "\n");
 			
 			String csvFieldName = coldef.getFirst();
 			

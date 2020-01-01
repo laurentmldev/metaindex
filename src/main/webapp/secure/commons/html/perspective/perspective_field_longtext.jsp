@@ -114,8 +114,7 @@ function createROFullTextPopup(textArea,itemId,termDesc,catalogDesc,
 		valueNode.innerHTML=newValue;
 		textArea.value=newValue;
 		valueNode.style.border="none";
-		footer_showAlert(SUCCESS, "<s:text name="Catalogs.field.UpdateDone" />");
-		popupWindow.hide();
+		footer_showAlert(SUCCESS, "<s:text name="Catalogs.field.UpdateDone" />");		
 		
 	 }
 	 let onUpdateErrorCallback=function(msg) {
@@ -173,12 +172,12 @@ function createROFullTextPopup(textArea,itemId,termDesc,catalogDesc,
 
 <div style="display:none;width:100%;" class="mx-perspective-field" id="_commons_perspectives_field_readonly_template_longtext"  >
 	<div class="_title_ "></div>
-	<pre class="_value_ mx-perspective-field-longtext mx-perspective-field-longtext-bckg"  style="max-height:8vh;max-width:15vw;" ></pre>	               
+	<pre class="_value_ mx-perspective-field-longtext-mini"  style="max-height:8vh;max-width:15vw;" ></pre>	               
 </div>
 
 <div style="display:none;width:100%;" class="mx-perspective-field" id="_commons_perspectives_field_editable_template_longtext"  >
 	<div class="_title_"></div>
-	<pre class="_value_ mx-perspective-field-longtext mx-perspective-field-longtext-bckg"  style="max-height:8vh;max-width:15vw;"
+	<pre class="_value_ mx-perspective-field-longtext-mini"  style="max-height:8vh;max-width:15vw;"
 		title="<s:text name="Catalogs.field.FullEdit" />"
 	></pre>
 	

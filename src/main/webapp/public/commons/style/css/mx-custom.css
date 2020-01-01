@@ -83,20 +83,20 @@ input[type="file"] {
 	cursor:pointer;
 }
 
-.mx-perspective-field-longtext {
+.mx-perspective-field-longtext,.mx-perspective-field-longtext-mini {
 	text-align:left;
 	width:100%;	
 	overflow:auto;
-}
-.mx-perspective-field-longtext:hover {
-	cursor:pointer;
-	
 }
 
 .mx-perspective-field-longtext-pleasewait {
 	text-align:center;	
 	color:#67a;
 	font-weight:bold;
+}
+
+.mx-perspective-field-longtext-mini:hover {
+	cursor:context-menu;
 }
 
 
