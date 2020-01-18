@@ -1,0 +1,122 @@
+@charset "UTF-8";
+
+
+/* --- Button --- */
+.btn {
+  color: @primary_color;
+}
+.btn:hover {
+  color: @secondary_color;
+}
+
+/* --- Button Primary --- */
+
+.btn-primary {
+  color: @counter_text_color;
+  background-color: @primary_color;
+  border-color: @primary_color;
+}
+
+
+.btn-primary:hover {
+  color: @background_color;
+  background-color: @primary_hover;
+  border-color: @primary_hover_border;
+}
+
+.btn-primary.disabled, .btn-primary:disabled {
+  color: @background_color;
+  background-color: @primary_color;
+  border-color: @primary_color;
+}
+
+.btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active,
+.show > .btn-primary.dropdown-toggle {
+  color: @background_color;
+  background-color: @primary_hover_border;
+  border-color: @primary_active;
+}
+
+/* --- Button Secondary --- */
+
+.btn-secondary {
+  color: @text_color;
+  background-color: @secondary_color;
+  border-color: @secondary_color;
+}
+
+.btn-secondary:hover {
+  color: @background_color;
+  background-color: @secondary_hover;
+  border-color: @secondary_hover_border;
+}
+
+.btn-secondary.disabled, .btn-secondary:disabled {
+  color: @background_color;
+  background-color: @secondary_color;
+  border-color: @secondary_color;
+}
+
+.btn-secondary:not(:disabled):not(.disabled):active, .btn-secondary:not(:disabled):not(.disabled).active,
+.show > .btn-secondary.dropdown-toggle {
+  color: @background_color;
+  background-color: @secondary_hover_border;
+  border-color: @secondary_active;
+}
+
+/* --- Button Link --- */
+
+.btn-link {
+  color: @primary_color;
+}
+
+.btn-link:hover {
+  color: @primary_color_gradient;
+}
+
+.btn-link:disabled, .btn-link.disabled {
+  color: @secondary_color;
+}
+
+
+/* --- Buttons styles --- */
+
+
+.mx-square-button-xs, .mx-square-button-md {
+	margin:0.2rem;
+	font-size:0.8rem !important;
+	height:2rem;	
+	color:@counter_text_color;
+}
+.mx-square-button-xs {
+	font-size:0.5rem !important;
+}
+
+.mx-btn-text-icon {
+	padding-right:0.5rem;	
+}
+.mx-btn-transparent-danger,.mx-btn-transparent-success {
+	background:'';
+	background-color:'';
+	color:@text_color;
+	margin-left:0.5rem;
+	margin-right:0.5rem;
+}
+.mx-btn-transparent-danger:hover {
+	background:#e74a3b;
+	background-color:#e74a3b;
+	color:@counter_text_color;
+}
+.mx-btn-transparent-success:hover {
+	background:#1cc88a;
+	background-color:#1cc88a;
+	color:@counter_text_color;
+}
+
+/* btn-xs type no longer available, adding it manually */
+.btn-group-xs > .btn, .btn-xs {
+  padding: .15rem .3rem;
+  font-size: .675rem;
+  line-height: .5;
+  border-radius: .15rem;
+}

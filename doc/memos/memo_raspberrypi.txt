@@ -1,0 +1,28 @@
+
+Preliminaries : Create metaindexuser with writes on HD storing metaindex data:
+
+- list group ids :
+$ getent group | grep XXX  
+XXX:x:1003
+
+
+- raspberry pi activate ssh server
+sudo raspi-config
+5. interface options (config connections to peripherals)
+P2 : ssh
+
+- adduser
+$ sudo adduser metaindexuser --no-create-home --gid 1003 
+
+- zip 
+$ sudo apt-get install zip
+
+- telnet 
+$ sudo apt-get install telnet
+
+- tcpdump
+$ sudo apt-get install tcpdump
+
+// update raspberry state
+$ sudo apt-get update
+

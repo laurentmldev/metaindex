@@ -1,0 +1,54 @@
+package metaindex.data.perspective.dbinterface;
+
+
+import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDatabaseInterface;
+import toolbox.database.sql.SQLReadStmt;
+import toolbox.database.sql.SQLWriteStmt;
+import toolbox.exceptions.DataProcessException;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import metaindex.data.catalog.ICatalog;
+import metaindex.data.perspective.ICatalogPerspective;
+import metaindex.data.userprofile.IUserProfileData;
+
+public class DbInterface  extends SQLDatabaseInterface<ICatalogPerspective> 
+{
+	public DbInterface(SQLDataSource ds) { 
+		super(ds);		
+	}
+
+	// ---
+	public SQLReadStmt<ICatalogPerspective> getLoadFromDbStmt(List<ICatalog> list) throws DataProcessException {
+		return new LoadContentsFromDbStmt(list, getDatasource());
+	}
+	public SQLReadStmt<ICatalogPerspective> getLoadFromDbStmt(ICatalog c) throws DataProcessException {
+		List<ICatalog> list = new ArrayList<>();
+		list.add(c);
+		return new LoadContentsFromDbStmt(list, getDatasource());
+	}
+	
+
+	public SQLWriteStmt<String> getUpdatePerspectiveIntoDbStmt(IUserProfileData activeUser,ICatalog c, List<String> perspectivesJsonData) throws DataProcessException {
+		return new CreateOrUpdatePerspectiveIntoSqlDbStmt(activeUser,c,perspectivesJsonData, getDatasource());
+	}
+	
+	public SQLWriteStmt<String> getUpdatePerspectiveIntoDbStmt(IUserProfileData activeUser,ICatalog c, String perspectiveJsonData) throws DataProcessException {
+		List<String> list = new ArrayList<>();
+		list.add(perspectiveJsonData);
+		return getUpdatePerspectiveIntoDbStmt(activeUser,c,list);
+	}
+	
+	public SQLWriteStmt<Integer> getDeletePerspectiveFromDbStmt(IUserProfileData activeUser,ICatalog c, List<Integer> perspectivesIds) throws DataProcessException {		
+		return new DeletePerspectiveSqlDbStmt(activeUser,c,perspectivesIds,getDatasource());
+	}
+	
+	public SQLWriteStmt<Integer> getDeletePerspectiveFromDbStmt(IUserProfileData activeUser,ICatalog c, Integer perspectiveId) throws DataProcessException {
+		List<Integer> list = new ArrayList<>();
+		list.add(perspectiveId);
+		return getDeletePerspectiveFromDbStmt(activeUser,c,list);
+	}
+	
+}

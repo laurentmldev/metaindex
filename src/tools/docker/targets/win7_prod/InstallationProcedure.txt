@@ -1,0 +1,26 @@
+
+ docker compose file version : '3' instead of '3.7'
+
+ - install Docker Toolbox
+ - in BIOS / System Configuration / Virtualization Technology "enabled"
+ - copy delivery archive in writable folder (Documents for example)
+ - set mysql/my.cnf access-rights to 'read-only'
+ 
+ - Run Docker Quick start
+ - configure Vitrualbox Ports mapping to localhost :
+ 	- open VirtualBox
+ 	- right click on running VM/configuration
+ 	- go to network, and click advanced settings / ports redirect
+ 	- add ports matching used ones
+ 	
+ - configure vmap (for ES 6.8.0), from VMBox shell :
+ 	- $ docker-machine ssh
+ 	- $ sudo sysctl -w vm.max_map_count=262144
+ 	
+  - go into delivery folder : 
+  -   cd
+  -   cd Documents
+  -   cd Metaindex
+  - tar xzf metaindex-X.Y.Z.tgz
+  - cd metaindex-X.Y.Z
+  - run:  docker-compose up

@@ -1,0 +1,137 @@
+
+
+@charset "UTF-8";
+
+.maintenance {
+	font-size : 2rem;
+	color: orange;
+	font-weight: bold;
+	text-align:center;
+	width:100%;
+}
+input[type="file"] {
+    display: none;
+}
+
+
+
+.mx-current-item-area-closed {
+	max-height:0;
+	transition: max-height 0.15s ease-out;
+	overflow:hidden;
+	background:#d5d5d5;
+}
+
+.mx-current-item-area-open {
+	max-height:80vh;
+	min-height:250px;
+	transition: max-height 0.15s ease-in;
+	margin-bottom:0.5rem;
+	overflow:auto;
+}
+
+.mx-details-card {
+	background:none;
+}
+
+/* 
+   special class to anchors so that when jumbing to anchor it is more or less
+   to the middle, not right on the top of the screen
+*/
+a.anchor_middle {
+    display: block;
+    position: relative;
+    top: -40vh;
+    visibility: hidden;
+}
+a.anchor_top {
+    display: block;
+    position: relative;
+    top: -15vh;
+    visibility: hidden;
+}
+
+.mx-selected-dropdown {
+	/* background set in less */
+	margin-bottom:2px !important;
+}
+
+
+.mx-perspective-field {	
+	background:inherit;
+	border:none;
+	max-width:50vw !important;
+	min-width:100px !important;	
+	/*text-align:left;*/
+}
+.mx-perspective-field-custom-table {	
+	padding:0.2rem;
+	padding-right:0;
+	font-size:0.7rem;
+}
+
+.mx_perspective-field-customizable_card {
+	max-width:150px !important;
+}
+
+.mx-search-input {
+width:30vw !important;
+height:40px;
+/*margin-right:1rem;*/
+}
+
+.mx-dropdown {
+	border-radius:3px;
+	font-size:0.8rem;
+	height:40px;
+}
+
+.mx-mapping-enums-readonly {
+	border:none;
+	color:grey;
+}
+
+ /* ---------- Dynamic Dropdown ------------ */
+.mx_dyndropdown_btn {
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  cursor: pointer;
+  background:none;
+  /*border-bottom: dashed 1px #0088cc;*/
+}
+
+.mx_dyndropdown_btn:hover, .mx_dyndropdown_btn:focus {
+	background:none;
+}
+
+.mx_dyndropdown_searchinput {
+  box-sizing: border-box;
+  width:100%;
+  padding-left:5px;
+  border: none;
+  border-bottom: 1px solid #ddd;
+}
+
+.mx_dyndropdown_searchinput:focus {outline: 2px solid #ddd;}
+
+.mx_dyndropdown_content {
+  display: none;
+  position: absolute;
+  background-color: #f6f6f6;
+  min-width: 130px;
+  border: 1px solid #ddd;
+  z-index: 1;
+  max-height:90px;
+  overflow:auto;
+}
+
+.mx_dyndropdown_content a {
+  color: black;
+  font-size:0.6rem;
+  padding:6px 8px;
+  text-decoration: none;
+  display: block;
+}
+.mx_dyndropdown_content a:hover {background-color: #f1f1f1}
+.show {display:block;} 

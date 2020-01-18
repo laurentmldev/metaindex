@@ -1,0 +1,23 @@
+//////// memo docker commands
+
+$ docker system prune --force --volumes
+$ docker images
+# log to running container
+$ docker exec -it <container_id> bash
+
+$ docker-compose -f docker-compose.yml up -d
+$ docker-compose -f docker-compose.yml up --no-start
+$ docker-compose -f docker-compose.yml ps
+$ docker-compose -f docker-compose.yml down
+
+$ docker ps
+CONTAINER ID        IMAGE                   COMMAND                  CREATED             STATUS              PORTS                               NAMES
+9c2611cb2ed1        phpmyadmin/phpmyadmin   "/docker-entrypoint.…"   2 minutes ago       Up 51 seconds       0.0.0.0:8888->80/tcp                phpmyadmin
+6d6e5b260f08        kibana:7.5.0            "/usr/local/bin/dumb…"   2 minutes ago       Up 2 minutes        0.0.0.0:5601->5601/tcp              kibana
+178f00d0ad4a        elasticsearch:7.5.0     "/usr/local/bin/dock…"   2 minutes ago       Up 2 minutes        9200/tcp, 9300/tcp                  elasticsearch
+7a8c5c28f038        mysql:5                 "docker-entrypoint.s…"   2 minutes ago       Up 2 minutes        0.0.0.0:3306->3306/tcp, 33060/tcp   mxsql
+
+$ docker logs 7a8c5c28f038
+$ docker rm 7a8c5c28f038
+
+$ docker stats

@@ -1,0 +1,71 @@
+@charset "UTF-8";
+
+
+/* --- Inputs --- */
+
+.form-control:focus {
+  border-color: @shadow_color;  
+  -webkit-box-shadow: 0 0 0 0.2rem @shadow_color;
+  box-shadow: 0 0 0 0.2rem @shadow_color;
+}
+
+.form-control::-webkit-input-placeholder,
+.form-control::-moz-placeholder ,
+.form-control:-ms-input-placeholder ,
+.form-control::-ms-input-placeholder ,
+.form-control::placeholder {
+	color: @text_color;
+}
+
+.bg-light {
+ background-color: @bg_light !important;
+}
+
+.form-control-group {
+	border:1px solid @secondary_color !important;	
+	border-radius:5px !important;
+	padding:0.2rem;
+	padding-right:1rem;
+	padding-left:0.3rem;
+	margin:0;	
+}
+
+.modals-form-control-dropdown {
+	font-size:0.7rem;
+}
+.modals-form-control-checkbox {
+	font-size:0.7rem;
+	margin-top:0.1rem;
+	margin-bottom:0.1rem;
+}
+
+.form-control-group-legend {
+	font-weight:bold;
+	font-size:1rem;
+	padding-left:0.5rem;
+	padding-right:1rem;
+	padding-top:0;		
+	padding-bottom:0;
+	color:@secondary_color;
+	margin:0;
+}
+
+.form-text-input-frozen {
+	color:@frozen_color !important;
+	background:#eee !important;
+}
+
+.form-input-locked {
+	color : #aaaaff;
+}
+.form-input-unlocked {
+	color : #aaaaaa;
+}
+
+.mx_dyndropdown_btn:hover, .mx_dyndropdown_btn:focus {
+  background-color: @primary_hover;
+}
+
+.mx_dyndropdown_btn {
+color: @secondary_active;
+}

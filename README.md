@@ -1,2 +1,0 @@
-# metaindex
-Lightweight cataloging application

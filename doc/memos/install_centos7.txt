@@ -1,0 +1,93 @@
+
+pwd root host : VPS
+pwd root server : MET
+
+
+Create user
+-----------
+
+adduser laurent
+passwd laurent
+# gives sudo capabilities
+usermod -aG wheel laurent
+
+log as laurent
+
+mkdir mx_deliveries
+
+Install apps
+------------
+
+yum install netstat
+yum install gedit
+
+
+# Configure VM mem alloc for ElasticSearch
+# ----------------------------------------
+
+vi /etc/sysctl.conf
+> vm.max_map_count=262144
+
+Configure ssh
+------------
+# https://wiki.centos.org/HowTos/Network/SecuringSSH#head-3579222198adaf43a3ecbdc438ebce74da40d8ec]section
+
+# update sshd config
+# ------------------
+
+vi /etc/ssh/sshd_config
+
+>#Port 22
+>Port 2233
+
+>#PermitRootLogin yes
+>PermitRootLogin no
+
+>AllowUsers laurent
+>Protocol 2
+
+># Banner none
+>Banner /etc/sshbanner <-- file to create before with texts contents of the banner
+
+>#X11Forwarding no
+>X11Forwarding yes
+
+service sshd restart
+
+
+
+# update firewall
+# ---------------
+
+vi /usr/lib/firewalld/services/ssh.xml
+> <port protocol="tcp" port="22"/>
+> <port protocol="tcp" port="2233"/>
+
+vi /etc/firewalld/services/phpmyadmin.xml
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>PHP MyAdmin</short>
+  <description>Amdinistration of MySQL databes for MetaindeX server</description>
+  <port protocol="tcp" port="80"/>
+</service>
+
+firewall-cmd --permanent --add-service='phpmyadmin'
+
+firewall-cmd --reload
+
+Docker install 
+--------------
+curl -fsSL https://get.docker.com/ | sh
+sudo curl -L "https://github.com/docker/compose/releases/download/1.25.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/sbin/docker-compose
+sudo chmod 755 /usr/local/bin/docker-compose
+
+
+STARTUP
+-------
+sudo systemctl start docker
+sudo docker-compose up
+
+
+
+
+

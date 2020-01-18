@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD  
+ Struts Configuration 2.1//EN"   
+"http://struts.apache.org/dtds/struts-2.1.dtd">  
+<struts>  
+	<constant name="struts.devMode" value="true" />
+	<constant name="struts.action.excludePattern" value="/style/.*,/public/errors/.*,/public/deps/.*,/media/.*,/logoutprocess,/loginprocess,/ws/.*" /> 
+ 	<constant name="struts.multipart.maxSize" value="2000000" />
+ 	<constant name="struts.multipart.parser" value="springCustomParser"/>
+
+<!-- For Multipart file upload by Spring/Struts2 -->
+<bean type="org.apache.struts2.dispatcher.multipart.MultiPartRequest" 
+      name="springCustomParser" 
+      class="metaindex.struts2.Struts2MultipartParserForSpring"
+      scope="default"/>
+      
+	<package name="metaindex" extends="struts-default">  
+	
+	<global-results>
+     <result name="securityerror">/public/errors/error.jsp</result>
+     <result name="dberror">/public/errors/errorDB.jsp</result>
+ 	 <result name="error">/public/errors/error.jsp</result>
+	</global-results>
+ 
+<global-exception-mappings>
+ <exception-mapping exception="org.apache.struts.register.exceptions.SecurityBreachException" result="securityerror" />
+ <exception-mapping exception="org.springframework.jdbc" result="dberror" /> 
+ <exception-mapping exception="java.lang.Exception" result="BeanProcess_ERROR"></exception-mapping>  
+ <exception-mapping exception="java.lang.Exception" result="error" />
+</global-exception-mappings>
+
+		<action name="" class="metaindex.data.userprofile.beans.BeanProfile">
+			<result name="BeanProcess_SUCCESS" >/public/login.jsp</result>
+		</action> 		
+		<action name="loginform" class="metaindex.data.userprofile.beans.BeanProfile">
+			<result name="BeanProcess_SUCCESS" >/public/login.jsp</result>  
+		</action> 
+		<action name="wstest" class="metaindex.data.userprofile.beans.BeanProfile">
+			<result name="BeanProcess_SUCCESS" >/public/chat.jsp</result>  
+		</action> 		
+<!-- Profile -->
+		<action name="profile" class="metaindex.data.userprofile.beans.BeanProfile">  
+			<result name="BeanProcess_SUCCESS" >/secure/profile.jsp</result>    
+			<result name="BeanProcess_DBERROR" >/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>
+			    
+		</action>  
+
+		<action name="createProfile" class="metaindex.data.userprofile.beans.BeanProfile" >
+			<result name="BeanProcess_SUCCESS">/public/createProfile.jsp</result>
+			<result name="input" >/public/createProfile.jsp</result>    
+			<result name="success" >/public/createProfile.jsp</result>
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action> 
+		<action name="CreateProfileProcess" class="metaindex.data.userprofile.beans.BeanCreateProfileProcess" > 
+			<result name="BeanProcess_SUCCESS" >/public/login.jsp</result>   
+			<result name="input" >/public/createProfile.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/public/createProfile.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  	 
+		</action> 
+				
+		<action name="editProfile" class="metaindex.data.userprofile.beans.BeanProfile" >  
+			<result name="BeanProcess_SUCCESS">/secure/editProfile.jsp</result>
+			<result name="input" >/secure/editProfile.jsp</result>    
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action> 
+		<action name="editProfileProcess" class="metaindex.data.userprofile.beans.BeanEditProfileProcess" >  
+			<result name="BeanProcess_SUCCESS" >/secure/profile.jsp</result>   
+			<result name="input" >/secure/editProfile.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action>
+		<action name="joinCommunityProcess" class="metaindex.data.userprofile.beans.BeanJoinCommunityProcess" >  
+			<result name="BeanProcess_SUCCESS" >/secure/profile.jsp</result>   
+			<result name="input" >/secure/profile.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>
+			<result name="BeanProcess_ConstraintERROR" >/secure/profile.jsp</result>  
+		</action>
+		
+		<action name="openCommunity" class="metaindex.data.community.beans.BeanOpenCommunityProcess" >
+			<result name="BeanProcess_SUCCESS">/secure/workzone.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/workzone.jsp</result>
+			<result name="input" >/secure/profile.jsp</result>    
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action> 
+		 <action name="createCommunity" class="metaindex.data.community.beans.BeanCommunity" >
+			<result name="BeanProcess_SUCCESS">/secure/workzone.jsp</result>
+			<result name="input" >/secure/profile.jsp</result>    
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action> 
+		<action name="createCommunityProcess" class="metaindex.data.community.beans.BeanCreateCommunityProcess" > 
+			<result name="BeanProcess_SUCCESS" >/secure/workzone.jsp</result>   
+			<result name="input" >/secure/profile.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/profile.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  			 
+		</action> 
+<!-- Manage Community -->
+		<action name="communityLang" class="metaindex.data.community.beans.BeanCommunity" >
+			<result name="BeanProcess_SUCCESS">/secure/community.lang.jsp</result>
+			<result name="input" >/secure/community.lang.jsp</result>    
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+		</action>
+		<action name="communityUsers" class="metaindex.data.community.beans.BeanCommunity" >
+			<result name="BeanProcess_SUCCESS">/secure/community.users.jsp</result>
+			<result name="input" >/secure/community.users.jsp</result>    
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+		</action>							  
+		<action name="updateCommunityProcess" class="metaindex.data.community.beans.BeanUpdateCommunityProcess" > 
+			<result name="BeanProcess_SUCCESS" >/secure/community.lang.jsp</result>   
+			<result name="input" >/secure/community.lang.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/community.lang.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action> 
+		<action name="addCommunityTermProcess" class="metaindex.data.community.beans.BeanUpdateCommunityAddTermProcess" > 
+			<result name="BeanProcess_SUCCESS" >/secure/community.lang.jsp</result>   
+			<result name="input" >/secure/community.lang.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/community.lang.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action> 
+		<action name="updateCommunityTermProcess" class="metaindex.data.community.beans.BeanUpdateCommunityUpdateTermProcess" > 
+			<result name="BeanProcess_SUCCESS" >/secure/community.lang.jsp</result>   
+			<result name="input" >/secure/community.lang.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/community.lang.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action> 
+		<action name="deleteCommunityTermProcess" class="metaindex.data.community.beans.BeanUpdateCommunityDeleteTermProcess" > 
+			<result name="BeanProcess_SUCCESS" >/secure/community.lang.jsp</result>   
+			<result name="input" >/secure/community.lang.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/community.lang.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action> 
+<!-- Workzone -->
+		<action name="workzone" class="metaindex.data.community.beans.BeanCommunity" > 
+			<result name="BeanProcess_SUCCESS" >/secure/workzone.jsp</result>   
+			<result name="input" >/secure/workzone.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/workzone.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action>	
+		<action name="addCatalogProcess" class="metaindex.data.catalog.beans.BeanCommunityAddCatalogProcess" > 
+			<result name="BeanProcess_SUCCESS" >/secure/profile.jsp</result>   
+			<result name="input" >/secure/profile.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/profile.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action>
+		<action name="updateCatalogProcess" class="metaindex.data.catalog.beans.BeanCommunityUpdateCatalogProcess" > 
+			<result name="BeanProcess_SUCCESS" >/secure/workzone.jsp</result>   
+			<result name="input" >/secure/workzone.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/workzone.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action>		
+		<action name="deleteCatalogProcess" class="metaindex.data.catalog.beans.BeanCommunityDeleteCatalogProcess" > 
+			<result name="BeanProcess_SUCCESS" >/secure/workzone.jsp</result>   
+			<result name="input" >/secure/workzone.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/workzone.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action>		
+		<action name="downloadCatalogProcess" class="metaindex.data.catalog.beans.BeanCommunityDownloadCatalog" > 
+			<result name="BeanProcess_SUCCESS" >/secure/workzone.jsp</result>   
+			<result name="input" >/secure/workzone.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/workzone.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action>	
+		<action name="SynchronizeOMCCatalogProcess" class="metaindex.data.catalog.beans.BeanCommunitySynchronizeOMCCatalog" > 
+			<interceptor-ref name="fileUpload">
+	           <param name="allowedTypes"></param>
+	           <param name="maximumSize">2097152</param>					          
+	       	</interceptor-ref>
+	       	<interceptor-ref name="defaultStack"></interceptor-ref>
+	       	
+			<result name="BeanProcess_SUCCESS" >/secure/workzone.jsp</result>   
+			<result name="input" >/secure/workzone.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/workzone.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action>			
+		<action name="uploadCSVCatalogProcess" class="metaindex.data.catalog.beans.BeanCommunityUploadCSVCatalog" > 
+			<interceptor-ref name="fileUpload">
+	           <param name="allowedTypes"></param>
+	           <param name="maximumSize">100097152</param>					          
+	       	</interceptor-ref>
+	       	<interceptor-ref name="defaultStack"></interceptor-ref>
+	       	
+			<result name="BeanProcess_SUCCESS" >/secure/workzone.jsp</result>   
+			<result name="input" >/secure/workzone.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action>			
+				
+		<action name="selectCatalogProcess" class="metaindex.data.catalog.beans.BeanSelectCatalogProcess" > 
+			<result name="BeanProcess_SUCCESS" >/secure/workzone.jsp</result>   
+			<result name="input" >/secure/workzone.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/workzone.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action>	
+		<action name="addStaticElementToCatalogProcess" class="metaindex.data.catalog.beans.BeanAddStaticElementToCatalogProcess" > 
+			<result name="BeanProcess_SUCCESS" >/secure/workzone.jsp</result>   
+			<result name="input" >/secure/workzone.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/workzone.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action>	
+		<action name="removeStaticElementToCatalogProcess" class="metaindex.data.catalog.beans.BeanRemoveStaticElementFromCatalogProcess" > 
+			<result name="BeanProcess_SUCCESS" >/secure/workzone.jsp</result>   
+			<result name="input" >/secure/workzone.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/workzone.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action>	
+		  <action name="addMetadataProcess" class="metaindex.data.metadata.beans.BeanElementAddMetadataProcess" > 
+			<result name="BeanProcess_SUCCESS" >/secure/workzone.jsp</result>   
+			<result name="input" >/secure/workzone.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/workzone.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action> 
+		  <action name="updateMetadataProcess" class="metaindex.data.metadata.beans.BeanElementUpdateMetadataProcess" > 
+			<result name="BeanProcess_SUCCESS" >/secure/workzone.jsp</result>   
+			<result name="input" >/secure/workzone.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/workzone.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action> 
+		  <action name="addDatasetProcess" class="metaindex.data.dataset.beans.BeanElementAddDatasetProcess" > 
+			<result name="BeanProcess_SUCCESS" >/secure/workzone.jsp</result>   
+			<result name="input" >/secure/workzone.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/workzone.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action>
+		<action name="updateDatasetProcess" class="metaindex.data.dataset.beans.BeanElementUpdateDatasetProcess" > 
+			<result name="BeanProcess_SUCCESS" >/secure/workzone.jsp</result>   
+			<result name="input" >/secure/workzone.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/workzone.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action>	
+		<action name="deleteDatasetProcess" class="metaindex.data.dataset.beans.BeanElementDeleteDatasetProcess" > 
+			<result name="BeanProcess_SUCCESS" >/secure/workzone.jsp</result>   
+			<result name="input" >/secure/workzone.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/workzone.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action>			
+		  <action name="addElementDataProcess" class="metaindex.data.element.beans.BeanElementAddElementDataProcess" > 
+			<result name="BeanProcess_SUCCESS" >/secure/workzone.jsp</result>   
+			<result name="input" >/secure/workzone.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/workzone.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action>	
+		  <action name="updateElementDataProcess" class="metaindex.data.element.beans.BeanElementUpdateElementDataProcess" > 
+			<result name="BeanProcess_SUCCESS" >/secure/workzone.jsp</result>   
+			<result name="input" >/secure/workzone.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/workzone.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action> 		
+		<action name="deleteElementDataProcess" class="metaindex.data.element.beans.BeanElementDeleteElementDataProcess" > 
+			<result name="BeanProcess_SUCCESS" >/secure/workzone.jsp</result>   
+			<result name="input" >/secure/workzone.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/workzone.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action>			
+		  <action name="selectElement" class="metaindex.data.community.beans.BeanCommunityNextElementDataProcess" > 
+			<result name="BeanProcess_SUCCESS" >/secure/workzone.jsp</result>   
+			<result name="input" >/secure/workzone.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/workzone.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action>	
+		<action name="moveMetadataProcess" class="metaindex.data.metadata.beans.BeanElementMoveMetadataProcess" > 
+			<result name="BeanProcess_SUCCESS" >/secure/workzone.jsp</result>   
+			<result name="input" >/secure/workzone.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/workzone.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action>
+ 		<action name="deleteMetadataProcess" class="metaindex.data.metadata.beans.BeanElementDeleteMetadataProcess" > 
+			<result name="BeanProcess_SUCCESS" >/secure/workzone.jsp</result>   
+			<result name="input" >/secure/workzone.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/workzone.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action>
+ 		<action name="moveDatasetProcess" class="metaindex.data.dataset.beans.BeanElementMoveDatasetProcess" > 
+			<result name="BeanProcess_SUCCESS" >/secure/workzone.jsp</result>   
+			<result name="input" >/secure/workzone.jsp</result>  
+			<result name="BeanProcess_DBERROR">/public/errors/errorDB.jsp</result>
+			<result name="BeanProcess_ConstraintERROR">/secure/workzone.jsp</result>
+			<result name="BeanProcess_ERROR" >/public/errors/error.jsp</result>  
+		</action> 
+	</package>  
+</struts>      

@@ -1,0 +1,75 @@
+package metaindex.data.catalog.dbinterface;
+
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import metaindex.data.catalog.ICatalogCustomParams;
+import metaindex.data.userprofile.IUserProfileData;
+import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLWriteStmt;
+import toolbox.exceptions.DataProcessException;
+
+class CreateOrUpdateCatalogIntoSqlDbStmt extends SQLWriteStmt<ICatalogCustomParams>   {
+
+	IUserProfileData _activeUser;
+	List<ICatalogCustomParams> _data = new ArrayList<ICatalogCustomParams>();
+	public CreateOrUpdateCatalogIntoSqlDbStmt(IUserProfileData activeUser, 
+										List<ICatalogCustomParams> catalogsCustomParams, 
+										SQLDataSource ds) throws DataProcessException { 
+		super(ds);
+		_activeUser=activeUser;
+		_data.addAll(catalogsCustomParams);		
+	}
+	
+				
+	@Override
+	protected List<ICatalogCustomParams> getDataList() { return _data; }
+	
+	@Override
+	protected List<PreparedStatement> prepareStmts() throws DataProcessException {
+		
+		List<PreparedStatement> result = new ArrayList<PreparedStatement>();
+		
+		try {
+			result.add(this.getDatasource().getConnection().prepareStatement(
+					"insert into catalogs (shortname,creator_id,thumbnailUrl,itemNameFields,"
+							+"itemThumbnailUrlField,urlPrefix,perspectiveMatchField)"
+							+" values (?,?,?,?,?,?,?)"
+					+"ON DUPLICATE KEY UPDATE "
+							+"thumbnailUrl=?,itemNameFields=?,itemThumbnailUrlField=?,urlPrefix=?,perspectiveMatchField=?"));
+			
+		} catch (SQLException e) { throw new DataProcessException(e); }
+		
+		return result;
+	}
+	@Override
+	protected void populateStatements(ICatalogCustomParams dataObject, List<PreparedStatement> stmts) throws DataProcessException {
+		
+		PreparedStatement stmt = stmts.get(0);
+		try {
+			stmt.setString(1, dataObject.getName());
+			stmt.setInt(2, _activeUser.getId());
+			String itemNameFields = "";
+			for (String curField : dataObject.getItemNameFields()) {
+				if (itemNameFields.length()>0) { itemNameFields+=","; }
+				itemNameFields+=curField;
+			}
+			stmt.setString(3, dataObject.getThumbnailUrl());
+			stmt.setString(4, itemNameFields);
+			stmt.setString(5, dataObject.getItemThumbnailUrlField());
+			stmt.setString(6, dataObject.getItemsUrlPrefix());
+			stmt.setString(7, dataObject.getPerspectiveMatchField());
+			
+			stmt.setString(8, dataObject.getThumbnailUrl());
+			stmt.setString(9, itemNameFields);
+			stmt.setString(10, dataObject.getItemThumbnailUrlField());
+			stmt.setString(11, dataObject.getItemsUrlPrefix());
+			stmt.setString(12, dataObject.getPerspectiveMatchField());			
+			stmt.addBatch();
+		} catch (SQLException e) { throw new DataProcessException(e); }		
+	}
+						
+};

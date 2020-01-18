@@ -1,56 +1,69 @@
 <beans xmlns="http://www.springframework.org/schema/beans" 
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
  xmlns:security="http://www.springframework.org/schema/security" 
- xmlns:websocket="http://www.springframework.org/schema/websocket"    
- xsi:schemaLocation="http://www.springframework.org/schema/beans
-  http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+ xmlns:websocket="http://www.springframework.org/schema/websocket" 
+ xmlns:context="http://www.springframework.org/schema/context"   
+ xmlns:mvc="http://www.springframework.org/schema/mvc"   
+ xsi:schemaLocation="
+  http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans.xsd
   http://www.springframework.org/schema/security
   http://www.springframework.org/schema/security/spring-security.xsd
   http://www.springframework.org/schema/websocket
-  http://www.springframework.org/schema/websocket/spring-websocket.xsd">
+  http://www.springframework.org/schema/websocket/spring-websocket.xsd
+  http://www.springframework.org/schema/context
+  http://www.springframework.org/schema/context/spring-context.xsd
+  http://www.springframework.org/schema/mvc
+  http://www.springframework.org/schema/mvc/spring-mvc.xsd
+   ">
       
-     <!-- class="org.apache.commons.dbcp2.BasicDataSource" -->
+    <!-- Annotation-based declaration of websockets -->  
+    <context:component-scan base-package="metaindex.websockets"/>
+      
+ 	<mvc:resources mapping="/media/**" location="/media/" />
+ 	<mvc:resources mapping="/public/**" location="/public/" />
+ 	<mvc:resources mapping="/style/**" location="/style/" /> 	
+ 
+	<!-- bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	  <property name="location" value="metaindex.properties"/>
+	</bean-->
+	
+ 	<!-- class="org.apache.commons.dbcp2.BasicDataSource" -->
 	 <bean id="dataSource" 
 	 	class="org.springframework.jdbc.datasource.DriverManagerDataSource"> 
-	 	<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-	 	<property name="url" value="jdbc:mysql://localhost:8889/metaindex?useUnicode=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC" />
-		<property name="username" value="metaindexwebuser"/>
-		<property name="password" value="metaindexwebuserpwd"/>
+	 	<property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
+	 	<property name="url" value="jdbc:mysql://#{systemEnvironment['mx.sql.host']}:#{systemEnvironment['mx.sql.port']}/#{systemEnvironment['mx.sql.dbname']}?useUnicode=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC" />
+		<property name="username" value="#{systemEnvironment['mx.sql.user']}"/>
+		<property name="password" value="#{systemEnvironment['mx.sql.password']}"/>
+		<!-- property name="password" value="#{systemEnvironment['mx.sql.password']}"/-->
 	 </bean>
  
 	 <bean id="txManager"
 	    class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 	    <property name="dataSource" ref="dataSource" />
 	</bean>
-
-	 <bean name="bcryptEncoder"
-		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
-		
-		
-    <bean class="org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean">
-        <property name="maxTextMessageBufferSize" value="8192"/>
-        <property name="maxBinaryMessageBufferSize" value="8192"/>
-    </bean>
-	<bean id="filterMultipartResolver" 
-	      class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 	
+	<bean name="bcryptEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+		
+	<bean id="filterMultipartResolver" 
+	      class="org.springframework.web.multipart.commons.CommonsMultipartResolver">	
 	    <property name="maxUploadSize" value="-1" />
 	</bean>
-	<!-- bean id="myHandler" class="metaindex.websockets.MyWSHandler" />
-	<websocket:handlers >
-        <websocket:mapping path="/ws/myHandler" handler="myHandler" />
-        
-        <websocket:handshake-interceptors>
-            <bean id="myInterceptor" class="metaindex.websockets.MyHttpHandshakeInterceptor"/>
-        </websocket:handshake-interceptors>
-    </websocket:handlers>
-    
-    <websocket:message-broker application-destination-prefix="/app">
-        <websocket:stomp-endpoint path="/portfolio">
-            <websocket:sockjs/>
-        </websocket:stomp-endpoint>
-        <websocket:simple-broker prefix="/topic, /queue"/>
-    </websocket:message-broker-->
+	
+	<websocket:message-broker application-destination-prefix="/wsmxapp">
+		<websocket:transport message-size="655360"/>
+		<websocket:stomp-endpoint path="/wsmx">
+			<websocket:handshake-interceptors>
+	            <bean class="org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor"/>
+	        </websocket:handshake-interceptors>
+	        <websocket:sockjs session-cookie-needed="true" />			
+		</websocket:stomp-endpoint>
+		
+		<websocket:simple-broker prefix="/topic,/queue"/>
+		
+	</websocket:message-broker>
+	
+	
 	
  </beans> 
  

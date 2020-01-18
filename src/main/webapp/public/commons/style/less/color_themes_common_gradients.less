@@ -1,0 +1,69 @@
+@charset "UTF-8";
+
+
+/* --- Gradient --- */
+.bg-gradient-primary {
+  background-color: @primary_color;
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(10%, @primary_color), to(@primary_color_gradient));
+  background-image: linear-gradient(180deg, @primary_color 10%, @primary_color_gradient 100%);
+}
+
+.bg-gradient-secondary {
+  background-color: @secondary_color;
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(10%, @secondary_color), to(@secondary_color_gradient));
+  background-image: linear-gradient(180deg, @secondary_color 10%, @secondary_color_gradient 100%);
+}
+
+.btn-primary {
+  color: @background_color;
+  background-color: @primary_color;
+  border-color: @primary_color;
+}
+
+
+.btn-primary:hover {
+  color: @background_color;
+  background-color: @primary_hover;
+  border-color: @primary_hover_border;
+}
+
+.btn-primary.disabled, .btn-primary:disabled {
+  color: @background_color;
+  background-color: @primary_color;
+  border-color: @primary_color;
+}
+
+.btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active,
+.show > .btn-primary.dropdown-toggle {
+  color: @background_color;
+  background-color: @primary_hover_border;
+  border-color: @primary_active;
+}
+
+
+.btn-secondary {
+  color: @background_color;
+  background-color: @secondary_color;
+  border-color: @secondary_color;
+}
+
+.btn-secondary:hover {
+  color: @background_color;
+  background-color: @secondary_hover;
+  border-color: @secondary_hover_border;
+}
+
+.btn-secondary.disabled, .btn-secondary:disabled {
+  color: @background_color;
+  background-color: @secondary_color;
+  border-color: @secondary_color;
+}
+
+.btn-secondary:not(:disabled):not(.disabled):active, .btn-secondary:not(:disabled):not(.disabled).active,
+.show > .btn-secondary.dropdown-toggle {
+  color: @background_color;
+  background-color: @secondary_hover_border;
+  border-color: @secondary_active;
+}
+
+

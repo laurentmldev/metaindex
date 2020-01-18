@@ -2,45 +2,55 @@
 				xmlns:beans="http://www.springframework.org/schema/beans" 
 				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 				xsi:schemaLocation="http://www.springframework.org/schema/beans
-									 http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+									 http://www.springframework.org/schema/beans/spring-beans.xsd
 									 http://www.springframework.org/schema/security
 									 http://www.springframework.org/schema/security/spring-security.xsd">
  
 <http>
+	<intercept-url pattern="/**" requires-channel="https" />	
 	<intercept-url pattern="/loginform" access="permitAll" />
 	<intercept-url pattern="/loginprocess" access="permitAll" />
 	<intercept-url pattern="/logoutprocess" access="permitAll" />
 	<intercept-url pattern="/createProfile*" access="permitAll" />
-	<intercept-url pattern="/public/*" access="permitAll" />
-	<intercept-url pattern="/style/*" access="permitAll" />
-	<intercept-url pattern="/media/**" access="permitAll" />
-	<intercept-url pattern="/errors/*" access="permitAll" />
-	<!-- tmp while making it work (one pb at a time ...) -->
-	<intercept-url pattern="/ws/*" access="permitAll" />
-	<intercept-url pattern="/myHandler/*" access="permitAll" />
-	<intercept-url pattern="/**" access="hasRole('USER')" />
+	<intercept-url pattern="/CreateProfileProcess" access="permitAll" />	
+	<intercept-url pattern="/public/**" access="permitAll" />
+	<intercept-url pattern="/wsmx/**" access="hasRole('USER') or hasRole('ADMIN') or hasRole('OBSERVER')" />	
+	<intercept-url pattern="/secure/**" access="hasRole('USER') or hasRole('ADMIN') or hasRole('OBSERVER')" />	
+	
 	
 	<form-login login-page='/loginform?secure' 
-				default-target-url='/profile'
+				default-target-url='/Catalogs'
 				always-use-default-target='true'
 				authentication-failure-url="/loginform?error"
 				login-processing-url="/loginprocess" />
-	<logout logout-url="/logoutprocess" 
-			logout-success-url="/loginform?logout" />
-	<access-denied-handler error-page="/public/errors/error403.html" />
-	
+	<logout logout-url="/logoutprocess"  logout-success-url="/loginform?logout" />
+	<access-denied-handler error-page="/public/commons/errors/403.html" />	
 </http>
-  
-      <authentication-manager>  
+
+  <authentication-manager>  
        <authentication-provider>  
        <password-encoder ref="bcryptEncoder"/>		
 		<jdbc-user-service 
 			data-source-ref="dataSource"
-		  	users-by-username-query="select username,password, enabled from users where username=?"
-		  	authorities-by-username-query="select users.username, user_roles.role from users, user_roles 
-		  			where users.username =? 
-		  			and users.user_id = user_roles.user_id" />
+		  	users-by-username-query="select email,password,enabled from users where email=? and enabled=1"
+		  	authorities-by-username-query="select users.email, user_roles.role from users, user_roles 
+		  			where users.email =? 
+		  			and users.user_id = user_roles.user_id and users.enabled=1"  />
        </authentication-provider>  
-      </authentication-manager>  
-      
+  </authentication-manager>  
+    
+  <websocket-message-broker>
+	
+	<intercept-message type="UNSUBSCRIBE" access="permitAll" />
+	<intercept-message type="DISCONNECT" access="permitAll" />
+	<intercept-message type="CONNECT" access="hasRole('USER') or hasRole('ADMIN') or hasRole('OBSERVER')" />
+	<intercept-message pattern="/user/queue/*" type="SUBSCRIBE" access="hasRole('USER') or hasRole('ADMIN') or hasRole('OBSERVER')" />	
+	<intercept-message pattern="/queue/*" type="SUBSCRIBE" access="hasRole('USER') or hasRole('ADMIN') or hasRole('OBSERVER')" />	
+	<intercept-message pattern="/wsmxapp/**" type="MESSAGE" access="hasRole('USER') or hasRole('ADMIN') or hasRole('OBSERVER')" />
+	
+	<intercept-message type="MESSAGE" access="denyAll" />
+	<intercept-message type="SUBSCRIBE" access="denyAll" />
+	<intercept-message pattern="/**" access="denyAll" />
+  </websocket-message-broker>
+   
   </beans:beans> 

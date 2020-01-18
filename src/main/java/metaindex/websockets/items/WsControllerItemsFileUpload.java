@@ -1,0 +1,227 @@
+package metaindex.websockets.items;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
+import org.springframework.stereotype.Controller;
+
+import metaindex.data.commons.globals.Globals;
+import metaindex.data.catalog.UserItemCsvParser;
+import metaindex.data.term.ICatalogTerm;
+import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
+import metaindex.data.userprofile.IUserProfileData;
+import metaindex.websockets.commons.AMxWSController;
+import toolbox.database.IDbItem;
+import toolbox.database.elasticsearch.ESBulkProcess;
+import toolbox.exceptions.DataProcessException;
+import toolbox.utils.BasicPair;
+import toolbox.utils.IPair;
+import toolbox.utils.IProcessingTask;
+import toolbox.utils.parsers.ACsvParser;
+import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
+import toolbox.utils.parsers.IListParser.ParseException;
+
+@Controller
+public class WsControllerItemsFileUpload extends AMxWSController {
+	
+	private Log log = LogFactory.getLog(WsControllerItemsFileUpload.class);
+	
+	@Autowired
+	public WsControllerItemsFileUpload(SimpMessageSendingOperations messageSender) {
+		super(messageSender);		
+	}		
+	
+    @MessageMapping("/upload_items_csv_request")
+    @SubscribeMapping ("/user/queue/upload_items_csv_response")
+    public void handleUploadFilterFileRequest( SimpMessageHeaderAccessor headerAccessor, 
+    											WsMsgFileUpload_request requestMsg) {
+    	Date now = new Date();
+    	try {
+	    	
+	    	IUserProfileData user = getUserProfile(headerAccessor);
+	    	
+    		ESBulkProcess procTask = Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
+    						.getNewItemsBulkProcessor(user, user.getCurrentCatalog(), 
+ 													user.getText("Items.serverside.createFromCsvTask"), 
+													requestMsg.getTotalNbEntries(),now);    		
+    		UserItemCsvParser csvParser = new UserItemCsvParser();
+    		List<IPair<String,PARSING_FIELD_TYPE>> csvMapping = new ArrayList<IPair<String,PARSING_FIELD_TYPE>>();
+    	
+    		// check quota won't be exceeded after uploading the file
+    		if (user.getCurrentCatalog().getNbDocuments()+requestMsg.getTotalNbEntries()
+    												>user.getCurrentCatalog().getQuotaNbDocs()) {
+    			String msgStr = user.getText("Items.serverside.uploadItems.tooManyItemsForQuota");
+    			WsMsgFileUpload_answer msg = new WsMsgFileUpload_answer(
+						procTask.getId(),requestMsg.getClientFileId());
+				msg.setIsSuccess(false);
+				msg.setRejectMessage(msgStr);
+				
+				this.messageSender.convertAndSendToUser(
+	    				headerAccessor.getUser().getName(),
+	    				"/queue/upload_items_csv_response", 
+	    				msg);
+				
+				return;
+    		}
+    		List<String> fieldsNotFound=new ArrayList<String>();
+    		for (String fieldName : requestMsg.getCsvFieldsList()) {
+    			ICatalogTerm term =  user.getCurrentCatalog().getTerms().get(fieldName);
+    			// if field not found, send back an error message
+    			if (term==null) { 
+    				if (fieldName.equals("id")) { 
+    					csvMapping.add(new BasicPair<String,PARSING_FIELD_TYPE>("_id",PARSING_FIELD_TYPE.TEXT));
+    					continue;
+    				}
+    				else { fieldsNotFound.add(fieldName); continue; } 
+    			}    				
+    			RAW_DATATYPE dbType = term.getRawDatatype();    			
+    			PARSING_FIELD_TYPE parsingType = PARSING_FIELD_TYPE.TEXT;
+    			if (dbType==RAW_DATATYPE.Tfloat 
+    					|| dbType==RAW_DATATYPE.Tinteger
+    					|| dbType==RAW_DATATYPE.Tshort) {
+    				parsingType=PARSING_FIELD_TYPE.NUMBER;
+    			}
+    			csvMapping.add(new BasicPair<String,PARSING_FIELD_TYPE>(fieldName,parsingType));
+    		}
+    		
+    		// if some fields in CSV file could not be found in catalog, reject the request
+    		// Maybe better to automatically add them ? ...
+    		if (fieldsNotFound.size()>0) {
+    			WsMsgFileUpload_answer msg = new WsMsgFileUpload_answer(
+						procTask.getId(),requestMsg.getClientFileId());
+				msg.setIsSuccess(false);
+				String rejectFilesStr = "";
+				for (String curFieldName : fieldsNotFound) { rejectFilesStr+=" '"+curFieldName+"'"; }
+				String msgParms[]= {user.getCurrentCatalog().getName(),rejectFilesStr};				
+				String msgStr = user.getText("Items.serverside.uploadItems.unknownFields",msgParms);
+				msg.setRejectMessage(msgStr);
+				
+				this.messageSender.convertAndSendToUser(
+	    				headerAccessor.getUser().getName(),
+	    				"/queue/upload_items_csv_response", 
+	    				msg);
+				return;
+    		}
+    		    		
+    		// set-up the parser and start the processing task
+    		user.addProcessingTask(procTask);
+    		csvParser.setFieldsDescriptions(csvMapping);
+    		procTask.setParser(csvParser);
+    		procTask.start();
+    		
+    		// send back successful answer
+    		// now the we'll wait for CSV lines coming via upload_filter_file_contents message
+			WsMsgFileUpload_answer msg = new WsMsgFileUpload_answer(
+						procTask.getId(),requestMsg.getClientFileId());
+			msg.setIsSuccess(true);
+    		this.messageSender.convertAndSendToUser(
+    				headerAccessor.getUser().getName(),
+    				"/queue/upload_items_csv_response", 
+    				msg);
+        	
+			user.setItemsLastChangeDate(now);
+	    } catch (DataProcessException e) 
+		{
+			log.error("Unable to process upload_filter_file_request from '"+headerAccessor.getUser().getName()+"' : "+e);
+			e.printStackTrace();
+		}   
+    }
+    
+    /**
+     * Send the processingTaskId back to client when a new task is created
+     * @param headerAccessor
+     * @param requestMsg
+     */
+    @MessageMapping("/upload_filter_file_contents")
+    @SubscribeMapping ("/user/queue/upload_filter_file_contents_progress")
+    public void handleUploadFilterFileContents(SimpMessageHeaderAccessor headerAccessor, WsMsgFileUploadContents_request requestMsg) {
+    	
+    	Integer taskId = requestMsg.getProcessingTaskId();
+		
+	    try {
+	    	
+	    	IUserProfileData user = getUserProfile(headerAccessor);
+	    	
+	    	ESBulkProcess procTask;
+	    	
+    		IProcessingTask pt = user.getProcessingTask(taskId);
+    		if (pt==null) {
+    			log.error("Processing Task '"+requestMsg.getProcessingTaskId()
+    					+"' does not match any running procesing task for user '"+user.getName()+"', request ignored.");
+				return;
+    		}
+			if (pt instanceof ESBulkProcess) { procTask=(ESBulkProcess)pt;}
+			else {
+				log.error("Processing Task '"+pt.getId()+"' is not from proper type, request ignored.");
+				return;
+			}
+			
+    		if (procTask.isAllDataReceived()) {
+    			log.error("Processing task '"+procTask.getName()+"' already finalized, unable to add more items to process.");
+    			return;
+    		} 
+    		
+    		if (procTask.isTerminated()) {
+    			log.error("Processing task '"+procTask.getName()+"' not running, unable to add more items to process.");
+    			return;
+    		}
+    		ACsvParser<IDbItem> csvParser = procTask.getParser();
+    		if (csvParser==null) {
+    			log.error("Processing task '"+procTask.getName()+"' has no parser associated, unable to parse given contents");
+    			return;
+    		}
+    		// ensure previous data is finished to be processed before starting next one
+    		// (preserve order of data sent)
+    		procTask.lock();
+    		List<IDbItem> parsedItemsToIndex = csvParser.parseAll(requestMsg.getCsvLines());    		
+    		procTask.postDataToIndexOrUpdate(parsedItemsToIndex);
+    		procTask.unlock();
+
+	    } catch (ParseException e) 
+		{
+	    	try {
+				IUserProfileData user = getUserProfile(headerAccessor);
+				IProcessingTask pt = user.getProcessingTask(taskId);
+				pt.abort();
+				String msg = user.getText("Items.serverside.uploadItems.parseFailed", 
+						pt.getName(),
+						new Integer(e.getParseErrors().size()).toString());
+		
+				user.sendGuiErrorMessage(msg,e.getParseErrors());
+				
+			} catch (DataProcessException e1) {
+				e.printStackTrace();				
+			}
+	    	
+			WsMsgFileUploadContents_answer msg = new WsMsgFileUploadContents_answer(requestMsg.getClientFileId());
+			this.messageSender.convertAndSendToUser(
+    				headerAccessor.getUser().getName(),
+    				"/queue/upload_filter_file_contents_progress", 
+    				msg);
+		}   
+	    catch (DataProcessException | InterruptedException e) 
+		{
+	    	try {
+				IUserProfileData user = getUserProfile(headerAccessor);
+				IProcessingTask pt = user.getProcessingTask(taskId);
+				pt.abort();
+				user.sendGuiErrorMessage(user.getText("Items.serverside.bulkprocess.failed", pt.getName()+" : "+e.getMessage()));
+				
+			} catch (DataProcessException e1) {
+				e.printStackTrace();
+			}
+		}   
+	    
+	    
+    }	
+	
+    
+}

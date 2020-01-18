@@ -1,0 +1,31 @@
+
+
+
+/// memo mysql
+> mysql -u metaindexwebuser -p
+mysql> use metaindex
+mysql> source db.sql
+
+
+///// install and configure mysql
+
+$ sudo apt-get install mysql-server -y
+
+create user metaindexwebuser :
+$ mysql -u root -p
+
+mysql> CREATE USER 'metaindexwebuser'@'localhost' IDENTIFIED BY '<password>';
+mysql> CREATE DATABASE metaindex;
+mysql> GRANT ALL PRIVILEGES ON metaindex . * TO 'metaindexwebuser';
+
+
+# change user pwd
+mysql> UPDATE mysql.user SET Password=PASSWORD('XXXX') WHERE User='UUUU' AND Host='YYYY';
+mysql> FLUSH PRIVILEGES;
+
+check conf :
+$ vi /etc/mysql/my.cnf
+
+restart mysql :
+$ sudo /etc/init.d/mysql restart
+

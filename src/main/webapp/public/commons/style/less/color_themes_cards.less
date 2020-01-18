@@ -1,0 +1,30 @@
+@charset "UTF-8";
+
+
+/* --- Cards --- */
+
+.card-deck .card {
+    min-width: @cards_size;
+    width: @cards_size;
+    max-width: @cards_size;
+}
+
+.mx-card-selected {
+	border: 2px solid @active_color !important;
+	transition: border linear 150ms;
+	-webkit-box-shadow: 0 0 0.4rem 0.5rem @active_color;
+  	box-shadow: 0 0 0.4rem 0.05rem @active_color;
+  	transition: border linear 150ms,box-shadow 150ms;
+}
+
+.mx-card-darker-bg {  
+  background: rgba(0, 0, 0, 0.2); 
+  color:rgba(240,240,240) ;	
+  transition: background linear 150ms,color 150ms;
+}
+
+.mx-card-lighter-bg {  
+  background: rgba(0, 0, 0, 0.1); 
+  color:#555 ;	
+  transition: background linear 150ms,color 150ms;
+}

@@ -1,0 +1,143 @@
+
+
+Priority 1:
+-----------
+
+- ftp-server through SSL
+- ftp-server check quotas
+- phpmyadmin through SSL
+- Kibana SSL proxy 
+- Kibana access control to indices
+
+- presentation page
+- demo catalog/user present by default
+- implement quotas per user : max nb of elements and max disk size
+- put code on git-hub
+
+? once logged out by time-out, log-in again leads to server error in the log :
+		[ERROR] 2019-11-26 22:04:37.008 [clientInboundChannel-165] WsControllerUser - Unable to register 'laurentmlcontact-metaindex@yahoo.fr' on websockets API : toolbox.exceptions.DataProcessException: No logged user found for sessionId=17D057D02C30B14A409E42CC52EE048B.
+
+
+Priority 2:
+-----------
+- removing a term present in several perspectives, it removes it from the second perspective while user have clicked on the first perspective ones
+- language properties for español
+- when creating a new element, list of "sort" dropdown gets append with duplicated contents
+- check user inputs : ensure no special nor space characters and are not empty
+	- mapping names
+	- perspectives names (and sections and types)
+	- entry check for community name (lower case etc.)
+	- links-graph form : nodes name
+- adapt GUI to access rights (remove forbidden actions)
+
+Backlog:
+--------
+- need to handle session time-out callback to kick-out user from catalogs registration when timed-out or logged-out
+- design definition in Latek
+- waiting icon while loading real name of link 
+- when deleting a document, filters selection is cleared
+- add 'show more items' icon
+- when logged-out, userProfileData.isLoggedIn still returns true, and user can still access to secured pages (but no web-sockets)
+- when accessing Communities without valid session, a nice error msg should appear (for now only crippy JSON decoding error is seen in console)
+- exporter un CSV vide prêt à remplir pour aider l'utilisateur à créer son CSV
+- unable to create a new field right after creating new catalog
+- when enumeration list of a term has only one element, edit mod does not detectit as enum  (dropdown) but as text (text input)
+- backup/restore a full catalog
+- import from Excel file
+- GUI of search bar + XS version
+- onclick image field : redirect to new page
+- extra-mapping : field value prefix/suffix ? (like currencies)
+- implement items list 'table' mode
+- implement user config profile picture
+
+- test grafana for graphics and so
+- download selection as CSV or ZIP (CSV+files)
+- import from Zip : CSV/Excel + files
+- automated user creation and email verification
+- delete rename mapping (need elastic-search re-indexing)
+- packaging/deploy using Docker
+	+ retrieve config params from file
+- implement section 'table' mode
+- check neo4j pour toile de connection
+- check gephy pour visualisation de graphs
+
+Done:
+-----
+- users count increase when same user logs-in several times --> 
+- ftp ports to be opened in tomcat docker container
+- allonger type SQL pour stockage des perspectives
+	Unable to process update_perspective from 'laurentmlcontact-metaindex@yahoo.fr' : Unable to perform SQLDb operation : Data truncation: Data too long for column 'perspective_json_string' at row 1 
+
+- relationship between items
+	- create network graphs
+
+ - when creating a document while a 'join' field exist:
+ 	Item [1] : {"index":"lolo","type":"_doc","id":"WdJtEm4BlBSzXucQvAiX",
+ 		"cause":{"type":"exception","reason":"Elasticsearch exception [type=mapper_parsing_exception, reason=failed to parse]",
+ 		"caused_by":{"type":"exception","reason":"Elasticsearch exception [
+ 		type=illegal_argument_exception, reason=unknown join name [] for field [relation_owner]]"}},"status":400}
+- create item footer message displayed twice
+- popups and contextual menus animation and look&feel
+- create Logo
+- 'create item' popup : let user defined frozen fields with a locker button associated to each field.
+- xeditable enum and multi for integers (and dates, float, etc?!)
+- create item popup : does not take user 'non important' values on the first use when pressing enter instead of clicking OK button
+- perspective auto activate based on corresponding field value
+- when creating element : 
+    - space added to string pasted?
+    - if not unfocusing field, value is not updated
+
+- when type 'arrow' in search, selected object changes ...
+- when type 's' or 'e' in edit mode, the statistics panel toggle ...
+- delete all items button does not appear before opening first item
+- stats panel empty when logout and then login
+- filters list auto-update when created or changed
+- link to kibana misses the '#'
+- edit image URL no possible
+- when editing fields, pressing left key switch document 
+- FTP access rights related to user access to catalog
+- sort by Date / filter by date :
+	// Kibana does not understand the timestamp field, if it's format is incorrect.Timestamp, 
+	// which you selected by clicking on Time-field name when Configure an index pattern, need to be :		
+		"timestamp":"2015-08-05 07:40:20.123"
+		
+		then you should update your index mapping like this:
+		
+		curl -XPUT 'http://localhost:9200/applogs/1/_mapping' -d'
+		{
+		  "1": {
+		    "timestamp": {
+		      "enabled": true,
+		      "type": "date",
+		      "format": "yyyy-MM-dd HH:mm:ss.SSS",
+		      "store": true
+		    }
+		  }
+		}'
+- admin cannot modify contents (cannot reproduce)
+- upload file(s)
+- USER_ROLE depends on community_id but then unable to log-in
+- implement user config (language, color-theme, picture, ...)
+- clear multi-choices when clearing "new item" form popup
+- add enumsList then multi -> enums list erased
+- internationalization 
+- in custom-perspectives : tabs change is done on all perspectives, not only the active one
+- in custom-perspectives : clicking on perspective name does open/close the zone
+- perspective : field name optionally displayed
+- navigate to Communities and Stats from Items page
+- stop propagation when editing fields values or customization
+- when adding tab or section or field, GUI should keep corresponding perspective/tab selected
+- when creating a new perspective, it should by default contain a tab and a section
+- customizable perspective : closing when selecting tab
+- in custome perspective : after deleting a tab, curTabData is null and unable to add a new section in an already remaining tab
+	- when creating successively perspective and tab, error "undefined variable 'curTabData'" when creating a tab
+- editable field : onkeypress/down : stop propagation
+- font color of confirm buttons
+- navigate with arrows
+- when only one tab/section, don't display it, just the contents.
+- key 'p' to switch next perspective
+- implicit lastModifTimestamp and lastModifiedBy in ElasticSearch
+- add default perspective
+- delete community
+- implement fields types and style (size and alignment)
+- implement "create new item"
