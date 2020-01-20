@@ -103,6 +103,8 @@ public class CatalogFtpServer {
 							(
 									arg1.getCommand().equals("OPTS")
 									|| arg1.getCommand().equals("FEAT")
+									|| arg1.getCommand().equals("PBSZ")
+									|| arg1.getCommand().equals("PROT")
 									|| arg1.getCommand().equals("TYPE")
 									|| arg1.getCommand().equals("EPSV")
 									|| arg1.getCommand().equals("CWD")
@@ -285,6 +287,16 @@ public class CatalogFtpServer {
 		
 		factory.setPort(catalogFtpPort);		
 		factory.setIdleTimeout(FTPSERVER_TIMEOUT_SEC);
+		
+		SslConfigurationFactory ssl = new SslConfigurationFactory();
+	    //ssl.setClientAuthentication("true");
+	    ssl.setKeystoreFile(new File(Globals.GetMxProperty("mx.ssl.keystore.file")));
+		ssl.setKeystorePassword(Globals.GetMxProperty("mx.ssl.keystore.password"));				
+	    //ssl.setTruststoreFile(new File("trust.jks"));
+	    //ssl.setTruststorePassword("trust-password");
+	    factory.setSslConfiguration(ssl.createSslConfiguration());
+	    //factory.setImplicitSsl(true);
+	    
 		_serverFactory.addListener( "default", factory.createListener() );
 		
 		PropertiesUserManagerFactory userManagerFactory = new PropertiesUserManagerFactory();
@@ -307,19 +319,6 @@ public class CatalogFtpServer {
 		
 		UserManager um = userManagerFactory.createUserManager();
 		_serverFactory.setUserManager(um);
-		 
-		// define SSL configuration
-		// .... connection refused ... :'(
-		/*
-		SslConfigurationFactory ssl = new SslConfigurationFactory();
-		ssl.setKeystoreFile(new File(Globals.GetMxProperty("mx.ssl.keystore.file")));
-		ssl.setKeystorePassword(Globals.GetMxProperty("mx.ssl.keystore.password"));		
-		ssl.setSslProtocol("SSL");
-		ssl.setClientAuthentication("yes");		
-		// set the SSL configuration for the listener		
-		factory.setSslConfiguration(ssl.createSslConfiguration());
-		factory.setImplicitSsl(true);
-		*/
 		
 		_serverFactory.setFtplets(Collections.singletonMap("MxFtplet", new MxFtplet()));
 		_server= _serverFactory.createServer();
