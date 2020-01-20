@@ -1,16 +1,20 @@
 package metaindex.data.term;
 
+/*
+GNU GENERAL PUBLIC LICENSE
+Version 3, 29 June 2007
+
+Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+
+See full version of LICENSE in <https://fsf.org/>
+
+*/
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import metaindex.data.catalog.Catalog;
-import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
-import metaindex.data.term.ICatalogTerm.TERM_DATATYPE;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.IIdentifiable;
 

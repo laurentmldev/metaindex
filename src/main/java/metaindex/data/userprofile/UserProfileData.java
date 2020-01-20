@@ -1,6 +1,15 @@
 package metaindex.data.userprofile;
 
-import java.io.File;
+/*
+GNU GENERAL PUBLIC LICENSE
+Version 3, 29 June 2007
+
+Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+
+See full version of LICENSE in <https://fsf.org/>
+
+*/
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -13,11 +22,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.apache.commons.configuration2.PropertiesConfiguration;
-import org.apache.commons.configuration2.builder.fluent.Configurations;
-import org.apache.commons.configuration2.ex.ConfigurationException;
 
 import metaindex.data.filter.IFilter;
-import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
 import metaindex.data.commons.globals.Globals;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.commons.globals.guitheme.GuiThemesManager;

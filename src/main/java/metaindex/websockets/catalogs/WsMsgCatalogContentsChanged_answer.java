@@ -1,5 +1,15 @@
 package metaindex.websockets.catalogs;
 
+/*
+GNU GENERAL PUBLIC LICENSE
+Version 3, 29 June 2007
+
+Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+
+See full version of LICENSE in <https://fsf.org/>
+
+*/
+
 import metaindex.websockets.users.WsControllerUser.COMMUNITY_MODIF_TYPE;
 
 public class WsMsgCatalogContentsChanged_answer   {

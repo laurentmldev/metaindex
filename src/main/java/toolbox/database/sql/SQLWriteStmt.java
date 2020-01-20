@@ -1,5 +1,15 @@
 package toolbox.database.sql;
 
+/*
+GNU GENERAL PUBLIC LICENSE
+Version 3, 29 June 2007
+
+Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+
+See full version of LICENSE in <https://fsf.org/>
+
+*/
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

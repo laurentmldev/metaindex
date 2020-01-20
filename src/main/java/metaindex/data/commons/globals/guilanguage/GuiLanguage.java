@@ -1,12 +1,17 @@
 package metaindex.data.commons.globals.guilanguage;
 
-import java.util.concurrent.Semaphore;
+/*
+GNU GENERAL PUBLIC LICENSE
+Version 3, 29 June 2007
+
+Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+
+See full version of LICENSE in <https://fsf.org/>
+
+*/
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import metaindex.data.userprofile.IUserProfileData;
-import toolbox.database.IDatabaseInterface;
 
 public class GuiLanguage implements IGuiLanguage {
 	

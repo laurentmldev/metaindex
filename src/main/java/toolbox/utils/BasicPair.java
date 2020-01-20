@@ -1,5 +1,15 @@
 package toolbox.utils;
 
+/*
+GNU GENERAL PUBLIC LICENSE
+Version 3, 29 June 2007
+
+Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+
+See full version of LICENSE in <https://fsf.org/>
+
+*/
+
 public class BasicPair<T1,T2> implements IPair<T1,T2> {
 	private T1 _first;
 	private T2 _second;

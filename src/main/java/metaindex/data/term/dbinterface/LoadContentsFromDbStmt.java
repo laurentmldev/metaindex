@@ -1,5 +1,14 @@
 package metaindex.data.term.dbinterface;
 
+/*
+GNU GENERAL PUBLIC LICENSE
+Version 3, 29 June 2007
+
+Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+
+See full version of LICENSE in <https://fsf.org/>
+
+*/
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
