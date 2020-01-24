@@ -1,0 +1,61 @@
+#
+# working dir --> stage --> head ---|---> remote repository
+#
+
+# GUI
+gitk
+
+# activate colors 
+git config color.ui true
+
+# logs : one line per commit
+git config format.pretty oneline
+
+
+
+//////
+
+# to create a new git repository 
+cd mySrcFolder
+git init
+
+#checkout existing repo
+git clone username@host:/path/to/repository
+
+# add files in stage
+git add <filename>
+git add *
+
+# commit stage in head 
+git commit -m "#<issueid> - Commit message"
+
+# update remote repository 
+git push origin master
+
+# update changes from repo to local head
+git pull
+
+# 
+git merge --abort
+
+
+# tag (see git log for getting commit id)
+git tag 1.0.0 <commit_id>
+
+# explore change log
+git log
+git log --author=bob
+git log --pretty=oneline
+git log --graph --oneline --decorate --all
+git log --name-status
+
+# rollback local version with current version in HEAD
+git checkout -- <filename>
+
+# rollback all latest commit (i.e. resync with current remote repo)
+git fetch origin && git reset --hard origin/master
+
+# remove files from repo keeping local copy
+git rm -r --cached File-or-FolderName
+git commit -m "Removed folder from repository"
+git push origin master
