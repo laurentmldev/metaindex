@@ -19,6 +19,8 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.ftpserver.DataConnectionConfiguration;
+import org.apache.ftpserver.DataConnectionConfigurationFactory;
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.ftplet.DefaultFtplet;
 import org.apache.ftpserver.ftplet.FtpletContext;
@@ -39,6 +41,7 @@ import org.apache.ftpserver.ftplet.FtpReply;
 import org.apache.ftpserver.ftplet.FtpRequest;
 import org.apache.ftpserver.ftplet.FtpSession;
 import org.apache.ftpserver.ftplet.UserManager;
+import org.apache.ftpserver.listener.Listener;
 import org.apache.ftpserver.listener.ListenerFactory;
 import org.apache.ftpserver.ssl.SslConfigurationFactory;
 import org.apache.ftpserver.usermanager.PasswordEncryptor;
@@ -268,6 +271,10 @@ public class CatalogFtpServer {
  		// try to find a port available for FTP server of this catalog
  		Integer ftpPortRangeLow = new Integer(Globals.GetMxProperty("mx.ftp.port.range_low"));
  		Integer ftpPortRangeHigh = new Integer(Globals.GetMxProperty("mx.ftp.port.range_high")); 		
+ 		
+ 		String ftpPassivePortRangeLow = Globals.GetMxProperty("mx.ftp.passive.range_low");
+ 		String ftpPassivePortRangeHigh = Globals.GetMxProperty("mx.ftp.passive.range_high"); 		
+ 		
  		Integer catalogFtpPort = ftpPortRangeLow; 		
  		Boolean isPortValid=false;
  		
@@ -284,16 +291,17 @@ public class CatalogFtpServer {
 		
 		_catalog=c;
 		_serverFactory = new FtpServerFactory();
-		ListenerFactory factory = new ListenerFactory();
-		
+		ListenerFactory listenersFactory = new ListenerFactory();
+		DataConnectionConfigurationFactory dataConnectionsFactory = new DataConnectionConfigurationFactory();
 		if (!isPortValid) {
 			log.error("No available FTP port could be retrieved for FTP server of catalog "+c.getName()+" within range "
 						+ftpPortRangeLow+"-"+ftpPortRangeHigh);
 			return;
 		}
 		
-		factory.setPort(catalogFtpPort);		
-		factory.setIdleTimeout(FTPSERVER_TIMEOUT_SEC);
+		listenersFactory.setPort(catalogFtpPort);
+		listenersFactory.setIdleTimeout(FTPSERVER_TIMEOUT_SEC);
+		dataConnectionsFactory.setPassivePorts(ftpPassivePortRangeLow+"-"+ftpPassivePortRangeHigh);
 		
 		SslConfigurationFactory ssl = new SslConfigurationFactory();
 	    //ssl.setClientAuthentication("true");
@@ -301,14 +309,15 @@ public class CatalogFtpServer {
 		ssl.setKeystorePassword(Globals.GetMxProperty("mx.ssl.keystore.password"));				
 	    //ssl.setTruststoreFile(new File("trust.jks"));
 	    //ssl.setTruststorePassword("trust-password");
-	    factory.setSslConfiguration(ssl.createSslConfiguration());
+	    listenersFactory.setSslConfiguration(ssl.createSslConfiguration());
+	    listenersFactory.setDataConnectionConfiguration(dataConnectionsFactory.createDataConnectionConfiguration());
 	    //factory.setImplicitSsl(true);
 	    
-		_serverFactory.addListener( "default", factory.createListener() );
+	    Listener mxListener = listenersFactory.createListener();
+		_serverFactory.addListener( "default", mxListener );
 		
 		PropertiesUserManagerFactory userManagerFactory = new PropertiesUserManagerFactory();
 	    userManagerFactory.setFile(new File("ftpusers.properties"));
-	    
 		userManagerFactory.setPasswordEncryptor(new PasswordEncryptor() {
 
             @Override

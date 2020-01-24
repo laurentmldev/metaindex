@@ -120,6 +120,8 @@ public class Globals {
 		log.info("###### mx.appname="+Globals.GetMxProperty("mx.appname"));
 		log.info("###### mx.ftp.port.range_low="+Globals.GetMxProperty("mx.ftp.port.range_low"));
 		log.info("###### mx.ftp.port.range_high="+Globals.GetMxProperty("mx.ftp.port.range_high"));
+		log.info("###### mx.ftp.passive.range_low="+Globals.GetMxProperty("mx.ftp.passive.range_low"));
+		log.info("###### mx.ftp.passive.range_high="+Globals.GetMxProperty("mx.ftp.passive.range_high"));
 		log.info("###### ------------------------ KIBANA ------------------------");
 		log.info("###### mx.kibana.host="+Globals.GetMxProperty("mx.kibana.host"));
 		log.info("###### mx.kibana.protocol="+Globals.GetMxProperty("mx.kibana.protocol"));

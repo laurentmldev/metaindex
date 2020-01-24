@@ -574,7 +574,8 @@ public class Catalog implements ICatalog {
 			return usedDiskSpace;
 		} catch (IOException e) {
 			log.error("Unable to retrieve used disc usage for catalog '"+this.getName()+"' at "+this.getLocalFsFilesPath());
-			return Long.MAX_VALUE;
+			e.printStackTrace();
+			return -1L;
 		}
 		
 	}

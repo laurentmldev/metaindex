@@ -1,4 +1,9 @@
 
+
+// Generate key and certificate
+openssl req -new -newkey rsa:4096 -days 3650 -nodes -x509 -subj     "/C=FR/ST=BZH/L=PARIS/O=TILLEUL_EDITIONS/CN=METAINDEX"     -keyout ./ssl.key -out ./ssl.crt
+
+
 ///// install apache 9.0.16 on raspberry-pi
 
 $ wget http://www-us.apache.org/dist/tomcat/tomcat-9/v9.0.16/bin/^Cache-tomcat-9.0.16.tar.gz
