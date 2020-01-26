@@ -29,12 +29,12 @@
     <dependency>
     	<groupId>org.springframework.security</groupId>
     	<artifactId>spring-security-web</artifactId>
-    	<version>5.1.2.RELEASE</version>
+    	<version>5.2.0.RELEASE</version>
     </dependency>
     <dependency>
     	<groupId>org.springframework.security</groupId>
     	<artifactId>spring-security-config</artifactId>
-    	<version>5.1.2.RELEASE</version>
+    	<version>5.2.0.RELEASE</version>
     </dependency>
     <dependency>
     	<groupId>jstl</groupId>
@@ -44,12 +44,12 @@
     <dependency>
     	<groupId>org.springframework.security</groupId>
     	<artifactId>spring-security-core</artifactId>
-    	<version>5.1.2.RELEASE</version>
+    	<version>5.2.0.RELEASE</version>
     </dependency>
     <dependency>
     	<groupId>org.springframework</groupId>
     	<artifactId>spring-jdbc</artifactId>
-    	<version>5.1.3.RELEASE</version>
+    	<version>5.2.0.RELEASE</version>
     </dependency>
     <dependency>
     	<groupId>commons-logging</groupId>
@@ -74,7 +74,7 @@
     <dependency>
 		<groupId>org.springframework</groupId>
 		<artifactId>spring-test</artifactId>
-		<version>5.1.3.RELEASE</version>
+		<version>5.2.0.RELEASE</version>
 	</dependency> 
 	<dependency>
 	<groupId>javax.servlet</groupId>
@@ -99,17 +99,17 @@
 	<dependency>
 		<groupId>org.springframework</groupId>
 		<artifactId>spring-messaging</artifactId>
-		<version>5.1.3.RELEASE</version>
+		<version>5.2.0.RELEASE</version>
 	</dependency>
 	<dependency>
 		<groupId>org.springframework</groupId>
 		<artifactId>spring-websocket</artifactId>
-		<version>5.1.3.RELEASE</version>
+		<version>5.2.0.RELEASE</version>
 	</dependency>
 	<dependency>
 		<groupId>org.springframework</groupId>
 		<artifactId>spring-webmvc</artifactId>
-		<version>5.1.3.RELEASE</version>
+		<version>5.2.0.RELEASE</version>
 	</dependency>
 	<dependency>
 		<groupId>javax.websocket</groupId>
@@ -119,7 +119,7 @@
 	<dependency>
 		<groupId>org.springframework.security</groupId>
 		<artifactId>spring-security-messaging</artifactId>
-		<version>5.1.2.RELEASE</version>
+		<version>5.2.0.RELEASE</version>
 	</dependency>
 	<dependency>
 		<groupId>javax.servlet</groupId>
