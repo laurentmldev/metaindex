@@ -121,7 +121,7 @@ public class Globals {
 		log.info("###### mx.ftp.port.range_low="+Globals.GetMxProperty("mx.ftp.port.range_low"));
 		log.info("###### mx.ftp.port.range_high="+Globals.GetMxProperty("mx.ftp.port.range_high"));
 		log.info("###### mx.ftp.passive.range_low="+Globals.GetMxProperty("mx.ftp.passive.range_low"));
-		log.info("###### mx.ftp.passive.range_high="+Globals.GetMxProperty("mx.ftp.passive.range_high"));
+		log.info("###### mx.ftp.passive.range_high="+Globals.GetMxProperty("mx.ftp.passive.range_high"));		
 		log.info("###### ------------------------ KIBANA ------------------------");
 		log.info("###### mx.kibana.host="+Globals.GetMxProperty("mx.kibana.host"));
 		log.info("###### mx.kibana.protocol="+Globals.GetMxProperty("mx.kibana.protocol"));
@@ -137,7 +137,9 @@ public class Globals {
 		log.info("###### mx.elk.protocol="+Globals.GetMxProperty("mx.elk.protocol"));
 		log.info("###### mx.elk.port1="+Globals.GetMxProperty("mx.elk.port1"));
 		log.info("###### mx.elk.port2="+Globals.GetMxProperty("mx.elk.port2"));
-		log.info("###### ---------------------------------------------------------");
+		log.info("###### -----------------------------Misc----------------------------");
+		log.info("###### FTP Repository : "+getWebappsFsPath()+"/data");
+		
 						
 		if (_sqlDs==null) {
 			

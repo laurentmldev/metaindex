@@ -195,30 +195,7 @@ public class CatalogFtpServer {
 			
 			return FtpletResult.DISCONNECT;			
 		}
-/*
-		@Override
-		public void destroy() {
-			// TODO Auto-generated method stub
-			
-		}
-*/
-		@Override
-		public void init(FtpletContext arg0) throws FtpException {
-			
-		}
 
-		@Override
-		public FtpletResult onConnect(FtpSession arg0) throws FtpException, IOException {
-			log.error("#### Ftplet onConnect");
-			return FtpletResult.DEFAULT;
-		}
-/*
-		@Override
-		public FtpletResult onDisconnect(FtpSession arg0) throws FtpException, IOException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		*/
 	}
 	private Log log = LogFactory.getLog(CatalogFtpServer.class);
 	
@@ -234,7 +211,12 @@ public class CatalogFtpServer {
 		BaseUser newUser = new BaseUser();
         newUser.setName(p.getName());
         newUser.setPassword(p.getPassword());
+        
+        // set (and create if needed) local-system folder storing ftp files
+        File directory = new File(_catalog.getLocalFsFilesPath());
+        if (! directory.exists()){ directory.mkdir(); }
         newUser.setHomeDirectory(_catalog.getLocalFsFilesPath());
+                
         List<Authority> authorities = new ArrayList<Authority>();
         if (p.getUserCatalogAccessRights(_catalog.getId()).equals(USER_CATALOG_ACCESSRIGHTS.CATALOG_EDIT)
         	|| p.getUserCatalogAccessRights(_catalog.getId()).equals(USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN) ){
@@ -304,14 +286,10 @@ public class CatalogFtpServer {
 		dataConnectionsFactory.setPassivePorts(ftpPassivePortRangeLow+"-"+ftpPassivePortRangeHigh);
 		
 		SslConfigurationFactory ssl = new SslConfigurationFactory();
-	    //ssl.setClientAuthentication("true");
 	    ssl.setKeystoreFile(new File(Globals.GetMxProperty("mx.ssl.keystore.file")));
 		ssl.setKeystorePassword(Globals.GetMxProperty("mx.ssl.keystore.password"));				
-	    //ssl.setTruststoreFile(new File("trust.jks"));
-	    //ssl.setTruststorePassword("trust-password");
 	    listenersFactory.setSslConfiguration(ssl.createSslConfiguration());
 	    listenersFactory.setDataConnectionConfiguration(dataConnectionsFactory.createDataConnectionConfiguration());
-	    //factory.setImplicitSsl(true);
 	    
 	    Listener mxListener = listenersFactory.createListener();
 		_serverFactory.addListener( "default", mxListener );

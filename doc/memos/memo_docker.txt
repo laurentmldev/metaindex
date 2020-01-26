@@ -21,3 +21,6 @@ $ docker logs 7a8c5c28f038
 $ docker rm 7a8c5c28f038
 
 $ docker stats
+
+$ docker volume ls
+$ docker volume inspect <volum name> 

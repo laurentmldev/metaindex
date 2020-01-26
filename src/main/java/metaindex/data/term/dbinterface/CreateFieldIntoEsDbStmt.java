@@ -96,6 +96,9 @@ class CreateFieldIntoEsDbStmt extends ESWriteStmt<ICatalogTerm>   {
 		            			builder.field("format", "yyyy||dd/MM/yy||dd/MM/yyyy||MM/yy||MM/yyyy||yyyy-MM-dd"
 						            					+"||yyyy/MM/dd HH:mm:ss.SSS"
 				    									+"||yyyy-MM-dd HH:mm:ss.SSS"
+				    									+"||yyyy-MM-dd HH:mm"
+				    									+"||dd-MM-yyyy HH:mm"
+				    									+"||dd/MM/yyyy HH:mm"
 		            									);
 				            }
 				            

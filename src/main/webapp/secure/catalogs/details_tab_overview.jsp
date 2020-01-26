@@ -123,15 +123,19 @@
 			
 			// quotas disc space
 			let quotaDiscSpace=newPopulatedCatalogDetails.querySelector("._quota_disc_space_");
-			let currentUseMBytes=catalogCard.descr.discSpaceUseBytes/1000000;
-			let maxUseSpaceMBytes=catalogCard.descr.quotaFtpDiscSpaceBytes/1000000;
+			let currentUseBytes=catalogCard.descr.discSpaceUseBytes;
+			let currentUseMBytes=currentUseBytes/1000000;
+			if (currentUseBytes==0) { currentUseMBytes=0;} // avoid weird numbers when rounding occurs
+			let maxUseSpaceBytes=catalogCard.descr.quotaFtpDiscSpaceBytes;
+			let maxUseSpaceMBytes=maxUseSpaceBytes/1000000;
 			let usagePourcentDiscSpace=100;
-			if (maxUseSpaceMBytes>0) { usagePourcentDiscSpace=(currentUseMBytes*100)/maxUseSpaceMBytes; }
+			if (maxUseSpaceBytes>0) { usagePourcentDiscSpace=(currentUseMBytes*100)/maxUseSpaceMBytes; }
 			
 			// rounding values do 2 decimals
 			currentUseMBytes=Math.round(currentUseMBytes * 100) / 100;
 			maxUseSpaceMBytes=Math.round(maxUseSpaceMBytes * 100) / 100;
 			usagePourcentDiscSpace=Math.round(usagePourcentDiscSpace * 100) / 100;
+			if (usagePourcentDiscSpace>100) { usagePourcentDiscSpace=100; }
 			pourcentClass="";
 			
 			if (usagePourcentDiscSpace>95) { pourcentClass="alert-danger" }		

@@ -3,8 +3,12 @@
 Priority 1:
 -----------
 
-#4 phpmyadmin through SSL
-#5 Kibana SSL proxy 
+#18 consolidate FTP server files management:
+	[https-jsse-nio-8443-exec-4] INFO org.apache.ftpserver.impl.DefaultFtpServer - FTP server started
+[INFO ] 2020-01-26 23:43:31.980 [https-jsse-nio-8443-exec-4] CatalogFtpServer - FTP server for catalog 'demandes_com' accessible at port '25001'
+[ERROR] 2020-01-26 23:43:40.040 [clientInboundChannel-8] Catalog - Unable to retrieve used disc usage for catalog 'demandes_com' at /Users/laurentml/dev/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/webapps/data/demandes_com
+java.nio.file.NoSuchFileException: /Users/laurentml/dev/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/webapps/data/demandes_com
+
 #6 Kibana access control to indices
 
 #7 presentation page
@@ -12,26 +16,36 @@ Priority 1:
 #10 : ? once logged out by time-out, log-in again leads to server error in the log :
 		[ERROR] 2019-11-26 22:04:37.008 [clientInboundChannel-165] WsControllerUser - Unable to register 'laurentmlcontact-metaindex@yahoo.fr' on websockets API : toolbox.exceptions.DataProcessException: No logged user found for sessionId=17D057D02C30B14A409E42CC52EE048B.
 
-Priority 2:
------------
-- removing a term present in several perspectives, it removes it from the second perspective while user have clicked on the first perspective ones
-- language properties for español
-- when creating a new element, list of "sort" dropdown gets append with duplicated contents
-- check user inputs : ensure no special nor space characters and are not empty
+#13 when creating a new element, list of "sort" dropdown gets append with duplicated contents
+
+#14 check user inputs : ensure no special nor space characters and are not empty
 	- mapping names
 	- perspectives names (and sections and types)
 	- entry check for community name (lower case etc.)
 	- links-graph form : nodes name
-- adapt GUI to access rights (remove forbidden actions)
+	
+#15 adapt GUI to access rights (remove forbidden actions)
+
+#17 language properties file in español
+
+#11 upgrade to dep spring MVC 5.2.0.RELEASE
+
+Priority 2:
+-----------
+#12 Reload details from DB : When modifying some data in DB, software shall get updated without having to shutdown it :
+   . catalog details (including new one)
+   . user details (including new one)
+ 
+#16 removing a term present in several perspectives, it removes it from the second perspective while user have clicked on the first perspective ones
+
+#9 need to handle session time-out callback to kick-out user from catalogs registration when timed-out or logged-out
 
 Backlog:
 --------
+#4 phpmyadmin through SSL
+#5 Kibana SSL proxy 
 - ftp-server : properly close connection when quitting
-- ftp-server check quotas
-- ftp-server through SSL
-- put code on git-hub
-- implement quotas per user : max nb of elements and max disk size
-- need to handle session time-out callback to kick-out user from catalogs registration when timed-out or logged-out
+
 - design definition in Latek
 - waiting icon while loading real name of link 
 - when deleting a document, filters selection is cleared
@@ -62,6 +76,11 @@ Backlog:
 
 Done:
 -----
+- ftp-server check quotas
+- ftp-server through SSL
+- put code on git-hub
+- implement quotas per user : max nb of elements and max disk size
+
 - users count increase when same user logs-in several times --> 
 - ftp ports to be opened in tomcat docker container
 - allonger type SQL pour stockage des perspectives
