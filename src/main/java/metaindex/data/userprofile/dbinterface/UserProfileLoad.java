@@ -12,6 +12,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
 
@@ -26,13 +27,21 @@ class UserProfileLoad extends SQLReadStmt<IUserProfileData>   {
 
 	public static final String SQL_REQUEST = 
 			"select users.user_id,users.email,users.password, "
-			+"users.nickname,users.guilanguage_id,users.guitheme_id, role"							
+			+"users.nickname,users.guilanguage_id,users.guitheme_id, role, users.lastUpdate, user_roles.lastUpdate,users.enabled"							
 			+" from users,user_roles";
 
-	List<IUserProfileData> _data;
+	private Boolean _onlyIfTimestampChanged=false;
+	
+	private List<IUserProfileData> _data;
+	
 	public UserProfileLoad(List<IUserProfileData> d, SQLDataSource ds) throws DataProcessException { 
 		super(ds);
 		_data=d;
+	}
+	public UserProfileLoad(List<IUserProfileData> d, SQLDataSource ds,Boolean onlyIfTimestampChanged) throws DataProcessException { 
+		super(ds);
+		_data=d;
+		_onlyIfTimestampChanged=onlyIfTimestampChanged;
 	}
 	public UserProfileLoad(SQLDataSource ds) throws DataProcessException { 
 		super(ds);
@@ -48,6 +57,13 @@ class UserProfileLoad extends SQLReadStmt<IUserProfileData>   {
 				.findFirst()
 				.orElse(null);
 		}
+		Timestamp dbDateUsers = rs.getTimestamp(8);
+		Timestamp dbDateRoles = rs.getTimestamp(9);
+		Timestamp newerDbDate = dbDateUsers;
+		if (newerDbDate.before(dbDateRoles)) { newerDbDate=dbDateRoles; }
+		if (_onlyIfTimestampChanged==true) {
+			if (!d.shallBeRefreshed(newerDbDate)) { return d; } 
+		}
 		d.setId(rs.getInt(1));
 		d.setName(rs.getString(2));
 		d.setEncryptedPassword(rs.getString(3));
@@ -55,6 +71,9 @@ class UserProfileLoad extends SQLReadStmt<IUserProfileData>   {
 		d.setGuiLanguageId(rs.getInt(5));
 		d.setGuiThemeId(rs.getInt(6));
 		d.setRole(USER_ROLE.valueOf(rs.getString(7)));
+		d.setLastUpdate(newerDbDate);
+		d.setEnabled(rs.getBoolean(8));
+		
 		return d;
 	}
 

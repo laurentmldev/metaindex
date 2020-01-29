@@ -19,7 +19,7 @@ See full version of LICENSE in <https://fsf.org/>
  * @author laurentml
  *
  */
-public interface IAutoRefresh {	
+public interface IAutoRefresh extends IIdentifiable<Integer>,ILockable {	
 	
 	public Date getLastUpdate();
 	public Boolean shallBeRefreshed(Date testedUpdateDate);
@@ -31,4 +31,5 @@ public interface IAutoRefresh {
 	public Boolean updateContentsIfNeeded() throws DataProcessException;
 	public Integer getAutoRefreshPeriodSec();
 	
+	public String getDetailsStr();
 }

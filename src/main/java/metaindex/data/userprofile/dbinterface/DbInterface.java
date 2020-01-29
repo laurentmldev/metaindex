@@ -35,6 +35,10 @@ public class DbInterface  extends SQLDatabaseInterface<IUserProfileData>
 		return new UserProfileLoad(data, getDatasource());
 	}
 
+	public SQLReadStmt<IUserProfileData> getLoadFromDbStmt(List<IUserProfileData> data,Boolean onlyIfContentsUpdated) throws DataProcessException {
+		return new UserProfileLoad(data, getDatasource(),onlyIfContentsUpdated);
+	}
+
 	public SQLReadStmt<IUserProfileData> getLoadFromDbStmt(IUserProfileData data) throws DataProcessException {
 		List<IUserProfileData> list = new ArrayList<IUserProfileData>();
 		list.add(data);

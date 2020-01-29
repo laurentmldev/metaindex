@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Semaphore;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,6 +29,7 @@ import metaindex.data.commons.globals.Globals;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.commons.globals.guitheme.GuiThemesManager;
 import metaindex.data.commons.globals.guitheme.IGuiTheme;
+import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.CatalogVocabularySet;
 import metaindex.data.catalog.ICatalog;
 import metaindex.websockets.users.WsControllerUser;
@@ -35,6 +37,7 @@ import metaindex.websockets.users.WsControllerUser.COMMUNITY_MODIF_TYPE;
 import metaindex.websockets.users.WsUserGuiMessageText.MESSAGE_CRITICITY;
 import toolbox.exceptions.DataAccessException;
 import toolbox.exceptions.DataProcessException;
+import toolbox.utils.AutoRefreshMonitor;
 import toolbox.utils.IProcessingTask;
 
 
@@ -71,12 +74,25 @@ public class UserProfileData implements IUserProfileData
 	private Map<Integer,Integer> _currentDocumentIdByFilterId = new java.util.concurrent.ConcurrentHashMap<>();
 	private Map<Integer,USER_CATALOG_ACCESSRIGHTS> _catalogsAccessRights = new java.util.concurrent.ConcurrentHashMap<>();
 	
-	// Catalogs Custo
+	private Semaphore _userProfileLock = new Semaphore(1,true);
+	public void acquireLock() throws InterruptedException { _userProfileLock.acquire(); }
+	public void releaseLock() { _userProfileLock.release(); }
+	
+	// Catalogs Customization
 	private Map<Integer,String> _catalogsKibanaIFrameHtml= new java.util.concurrent.ConcurrentHashMap<>();
 	
 	// processing tasks by id
 	private Map<Integer,IProcessingTask> _runningProcessingTasks = new ConcurrentHashMap<Integer,IProcessingTask>();
 
+	// for auto-refresh processing
+	private Date _lastUpdate=new Date(0);
+	
+	private Integer _autoRefreshPeriodSec=Catalog.AUTOREFRESH_PERIOD_SEC;
+	
+	private AutoRefreshMonitor _dbAutoRefreshProcessing=new AutoRefreshMonitor(this);
+	
+	private Boolean _enabled=false;
+	
 	@Override
 	public Integer getId() {
 		return _userId;
@@ -101,6 +117,7 @@ public class UserProfileData implements IUserProfileData
 			throw new DataProcessException("SessionId not set for user. Unable to log-in him.");
 		}
 		this._isLoggedIn=true;
+		_dbAutoRefreshProcessing.start();
 	}
 	
 	@Override
@@ -403,6 +420,54 @@ public class UserProfileData implements IUserProfileData
 	@Override
 	public void setItemsLastChangeDate(Date itemsLastChangeDate) {
 		this._itemsLastChangeDate = itemsLastChangeDate;
+	}
+
+	@Override
+	public Date getLastUpdate() {
+		return _lastUpdate;
+	}
+	@Override 
+	public void setLastUpdate(Date newDate) { _lastUpdate=newDate; }
+
+	@Override
+	public Boolean shallBeRefreshed(Date testedUpdateDate) {
+		return this.getLastUpdate().before(testedUpdateDate);
+	}
+
+	@Override
+	public Boolean updateContentsIfNeeded() throws DataProcessException {
+		Date prevCurDate = this.getLastUpdate();
+		Boolean onlyIfDbcontentsUpdated=true;
+		List<IUserProfileData> list = new ArrayList<>();
+		list.add(this);		
+		Globals.Get().getDatabasesMgr().getUserProfileDbInterface().getLoadFromDbStmt(list,onlyIfDbcontentsUpdated).execute();
+		
+		// detect if contents actually changed
+		if (this.getLastUpdate().after(prevCurDate)) { return true; }
+		else { return false; }
+	}
+
+	@Override
+	public Integer getAutoRefreshPeriodSec() {
+		return _autoRefreshPeriodSec;
+	}
+	
+	@Override
+	public Boolean isEnabled() { return _enabled; }
+	
+	@Override
+	public void setEnabled(Boolean enabled) { _enabled=enabled; }
+	
+	@Override
+	public String getDetailsStr() {
+		return "'"+this.getName()+"' :"
+				+"\n\t- id: "+this.getId()
+				+"\n\t- nickname: "+this.getNickname()
+				+"\n\t- enabled: "+this.isEnabled()
+				+"\n\t- language: "+this.getGuiLanguageShortname()
+				+"\n\t- theme: "+this.getGuiThemeShortname()
+				;
+				
 	}
 
 	

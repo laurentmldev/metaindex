@@ -13,11 +13,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.commons.globals.Globals;
 import toolbox.exceptions.DataProcessException;
 
 public class UsersManager implements IUsersManager {
+	
+	private Log log = LogFactory.getLog(UsersManager.class);
 	
 	private Map<String,IUserProfileData> _usersByName = new java.util.concurrent.ConcurrentHashMap<>();
 	private Semaphore _usersLock = new Semaphore(1,true);
@@ -77,7 +82,11 @@ public class UsersManager implements IUsersManager {
 				_usersByName.put(u.getName(), u);
 			}
 			_usersLock.release();
-		} catch (Exception e) { throw new DataProcessException(e); }
+		} catch (Exception e) {
+			log.error("Unable to load contents of UserProfileData from DB "+e.getMessage());
+			_usersLock.release();
+			throw new DataProcessException(e); 
+		}
 	}
 	
 }

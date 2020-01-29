@@ -33,52 +33,26 @@ import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
 import metaindex.data.term.TermVocabularySet;
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.exceptions.DataProcessException;
+import toolbox.utils.AutoRefreshMonitor;
 import toolbox.utils.FileSystemUtils;
-import toolbox.utils.IRunnable;
 
 public class Catalog implements ICatalog {
 
 	public static final Integer AUTOREFRESH_PERIOD_SEC=5;
 	
-	private class RefreshContentsFromDb  extends Thread implements IRunnable{
-		
-		ICatalog _catalogToRefresh=null;
-		Boolean _continueRunning=true;
-		
-		public  RefreshContentsFromDb(ICatalog c) {
-			_catalogToRefresh=c;
+	private class RefreshContentsFromDb extends AutoRefreshMonitor {
+
+		ICatalog _monitoredCatalog;
+		public RefreshContentsFromDb(ICatalog obj) {
+			super(obj);
+			_monitoredCatalog=obj;
 		}
 		
+		/**
+		 * Trigger refresh only if catalog is used by somebody 
+		 */
 		@Override
-		public void run() {
-
-			while (_continueRunning) {
-				try {
-					Thread.sleep(_catalogToRefresh.getAutoRefreshPeriodSec()*1000);
-
-					if (_catalogToRefresh.getNbLoggedUsers()>0) {
-						_catalogToRefresh.acquireLock();
-						Boolean wasUpdated = _catalogToRefresh.updateContentsIfNeeded();
-						if (wasUpdated) {
-							log.info("Reloaded DB-Data for Catalog "+_catalogToRefresh.getDetailsStr() );
-						} 
-						_catalogToRefresh.releaseLock();
-					}
-					
-				} catch (InterruptedException|DataProcessException  e) {
-					log.error("While performing cyclic update check on catalog "+_catalogToRefresh.getId()+ ": "+e.getMessage());
-					e.printStackTrace();
-					_continueRunning=false;
-					_catalogToRefresh.releaseLock();
-				}
-			}
-		}
-
-		@Override
-		public Boolean isRunning() {
-			// TODO Auto-generated method stub
-			return null;
-		}
+		public Boolean preRefreshTest() { return _monitoredCatalog.getNbLoggedUsers()>0; }
 		
 	}
 	public static final Long DEFAULT_QUOTA_NBDOCS = 200L;
@@ -434,7 +408,7 @@ public class Catalog implements ICatalog {
 	public Boolean updateContentsIfNeeded() throws DataProcessException {
 		Date prevCurDate = this.getLastUpdate();
 		Boolean onlyIfDbcontentsUpdated=true;
-		List<ICatalog> list = new ArrayList<ICatalog>();
+		List<ICatalog> list = new ArrayList<>();
 		list.add(this);		
 		Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getLoadFromDbStmt(list,onlyIfDbcontentsUpdated).execute();
 		

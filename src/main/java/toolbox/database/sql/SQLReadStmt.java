@@ -44,7 +44,7 @@ public abstract class SQLReadStmt<TData> implements IDatabaseReadStmt<TData>,
 		} catch(Exception e) {
 			String clientInfo = "???";
 			try { clientInfo=_datasource.getConnection().getClientInfo().toString(); } catch (Exception ex) {}
-			throw new DataProcessException("unable to run SQL statement over datasource "+clientInfo,e); 
+			throw new DataProcessException("unable to run SQL statement over datasource "+clientInfo+" : "+e.getMessage(),e); 
 		}
 	}
 	

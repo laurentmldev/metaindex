@@ -26,6 +26,7 @@ import metaindex.websockets.users.WsControllerUser.COMMUNITY_MODIF_TYPE;
 import metaindex.websockets.users.WsUserGuiMessageText.MESSAGE_CRITICITY;
 import toolbox.exceptions.DataProcessException;
 import toolbox.patterns.observer.IObserver;
+import toolbox.utils.IAutoRefresh;
 import toolbox.utils.IIdentifiable;
 import toolbox.utils.IProcessingTask;
 
@@ -35,7 +36,7 @@ import toolbox.utils.IProcessingTask;
  * Retrieve also String info of corresponding foreign keys (guilanguage and guitheme).
  * @author Laurent ML
  */
-public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProcessingTask>
+public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProcessingTask>,IAutoRefresh
 {
 	
 	public enum USER_ROLE { ROLE_ADMIN, ROLE_USER, ROLE_OBSERVER };
@@ -45,6 +46,14 @@ public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProc
 	public void setName(String name);
 	public USER_ROLE getRole();
 	public void setRole(USER_ROLE role);
+	
+	/**
+	 * Say wether this used is enabled or not.
+	 * Typically used waiting for email confirmation.
+	 * @return
+	 */
+	public Boolean isEnabled();
+	public void setEnabled(Boolean enabled);
 	
 	public String getNickname();
 	public void setNickname(String nickname);
@@ -135,7 +144,9 @@ public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProc
 	 * update contents from DB. Return true if update actually occured (i.e. if db timestamp was different).
 	 * @throws DataProcessException 
 	 */
-	//public Boolean updateContentsFromDb() throws DataProcessException;
+	@Override
+	public Boolean updateContentsIfNeeded() throws DataProcessException;
+	public void setLastUpdate(Date newDate);
 	
 	
 	

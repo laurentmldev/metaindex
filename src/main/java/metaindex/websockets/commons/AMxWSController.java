@@ -172,31 +172,37 @@ public class AMxWSController {
 	
 	
 	protected Boolean userHasReadAccess(IUserProfileData user) {
-		return 		user.getRole()==USER_ROLE.ROLE_OBSERVER
+		return 		user.isEnabled() &&
+				(
+				user.getRole()==USER_ROLE.ROLE_OBSERVER
 				||	user.getRole()==USER_ROLE.ROLE_USER
-				||	user.getRole()==USER_ROLE.ROLE_ADMIN;
+				||	user.getRole()==USER_ROLE.ROLE_ADMIN);
 	}
 	
 	protected Boolean userHasWriteAccess(IUserProfileData user) {
-		return 		user.getRole()==USER_ROLE.ROLE_USER
-				||	user.getRole()==USER_ROLE.ROLE_ADMIN;
+		return 		user.isEnabled() &&
+				(user.getRole()==USER_ROLE.ROLE_USER
+				||	user.getRole()==USER_ROLE.ROLE_ADMIN);
 	}
 	protected Boolean userHasAdminAccess(IUserProfileData user) {
 		return 	user.getRole()==USER_ROLE.ROLE_ADMIN;
 	}
 
 	protected Boolean userHasReadAccess(IUserProfileData user, ICatalog cat) {
-		return 		user.getUserCatalogAccessRights(cat.getId())==USER_CATALOG_ACCESSRIGHTS.CATALOG_READ
+		return 		user.isEnabled() &&
+				(user.getUserCatalogAccessRights(cat.getId())==USER_CATALOG_ACCESSRIGHTS.CATALOG_READ
 				||	user.getUserCatalogAccessRights(cat.getId())==USER_CATALOG_ACCESSRIGHTS.CATALOG_EDIT
-				||  user.getUserCatalogAccessRights(cat.getId())==USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN;
+				||  user.getUserCatalogAccessRights(cat.getId())==USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN);
 	}
 	
 	protected Boolean userHasWriteAccess(IUserProfileData user, ICatalog cat) {
-		return 		user.getUserCatalogAccessRights(cat.getId())==USER_CATALOG_ACCESSRIGHTS.CATALOG_EDIT
-				||  user.getUserCatalogAccessRights(cat.getId())==USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN;
+		return 		user.isEnabled() &&
+				(user.getUserCatalogAccessRights(cat.getId())==USER_CATALOG_ACCESSRIGHTS.CATALOG_EDIT
+				||  user.getUserCatalogAccessRights(cat.getId())==USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN);
 	}
 	
 	protected Boolean userHasAdminAccess(IUserProfileData user, ICatalog cat) {
-		return 		user.getUserCatalogAccessRights(cat.getId())==USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN;
+		return 		user.isEnabled() &&
+				(user.getUserCatalogAccessRights(cat.getId())==USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN);
 	}
 }
