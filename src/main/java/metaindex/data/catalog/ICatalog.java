@@ -1,5 +1,7 @@
 package metaindex.data.catalog;
 
+import java.util.Date;
+
 /*
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -22,6 +24,7 @@ import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
 import metaindex.data.term.TermVocabularySet;
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.exceptions.DataProcessException;
+import toolbox.utils.IAutoRefresh;
 import toolbox.utils.IIdentifiable;
 import toolbox.utils.ILockable;
 
@@ -30,11 +33,15 @@ import toolbox.utils.ILockable;
  * @author laurent
  *
  */
-public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCustomParams {
+public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCustomParams, IAutoRefresh {
 
+	/** get a string displaying Catalog current infos (for logs) */
+	public String getDetailsStr();
 	
 	public void setId(Integer id);
 	public void setName(String shortname);
+	
+	public void setLastUpdate(Date timetampDate);
 		
 	/// get UserId for whom created it
 	public Integer getCreatorId();
@@ -82,6 +89,7 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 	public void updateCatalogVocabularies(List<CatalogVocabularySet> vocabulariesFromSqlDb) throws DataProcessException ;
 	
 	// User
+	public Integer getNbLoggedUsers();
 	public void enter(IUserProfileData p) throws DataProcessException ;
 	public void quit(IUserProfileData p) throws DataProcessException;
 	/// invoked when catalog is deleted
@@ -106,6 +114,14 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 	/** get the number of documents */
 	public Long getNbDocuments();
 	public void setNbDocuments(Long nbDocs);
+	
+	
+	/**
+	 * update contents from DB. Return true if update actually occured (i.e. if db timestamp was different).
+	 * @throws DataProcessException 
+	 */
+	@Override
+	public Boolean updateContentsIfNeeded() throws DataProcessException;
 	
 	/** about managed fields mapping 
 	 * @throws DataProcessException */
@@ -161,6 +177,7 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 	 * @return
 	 */
 	public Map<String,String> getTermsRelationsDefinitions();
+
 	
 	
 

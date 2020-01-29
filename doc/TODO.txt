@@ -3,11 +3,11 @@
 Priority 1:
 -----------
 
+#12 Reload details from DB : When modifying some data in DB, software shall get updated without having to shutdown it :
+   . catalog details (including new one)
+   . user details (including new one)
+   
 #18 consolidate FTP server files management:
-	[https-jsse-nio-8443-exec-4] INFO org.apache.ftpserver.impl.DefaultFtpServer - FTP server started
-[INFO ] 2020-01-26 23:43:31.980 [https-jsse-nio-8443-exec-4] CatalogFtpServer - FTP server for catalog 'demandes_com' accessible at port '25001'
-[ERROR] 2020-01-26 23:43:40.040 [clientInboundChannel-8] Catalog - Unable to retrieve used disc usage for catalog 'demandes_com' at /Users/laurentml/dev/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/webapps/data/demandes_com
-java.nio.file.NoSuchFileException: /Users/laurentml/dev/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/webapps/data/demandes_com
 
 #6 Kibana access control to indices
 
@@ -29,6 +29,7 @@ java.nio.file.NoSuchFileException: /Users/laurentml/dev/workspace/.metadata/.plu
 #17 language properties file in español
 
 #11 upgrade to dep spring MVC 5.2.0.RELEASE
+  --> Echec de la lecture du document de schéma 'http://www.springframework.org/schema/security/spring-security.xsd' pour les raisons suivantes : 1) Le document est introuvable
 
 Priority 2:
 -----------

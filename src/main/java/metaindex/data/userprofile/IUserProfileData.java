@@ -131,4 +131,12 @@ public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProc
 	 */
 	public Date getItemsLastChangeDate();
 	
+	/**
+	 * update contents from DB. Return true if update actually occured (i.e. if db timestamp was different).
+	 * @throws DataProcessException 
+	 */
+	//public Boolean updateContentsFromDb() throws DataProcessException;
+	
+	
+	
 }

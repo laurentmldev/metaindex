@@ -135,6 +135,7 @@
 			currentUseMBytes=Math.round(currentUseMBytes * 100) / 100;
 			maxUseSpaceMBytes=Math.round(maxUseSpaceMBytes * 100) / 100;
 			usagePourcentDiscSpace=Math.round(usagePourcentDiscSpace * 100) / 100;
+			if (currentUseMBytes==0) {usagePourcentDiscSpace=0; }
 			if (usagePourcentDiscSpace>100) { usagePourcentDiscSpace=100; }
 			pourcentClass="";
 			

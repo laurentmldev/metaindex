@@ -1,5 +1,7 @@
 package metaindex.data.catalog;
 
+import java.io.File;
+
 /*
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -11,13 +13,11 @@ See full version of LICENSE in <https://fsf.org/>
 */
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Semaphore;
 
 import org.apache.commons.logging.Log;
@@ -28,25 +28,71 @@ import metaindex.data.filter.IFilter;
 import metaindex.data.commons.globals.Globals;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.perspective.ICatalogPerspective;
-import metaindex.data.term.CatalogTerm;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
 import metaindex.data.term.TermVocabularySet;
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.FileSystemUtils;
+import toolbox.utils.IRunnable;
 
 public class Catalog implements ICatalog {
 
+	public static final Integer AUTOREFRESH_PERIOD_SEC=5;
+	
+	private class RefreshContentsFromDb  extends Thread implements IRunnable{
+		
+		ICatalog _catalogToRefresh=null;
+		Boolean _continueRunning=true;
+		
+		public  RefreshContentsFromDb(ICatalog c) {
+			_catalogToRefresh=c;
+		}
+		
+		@Override
+		public void run() {
+
+			while (_continueRunning) {
+				try {
+					Thread.sleep(_catalogToRefresh.getAutoRefreshPeriodSec()*1000);
+
+					if (_catalogToRefresh.getNbLoggedUsers()>0) {
+						_catalogToRefresh.acquireLock();
+						Boolean wasUpdated = _catalogToRefresh.updateContentsIfNeeded();
+						if (wasUpdated) {
+							log.info("Reloaded DB-Data for Catalog "+_catalogToRefresh.getDetailsStr() );
+						} 
+						_catalogToRefresh.releaseLock();
+					}
+					
+				} catch (InterruptedException|DataProcessException  e) {
+					log.error("While performing cyclic update check on catalog "+_catalogToRefresh.getId()+ ": "+e.getMessage());
+					e.printStackTrace();
+					_continueRunning=false;
+					_catalogToRefresh.releaseLock();
+				}
+			}
+		}
+
+		@Override
+		public Boolean isRunning() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+	}
 	public static final Long DEFAULT_QUOTA_NBDOCS = 200L;
 	public static final Integer DEFAULT_QUOTA_DISCSPACEBYTES = 0;
 	private Log log = LogFactory.getLog(Catalog.class);
 	
+	private RefreshContentsFromDb _dbAutoRefreshProcessing=new RefreshContentsFromDb(this);
 	private Semaphore _catalogLock = new Semaphore(1,true);
 	public void acquireLock() throws InterruptedException { _catalogLock.acquire(); }
 	public void releaseLock() { _catalogLock.release(); }
 	
 	private Boolean _dbIndexFound=false;
+	
+	private Integer _autoRefreshPeriodSec=AUTOREFRESH_PERIOD_SEC;
 	
 	// from SQL DB
 	private Integer _id=0;
@@ -57,6 +103,7 @@ public class Catalog implements ICatalog {
 	private String _itemThumbnailUrlField="";
 	private String _urlPrefix="";
 	private String _perspectiveMatchField="";
+	private Date _lastUpdate=new Date(0);
 	
 	// Quota data
 	private Long _quotaNbDocs=DEFAULT_QUOTA_NBDOCS;
@@ -91,13 +138,25 @@ public class Catalog implements ICatalog {
 		this.setPerspectiveMatchField(ref.getPerspectiveMatchField());
 	}
 	
+	@Override
+	public String getDetailsStr() {
+		return "'"+this.getName()+"' :"
+				+"\n\t- id: "+this.getId()
+				+"\n\t- creator_id: "+this.getCreatorId()
+				+"\n\t- quotaNbDocs: "+this.getQuotaNbDocs()
+				+"\n\t- quotaFtpDiscSpaceBytes: "+this.getQuotaFtpDiscSpaceBytes()+" Bytes"
+				+"\n\t- Nb Logged users:\t"+this.getNbLoggedUsers();
+
+	}
 	@Override 
 	public void startServices() throws DataProcessException {
 		_ftpServer=new CatalogFtpServer(this);
 		try { _ftpServer.start(); }
 		catch (FtpException e) { 
 			throw new DataProcessException
-				("Unable to start FTP server for catalog "+this.getName()+" : "+e.getMessage(),e); }
+				("Unable to start FTP server for catalog "+this.getName()+" : "+e.getMessage(),e); 
+		}
+		_dbAutoRefreshProcessing.start();
 	}
 	@Override
 	public Integer getId() { return _id; }
@@ -127,6 +186,9 @@ public class Catalog implements ICatalog {
 	public String getFilesBaseUrl() {
 		return Globals.Get().getAppBaseUrl()+"/data/"+this.getName()+"/";
 	}
+	
+	@Override
+	public Integer getNbLoggedUsers() { return _loggedUsersIds.size(); }
 	
 	@Override
 	public void enter(IUserProfileData p) throws DataProcessException {
@@ -369,6 +431,26 @@ public class Catalog implements ICatalog {
 		return _perspectives;
 	}
 	@Override
+	public Boolean updateContentsIfNeeded() throws DataProcessException {
+		Date prevCurDate = this.getLastUpdate();
+		Boolean onlyIfDbcontentsUpdated=true;
+		List<ICatalog> list = new ArrayList<ICatalog>();
+		list.add(this);		
+		Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getLoadFromDbStmt(list,onlyIfDbcontentsUpdated).execute();
+		
+		// detect if contents actually changed
+		if (this.getLastUpdate().after(prevCurDate)) { return true; }
+		else { return false; }
+	}
+	@Override 
+	public Boolean shallBeRefreshed(Date testedUpdateDate) { 
+		return this.getLastUpdate().before(testedUpdateDate); 
+	}
+	
+	@Override
+	public Integer getAutoRefreshPeriodSec() { return _autoRefreshPeriodSec; }
+	
+	@Override
 	public void loadStatsFromDb() throws DataProcessException {
 		List<ICatalog> list = new ArrayList<ICatalog>();
 		list.add(this);
@@ -570,11 +652,15 @@ public class Catalog implements ICatalog {
 	@Override
 	public Long getDiscSpaceUseBytes() {
 		try {
+			// set (and create if needed) local-system folder storing ftp files
+	        File directory = new File(this.getLocalFsFilesPath());
+	        if (! directory.exists()){ directory.mkdir(); }
+	        
 			Long usedDiskSpace = FileSystemUtils.getTotalSizeBytes(this.getLocalFsFilesPath());
 			return usedDiskSpace;
 		} catch (IOException e) {
-			log.error("Unable to retrieve used disc usage for catalog '"+this.getName()+"' at "+this.getLocalFsFilesPath());
-			e.printStackTrace();
+			log.error("Unable to retrieve used disc usage for catalog '"+this.getName()+"' at "+this.getLocalFsFilesPath()+" : "+e.getMessage());
+			//e.printStackTrace();
 			return -1L;
 		}
 		
@@ -582,6 +668,14 @@ public class Catalog implements ICatalog {
 	@Override
 	public Boolean checkQuotasDisckSpaceOk() {
 		return getDiscSpaceUseBytes()<this.getQuotaFtpDiscSpaceBytes();
+	}
+	@Override
+	public Date getLastUpdate() {
+		return _lastUpdate;
+	}
+	@Override
+	public void setLastUpdate(Date modifDate) {
+		_lastUpdate=modifDate;		
 	}
 
 	

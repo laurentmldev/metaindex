@@ -34,9 +34,13 @@ public class SQLDbInterface  extends SQLDatabaseInterface<ICatalog>
 	public SQLReadStmt<ICatalog> getLoadFromDbStmt() throws DataProcessException {
 		return new LoadContentsFromDbStmt(getDatasource());
 	}
-
+	
 	public SQLReadStmt<ICatalog> getLoadFromDbStmt(List<ICatalog> data) throws DataProcessException {
 		return new LoadContentsFromDbStmt(data, getDatasource());
+	}
+	
+	public SQLReadStmt<ICatalog> getLoadFromDbStmt(List<ICatalog> data, Boolean onlyIfTimestampChanged) throws DataProcessException {
+		return new LoadContentsFromDbStmt(data, getDatasource(),onlyIfTimestampChanged);
 	}
 	
 	// --- create catalog

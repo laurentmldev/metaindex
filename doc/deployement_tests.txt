@@ -19,3 +19,4 @@ Deloyement test
 - docs quota (unary and by csv import)
 - FTP disconnect on quota exceeded
 - FTP authorized operations depending on access rigths
+- auto-reload when DB updated on catalogs and user basic info

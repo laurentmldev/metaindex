@@ -12,9 +12,14 @@ See full version of LICENSE in <https://fsf.org/>
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.ICatalog;
@@ -25,21 +30,32 @@ import toolbox.exceptions.DataProcessException;
 
 class LoadContentsFromDbStmt extends SQLReadStmt<ICatalog>   {
 
+	private Log log = LogFactory.getLog(LoadContentsFromDbStmt.class);
+	
 	public static final String SQL_REQUEST = 
 			"select catalogs.catalog_id,catalogs.shortname, "
 			+"catalogs.creator_id,catalogs.thumbnailUrl, "							
 			+"catalogs.itemNameFields,catalogs.itemThumbnailUrlField,catalogs.urlPrefix,catalogs.perspectiveMatchField, "
-			+"catalogs.quotaNbDocs,catalogs.quotaFtpDiscSpaceBytes "
+			+"catalogs.quotaNbDocs,catalogs.quotaFtpDiscSpaceBytes,catalogs.lastUpdate "
 			+"from catalogs";
 	
 	List<ICatalog> _data;
+	Boolean _onlyIfTimestampChanged=false;
+	
 	public LoadContentsFromDbStmt(List<ICatalog> d, SQLDataSource ds) throws DataProcessException { 
 		super(ds);
 		_data=d;
 	}
+	public LoadContentsFromDbStmt(List<ICatalog> d, SQLDataSource ds, Boolean onlyIfTimestampChanged) throws DataProcessException { 
+		super(ds);
+		_data=d;
+		_onlyIfTimestampChanged=onlyIfTimestampChanged;
+	}
 	public LoadContentsFromDbStmt(SQLDataSource ds) throws DataProcessException { 
 		super(ds);
 	}
+	
+	
 	@Override
 	public ICatalog mapRow(ResultSet rs, int rowNum) throws SQLException {
 		ICatalog d;
@@ -50,6 +66,11 @@ class LoadContentsFromDbStmt extends SQLReadStmt<ICatalog>   {
 				.filter(p -> p.getName().equals(dbKey))
 				.findFirst()
 				.orElse(null);
+		}
+		
+		if (_onlyIfTimestampChanged==true) {
+			Timestamp dbDate = rs.getTimestamp(11);
+			if (!d.shallBeRefreshed(dbDate)) { return d; } 
 		}
 		d.setId(rs.getInt(1));
 		d.setName(rs.getString(2));
@@ -66,6 +87,7 @@ class LoadContentsFromDbStmt extends SQLReadStmt<ICatalog>   {
 		d.setPerspectiveMatchField(rs.getString(8));
 		d.setQuotaNbDocs(rs.getLong(9));
 		d.setQuotaFtpDiscSpaceBytes(rs.getInt(10));
+		d.setLastUpdate(rs.getTimestamp(11));
 		return d;
 	}
 
