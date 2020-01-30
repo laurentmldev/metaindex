@@ -332,6 +332,8 @@ public class UserProfileData implements IUserProfileData
 	@Override
 	public USER_CATALOG_ACCESSRIGHTS getUserCatalogAccessRights(Integer catalogId)
 	{
+		if (!this.isEnabled()) { return USER_CATALOG_ACCESSRIGHTS.NONE; }
+		
 		// User role overrides user catalog access rights
 		if (this.getRole()==USER_ROLE.ROLE_ADMIN) { return USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN; }
 		

@@ -59,7 +59,8 @@ public class WsControllerCatalog extends AMxWSController {
     		List<WsMsgCatalogDetails_answer> answeredList = new ArrayList<WsMsgCatalogDetails_answer>();
     		
     		if (!this.userHasReadAccess(user)) { 
-    			sendListToUser(user.getName(),"/queue/catalogs",answeredList, /* Base64 compression */ true);         		
+    			sendListToUser(user.getName(),"/queue/catalogs",answeredList, /* Base64 compression */ true);     
+    			return;
         	}
         	
     		Iterator<ICatalog> it = catalogs.iterator();
@@ -87,8 +88,8 @@ public class WsControllerCatalog extends AMxWSController {
     	IUserProfileData user = getUserProfile(headerAccessor);	    	
     	WsMsgCreateCatalog_answer answer = new WsMsgCreateCatalog_answer(requestMsg);
     	
-    	if (!this.userHasWriteAccess(user)) { 
-    		answer.setRejectMessage("you don't have suffisiant rights to perform operation.");
+    	if (!this.userHasAdminAccess(user)) { 
+    		answer.setRejectMessage(user.getText("globals.noAccessRights"));
 			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
 			return;         		
     	}
@@ -224,7 +225,7 @@ public class WsControllerCatalog extends AMxWSController {
     		return;
     	}
     	
-    	if (!this.userHasReadAccess(user,c)) { 
+    	if (!this.userHasAdminAccess(user,c)) { 
     		answer.setRejectMessage(user.getText("globals.noAccessRights"));
 			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_customized", answer);
 			return;         		

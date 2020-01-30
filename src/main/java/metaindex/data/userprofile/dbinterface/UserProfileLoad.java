@@ -72,7 +72,7 @@ class UserProfileLoad extends SQLReadStmt<IUserProfileData>   {
 		d.setGuiThemeId(rs.getInt(6));
 		d.setRole(USER_ROLE.valueOf(rs.getString(7)));
 		d.setLastUpdate(newerDbDate);
-		d.setEnabled(rs.getBoolean(8));
+		d.setEnabled(rs.getBoolean(10));
 		
 		return d;
 	}
