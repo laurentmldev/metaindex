@@ -98,7 +98,7 @@ public class CatalogFtpServer {
 							// no ftp access for Read-Only users
 							|| user.getUserCatalogAccessRights(_catalog.getId())==USER_CATALOG_ACCESSRIGHTS.CATALOG_READ) {
 						
-						log.error("Unrecognized FTP user ''"+name+" within catalog '"+_catalog.getName()+"', kicked-out.");
+						log.error("Unauthorized FTP user '"+name+"' within catalog '"+_catalog.getName()+"', kicked-out.");
 						return FtpletResult.DISCONNECT;
 					}
 					/*

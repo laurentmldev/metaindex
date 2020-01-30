@@ -8,6 +8,7 @@ Priority 1:
    . user details (including new one)
    
 #18 consolidate FTP server files management:
+    - ftp  server restarted for each relog with new ftp server
 
 #6 Kibana access control to indices
 

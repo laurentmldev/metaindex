@@ -39,10 +39,26 @@ public class UsersManager implements IUsersManager {
 	@Override
 	public IUserProfileData getUserByName(String name) {
 		
-		return _usersByName.values().stream()
+		IUserProfileData result = _usersByName.values().stream()
 						.filter(p -> p.getName().equals(name))
 						.findFirst()
 						.orElse(null);
+		
+		// if user could not be found, maybe it has been added
+		// in DB and contents need to be reloaded
+		if (result==null) { 
+			try { 
+				log.info("User '"+name+"' not found, reloading users list from DB");
+				loadFromDb();
+				result = _usersByName.values().stream()
+						.filter(p -> p.getName().equals(name))
+						.findFirst()
+						.orElse(null);
+			} 
+			catch (DataProcessException e) { e.printStackTrace(); }
+		}
+		
+		return result;
 	}
 
 	@Override

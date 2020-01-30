@@ -154,6 +154,26 @@ public class WsControllerCatalog extends AMxWSController {
 	    		return;   
 			}
 			
+			// create default voc in DB
+	    	CatalogVocabularySet voc = c.getVocabulary(user.getGuiLanguageShortname());    	
+	    	if (voc==null) {
+	    		log.error("No '"+user.getGuiLanguageShortname()
+	    						+"' vocabulary for new catalog "+c.getName()+", unable to customize the catalog name");
+
+	    	} else {
+		    	try {   
+		    		c.acquireLock();
+		    		CatalogVocabularySet vocClone=new CatalogVocabularySet(voc);
+		    		vocClone.setName(c.getName());		    		
+			    	Boolean result = Globals.Get().getDatabasesMgr().getCatalogVocDbInterface().getWriteIntoDbStmt(vocClone).execute();
+			    	c.releaseLock();
+		    	} catch (Exception e) 
+		    	{    		
+		    		e.printStackTrace();
+		    		c.releaseLock();
+		    	}
+	    	}
+	    	
 			c.loadStatsFromDb();	    	
 			c.loadMappingFromDb();	
 			c.loadVocabulariesFromDb();
