@@ -57,14 +57,14 @@
 		 return; 
 	}
 	 
-	 // if not current user, just display notification
+	 // if not current user, just display notification ? disabled for now
 	 if (msg.userNickname!="<s:property value='currentUserProfile.nickname'/>") {	
-		 footer_showAlert(INFO, msg.userNickname+" changed contents : "+msg.modifType);
+		 //footer_showAlert(INFO, msg.userNickname+" changed contents : "+msg.modifType);
 	 } else {		 
 		 // refresh view 
-		 if (msg.modifType==MxApi.COMMUNITY_MODIF_TYPE.FIELDS_LIST
-				 || msg.modifType==MxApi.COMMUNITY_MODIF_TYPE.COMMUNITY_LIST
-				 || msg.modifType==MxApi.COMMUNITY_MODIF_TYPE.FIELDS_LIST
+		 if (msg.modifType==MxApi.CATALOG_MODIF_TYPE.FIELDS_LIST
+				 || msg.modifType==MxApi.CATALOG_MODIF_TYPE.CATALOGS_LIST
+				 || msg.modifType==MxApi.CATALOG_MODIF_TYPE.FIELDS_LIST
 				 ) 
 		 {
 			 ws_handlers_refreshCatalogsGui();			

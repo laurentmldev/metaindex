@@ -22,7 +22,7 @@ import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.commons.globals.guitheme.IGuiTheme;
 import metaindex.data.catalog.CatalogVocabularySet;
 import metaindex.data.catalog.ICatalog;
-import metaindex.websockets.users.WsControllerUser.COMMUNITY_MODIF_TYPE;
+import metaindex.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
 import metaindex.websockets.users.WsUserGuiMessageText.MESSAGE_CRITICITY;
 import toolbox.exceptions.DataProcessException;
 import toolbox.patterns.observer.IObserver;
@@ -130,8 +130,11 @@ public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProc
 	public void sendGuiProgressMessage(Integer procId, String msg, Float pourcentage, Boolean active);	
 
 	
-	public void notifyCatalogContentsChanged(COMMUNITY_MODIF_TYPE modifType, 
+	public void notifyCatalogContentsChanged(CATALOG_MODIF_TYPE modifType, 
 			 										  Integer nbImpactedItems);
+	public void notifyCatalogContentsChanged(CATALOG_MODIF_TYPE modifType, 
+								String impactedItemName, String impactDetails);
+		
 	
 	/** set date of latest operation concerning items of current catalog */
 	public void setItemsLastChangeDate(Date dateStr);

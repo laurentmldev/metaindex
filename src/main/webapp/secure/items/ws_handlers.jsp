@@ -59,15 +59,23 @@
  function handleMxWsCatalogContentsChanged(msg)  {	
 	
 	if (msg.catalogName!="<s:property value='currentCatalog.name'/>") { return; }
- 	if (msg.modifType==MxApi.COMMUNITY_MODIF_TYPE.ITEMS_LIST) {
+ 	if (msg.modifType==MxApi.CATALOG_MODIF_TYPE.DOCS_LIST) {
 		 if (msg.userNickname!="<s:property value='currentUserProfile.nickname'/>") {
-			 footer_showAlert(INFO, msg.userNickname+" changed "+msg.nbImpactedItems+" item(s)");
+			 footer_showAlert(INFO, msg.userNickname+" changed "+msg.nbImpactedDocss+" item(s)");
 		 } else { ws_handlers_refreshItemsGui(); }
 	 }
  	
- 	 else if (msg.modifType==MxApi.COMMUNITY_MODIF_TYPE.FIELD_VALUE) {
+ 	 else if (msg.modifType==MxApi.CATALOG_MODIF_TYPE.FIELD_VALUE) {
 		 if (msg.userNickname!="<s:property value='currentUserProfile.nickname'/>") {
-			 footer_showAlert(INFO, msg.userNickname+" changed contents of "+msg.nbImpactedItems+" item(s)");
+			 
+			 if (msg.nbImpactedDocs==1) {
+			 	footer_showAlert(INFO, 
+			 				msg.userNickname+" changed contents of document \""+msg.impactedDocName+"\" : "+msg.impactDetails,
+			 				null,
+			 				5000);
+			 } else {
+				 footer_showAlert(INFO, msg.userNickname+" changed contents of "+msg.nbImpactedDocs+" documents");
+			 }
 		 } else { /*ws_handlers_refreshItemsGui();*/ }
 	 }
 	 else { console.log("ERROR: unknown catalog modif type '"+msg.modifType+"'"); }

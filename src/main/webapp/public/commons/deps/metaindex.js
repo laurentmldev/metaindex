@@ -424,13 +424,13 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	}
 	
 //------- Catalog Contents Changed notification --------
-			// coherent with Metadindex WsControllerUser.COMMUNITY_MODIF_TYPE enumeration
-			this.COMMUNITY_MODIF_TYPE={ 'COMMUNITY_LIST':'COMMUNITY_LIST', 
-										'COMMUNITY_DEFINITION':'COMMUNITY_DEFINITION',
+			// coherent with Metadindex WsControllerUser.CATALOG_MODIF_TYPE enumeration
+			this.CATALOG_MODIF_TYPE={ 'CATALOGS_LIST':'CATALOGS_LIST', 
+										'CATALOG_DEFINITION':'CATALOG_DEFINITION',
 										'FIELD_VALUE':'FIELD_VALUE', 
 										'FIELDS_LIST':'FIELDS_LIST', 
 										'FIELD_DEFINITION':'FIELD_DEFINITION',
-										'ITEMS_LIST':'ITEMS_LIST' };
+										'DOCS_LIST':'DOCS_LIST' };
 			
 			this.subscribeToCatalogContentsChanged=function(callback_func,debug) {		
 				debug=debug||false;

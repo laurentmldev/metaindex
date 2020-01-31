@@ -33,7 +33,7 @@ import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.CatalogVocabularySet;
 import metaindex.data.catalog.ICatalog;
 import metaindex.websockets.users.WsControllerUser;
-import metaindex.websockets.users.WsControllerUser.COMMUNITY_MODIF_TYPE;
+import metaindex.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
 import metaindex.websockets.users.WsUserGuiMessageText.MESSAGE_CRITICITY;
 import toolbox.exceptions.DataAccessException;
 import toolbox.exceptions.DataProcessException;
@@ -406,14 +406,23 @@ public class UserProfileData implements IUserProfileData
 		sendGuiProgressMessage(procId,msg,pourcentage,true /*processing is active*/);		
 	}
 	
-	public void notifyCatalogContentsChanged(COMMUNITY_MODIF_TYPE modifType, Integer nbImpactedItems) {
+	@Override
+	public void notifyCatalogContentsChanged(CATALOG_MODIF_TYPE modifType, Integer nbImpactedItems) {
 		try {
 			WsControllerUser.UsersWsController.sendBroadCastCatalogContentsChanged(this,modifType,nbImpactedItems);
 		} catch (Exception e) {
-			//log.error("Unable to send user '"+this.getName()+"' "+level.toString()+"message '"+msg+"'" + e.getMessage());
 			e.printStackTrace();
 		}
 	}
+	@Override
+	public void notifyCatalogContentsChanged(CATALOG_MODIF_TYPE modifType, String impactedItemName, String impactDetails) {
+		try {
+			WsControllerUser.UsersWsController.sendBroadCastCatalogContentsChanged(this,modifType,impactedItemName,impactDetails);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 
 	@Override
 	public Date getItemsLastChangeDate() {

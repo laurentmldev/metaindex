@@ -163,7 +163,8 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 	
 	public String getMxVersion() {	return Globals.GetMxProperty("mx.version"); }
 	public String getMxStatus() {	return Globals.GetMxProperty("mx.status"); }
-
+	public String getMxRole() {	return _userProfileData.getRole().toString(); }
+	
 	/** TODO temporary for avoiding Struts auto populate error on form submit for those fields */
 	public void setSubmit(String dummy){}
 	/** TODO temporary for avoiding Struts auto populate error on form submit for those fields */

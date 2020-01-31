@@ -10,7 +10,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
-import metaindex.websockets.users.WsControllerUser.COMMUNITY_MODIF_TYPE;
+import metaindex.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
 
 public class WsMsgCatalogContentsChanged_answer   {
 		
@@ -18,20 +18,36 @@ public class WsMsgCatalogContentsChanged_answer   {
 	
 	private String _catalogName;
 	private String _userNickname;
-	private Integer _nbImpactedItems;
-	private COMMUNITY_MODIF_TYPE _modifType;
+	private Integer _nbImpactedDocs;
+	
+	// used if only one document has been modified
+	private String _impactedDocName="";
+	private String _impactDetails="";
+	
+	private CATALOG_MODIF_TYPE _modifType;
 	
 	public WsMsgCatalogContentsChanged_answer(String catalogName,
 												String userNickname,
-												Integer nbImpactedItems,
-												COMMUNITY_MODIF_TYPE modifType) {
+												Integer nbImpactedDocs,
+												CATALOG_MODIF_TYPE modifType) {
 		_catalogName=catalogName;
 		_userNickname=userNickname;
-		_nbImpactedItems=nbImpactedItems;
+		_nbImpactedDocs=nbImpactedDocs;
 		_modifType=modifType;
 	}
 
-
+	public WsMsgCatalogContentsChanged_answer(String catalogName,
+												String userNickname,
+												String impactedDocName,
+												String impactDetails,
+												CATALOG_MODIF_TYPE modifType) {
+		_catalogName=catalogName;
+		_userNickname=userNickname;
+		_nbImpactedDocs=1;
+		_modifType=modifType;
+		_impactedDocName=impactedDocName;
+		_impactDetails=impactDetails;
+	}
 	public String getCatalogName() {
 		return _catalogName;
 	}
@@ -52,23 +68,43 @@ public class WsMsgCatalogContentsChanged_answer   {
 	}
 
 
-	public Integer getNbImpactedItems() {
-		return _nbImpactedItems;
+	public Integer getNbImpactedDocs() {
+		return _nbImpactedDocs;
 	}
 
 
-	public void setNbImpactedItems(Integer nbImpactedItems) {
-		this._nbImpactedItems = nbImpactedItems;
+	public void setNbImpactedDocs(Integer nbImpactedDocs) {
+		this._nbImpactedDocs = nbImpactedDocs;
 	}
 
 
-	public COMMUNITY_MODIF_TYPE getModifType() {
+	public CATALOG_MODIF_TYPE getModifType() {
 		return _modifType;
 	}
 
 
-	public void setModifType(COMMUNITY_MODIF_TYPE modifType) {
+	public void setModifType(CATALOG_MODIF_TYPE modifType) {
 		this._modifType = modifType;
+	}
+
+
+	public String getImpactedDocName() {
+		return _impactedDocName;
+	}
+
+
+	public void setImpactedDocName(String _impactedDocName) {
+		this._impactedDocName = _impactedDocName;
+	}
+
+
+	public String getImpactDetails() {
+		return _impactDetails;
+	}
+
+
+	public void setImpactDetails(String impactDetails) {
+		this._impactDetails = impactDetails;
 	}	
 
 

@@ -4,12 +4,16 @@
 
 
  <li id="leftbar_catalog_create" class="nav-item" style="display:none">
+ 
+ <c:if test="${mxRole == 'ROLE_ADMIN' }">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-fw fa-cube"></i>
           <span><s:text name="Catalogs.createCatalog"></s:text></span>
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="mx-collapse py-2 collapse-inner rounded">
+          
+          	
             <h6 class="collapse-header"><s:text name="Catalogs.new_catalog" /></h6>
                         
 				 <div id="leftbar_create_catalog" class="mx-collapse-item collapse-item small">
@@ -32,20 +36,12 @@
 						>
 						 <i class="fa fa-check fa-sm"></i>
 					 </button>
-					 <!--button class="_button_cancel_ btn "  type="button" 
-					 		onmouseover="this.classList.add('btn-secondary');"
-							onmouseout="this.classList.remove('btn-secondary');"							
-							onclick="event.preventDefault();event.stopPropagation();
-									// set class to 
-								"
-						>
-						 <i class="fa fa-times fa-sm"></i>
-					 </button -->
-				 	
+									 	
 				 </div>
- 
+ 			
           </div>
         </div>
+ </c:if>
  </li>
 
 

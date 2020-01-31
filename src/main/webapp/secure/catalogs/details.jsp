@@ -99,6 +99,13 @@
 
  function details_createCatalog(catalogName) {
 	 if (catalogName==null) { catalogName=_curCatalogDesc.name; }
+	 if (catalogName.toLowerCase()!=catalogName
+			 || catalogName.replace(/[_a-z0-9]/g,'').length>0) {
+		 footer_showAlert(WARNING,"The catalog id shall only contain lower case letters (no accent), numbers or '_' (no space).<br/>"
+				 		+"Following characters are refused '"+catalogName.replace(/[_a-z0-9]/g,'')+"', please try again!");
+		 return;
+	 }
+		 
 	 MxApi.requestCreateCatalog(catalogName);
  }
  function details_enterCatalog() {

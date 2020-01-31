@@ -73,8 +73,8 @@ class GetItemsFromDbStmt extends ESReadStmt<DbSearchResult>   {
 	 * @param c the catalog (aka the ES index)
 	 * @param fromIdx the 'fromIdx' of elements to retrieve
 	 * @param size how many max elements to retrieve
-	 * @param prefilter list of queries additionally (OR) combined to build a pool on which to perform search
 	 * @param query actually query to be substractivly applied (AND) to get searched items
+	 * @param prefilter list of queries additionally (OR) combined to build a pool on which to perform search
 	 * @param sort list of fields to sort from, with associated order (ASC or DESC)
 	 * @param ds
 	 * @throws ESDataProcessException

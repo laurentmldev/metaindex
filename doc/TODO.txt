@@ -3,9 +3,6 @@
 Priority 1:
 -----------
 
-#12 Reload details from DB : When modifying some data in DB, software shall get updated without having to shutdown it :
-   . catalog details
-   . user details (including new one)
    
 #18 consolidate FTP server files management:
     - ftp  server restarted for each relog with new ftp server
@@ -18,12 +15,6 @@ Priority 1:
 
 #13 when creating a new element, list of "sort" dropdown gets append with duplicated contents
 
-#14 check user inputs : ensure no special nor space characters and are not empty
-	- mapping names
-	- perspectives names (and sections and types)
-	- entry check for community name (lower case etc.)
-	- links-graph form : nodes name
-	
 #15 adapt GUI to access rights (remove forbidden actions)
 
 #17 language properties file in español
@@ -38,6 +29,14 @@ Priority 2:
 #9 need to handle session time-out callback to kick-out user from catalogs registration when timed-out or logged-out
 
 log-out user when auto refresh set enabled to false
+
+
+#14 check user inputs : ensure no special nor space characters and are not empty
+	- mapping names
+	- perspectives names (and sections and types)
+	- entry check for community name (lower case etc.)
+	- links-graph form : nodes name
+	
 
 Backlog:
 --------
@@ -75,6 +74,11 @@ Backlog:
 
 Done:
 -----
+
+#12 Reload details from DB : When modifying some data in DB, software shall get updated without having to shutdown it :
+   . catalog details
+   . user details (including new one)
+   
 #11 upgrade to dep spring MVC 5.2.0.RELEASE
   --> Echec de la lecture du document de schéma 'http://www.springframework.org/schema/security/spring-security.xsd' pour les raisons suivantes : 1) Le document est introuvable
   --> fichiers fournis par le proxy metaindex

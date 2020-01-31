@@ -41,12 +41,12 @@ public class WsControllerUser extends AMxWSController {
 	private Log log = LogFactory.getLog(WsControllerUser.class);
 		
 	// list to be coherent with metaindex.js API equivalent
-	public enum COMMUNITY_MODIF_TYPE { 	COMMUNITY_LIST, 
-										COMMUNITY_DEFINITION,
+	public enum CATALOG_MODIF_TYPE { 	CATALOGS_LIST, 
+										CATALOG_DEFINITION,
 										FIELD_VALUE, 
 										FIELDS_LIST, 
 										FIELD_DEFINITION,
-									    ITEMS_LIST
+									    DOCS_LIST
 										};
 	
 	public static WsControllerUser UsersWsController = null;
@@ -194,7 +194,7 @@ public class WsControllerUser extends AMxWSController {
 
     @SendTo("/queue/catalog_contents_changed")
     public void sendBroadCastCatalogContentsChanged(IUserProfileData user, 
-    												 COMMUNITY_MODIF_TYPE modifType, 
+    												 CATALOG_MODIF_TYPE modifType, 
     												 Integer nbImpactedItems) throws Exception {
 
     		messageSender.convertAndSend(
@@ -205,6 +205,19 @@ public class WsControllerUser extends AMxWSController {
 															modifType));
     }
     
-    
+    @SendTo("/queue/catalog_contents_changed")
+    public void sendBroadCastCatalogContentsChanged(IUserProfileData user, 
+    												 CATALOG_MODIF_TYPE modifType, 
+    												 String impactedItemName,
+    												 String impactDetails) throws Exception {
+
+    		messageSender.convertAndSend(
+					"/queue/catalog_contents_changed", 
+					new WsMsgCatalogContentsChanged_answer(user.getCurrentCatalog().getName(),
+															user.getNickname(),
+															impactedItemName,
+															impactDetails,
+															modifType));
+    }    
     
 }

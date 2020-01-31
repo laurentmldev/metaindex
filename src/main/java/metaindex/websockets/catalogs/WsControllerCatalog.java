@@ -35,7 +35,7 @@ import metaindex.data.term.ICatalogTerm;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.IUserProfileData.USER_CATALOG_ACCESSRIGHTS;
 import metaindex.websockets.commons.AMxWSController;
-import metaindex.websockets.users.WsControllerUser.COMMUNITY_MODIF_TYPE;
+import metaindex.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.StrTools;
 
@@ -184,7 +184,7 @@ public class WsControllerCatalog extends AMxWSController {
 			answer.setIsSuccess(true);
 	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
 	    	user.setCurrentCatalog(c.getId());
-	    	user.notifyCatalogContentsChanged(COMMUNITY_MODIF_TYPE.COMMUNITY_LIST, 1);
+	    	user.notifyCatalogContentsChanged(CATALOG_MODIF_TYPE.CATALOGS_LIST, user.getCatalogVocabulary().getName(),c.getName());
 	    	
     	} catch (Exception e) 
     	{

@@ -37,7 +37,7 @@ import metaindex.data.userprofile.IUserProfileData;
 import metaindex.websockets.catalogs.WsMsgUpdateCatalogLexic_answer;
 import metaindex.websockets.catalogs.WsMsgUpdateCatalogLexic_request;
 import metaindex.websockets.commons.AMxWSController;
-import metaindex.websockets.users.WsControllerUser.COMMUNITY_MODIF_TYPE;
+import metaindex.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
 import toolbox.database.elasticsearch.ESDataProcessException;
 import toolbox.database.sql.SQLDataProcessException;
 
@@ -115,7 +115,7 @@ public class WsControllerTerm extends AMxWSController {
         		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),
         												"/queue/updated_term", 
     													getRawString(answer)); 
-        		user.notifyCatalogContentsChanged(COMMUNITY_MODIF_TYPE.FIELD_DEFINITION, 1);
+        		user.notifyCatalogContentsChanged(CATALOG_MODIF_TYPE.FIELD_DEFINITION, 1);
     		}
     	} catch (Exception e) 
     	{
@@ -206,7 +206,7 @@ public class WsControllerTerm extends AMxWSController {
     	c.releaseLock();
     	  
     	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_term", answer);
-    	user.notifyCatalogContentsChanged(COMMUNITY_MODIF_TYPE.FIELDS_LIST, 1);
+    	user.notifyCatalogContentsChanged(CATALOG_MODIF_TYPE.FIELDS_LIST, 1);
         	
     }
     
@@ -252,7 +252,7 @@ public class WsControllerTerm extends AMxWSController {
     	
     	answer.setIsSuccess(true);  
     	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_term", answer);
-    	user.notifyCatalogContentsChanged(COMMUNITY_MODIF_TYPE.FIELDS_LIST, 1);
+    	user.notifyCatalogContentsChanged(CATALOG_MODIF_TYPE.FIELDS_LIST, 1);
         	
     }
     

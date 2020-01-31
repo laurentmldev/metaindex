@@ -35,7 +35,7 @@ import metaindex.data.catalog.ICatalog;
 import metaindex.data.catalog.UserItemContents;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.websockets.commons.AMxWSController;
-import metaindex.websockets.users.WsControllerUser.COMMUNITY_MODIF_TYPE;
+import metaindex.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
 import toolbox.database.DbSearchResult;
 import toolbox.database.IDbItem;
 import toolbox.database.IDbSearchResult.SORTING_ORDER;
@@ -55,6 +55,33 @@ public class WsControllerItem extends AMxWSController {
 		super(messageSender);		
 	}		
 		
+	private IDbItem getDocumentContents(IUserProfileData user,String documentId) {
+		
+		List<String> preFilters = new ArrayList<String>();
+		List< IPair<String,SORTING_ORDER> > sortByFieldName = new ArrayList<IPair<String,SORTING_ORDER>>();
+		List<DbSearchResult> results;
+		try {
+			results = Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
+					.getLoadFromDbStmt(user.getCurrentCatalog(),
+					    				0, // offset
+					    				1, // nb docs
+					    				"_id:"+documentId,
+					    				preFilters,							    				
+					    				sortByFieldName).execute();
+			
+			if (results.size()!=1 || results.get(0).getItems().size()!=1) { 
+				return null; 
+			}
+			IDbItem item = results.get(0).getItems().get(0);
+			
+			return item;
+			
+		} catch (DataProcessException e) {
+			return null;
+		}
+		
+		
+	}
     @MessageMapping("/get_catalog_items")
     @SubscribeMapping ( "/user/queue/items")
     public void handleItemsRequest(SimpMessageHeaderAccessor headerAccessor, 
@@ -215,8 +242,17 @@ public class WsControllerItem extends AMxWSController {
     		answer.setIsSuccess(true);
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),
     												"/queue/field_value", 
-													getRawString(answer)); 		
-    		user.notifyCatalogContentsChanged(COMMUNITY_MODIF_TYPE.FIELD_VALUE, 1);
+													getRawString(answer)); 	
+    		
+    		// Notify all users that a document has been modified. 
+    		// retrieve corresponding item in order to forward a descent doc name to the users
+    		// instead of simply the doc id
+    		String itemName=requestMsg.getItemId();
+    		IDbItem item = getDocumentContents(user,requestMsg.getItemId());
+    		if (item!=null) { itemName=item.getName(); }
+    		user.notifyCatalogContentsChanged(CATALOG_MODIF_TYPE.FIELD_VALUE,
+    						itemName,
+    						requestMsg.getFieldName()+"=\""+requestMsg.getFieldValue()+"\"" );
     		
     		c.releaseLock();    		
     		

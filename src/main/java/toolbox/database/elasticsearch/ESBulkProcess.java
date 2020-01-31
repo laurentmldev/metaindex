@@ -32,7 +32,7 @@ import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.userprofile.IUserProfileData;
-import metaindex.websockets.users.WsControllerUser.COMMUNITY_MODIF_TYPE;
+import metaindex.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
 import toolbox.database.IDbItem;
 import toolbox.database.elasticsearch.ESDataSource;
 import toolbox.exceptions.DataProcessException;
@@ -277,7 +277,7 @@ public class ESBulkProcess extends AProcessingTask   {
 			}
 			
 			// notify all users that some contents changed
-			getActiveUser().notifyCatalogContentsChanged(COMMUNITY_MODIF_TYPE.ITEMS_LIST, this.getProcessedNbData());			
+			getActiveUser().notifyCatalogContentsChanged(CATALOG_MODIF_TYPE.DOCS_LIST, this.getProcessedNbData());			
 			
 			_stoppingProcessingLock.release();
 		} catch (InterruptedException | DataProcessException e) {

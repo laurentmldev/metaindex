@@ -33,7 +33,17 @@ public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem>
 	public ESDocumentsDbInterface(ESDataSource ds) { 
 		super(ds); 
 	}
-	// -- load documents by query 
+	/**
+	 * Retrieve documents by query 
+	 * @param c the catalog in which perform operation
+	 * @param fromIdx starting the retrieval from given index
+	 * @param size total amount of docs to retrieve (ELK limitation to 10000)
+	 * @param query the ELK query to perform
+	 * @param filter list of queries additionally (OR) combined to build a pool on which to perform main query 
+	 * @param sort list of fields to sort from, with associated order (ASC or DESC)
+	 * @return
+	 * @throws DataProcessException
+	 */
 	public ESReadStmt<DbSearchResult> getLoadFromDbStmt(ICatalog c, Integer fromIdx, Integer size,
 														String query,
 														List<String> filter, 
