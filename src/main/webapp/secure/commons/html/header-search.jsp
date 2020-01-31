@@ -37,6 +37,10 @@
 	  let reversedOrder=document.getElementById('header.filter.sortOrderReversed').value;
 	  MxGuiHeader.onFilterClick(searchText,orderByString,reversedOrder);
   }
+  MxGuiHeader.clearSortingChoice=function() {
+	  let sortingNode = document.getElementById('header.filter.sortString');
+	  clearNodeChildren(sortingNode);
+  }
   MxGuiHeader.addSortingChoice=function(name,value) {
 	  let optionNode = document.createElement("option");
 	  optionNode.setAttribute("value",value);
@@ -122,7 +126,7 @@
              <select id="header.filter.sortString" class="mx-dropdown form-control bg-light border-0 small"             	
              	onchange="MxGuiHeader.refreshSearch();"           		
               	onkeypress="if (event.which==13||event.keycode==13) { MxGuiHeader.refreshSearch();}" >
-              	<option value=""><s:text name="Header.sortby"/></option>
+              	
               </select>
               <select id="header.filter.sortOrderReversed" class="mx-dropdown form-control bg-light border-0 small"  
               	onchange="MxGuiHeader.refreshSearch();"           		

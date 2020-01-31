@@ -4,16 +4,13 @@ Priority 1:
 -----------
 
    
-#18 consolidate FTP server files management:
-    - ftp  server restarted for each relog with new ftp server
-
-
 #7 presentation page
+
 #8 prepare demo data, catalog/user present by default
+
 #10 : ? once logged out by time-out, log-in again leads to server error in the log :
 		[ERROR] 2019-11-26 22:04:37.008 [clientInboundChannel-165] WsControllerUser - Unable to register 'laurentmlcontact-metaindex@yahoo.fr' on websockets API : toolbox.exceptions.DataProcessException: No logged user found for sessionId=17D057D02C30B14A409E42CC52EE048B.
-
-#13 when creating a new element, list of "sort" dropdown gets append with duplicated contents
+		
 
 #15 adapt GUI to access rights (remove forbidden actions)
 
@@ -74,6 +71,11 @@ Backlog:
 
 Done:
 -----
+
+#13 when creating a new element, list of "sort" dropdown gets append with duplicated contents
+
+#18 consolidate FTP server files management:
+    - ftp  server restarted for each relog with new ftp server --> not reproduceable
 
 #12 Reload details from DB : When modifying some data in DB, software shall get updated without having to shutdown it :
    . catalog details

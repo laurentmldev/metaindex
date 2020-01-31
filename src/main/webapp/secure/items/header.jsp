@@ -17,6 +17,9 @@ function header_onFilterSave(filterName,searchQuery) {
 
 function header_handleCatalogDetails(catalogDescr) {
 	
+	MxGuiHeader.clearSortingChoice();
+	MxGuiHeader.addSortingChoice("<s:text name="Header.sortby"/>","");
+	
 	let sortedTermsNames = Object.keys(catalogDescr.terms).sort();
 	for (var termIdx=0;termIdx<sortedTermsNames.length;termIdx++) {
 		let termName=sortedTermsNames[termIdx];		
