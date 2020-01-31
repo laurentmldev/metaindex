@@ -39,27 +39,12 @@ import toolbox.utils.FileSystemUtils;
 public class Catalog implements ICatalog {
 
 	public static final Integer AUTOREFRESH_PERIOD_SEC=5;
-	
-	private class RefreshContentsFromDb extends AutoRefreshMonitor {
 
-		ICatalog _monitoredCatalog;
-		public RefreshContentsFromDb(ICatalog obj) {
-			super(obj);
-			_monitoredCatalog=obj;
-		}
-		
-		/**
-		 * Trigger refresh only if catalog is used by somebody 
-		 */
-		@Override
-		public Boolean preRefreshTest() { return _monitoredCatalog.getNbLoggedUsers()>0; }
-		
-	}
 	public static final Long DEFAULT_QUOTA_NBDOCS = 200L;
 	public static final Integer DEFAULT_QUOTA_DISCSPACEBYTES = 0;
 	private Log log = LogFactory.getLog(Catalog.class);
 	
-	private RefreshContentsFromDb _dbAutoRefreshProcessing=new RefreshContentsFromDb(this);
+	private AutoRefreshMonitor _dbAutoRefreshProcessing=new AutoRefreshMonitor(this);
 	private Semaphore _catalogLock = new Semaphore(1,true);
 	public void acquireLock() throws InterruptedException { _catalogLock.acquire(); }
 	public void releaseLock() { _catalogLock.release(); }
@@ -410,7 +395,7 @@ public class Catalog implements ICatalog {
 		Boolean onlyIfDbcontentsUpdated=true;
 		List<ICatalog> list = new ArrayList<>();
 		list.add(this);		
-		Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getLoadFromDbStmt(list,onlyIfDbcontentsUpdated).execute();
+		Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getLoadFromDefDbStmt(list,onlyIfDbcontentsUpdated).execute();
 		
 		// detect if contents actually changed
 		if (this.getLastUpdate().after(prevCurDate)) { return true; }
@@ -428,20 +413,20 @@ public class Catalog implements ICatalog {
 	public void loadStatsFromDb() throws DataProcessException {
 		List<ICatalog> list = new ArrayList<ICatalog>();
 		list.add(this);
-		Globals.Get().getDatabasesMgr().getCatalogContentsDbInterface().getLoadStatsFromDbStmt(list).execute();
+		Globals.Get().getDatabasesMgr().getCatalogContentsDbInterface().getLoadStatsFromDocsDbStmt(list).execute();
 		
 	}
 	@Override
 	public void loadMappingFromDb() throws DataProcessException {
 		List<ICatalog> list = new ArrayList<ICatalog>();
 		list.add(this);
-		Globals.Get().getDatabasesMgr().getCatalogContentsDbInterface().getLoadMappingFromDbStmt(list).execute();
+		Globals.Get().getDatabasesMgr().getCatalogContentsDbInterface().getLoadMappingFromDocsDbStmt(list).execute();
 	}
 	@Override
 	public void loadCustomParamsFromdb() throws DataProcessException {
 		List<ICatalog> list = new ArrayList<ICatalog>();
 		list.add(this);
-		Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getLoadFromDbStmt(list).execute();
+		Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getLoadFromDefDbStmt(list).execute();
 	}
 	@Override 
 	public void loadPerspectivesFromdb() throws DataProcessException {

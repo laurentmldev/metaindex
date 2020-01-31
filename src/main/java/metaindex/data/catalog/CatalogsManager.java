@@ -37,7 +37,7 @@ public class CatalogsManager implements ICatalogsManager {
 	@Override
 	public void loadFromDb() throws DataProcessException {
 		
-		List<ICatalog> loadedCatalogs=Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getLoadFromDbStmt().execute();
+		List<ICatalog> loadedCatalogs=Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getLoadFromDefDbStmt().execute();
 		
 		// Loading filters definition
 		Globals.Get().getDatabasesMgr().getFiltersDbInterface().getLoadFromDbStmt(loadedCatalogs).execute();

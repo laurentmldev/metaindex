@@ -31,43 +31,43 @@ public class ESCatalogDbInterface  extends ESDatabaseInterface<ICatalog>
 	}
 	
 	// --- load index mapping
-	public ESReadStmt<ICatalog> getLoadMappingFromDbStmt(List<ICatalog> data) throws DataProcessException {
+	public ESReadStmt<ICatalog> getLoadMappingFromDocsDbStmt(List<ICatalog> data) throws DataProcessException {
 		return new LoadMappingFromDbStmt(data, getDatasource());
 	}
-	public ESReadStmt<ICatalog> getLoadMappingFromDbStmt(ICatalog data) throws DataProcessException {
+	public ESReadStmt<ICatalog> getLoadMappingFromDocsDbStmt(ICatalog data) throws DataProcessException {
 		List<ICatalog> list = new ArrayList<>();
 		list.add(data);
-		return getLoadMappingFromDbStmt(list);
+		return getLoadMappingFromDocsDbStmt(list);
 	}
 	
 	// --- load index stats	
-	public ESReadStmt<ICatalog> getLoadStatsFromDbStmt(List<ICatalog> data) throws DataProcessException {
+	public ESReadStmt<ICatalog> getLoadStatsFromDocsDbStmt(List<ICatalog> data) throws DataProcessException {
 		return new LoadStatsFromDbStmt(data, getDatasource());
 	}
-	public ESReadStmt<ICatalog> getLoadStatsFromDbStmt(ICatalog data) throws DataProcessException {
+	public ESReadStmt<ICatalog> getLoadStatsFromDocsDbStmt(ICatalog data) throws DataProcessException {
 		List<ICatalog> list = new ArrayList<>();
 		list.add(data);
-		return getLoadStatsFromDbStmt(list);
+		return getLoadStatsFromDocsDbStmt(list);
 	}
 	
 	// --- create index
-	public ESWriteStmt<ICatalog> getCreateIndexIntoDbStmt(List<ICatalog> data) throws DataProcessException {
+	public ESWriteStmt<ICatalog> getCreateIndexIntoDocsDbStmt(List<ICatalog> data) throws DataProcessException {
 		return new CreateIndexIntoEsDbStmt(data, getDatasource());
 	}
-	public ESWriteStmt<ICatalog> getCreateIndexIntoDbStmt(ICatalog data) throws DataProcessException {
+	public ESWriteStmt<ICatalog> getCreateIndexIntoDocsDbStmt(ICatalog data) throws DataProcessException {
 		List<ICatalog> list = new ArrayList<>();
 		list.add(data);
-		return getCreateIndexIntoDbStmt(list);
+		return getCreateIndexIntoDocsDbStmt(list);
 	}
 	
 	// --- delete catalog
-	public ESWriteStmt<ICatalog> getDeleteFromDbStmt(IUserProfileData activeUser,List<ICatalog> data) throws DataProcessException {
+	public ESWriteStmt<ICatalog> getDeleteFromDocsDbStmt(IUserProfileData activeUser,List<ICatalog> data) throws DataProcessException {
 		return new DeleteIndexFromESDbStmt(activeUser,data, getDatasource());
 	}
-	public ESWriteStmt<ICatalog> getDeleteFromDbStmt(IUserProfileData activeUser,ICatalog data) throws DataProcessException {
+	public ESWriteStmt<ICatalog> getDeleteFromDocsDbStmt(IUserProfileData activeUser,ICatalog data) throws DataProcessException {
 		List<ICatalog> list = new ArrayList<>();
 		list.add(data);
-		return getDeleteFromDbStmt(activeUser,list);
+		return getDeleteFromDocsDbStmt(activeUser,list);
 	}
 
 }

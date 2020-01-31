@@ -12,6 +12,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -36,6 +37,7 @@ import metaindex.data.userprofile.IUserProfileData.USER_CATALOG_ACCESSRIGHTS;
 import metaindex.websockets.commons.AMxWSController;
 import metaindex.websockets.users.WsControllerUser.COMMUNITY_MODIF_TYPE;
 import toolbox.exceptions.DataProcessException;
+import toolbox.utils.StrTools;
 
 @Controller
 public class WsControllerCatalog extends AMxWSController {
@@ -99,7 +101,7 @@ public class WsControllerCatalog extends AMxWSController {
 	    	if (c==null) {
 	    		c=new Catalog();
 	    		c.setName(requestMsg.getCatalogName());
-	    		Boolean result = Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getCreateIntoDbStmt(user,c).execute();
+	    		Boolean result = Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getCreateIntoDefDbStmt(user,c).execute();
 	    		if (!result) {
 	    			answer.setRejectMessage("Unable to create catalog definition into SQL db");
 	    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
@@ -121,7 +123,7 @@ public class WsControllerCatalog extends AMxWSController {
 	    	c  = Globals.Get().getCatalogsMgr().getCatalog(requestMsg.getCatalogName());
 	    	
 	    	try {
-		    	Boolean result = Globals.Get().getDatabasesMgr().getCatalogContentsDbInterface().getCreateIndexIntoDbStmt(c).execute();
+		    	Boolean result = Globals.Get().getDatabasesMgr().getCatalogContentsDbInterface().getCreateIndexIntoDocsDbStmt(c).execute();
 		    	if (!result) {
 		    		answer.setRejectMessage("Unable to create catalog index");
 	    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
@@ -164,8 +166,8 @@ public class WsControllerCatalog extends AMxWSController {
 		    	try {   
 		    		c.acquireLock();
 		    		CatalogVocabularySet vocClone=new CatalogVocabularySet(voc);
-		    		vocClone.setName(c.getName());		    		
-			    	Boolean result = Globals.Get().getDatabasesMgr().getCatalogVocDbInterface().getWriteIntoDbStmt(vocClone).execute();
+		    		vocClone.setName(StrTools.Capitalize(c.getName().replaceAll("_", " ")));		    		
+			    	Globals.Get().getDatabasesMgr().getCatalogVocDbInterface().getWriteIntoDbStmt(vocClone).execute();
 			    	c.releaseLock();
 		    	} catch (Exception e) 
 		    	{    		
@@ -253,7 +255,7 @@ public class WsControllerCatalog extends AMxWSController {
     	try {   
     		c.acquireLock();
 	    	requestMsg.setName(c.getName());
-	    	Boolean result = Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getUpdateIntoDbStmt(user, requestMsg).execute();
+	    	Boolean result = Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getUpdateIntoDefDbStmt(user, requestMsg).execute();
 	    	if (!result) {
 	    		answer.setRejectMessage("Unable to update catalog custom parameters");
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_customized", answer);
@@ -262,6 +264,7 @@ public class WsControllerCatalog extends AMxWSController {
 	    	c.loadCustomParamsFromdb();
 	    	answer.setIsSuccess(true);    	
 	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_customized", answer);
+	    	
 	    	c.releaseLock();
     	} catch (Exception e) 
     	{    		
@@ -301,38 +304,46 @@ public class WsControllerCatalog extends AMxWSController {
     		c.acquireLock();
 	    	
     		// Delete SQL definition
-	    	Boolean result = Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getDeleteFromDbStmt(user, c).execute();
+	    	Boolean result = Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getDeleteFromDefDbStmt(user, c).execute();
 	    	if (!result) {
 	    		answer.setRejectMessage("Unable to delete catalog definition");
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_catalog", answer);
     			return;
     		}
-	    	
 	    	Globals.Get().getCatalogsMgr().removeCatalog(c.getId());
 	    	
-	    	// Delete ES index
-	    	result = Globals.Get().getDatabasesMgr().getCatalogContentsDbInterface().getDeleteFromDbStmt(user, c).execute();
-	    	if (!result) {
-	    		answer.setRejectMessage("Unable to delete catalog contents");
-    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_catalog", answer);
-    			return;
-    		}
+	    	// Try to delete ES index (if any)
+	    	try {
+		    	result = Globals.Get().getDatabasesMgr().getCatalogContentsDbInterface().getDeleteFromDocsDbStmt(user, c).execute();
+		    	if (!result) {
+		    		answer.setRejectMessage("Unable to delete catalog documents contents");
+	    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_catalog", answer);
+	    			c.releaseLock();
+	    			return;
+	    		}
+	    	} catch (Exception e) {    		
+	    		// not so nice to detect it with a string search 
+	    		if (!e.getMessage().contains("index_not_found_exception")) {	    			    			    	
+		    		log.error("Unable to delete index '"+c.getName()+"' : "+e.getMessage());
+		    		e.printStackTrace();
+	    		}
+	    		// else the index was not in ES, but this is not a problem for the "delete catalog" operation
+	    		// so we can silently ignore it
+	    	}
 	    	
 	    	answer.setIsSuccess(true);    	
 	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_catalog", answer);
 	    	
 	    	c.releaseLock();
-    	} catch (Exception e) 
-    	{    		
-    		Globals.Get().getCatalogsMgr().removeCatalog(c.getId());	    	
-    		answer.setIsSuccess(false);  
-    		answer.setRejectMessage("Unable to process delete_catalog '"+c.getName()+"' by '"+user.getName()+"' : "+e.getMessage());
-	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_catalog", answer);
-    		e.printStackTrace();
-    	}
-    	
+    	} catch (Exception e) {    					    	
+	    		answer.setIsSuccess(false);  
+	    		answer.setRejectMessage("Unable to process delete_catalog '"+c.getName()+"' by '"+user.getName()+"'");
+	    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_catalog", answer);
+	    		e.printStackTrace();
+	    		c.releaseLock();
+    		   		
+    	}    	
     }
-    
 
     @MessageMapping("/update_catalog_lexic")
     @SubscribeMapping ( "/user/queue/catalog_lexic_updated")

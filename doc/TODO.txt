@@ -10,7 +10,6 @@ Priority 1:
 #18 consolidate FTP server files management:
     - ftp  server restarted for each relog with new ftp server
 
-#6 Kibana access control to indices
 
 #7 presentation page
 #8 prepare demo data, catalog/user present by default
@@ -29,12 +28,11 @@ Priority 1:
 
 #17 language properties file in español
 
-#11 upgrade to dep spring MVC 5.2.0.RELEASE
-  --> Echec de la lecture du document de schéma 'http://www.springframework.org/schema/security/spring-security.xsd' pour les raisons suivantes : 1) Le document est introuvable
 
 Priority 2:
 -----------
- 
+#6 Kibana access control to indices
+
 #16 removing a term present in several perspectives, it removes it from the second perspective while user have clicked on the first perspective ones
 
 #9 need to handle session time-out callback to kick-out user from catalogs registration when timed-out or logged-out
@@ -77,6 +75,10 @@ Backlog:
 
 Done:
 -----
+#11 upgrade to dep spring MVC 5.2.0.RELEASE
+  --> Echec de la lecture du document de schéma 'http://www.springframework.org/schema/security/spring-security.xsd' pour les raisons suivantes : 1) Le document est introuvable
+  --> fichiers fournis par le proxy metaindex
+  
 - ftp-server check quotas
 - ftp-server through SSL
 - put code on git-hub

@@ -39,17 +39,6 @@ public abstract class AVocabularySet implements IVocabularySet {
 		return Globals.Get().getGuiLanguagesMgr().getGuiLanguage(this.getGuiLanguageId()).getName();
 	}
 	
-	public String capitalize(String str) {
-		String result="";
-		Scanner lineScan = new Scanner(str); 
-        while(lineScan.hasNext()) {
-            String word = lineScan.next(); 
-            if (result.length()>0) { result+=" "; }
-            result += Character.toUpperCase(word.charAt(0)) + word.substring(1);; 
-        }
-        return result;
-	}
-	
 	public void setVocabularyEntry(String entryName, String entryTranslation) { _translations.put(entryName, entryTranslation); }
 	public String getVocabularyEntry(String entryName) { return _translations.get(entryName); }
 }

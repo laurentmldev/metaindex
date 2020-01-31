@@ -14,6 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import metaindex.data.commons.internationalization.AVocabularySet;
+import toolbox.utils.StrTools;
 
 public class CatalogVocabularySet extends AVocabularySet {
 
@@ -98,7 +99,7 @@ public class CatalogVocabularySet extends AVocabularySet {
 	public String getItem() {
 		return this.getVocabularyEntry("item");
 	}
-	public String getItemCap() { return capitalize(getItem()); }
+	public String getItemCap() { return StrTools.Capitalize(getItem()); }
 	
 	public void setItem(String item) {
 		this.setVocabularyEntry("item",item);
@@ -106,7 +107,7 @@ public class CatalogVocabularySet extends AVocabularySet {
 	public String getItems() {
 		return this.getVocabularyEntry("items");
 	}
-	public String getItemsCap() { return capitalize(getItems()); }
+	public String getItemsCap() { return StrTools.Capitalize(getItems()); }
 	public void setItems(String items) { this.setVocabularyEntry("items",items); }	
 	
 	public String getUser() {
