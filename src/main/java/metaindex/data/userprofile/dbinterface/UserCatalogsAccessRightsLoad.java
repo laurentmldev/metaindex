@@ -12,6 +12,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
 
@@ -26,13 +27,17 @@ class UserCatalogsAccessRightsLoad extends SQLReadStmt<IUserProfileData>   {
 
 	public static final String SQL_REQUEST = 
 			"select user_catalogs_rights_id,user_id,"
-			+"catalog_id,access_rights"							
+			+"catalog_id,access_rights, lastUpdate"							
 			+" from user_catalogs_rights";
 	
-	List<IUserProfileData> _data;
-	public UserCatalogsAccessRightsLoad(List<IUserProfileData> d, SQLDataSource ds) throws DataProcessException { 
+	
+	private List<IUserProfileData> _data;
+	private Boolean _onlyIfTimestampChanged = false;
+	
+	public UserCatalogsAccessRightsLoad(List<IUserProfileData> d, SQLDataSource ds, Boolean onlyIfTimestampChanged) throws DataProcessException { 
 		super(ds);
 		_data=d;
+		_onlyIfTimestampChanged=onlyIfTimestampChanged;
 	}
 
 	@Override
@@ -45,10 +50,15 @@ class UserCatalogsAccessRightsLoad extends SQLReadStmt<IUserProfileData>   {
 			.findFirst()
 			.orElse(null);
 			
+		if (_onlyIfTimestampChanged==true) {
+			Timestamp dbDate = rs.getTimestamp(5);
+			if (!d.shallBeRefreshed(dbDate)) { return d; } 
+		}
 		Integer catalogId=rs.getInt(3);
 		String accessRightsStr=rs.getString(4);
 		USER_CATALOG_ACCESSRIGHTS accessRights = USER_CATALOG_ACCESSRIGHTS.valueOf(accessRightsStr);
 		d.setUserCatalogAccessRights(catalogId, accessRights);
+		d.setLastUpdate(rs.getTimestamp(5));
 		return d;
 	}
 

@@ -443,6 +443,7 @@ public class UserProfileData implements IUserProfileData
 		List<IUserProfileData> list = new ArrayList<>();
 		list.add(this);		
 		Globals.Get().getDatabasesMgr().getUserProfileDbInterface().getLoadFromDbStmt(list,onlyIfDbcontentsUpdated).execute();
+		Globals.Get().getDatabasesMgr().getUserProfileDbInterface().getLoadAccessRightsFromDbStmt(list,onlyIfDbcontentsUpdated).execute();
 		
 		// detect if contents actually changed
 		if (this.getLastUpdate().after(prevCurDate)) { return true; }
@@ -462,14 +463,28 @@ public class UserProfileData implements IUserProfileData
 	
 	@Override
 	public String getDetailsStr() {
-		return "'"+this.getName()+"' :"
+		String str = "'"+this.getName()+"' :"
 				+"\n\t- id: "+this.getId()
 				+"\n\t- nickname: "+this.getNickname()
 				+"\n\t- enabled: "+this.isEnabled()
+				+"\n\t- role: "+this.getRole().toString()
 				+"\n\t- language: "+this.getGuiLanguageShortname()
 				+"\n\t- theme: "+this.getGuiThemeShortname()
-				;
-				
+				+"\n\t- catalogs rights: ";
+		if (this.getRole() == USER_ROLE.ROLE_ADMIN) {
+			str+=USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN.toString()+" for all";
+		} else {								
+			Integer nbAccessibleCatalogs=0;
+			for (ICatalog c : Globals.Get().getCatalogsMgr().getCatalogsList()) {
+				if (this.getUserCatalogAccessRights(c.getId())!=USER_CATALOG_ACCESSRIGHTS.NONE) {
+					nbAccessibleCatalogs++;
+					str +="\n\t\t \""+c.getName()+"\" : "+this.getUserCatalogAccessRights(c.getId()).toString();				
+				}
+			}
+			
+			if (nbAccessibleCatalogs==0) { str+=USER_CATALOG_ACCESSRIGHTS.NONE.toString()+" for all"; }
+		}
+		return str;
 	}
 
 	

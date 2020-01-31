@@ -16,7 +16,8 @@ See full version of LICENSE in <https://fsf.org/>
 */
 
 /**
- * Implements auto-refresh mechanism
+ * Implements auto-refresh mechanism to synchronize an object to DB contents
+ * if change detected based on DB timestamp. 
  * @author laurentml
  *
  */

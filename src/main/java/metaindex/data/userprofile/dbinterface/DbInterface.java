@@ -56,13 +56,16 @@ public class DbInterface  extends SQLDatabaseInterface<IUserProfileData>
 	}
 	
 	// Access Rights
-	public SQLReadStmt<IUserProfileData> getLoadAccessRightsFromDbStmt(List<IUserProfileData> data) throws DataProcessException {
-		return new UserCatalogsAccessRightsLoad(data,getDatasource());
+	public SQLReadStmt<IUserProfileData> getLoadAccessRightsFromDbStmt(List<IUserProfileData> data,Boolean onlyIfRequired) throws DataProcessException {
+		return new UserCatalogsAccessRightsLoad(data,getDatasource(),onlyIfRequired);
 	}
-	public SQLReadStmt<IUserProfileData> getLoadAccessRightsFromDbStmt(IUserProfileData data) throws DataProcessException {
+	public SQLReadStmt<IUserProfileData> getLoadAccessRightsFromDbStmt(IUserProfileData data,Boolean onlyIfRequired) throws DataProcessException {
 		List<IUserProfileData> list = new ArrayList<IUserProfileData>();
 		list.add(data);
-		return getLoadAccessRightsFromDbStmt(list);
+		return getLoadAccessRightsFromDbStmt(list,onlyIfRequired);
+	}
+	public SQLReadStmt<IUserProfileData> getLoadAccessRightsFromDbStmt(IUserProfileData data) throws DataProcessException {
+		return getLoadAccessRightsFromDbStmt(data,false);
 	}
 	public SQLWriteStmt<IUserProfileData> getSetUserAccessRightsIntoDbStmt(IUserProfileData data, ICatalog catalog) throws DataProcessException {
 		return new CreateOrUpdateUserCatalogsAccessRights(data,catalog,getDatasource());

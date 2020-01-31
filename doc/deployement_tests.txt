@@ -19,4 +19,6 @@ Deloyement test
 - docs quota (unary and by csv import)
 - FTP disconnect on quota exceeded
 - FTP authorized operations depending on access rigths
-- auto-reload when DB updated on catalogs and user basic info
+- auto-reload when DB updated on catalogs details
+- auto-reload when addind a new user from PMA
+- auto-reload when DB updated on user details,role,catalog_rights
