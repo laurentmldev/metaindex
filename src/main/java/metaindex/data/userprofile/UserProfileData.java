@@ -102,22 +102,35 @@ public class UserProfileData implements IUserProfileData
 	public void setId(Integer id) { _userId=id; }
 	
 	@Override
-	public void logIn(IUserProfileData activeUser, String useremail) throws DataProcessException {
+	public void logIn() throws DataProcessException {
 		if (this.getHttpSessionId().length()==0) {
-			throw new DataProcessException("SessionId not set for user. Unable to log-in him.");
+			throw new DataProcessException("SessionId not set for user. Unable to login.");
 		}
-		this.setName(useremail);
-		this._isLoggedIn=true;
+		try {
+			this.acquireLock();
+			this._isLoggedIn=true;
+			_dbAutoRefreshProcessing.start();
+			this.releaseLock();
+		} catch(InterruptedException e) {
+			this.releaseLock();
+			throw new DataProcessException("Unable to perform user login : "+e.getMessage(),e);
+		}
+		
+		log.info("User '"+this.getName()+"' logged-in");
+		
 	}
 	
 	@Override
-	/// used essentially for websockets usage
-	public void logIn() throws DataProcessException {
-		if (this.getHttpSessionId().length()==0) {
-			throw new DataProcessException("SessionId not set for user. Unable to log-in him.");
+	public void logOut() throws DataProcessException {
+		
+		// stop auto-refresh
+		_dbAutoRefreshProcessing.stopMonitoring();
+		// exit from current catalog if any
+		if (this.getCurrentCatalog()!=null) {
+			this.getCurrentCatalog().quit(this);
 		}
-		this._isLoggedIn=true;
-		_dbAutoRefreshProcessing.start();
+		this._isLoggedIn=false;
+		log.info("User '"+this.getName()+"' logged-out");
 	}
 	
 	@Override
@@ -227,11 +240,18 @@ public class UserProfileData implements IUserProfileData
 	}
 	@Override
 	public void setCurrentCatalog(Integer catalogId) {
-		
-		_selectedCatalog=Globals.Get().getCatalogsMgr().getCatalog(catalogId);
-		
-		// select default filter when entering a catalog
-		this.setCurrentFilter(IFilter.ALL_ITEMS_CATALOG_ID);					
+		try {
+			this.acquireLock();
+			_selectedCatalog=Globals.Get().getCatalogsMgr().getCatalog(catalogId);		
+			// select default filter when entering a catalog
+			this.setCurrentFilter(IFilter.ALL_ITEMS_CATALOG_ID);
+		} catch (InterruptedException e) {
+			_selectedCatalog=null;
+			log.error("For "+this.getName()+" while setting current catalog Id to '"+catalogId+"' : "+e.getMessage(),e);
+			e.printStackTrace();
+		}
+		this.releaseLock();
+
 	}
 	
 	@Override
@@ -468,7 +488,16 @@ public class UserProfileData implements IUserProfileData
 	public Boolean isEnabled() { return _enabled; }
 	
 	@Override
-	public void setEnabled(Boolean enabled) { _enabled=enabled; }
+	public void setEnabled(Boolean enabled) 
+	{ 
+		_enabled=enabled;
+		if (_enabled==false && this.isLoggedIn()) {
+			try { this.logOut(); }
+			catch(DataProcessException e) {
+				log.error("Error while log-out on setEnabled(false) for "+this.getName()+" : "+e.getMessage());
+			}
+		}
+	}
 	
 	@Override
 	public String getDetailsStr() {

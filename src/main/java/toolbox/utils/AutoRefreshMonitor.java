@@ -35,6 +35,10 @@ public class AutoRefreshMonitor extends Thread implements IRunnable {
 	/// to be overriden if needed
 	public Boolean preRefreshTest() { return true; }
 	
+	public void stopMonitoring() {
+		_continueRunning=false;
+	}
+	
 	@Override
 	public void run() {
 
@@ -46,10 +50,12 @@ public class AutoRefreshMonitor extends Thread implements IRunnable {
 					_objToRefresh.acquireLock();
 					Boolean wasUpdated = _objToRefresh.updateContentsIfNeeded();
 					if (wasUpdated) {
-						log.info("Reloaded DB-Data for Catalog "+_objToRefresh.getDetailsStr() );
+						log.info("Reloaded DB-Data for "+_objToRefresh.getDetailsStr() );
 					} 
+					//else { log.info("No reloaded DB-Data for "+_objToRefresh.getDetailsStr() ); }
 					_objToRefresh.releaseLock();
 				}
+				
 				
 			} catch (InterruptedException|DataProcessException  e) {
 				log.error("While performing cyclic update check on "+_objToRefresh.getId()+ ": "+e.getMessage());

@@ -31,8 +31,12 @@ using metaindex.fr URL for spring XSD, otherwise it does not work offline :
 				always-use-default-target='true'
 				authentication-failure-url="/loginform?error"
 				login-processing-url="/loginprocess" />
-	<logout logout-url="/logoutprocess"  logout-success-url="/loginform?logout" />
+	<logout invalidate-session="true" logout-url="/logoutprocess"  logout-success-url="/loginform?logout" />
 	<access-denied-handler error-page="/public/commons/errors/403.html" />	
+	
+	<session-management invalid-session-url="/loginform?expired">
+		<concurrency-control max-sessions="1" />
+	</session-management>
 </http>
 
   <authentication-manager>  

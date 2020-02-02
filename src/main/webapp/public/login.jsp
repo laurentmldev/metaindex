@@ -62,6 +62,7 @@ onkeypress="if (event.which==13||event.keycode==13) {
                   	<div class="form-group">
 	                  	<c:if test="${param.error != null}"> <p><s:text name="session.loginerror" /></p></c:if>
 						<c:if test="${param.logout != null}"><p><s:text name="session.logoutmessage" /></p></c:if>
+						<c:if test="${param.expired != null}"><p><s:text name="session.expiredmessage" /></p></c:if>
 					</div>
 					
                     <div class="form-group">
@@ -81,13 +82,14 @@ onkeypress="if (event.which==13||event.keycode==13) {
                     </a>
                     <hr>                 
                   </form>
-                  
+                  <!--
                   <div class="text-center">
                     <a class="small" href="forgot-password.html">Forgot Password?</a>
                   </div>
                   <div class="text-center">
                     <a class="small" href="register.html">Create an Account!</a>
                   </div>
+                  -->
                  </c:if>
                 </div>
                 

@@ -87,9 +87,9 @@ public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProc
     public void setCurrentDocumentId(Integer docId);
     
     public void logIn() throws DataProcessException;
-    public void logIn(IUserProfileData activeUser, String useremail) throws DataProcessException;
-	public boolean isLoggedIn();
-	
+    public boolean isLoggedIn();
+	public void logOut() throws DataProcessException;
+    
 	public String getHttpSessionId();
 	public void setHttpSessionId(String sId);
 	

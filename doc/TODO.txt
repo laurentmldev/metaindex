@@ -3,6 +3,8 @@
 Priority 1:
 -----------
 
+#9 need to handle session time-out callback to kick-out user from catalogs registration when timed-out or logged-out
+	- log-out user when autorefresh set enabled to false
    
 #7 presentation page
 
@@ -23,9 +25,8 @@ Priority 2:
 
 #16 removing a term present in several perspectives, it removes it from the second perspective while user have clicked on the first perspective ones
 
-#9 need to handle session time-out callback to kick-out user from catalogs registration when timed-out or logged-out
 
-log-out user when auto refresh set enabled to false
+
 
 
 #14 check user inputs : ensure no special nor space characters and are not empty
