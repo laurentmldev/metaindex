@@ -3,17 +3,12 @@
 Priority 1:
 -----------
 
-#9 need to handle session time-out callback to kick-out user from catalogs registration when timed-out or logged-out
-	- log-out user when autorefresh set enabled to false
+
    
 #7 presentation page
 
 #8 prepare demo data, catalog/user present by default
-
-#10 : ? once logged out by time-out, log-in again leads to server error in the log :
-		[ERROR] 2019-11-26 22:04:37.008 [clientInboundChannel-165] WsControllerUser - Unable to register 'laurentmlcontact-metaindex@yahoo.fr' on websockets API : toolbox.exceptions.DataProcessException: No logged user found for sessionId=17D057D02C30B14A409E42CC52EE048B.
-		
-
+	
 #15 adapt GUI to access rights (remove forbidden actions)
 
 #17 language properties file in español
@@ -72,7 +67,13 @@ Backlog:
 
 Done:
 -----
-
+#10 : ? once logged out by time-out, log-in again leads to server error in the log :
+		[ERROR] 2019-11-26 22:04:37.008 [clientInboundChannel-165] WsControllerUser - Unable to register 'laurentmlcontact-metaindex@yahoo.fr' on websockets API : toolbox.exceptions.DataProcessException: No logged user found for sessionId=17D057D02C30B14A409E42CC52EE048B.
+		--> solved with #9 hopefully
+		
+#9 need to handle session time-out callback to kick-out user from catalogs registration when timed-out or logged-out
+	- log-out user when autorefresh set enabled to false
+	
 #13 when creating a new element, list of "sort" dropdown gets append with duplicated contents
 
 #18 consolidate FTP server files management:
