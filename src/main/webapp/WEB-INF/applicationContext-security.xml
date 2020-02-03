@@ -15,7 +15,9 @@ using metaindex.fr URL for spring XSD, otherwise it does not work offline :
 									 >
 
 <http>
+	
 	<intercept-url pattern="/**" requires-channel="https" />	
+	<intercept-url pattern="/welcome" access="permitAll" />
 	<intercept-url pattern="/loginform" access="permitAll" />
 	<intercept-url pattern="/loginprocess" access="permitAll" />
 	<intercept-url pattern="/logoutprocess" access="permitAll" />
@@ -30,7 +32,7 @@ using metaindex.fr URL for spring XSD, otherwise it does not work offline :
 				default-target-url='/Catalogs'
 				always-use-default-target='true'
 				authentication-failure-url="/loginform?error"
-				login-processing-url="/loginprocess" />
+				login-processing-url="welcome" />
 	<logout invalidate-session="true" logout-url="/logoutprocess"  logout-success-url="/loginform?logout" />
 	<access-denied-handler error-page="/public/commons/errors/403.html" />	
 	

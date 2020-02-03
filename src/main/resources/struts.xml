@@ -21,18 +21,10 @@
  <exception-mapping exception="java.lang.Exception" result="BeanProcess_ERROR" />  
 </global-exception-mappings>
 
-
-		<action name="xeditable" class="metaindex.data.userprofile.beans.BeanProfile">
-			<result name="BeanProcess_SUCCESS" >/public/tests/xeditable.jsp</result>  		
-		</action>
-		<action name="confirmation" class="metaindex.data.userprofile.beans.BeanProfile">
-			<result name="BeanProcess_SUCCESS" >/public/tests/bootstrap-confirmation.jsp</result>  		
-		</action>
 		
-		<action name="leftbar" class="metaindex.data.userprofile.beans.BeanProfile">
-			<result name="BeanProcess_SUCCESS" >/public/tests/leftbar.jsp</result>  		
+		<action name="welcome" class="metaindex.data.userprofile.beans.BeanProfile">
+			<result name="BeanProcess_SUCCESS" >/public/welcome.jsp</result>			
 		</action>
-		
 		<action name="" class="metaindex.data.userprofile.beans.BeanProfile">
 			<result name="BeanProcess_SUCCESS" >/public/login.jsp</result>			
 		</action>

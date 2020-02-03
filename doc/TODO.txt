@@ -33,10 +33,6 @@ Priority 2:
 
 Backlog:
 --------
-#4 phpmyadmin through SSL
-#5 Kibana SSL proxy 
-- ftp-server : properly close connection when quitting
-
 - design definition in Latek
 - waiting icon while loading real name of link 
 - when deleting a document, filters selection is cleared
@@ -75,6 +71,11 @@ Done:
 	- log-out user when autorefresh set enabled to false
 	
 #13 when creating a new element, list of "sort" dropdown gets append with duplicated contents
+
+#4 phpmyadmin through SSL
+#5 Kibana SSL proxy 
+- ftp-server : properly close connection when quitting
+
 
 #18 consolidate FTP server files management:
     - ftp  server restarted for each relog with new ftp server --> not reproduceable

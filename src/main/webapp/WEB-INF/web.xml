@@ -102,12 +102,12 @@
 
     <session-config>
         <session-timeout>
-            1
+            10
         </session-timeout>
     </session-config>
     
   <welcome-file-list>
-    <welcome-file>redirect.jsp</welcome-file>
+    <welcome-file>welcome.jsp</welcome-file>
   </welcome-file-list>
   
   <context-param>
