@@ -31,6 +31,9 @@
 		<action name="loginform" class="metaindex.data.userprofile.beans.BeanProfile">
 			<result name="BeanProcess_SUCCESS" >/public/login.jsp</result>  		
 		</action>  		
+		<action name="loginprocess" class="metaindex.data.userprofile.beans.BeanProfile">
+			<result name="BeanProcess_SUCCESS" >/secure/catalogs/main.jsp</result>  		
+		</action>  		
 		<action name="Catalogs" class="metaindex.data.userprofile.beans.BeanProfile">
 			<result name="BeanProcess_SUCCESS" >/secure/catalogs/main.jsp</result>  			
 		</action> 

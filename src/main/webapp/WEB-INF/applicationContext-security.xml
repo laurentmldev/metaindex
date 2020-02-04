@@ -29,10 +29,10 @@ using metaindex.fr URL for spring XSD, otherwise it does not work offline :
 	
 	
 	<form-login login-page='/loginform?secure' 
-				default-target-url='/Catalogs'
+				default-target-url='/welcome'
 				always-use-default-target='true'
 				authentication-failure-url="/loginform?error"
-				login-processing-url="welcome" />
+				login-processing-url="/loginprocess" />
 	<logout invalidate-session="true" logout-url="/logoutprocess"  logout-success-url="/loginform?logout" />
 	<access-denied-handler error-page="/public/commons/errors/403.html" />	
 	

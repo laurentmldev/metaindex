@@ -135,3 +135,28 @@ height:40px;
 }
 .mx_dyndropdown_content a:hover {background-color: #f1f1f1}
 .show {display:block;} 
+
+.mx_welcome_card_title {
+	font-size:1.5rem;
+}
+
+.mx_welcome_card {
+	background:#def;
+}
+.mx_welcome_card_body {
+	font-size:0.9rem;
+}
+.mx_welcome_card_body_link {
+	color:green;
+}
+.mx_welcome_card_body_link:hover {
+	color:#ecad79;
+}
+.mx_welcome_capture_img {
+	max-height:15vw;
+	margin-top:1rem;
+	border:3px solid grey;
+	border-radius:2px;
+	-webkit-box-shadow: 0 0 0.4rem 0.5rem grey;
+  	box-shadow: 0 0 0.4rem 0.05rem grey;
+}
