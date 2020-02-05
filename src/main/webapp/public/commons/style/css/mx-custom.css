@@ -2,6 +2,11 @@
 
 @charset "UTF-8";
 
+.copyleft {
+  display:inline-block;
+  transform: rotate(180deg);
+}
+
 .maintenance {
 	font-size : 2rem;
 	color: orange;
@@ -137,15 +142,30 @@ height:40px;
 .show {display:block;} 
 
 .mx_welcome_card_title {
-	font-size:1.5rem;
+	font-size:2vw;
 }
 
 .mx_welcome_card {
-	background:#def;
+	background:#def;	
+	max-width:50vw;
+}
+.mx_welcome_card:hover {
+	-webkit-box-shadow: 0 0 0.4rem 0.5rem white;
+  	box-shadow: 0 0 0.4rem 0.05rem white;  	
 }
 .mx_welcome_card_body {
 	font-size:0.9rem;
+	display: none;
+	height: 0;
+	overflow: hidden;
+	transition: height 250ms ease-in-out;
 }
+
+.mx_welcome_card_body.is-visible {
+	display: block;
+	height: auto;
+}
+
 .mx_welcome_card_body_link {
 	color:green;
 }
@@ -153,10 +173,30 @@ height:40px;
 	color:#ecad79;
 }
 .mx_welcome_capture_img {
-	max-height:15vw;
-	margin-top:1rem;
+	max-height:8vw;	
 	border:3px solid grey;
 	border-radius:2px;
 	-webkit-box-shadow: 0 0 0.4rem 0.5rem grey;
   	box-shadow: 0 0 0.4rem 0.05rem grey;
+  	position: absolute;
+	z-index: 10000;
+	margin: 2rem;
+}
+.mx_welcome_card_ul li {
+	text-align:left;
+	word-wrap:normal;
+	width:100%;
+	margin-bottom:0.5rem;
+}
+.mx_welcome_card_li_contents {
+	font-family: sans-serif;
+	font-weight:normal;
+	margin-left:0.3rem;
+}
+.mx_welcome_card_ul li:before {
+	/*
+	font-family: 'FontAwesome';
+    content: '\f067';
+    margin:0 5px 0 -15px;*/
+    color: #0a0;    
 }
