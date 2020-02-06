@@ -25,6 +25,25 @@
   <s:include value="/public/commons/style/style_global.jsp" />  							 
 
 	<script type="text/javascript">
+		function startRotate(elem) {
+			let periodMs=100;
+			let stepNb=0;
+			let initialScale=1;
+			function rotate() {
+				stepNb++;
+				let curScale=initialScale*stepNb;//(stepNb%20)/20
+				console.log('scale='+curScale)
+				
+				elem.style.transform = scale(curScale);
+				window.setTimeout(rotate, speedMs);
+			}
+			
+			rotate();
+		}
+		
+		
+	</script>
+	<script type="text/javascript">
 	
 	speedMs=250;
 	// Show an element
@@ -84,10 +103,14 @@
 	</script>
 </head>
 
-<body class="bg-gradient-primary" style="background-color:#fff;background-image:none;">
+<body class="bg-gradient-primary" style="background-color:#fff;background-image:none;"
+	onload="startRotate(document.getElementById('mxTitle_X'));">
 
 
-<img src="public/commons/media/img/mx-gui-capture.jpg" class="mx_welcome_capture_img" style="margin-top:2rem;"/>
+	<img src="public/commons/media/img/mx-gui-capture.jpg" class="mx_welcome_capture_img" />
+	
+	
+		 		
   <div class="container" style="width:100%;"  >
     
     <div class="row justify-content-center"  >
@@ -96,14 +119,11 @@
           <div class="card-body p-0">            
             <div class="row">
             	
-            	<div class="app-title" style="padding:0;margin:0;width:100%">M<span class="app-title2">etainde</span>X<span 
-            		style="text-shadow:1px 1px 1px;vertical-align: super; font-size:1.5rem;">&reg;</span>
-            		<div class="app-title" style="padding:0;margin:0;font-size:2vw;text-shadow:none">The OpenSource Data Toolbox</div>
-            		<div class="app-title" 
-	            	style="text-shadow:none;color:grey;font-size:0.8rem;padding:0;margin:0" >
-	            	<s:text name="globals.copyright"/><br/>
-	            	
-            	</div>
+            	<div class="app-title" style="font-size:6vw;padding:0;margin:0;width:100%">M<span class="app-title2" >etainde</span><span id="mxTitle_X" >X</span>
+            		<div class="app-title" style="padding:0;margin:0;font-size:2vw;text-shadow:none">The OpenSource Data Toolbox
+            		<br/><a href="#"  class="btn btn-sm btn-info mx_welcome_button">Try Live Demo !</a>
+            		</div>
+            			
             	</div>
             	
             	    
@@ -111,21 +131,21 @@
           </div>
         </div>
         
-        
+        <div style="padding-left:6rem;padding-right:6rem;"><center>
          <div class="row" style="width:100vw;">
          	
   			<div class="col-sm-3">  
    				<div class="card mb-3 mx_welcome_card">    					
-				    <div class="card-body "
-				    	onmouseenter="show(document.getElementById('control.body'));"
-  						onmouseleave="hide(document.getElementById('control.body'));">
+				    <div class="card-body " 
+				    	onmouseenter="//show(document.getElementById('control.body'));"
+  						onmouseleave="//hide(document.getElementById('control.body'));">
 				      <p class="card-text mx_welcome_card_title text-center">Control</p>
-				      <div id="control.body" class="mx_welcome_card_body" style="display:none">
+				      <div id="control.body" class="mx_welcome_card_body" >
 					      <ul class="mx_welcome_card_ul fa-ul">
 					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Define data model</span></li>
 					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Customize visualization</span></li>
-					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Upload from CSV file</span></li>
-					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Store and use files in embedded FTP server</span></li>
+					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Import contents CSV file</span></li>
+					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Embedded storage server</span></li>
 					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Link data items with each other</span></li>					      	
 					      </ul>
 				      </div>
@@ -135,10 +155,10 @@
 			  <div class="col-sm-3">  
    				<div class="card mb-3 mx_welcome_card">    					
 				    <div class="card-body "
-				    	onmouseenter="show(document.getElementById('collab.body'));"
-  						onmouseleave="hide(document.getElementById('collab.body'));">
+				    	onmouseenter="//show(document.getElementById('collab.body'));"
+  						onmouseleave="//hide(document.getElementById('collab.body'));">
 				      <p class="card-text mx_welcome_card_title text-center">Collaborate</p>
-				      <div id="collab.body" class="mx_welcome_card_body" style="display:none">
+				      <div id="collab.body" class="mx_welcome_card_body" >
 					      <ul class="mx_welcome_card_ul fa-ul">
 					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">All the team can create and use data</span></li>
 					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Control who can see, edit or delete data</span></li>
@@ -153,14 +173,14 @@
 			  <div class="col-sm-3">			  	
 			  	 <div class="card mb-3 mx_welcome_card" >
 				    <div class="card-body "
-				    	onmouseenter="show(document.getElementById('explore.body'));"
-  						onmouseleave="hide(document.getElementById('explore.body'));">
+				    	onmouseenter="//show(document.getElementById('explore.body'));"
+  						onmouseleave="//hide(document.getElementById('explore.body'));">
 				      <p class="card-text mx_welcome_card_title text-center">Explore</p>
-				      <div id="explore.body" class="mx_welcome_card_body" style="display:none">
+				      <div id="explore.body" class="mx_welcome_card_body" >
 					      <ul class="mx_welcome_card_ul fa-ul">
 					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Powerful <a class="mx_welcome_card_body_link" href="http://lucene.org">Lucene</a> Search Queries</span></li>
 					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Lightning-fast search with world-famous <a class="mx_welcome_card_body_link" href="http://elk.org">Elastic-Search</a> engine</span></li>
-					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Save and Reuse your favorite queries</span></li>
+					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Save and combine queries</span></li>
 					      </ul>
 				      </div>
 				    </div>
@@ -171,10 +191,10 @@
 			  <div class="col-sm-3">			  	
 			   	 <div class="card mb-3 mx_welcome_card" >
 				    <div class="card-body "
-				    	onmouseenter="show(document.getElementById('compute.body'));"
-  						onmouseleave="hide(document.getElementById('compute.body'));">
+				    	onmouseenter="//show(document.getElementById('compute.body'));"
+  						onmouseleave="//hide(document.getElementById('compute.body'));">
 				      <p class="card-text mx_welcome_card_title text-center">Compute</p>
-				      <div id="compute.body" class="mx_welcome_card_body" style="display:none">
+				      <div id="compute.body" class="mx_welcome_card_body" >
 					      <ul class="mx_welcome_card_ul fa-ul">
 				      			<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Statistics graphs with world-famous <a class="mx_welcome_card_body_link" href="http://elk.org">Kibana</a></span></li>
 				      			<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Connection graphs with auto-generated VEGA graphs</span></li>
@@ -191,6 +211,10 @@
 				
 				   
 	  </div>
+	  </center></div>
+	  <div class="app-title"  style="text-shadow:none;color:grey;font-size:0.8rem;padding:0;margin:0" >
+	            		<s:text name="globals.copyright"/><br/>	            	
+            		</div>
 	</div>
 
 
