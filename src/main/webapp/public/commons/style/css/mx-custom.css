@@ -177,6 +177,14 @@ height:40px;
 .mx_welcome_card_body_link:hover {
 	color:#ecad79;
 }
+
+.up-right {
+	position: absolute;
+	z-index: 10000;
+	margin-top:3vh;
+	margin-left:87vw;
+	margin-right:30px;	
+}
 .mx_welcome_capture_img {
 	max-height:11vw;	
 	border:3px solid grey;
@@ -185,10 +193,11 @@ height:40px;
   	position: absolute;
 	z-index: 10000;
 	margin: 2rem;
-	margin-top:17vh;
+	margin-top:7vh;
 	margin-left:6vw;
 	/*transform: rotate(-3deg);*/
 }
+
 .mx_welcome_card_ul li {
 	text-align:left;
 	word-wrap:normal;
@@ -208,18 +217,48 @@ height:40px;
     color: #0a0;    
 }
 
-.mx_welcome_button {
-	border-radius:5px;
-	color:#eee;
-	margin:0;
-	margin-top:1rem;
-	margin-bottom:0.5rem;
+.mx_welcome_livedemo_btn {
+	margin:0.3rem;
+	border-radius:50px;
+	color:#eee;	
 	font-size:1rem;
-	padding:1rem;
-	box-shadow: 0.3rem 0.3rem 0.4rem 0.04rem #aaa;
+	box-shadow: 0.2rem 0.2rem 0.3rem 0.04rem #aaa;		
 }
-.mx_welcome_button:hover {
-	color:white;
-	font-size:1.5rem;
+
+.mx_welcome_livedemo_btn:hover {
+	color:#fff;	
+	/*background:#567;*/
+	border-color:#fff;
+	border-radius:50px;
 	
+}
+.mx_welcome_signin_btn {
+	margin:0.3rem;
+	box-shadow: 0.2rem 0.2rem 0.3rem 0.04rem #aaa;
+  	border-radius:30px;
+}
+
+.scale,.scale-color-white,.scale-color-blue {	
+	transition: all 0.3s ease-in-out;
+}
+.scale:hover {	
+	transform:scale(1.3);	
+}
+.scale-color-white:hover {	
+	color:white;
+}
+.scale-color-blue:hover {	
+	color:#2f86d2;
+	font-size:1.1rem;
+	text-shadow:2px 3px 6px #333;
+	cursor:pointer;	
+}
+
+.mx-copyright {
+	font-weight:lighter;
+	text-shadow:none;
+	color:grey;
+	font-size:0.8rem;
+	padding:0;
+	margin:2rem;
 }

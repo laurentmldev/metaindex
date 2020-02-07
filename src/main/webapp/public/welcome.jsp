@@ -25,26 +25,7 @@
   <s:include value="/public/commons/style/style_global.jsp" />  							 
 
 	<script type="text/javascript">
-		function startRotate(elem) {
-			let periodMs=100;
-			let stepNb=0;
-			let initialScale=1;
-			function rotate() {
-				stepNb++;
-				let curScale=initialScale*stepNb;//(stepNb%20)/20
-				console.log('scale='+curScale)
-				
-				elem.style.transform = scale(curScale);
-				window.setTimeout(rotate, speedMs);
-			}
-			
-			rotate();
-		}
-		
-		
-	</script>
-	<script type="text/javascript">
-	
+	/*
 	speedMs=250;
 	// Show an element
 	var show = function (elem) {
@@ -99,17 +80,18 @@
 		show(elem);
 
 	};
-
+*/
 	</script>
 </head>
 
-<body class="bg-gradient-primary" style="background-color:#fff;background-image:none;"
-	onload="startRotate(document.getElementById('mxTitle_X'));">
+<body class="bg-gradient-primary" style="background-color:#fff;background-image:none;" >
 
-
+	
 	<img src="public/commons/media/img/mx-gui-capture.jpg" class="mx_welcome_capture_img" />
-	
-	
+	<div class="up-right">
+		<a href="loginform"  class="btn btn-sm btn-info mx_welcome_signin_btn mx_welcome_livedemo_btn scale " >Sign In</a>
+		<a href="/demo"  class="btn btn-sm btn-info mx_welcome_livedemo_btn scale" >Try Live Demo !</a>
+	</div>
 		 		
   <div class="container" style="width:100%;"  >
     
@@ -119,14 +101,12 @@
           <div class="card-body p-0">            
             <div class="row">
             	
-            	<div class="app-title" style="font-size:6vw;padding:0;margin:0;width:100%">M<span class="app-title2" >etainde</span><span id="mxTitle_X" >X</span>
-            		<div class="app-title" style="padding:0;margin:0;font-size:2vw;text-shadow:none">The OpenSource Data Toolbox
-            		<br/><a href="#"  class="btn btn-sm btn-info mx_welcome_button">Try Live Demo !</a>
-            		</div>
+            	<div class="app-title" style="font-size:6vw;padding:0;margin:0;width:100%"><span class="scale-color-white">M</span><span class="app-title2 scale-color-white" >etainde</span><span class="scale-color-white">X</span>
+            		<div class="app-title" style="padding:0;margin:0;font-size:2vw;text-shadow:none">The OpenSource Data Toolbox</div>
             			
             	</div>
             	
-            	    
+        	    	    
             </div>
           </div>
         </div>
@@ -142,11 +122,11 @@
 				      <p class="card-text mx_welcome_card_title text-center">Control</p>
 				      <div id="control.body" class="mx_welcome_card_body" >
 					      <ul class="mx_welcome_card_ul fa-ul">
-					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Define data model</span></li>
-					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Customize visualization</span></li>
-					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Import contents CSV file</span></li>
-					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Embedded storage server</span></li>
-					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Link data items with each other</span></li>					      	
+					      	<li class="fa-li fa fa-check scale-color-blue"><span class="mx_welcome_card_li_contents">Define data model</span></li>
+					      	<li class="fa-li fa fa-check scale-color-blue"><span class="mx_welcome_card_li_contents">Customize visualization</span></li>
+					      	<li class="fa-li fa fa-check scale-color-blue"><span class="mx_welcome_card_li_contents">Import contents CSV file</span></li>
+					      	<li class="fa-li fa fa-check scale-color-blue"><span class="mx_welcome_card_li_contents">Embedded storage server</span></li>
+					      	<li class="fa-li fa fa-check scale-color-blue"><span class="mx_welcome_card_li_contents">Link data items with each other</span></li>					      	
 					      </ul>
 				      </div>
 				    </div>
@@ -160,11 +140,11 @@
 				      <p class="card-text mx_welcome_card_title text-center">Collaborate</p>
 				      <div id="collab.body" class="mx_welcome_card_body" >
 					      <ul class="mx_welcome_card_ul fa-ul">
-					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">All the team can create and use data</span></li>
-					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Control who can see, edit or delete data</span></li>
-					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Get notified when data has changed</span></li>
-					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Trace who changed what and when</span></li>
-					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Multi-language (French,English,Spanish, more to come ...)</span></li>					      	
+					      	<li class="fa-li fa fa-check scale-color-blue"><span class="mx_welcome_card_li_contents">All the team can create and use data</span></li>
+					      	<li class="fa-li fa fa-check scale-color-blue"><span class="mx_welcome_card_li_contents">Control who can see, edit or delete data</span></li>
+					      	<li class="fa-li fa fa-check scale-color-blue"><span class="mx_welcome_card_li_contents">Get notified when data has changed</span></li>
+					      	<li class="fa-li fa fa-check scale-color-blue"><span class="mx_welcome_card_li_contents">Trace who changed what and when</span></li>
+					      	<li class="fa-li fa fa-check scale-color-blue"><span class="mx_welcome_card_li_contents">Multi-language (French,English,Spanish, more to come ...)</span></li>					      	
 					      </ul>
 				      </div>
 				    </div>
@@ -178,9 +158,9 @@
 				      <p class="card-text mx_welcome_card_title text-center">Explore</p>
 				      <div id="explore.body" class="mx_welcome_card_body" >
 					      <ul class="mx_welcome_card_ul fa-ul">
-					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Powerful <a class="mx_welcome_card_body_link" href="http://lucene.org">Lucene</a> Search Queries</span></li>
-					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Lightning-fast search with world-famous <a class="mx_welcome_card_body_link" href="http://elk.org">Elastic-Search</a> engine</span></li>
-					      	<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Save and combine queries</span></li>
+					      	<li class="fa-li fa fa-check scale-color-blue"><span class="mx_welcome_card_li_contents">Powerful <a class="mx_welcome_card_body_link" href="http://lucene.org">Lucene</a> Search Queries</span></li>
+					      	<li class="fa-li fa fa-check scale-color-blue"><span class="mx_welcome_card_li_contents">Lightning-fast search with world-famous <a class="mx_welcome_card_body_link" href="http://elk.org">Elastic-Search</a> engine</span></li>
+					      	<li class="fa-li fa fa-check scale-color-blue"><span class="mx_welcome_card_li_contents">Save and combine queries</span></li>
 					      </ul>
 				      </div>
 				    </div>
@@ -196,9 +176,9 @@
 				      <p class="card-text mx_welcome_card_title text-center">Compute</p>
 				      <div id="compute.body" class="mx_welcome_card_body" >
 					      <ul class="mx_welcome_card_ul fa-ul">
-				      			<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Statistics graphs with world-famous <a class="mx_welcome_card_body_link" href="http://elk.org">Kibana</a></span></li>
-				      			<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Connection graphs with auto-generated VEGA graphs</span></li>
-				      			<li class="fa-li fa fa-check"><span class="mx_welcome_card_li_contents">Integrated Kibana panels into your main visualization</span></li> 
+				      			<li class="fa-li fa fa-check scale-color-blue"><span class="mx_welcome_card_li_contents">Statistics graphs with world-famous <a class="mx_welcome_card_body_link" href="http://elk.org">Kibana</a></span></li>
+				      			<li class="fa-li fa fa-check scale-color-blue"><span class="mx_welcome_card_li_contents">Connection graphs with auto-generated VEGA graphs</span></li>
+				      			<li class="fa-li fa fa-check scale-color-blue"><span class="mx_welcome_card_li_contents">Integrated Kibana panels into your main visualization</span></li> 
 				      		</ul>
 				      </div>
 				    </div>
@@ -212,9 +192,7 @@
 				   
 	  </div>
 	  </center></div>
-	  <div class="app-title"  style="text-shadow:none;color:grey;font-size:0.8rem;padding:0;margin:0" >
-	            		<s:text name="globals.copyright"/><br/>	            	
-            		</div>
+	  <div class="app-title mx-copyright"  ><s:text name="globals.copyright"/></div>
 	</div>
 
 

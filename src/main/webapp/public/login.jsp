@@ -26,7 +26,7 @@
 
 </head>
 
-<body class="bg-gradient-primary"
+<body class=""
 onkeypress="if (event.which==13||event.keycode==13) {
 		document.getElementById('loginform').submit();
 	}"
@@ -76,9 +76,11 @@ onkeypress="if (event.which==13||event.keycode==13) {
                         <label class="custom-control-label" for="customCheck">Remember Me</label>
                       </div>
                     </div-->
-                    <a href="#" class="btn btn-primary btn-user btn-block" onclick="document.getElementById('loginform').submit();">
-                      Login
+                    <center>
+                    <a href="#" class="btn btn-primary btn-user btn-block scale" style="max-width:30%;" onclick="document.getElementById('loginform').submit();">
+                      Sign-in
                     </a>
+                    </center>
                     <hr>                 
                   </form>
                   <!--
@@ -97,8 +99,8 @@ onkeypress="if (event.which==13||event.keycode==13) {
             </div>
         
         	<div class="row">
-            	<div class="app-title" 
-            	style="text-shadow:none;color:grey;font-size:0.8rem;padding:0;margin:2rem;" >
+            	<div class="app-title mx-copyright" 
+            	style="" >
             	<s:text name="globals.copyright"/> - MetaindeX v<s:property value="mxVersion"/></div>
             </div>
           </div>

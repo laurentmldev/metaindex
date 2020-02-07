@@ -10,7 +10,7 @@
         	  style="margin-bottom:22px;margin-left:22px;max-width:50%;" >
         </div>
         <div class="container my-auto">
-          <div class="copyright text-center my-auto">
+          <div class="mx-copyright text-center my-auto">
             <span><s:text name="globals.copyright"/> - MetaindeX v<s:property value="mxVersion"/></span>
           </div>
         </div>
