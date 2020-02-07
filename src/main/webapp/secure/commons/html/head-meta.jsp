@@ -12,7 +12,7 @@
   <meta name="robots" content="noindex, nofollow">
   <meta name="googlebot" content="noindex, nofollow">
   
-  
+  <link rel="icon" type="image/svg" href="public/commons/media/img/favicon.png">
   	
   <script type="text/javascript" src="${mxurl}public/commons/deps/jquery/jquery.js"></script>
 
