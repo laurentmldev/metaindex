@@ -182,8 +182,9 @@ height:40px;
 	position: absolute;
 	z-index: 10000;
 	margin-top:3vh;
-	margin-left:87vw;
-	margin-right:30px;	
+	/*margin-left:80vw;*/
+	margin-right:20vw;	
+	padding:2rem;
 }
 .mx_welcome_capture_img {
 	max-height:11vw;	
@@ -209,6 +210,18 @@ height:40px;
 	font-weight:normal;
 	margin-left:0.3rem;
 }
+.mx_welcome_card_details {
+	font-family: sans-serif;
+	font-weight:normal;
+	margin-left:0.3rem;
+	text-shadow:none;
+	color:grey;
+	background:#eee;
+	border-radius:2px;
+	padding:0.5rem;
+	margin-top:0.5rem;
+}
+
 .mx_welcome_card_ul li:before {
 	/*
 	font-family: 'FontAwesome';
@@ -217,28 +230,30 @@ height:40px;
     color: #0a0;    
 }
 
-.mx_welcome_livedemo_btn {
-	margin:0.3rem;
-	border-radius:50px;
-	color:#eee;	
-	font-size:1rem;
-	box-shadow: 0.2rem 0.2rem 0.3rem 0.04rem #aaa;		
+.mx_welcome_btn {
+	margin-left:1rem;
+	margin-right:1rem;
+	border-radius:5px;
+	color:#eee;
+	padding:1rem;		
+	font-size:0.8rem;
+			
+	background:#567;
+	border-color:#789;
 }
 
-.mx_welcome_livedemo_btn:hover {
+.mx_welcome_btn:hover {
 	color:#fff;	
 	/*background:#567;*/
 	border-color:#fff;
 	border-radius:50px;
+	box-shadow: 0.2rem 0.2rem 0.3rem 0.04rem #aaa;
+	
+	
 	
 }
-.mx_welcome_signin_btn {
-	margin:0.3rem;
-	box-shadow: 0.2rem 0.2rem 0.3rem 0.04rem #aaa;
-  	border-radius:30px;
-}
 
-.scale,.scale-color-white,.scale-color-blue {	
+.scale,.scale-color-white,.scale-color-blue,.scale-bgcolor-white {	
 	transition: all 0.3s ease-in-out;
 }
 .scale:hover {	
@@ -248,10 +263,13 @@ height:40px;
 	color:white;
 }
 .scale-color-blue:hover {	
-	color:#2f86d2;
-	font-size:1.1rem;
-	text-shadow:2px 3px 6px #333;
-	cursor:pointer;	
+	color:#2f86d2;	
+	text-shadow:2px 3px 6px #666;
+	cursor:default;	
+}
+
+.scale-bgcolor-white:hover {	
+	background:white;
 }
 
 .mx-copyright {

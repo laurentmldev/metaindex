@@ -6,12 +6,13 @@ Priority 1:
 
    
 #7 presentation page
-	
+	- favicon
+	- sign-up form
 	
 #8 prepare demo data, catalog/user present by default
 
 	- user profile picture
-	- favicon
+
 #15 adapt GUI to access rights (remove forbidden actions)
 
 #17 language properties file in español
