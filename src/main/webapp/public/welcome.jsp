@@ -74,7 +74,7 @@
 					      	<li class="fa-li fa fa-check scale-color-blue" 
 					      	onmouseover="clearDetails();this.querySelector('._details_').style.display='block';" >
 						      	<span class="mx_welcome_card_li_contents" >Define data model					      	
-						      		<span class="_details_ mx_welcome_card_details" style="display:none;" >Define what is a documents and what fields describe it</span>
+						      		<span class="_details_ mx_welcome_card_details" style="display:none;" >Define what fields your documents contain</span>
 						      	</span>
 					      	</li>
 					      	<li class="fa-li fa fa-check scale-color-blue"
@@ -87,19 +87,19 @@
 					      	<li class="fa-li fa fa-check scale-color-blue"
 					      			onmouseover="clearDetails();this.querySelector('._details_').style.display='block';" >
 					      			<span class="mx_welcome_card_li_contents">Import contents CSV file
-					      				<span class="_details_ mx_welcome_card_details" style="display:none;">Export your contents or Excel file into standard CSV format for smooth import</span>
+					      				<span class="_details_ mx_welcome_card_details" style="display:none;">Import data from standard CSV file</span>
 					      			</span>
 					      	</li>
 					      	<li class="fa-li fa fa-check scale-color-blue"
 					      			onmouseover="clearDetails();this.querySelector('._details_').style.display='block';">
 					      			<span class="mx_welcome_card_li_contents">Data storage drive
-					    				<span class="_details_ mx_welcome_card_details" style="display:none;">Store images, text, or any type of data related to your project and reference it in the documents</span>
+					    				<span class="_details_ mx_welcome_card_details" style="display:none;">Store images, text, or any type of data related to your project and reference it from the documents</span>
 					    			</span>
 					    	</li>
 					      	<li class="fa-li fa fa-check scale-color-blue"
 					      			onmouseover="clearDetails();this.querySelector('._details_').style.display='block';" >
 					      			<span class="mx_welcome_card_li_contents">Link data items with each other
-					      				<span class="_details_ mx_welcome_card_details" style="display:none;">Reference documents from other documents to build a connection tree</span>
+					      				<span class="_details_ mx_welcome_card_details" style="display:none;">Reference documents from each other to build a connection tree</span>
 					      			</span>
 					      	</li>					      	
 					      </ul>
@@ -120,24 +120,25 @@
 					      	</li>
 					      	<li class="fa-li fa fa-check scale-color-blue" onmouseover="clearDetails();this.querySelector('._details_').style.display='block';">
 					      		<span class="mx_welcome_card_li_contents">Control who can see, edit or delete data
-					      			<span class="_details_ mx_welcome_card_details" style="display:none;" >Assign roles and rights to each user of your project</span>
-					      		</span>
-					      	</li>
-					      	<li class="fa-li fa fa-check scale-color-blue" onmouseover="clearDetails();this.querySelector('._details_').style.display='block';">
-					      		<span class="mx_welcome_card_li_contents">Get notified when data has changed
-					      			<span class="_details_ mx_welcome_card_details" style="display:none;" >Get updated to what is actually performed in the data</span>
-					      		</span>
-					      	</li>
-					      	<li class="fa-li fa fa-check scale-color-blue" onmouseover="clearDetails();this.querySelector('._details_').style.display='block';">
-					      		<span class="mx_welcome_card_li_contents">Trace who changed what and when
-					      			<span class="_details_ mx_welcome_card_details" style="display:none;" >Find when a document has been modified lastly and by who</span>
+					      			<span class="_details_ mx_welcome_card_details" style="display:none;" >Assign roles and access rights to each user of your project</span>
 					      		</span>
 					      	</li>
 					      	<li class="fa-li fa fa-check scale-color-blue" onmouseover="clearDetails();this.querySelector('._details_').style.display='block';">
 					      		<span class="mx_welcome_card_li_contents">Multi-language (French,English,Spanish, more to come ...)
 					      			<span class="_details_ mx_welcome_card_details" style="display:none;" >Define lexic for a user interface adapted to your specific domain</span>
 					      		</span>
-				      		</li>					      	
+				      		</li>	
+					      	<li class="fa-li fa fa-check scale-color-blue" onmouseover="clearDetails();this.querySelector('._details_').style.display='block';">
+					      		<span class="mx_welcome_card_li_contents">Get notified when data has changed
+					      			<span class="_details_ mx_welcome_card_details" style="display:none;" >Get lively updated with what is actually modified in the data</span>
+					      		</span>
+					      	</li>
+					      	<li class="fa-li fa fa-check scale-color-blue" onmouseover="clearDetails();this.querySelector('._details_').style.display='block';">
+					      		<span class="mx_welcome_card_li_contents">Trace who changed what and when
+					      			<span class="_details_ mx_welcome_card_details" style="display:none;" >Find when a document has been changed lastly and by who</span>
+					      		</span>
+					      	</li>
+					      					      	
 					      </ul>
 				      </div>
 				    </div>
@@ -151,7 +152,7 @@
 					      <ul class="mx_welcome_card_ul fa-ul">
 					      	<li class="fa-li fa fa-check scale-color-blue" onmouseover="clearDetails();this.querySelector('._details_').style.display='block';">
 					      			<span class="mx_welcome_card_li_contents" >Powerful <a class="mx_welcome_card_body_link" href="http://lucene.org">Lucene</a> Search Queries
-					      				<span class="_details_ mx_welcome_card_details" style="display:none;" >Rich semantical power in your hand</span>	
+					      				<span class="_details_ mx_welcome_card_details" style="display:none;" >Rich semantical query language</span>	
 					      			</span></li>
 					      	<li class="fa-li fa fa-check scale-color-blue" onmouseover="clearDetails();this.querySelector('._details_').style.display='block';">
 					      			<span class="mx_welcome_card_li_contents">Lightning-fast search with world-famous <a class="mx_welcome_card_body_link" href="http://elk.org">Elastic-Search</a> engine
