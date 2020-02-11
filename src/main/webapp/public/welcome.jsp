@@ -43,7 +43,7 @@
 	 	<div class="app-title mx-copyright" style="text-align:left;width:25vw; border:1px solid grey;padding-left:1rem;padding-top:0.5rem;padding-bottom:0.5rem;"  ><s:text name="globals.copyright"/></div>
 	 	<div style="width:60vw"></div>	 	
 	 	<a href="/demo"  class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" style="background:green;border-color:white;margin-left:3rem;">Try Live Demo Now!</a>
-	 	<a href="loginform"  class="btn btn-sm btn-info mx_welcome_btn scale nav-item no-arrow " style="background:#aaa" >Sign Up</a>
+	 	<!-- a href="loginform"  class="btn btn-sm btn-info mx_welcome_btn scale nav-item no-arrow " style="background:#aaa" >Sign Up</a-->
 	 	<a href="loginform"  class="btn btn-sm btn-info mx_welcome_btn scale nav-item no-arrow " style="background:#777" >Sign In</a>
 	 			
 	 </nav>
