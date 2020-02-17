@@ -13,9 +13,13 @@ See full version of LICENSE in <https://fsf.org/>
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Semaphore;
 
 import javax.sql.DataSource;
 
@@ -35,6 +39,7 @@ import metaindex.data.commons.globals.guilanguage.IGuiLanguagesManager;
 import metaindex.data.commons.globals.guitheme.GuiThemesManager;
 import metaindex.data.commons.globals.guitheme.IGuiThemesManager;
 import metaindex.data.catalog.CatalogsManager;
+import metaindex.data.catalog.ICatalog;
 import metaindex.data.catalog.ICatalogsManager;
 import metaindex.data.userprofile.IUsersManager;
 import metaindex.data.userprofile.UsersManager;
@@ -42,15 +47,21 @@ import toolbox.database.elasticsearch.ESDataSource;
 import toolbox.database.sql.SQLDataSource;
 import toolbox.exceptions.DataAccessException;
 import toolbox.exceptions.DataProcessException;
+import toolbox.utils.AutoRefreshMonitor;
+import toolbox.utils.IAutoRefresh;
 
 @Configuration
 public class Globals {
 
+	private static final String MX_PROPERTIES_FILE = "metaindex.properties";
+	public static final Integer AUTOREFRESH_PERIOD_SEC=5;
+	
 	Properties _mx_config = new Properties();
 	static Map<String, String> env = System.getenv();
 	
 	private static Globals _singleton=new Globals();
 	public static Globals Get() { return _singleton; }
+	
 	
 	/**
 	 * Prop value from config files.
@@ -69,8 +80,7 @@ public class Globals {
 	private Globals() {
 		
 		try {
-			_mx_config.load(getClass().getClassLoader().getResourceAsStream("metaindex.properties"));
-			
+			_mx_config.load(getClass().getClassLoader().getResourceAsStream(MX_PROPERTIES_FILE));
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -112,34 +122,7 @@ public class Globals {
 	}
 	public void init() throws DataProcessException {
 		
-		log.info("###### MetaindeX v"+Globals.GetMxProperty("mx.version")+" ######");
-		log.info("###### mx.="+Globals.GetMxProperty("mx."));
-		log.info("###### mx.host="+Globals.GetMxProperty("mx.host"));
-		log.info("###### mx.protocol="+Globals.GetMxProperty("mx.protocol"));
-		log.info("###### mx.port="+Globals.GetMxProperty("mx.port"));
-		log.info("###### mx.appname="+Globals.GetMxProperty("mx.appname"));
-		log.info("###### mx.ftp.port.range_low="+Globals.GetMxProperty("mx.ftp.port.range_low"));
-		log.info("###### mx.ftp.port.range_high="+Globals.GetMxProperty("mx.ftp.port.range_high"));
-		log.info("###### mx.ftp.passive.range_low="+Globals.GetMxProperty("mx.ftp.passive.range_low"));
-		log.info("###### mx.ftp.passive.range_high="+Globals.GetMxProperty("mx.ftp.passive.range_high"));		
-		log.info("###### ------------------------ KIBANA ------------------------");
-		log.info("###### mx.kibana.host="+Globals.GetMxProperty("mx.kibana.host"));
-		log.info("###### mx.kibana.protocol="+Globals.GetMxProperty("mx.kibana.protocol"));
-		log.info("###### mx.kibana.port="+Globals.GetMxProperty("mx.kibana.port"));
-		log.info("###### mx.kibana.urlparams="+Globals.GetMxProperty("mx.kibana.urlparams"));
-		log.info("###### ------------------------ MySQL ------------------------");
-		log.info("###### mx.sql.host="+Globals.GetMxProperty("mx.sql.host"));
-		log.info("###### mx.sql.port="+Globals.GetMxProperty("mx.sql.port"));
-		log.info("###### mx.sql.dbname="+Globals.GetMxProperty("mx.sql.dbname"));
-		log.info("###### mx.sql.user="+Globals.GetMxProperty("mx.sql.user"));
-		log.info("###### ------------------------ ElastisSearch ------------------------");
-		log.info("###### mx.elk.host="+Globals.GetMxProperty("mx.elk.host"));
-		log.info("###### mx.elk.protocol="+Globals.GetMxProperty("mx.elk.protocol"));
-		log.info("###### mx.elk.port1="+Globals.GetMxProperty("mx.elk.port1"));
-		log.info("###### mx.elk.port2="+Globals.GetMxProperty("mx.elk.port2"));
-		log.info("###### -----------------------------Misc----------------------------");
-		log.info("###### FTP Repository : "+getWebappsFsPath()+"/data");
-		
+		log.info(getDetailsStr());
 						
 		if (_sqlDs==null) {
 			
@@ -207,6 +190,38 @@ public class Globals {
 	}
 	public void setApplicationStatus(APPLICATION_STATUS _applicationStatus) {
 		Globals.Get()._applicationStatus = _applicationStatus;
+	}
+
+	public String getDetailsStr() {
+
+		return   "\n###### MetaindeX v"+Globals.GetMxProperty("mx.version")+" ######"+"\n"
+				+"- mx.status="+Globals.GetMxProperty("mx.status")+" (lively monitored)\n"
+				+"- mx.host="+Globals.GetMxProperty("mx.host")+"\n"
+				+"- mx.protocol="+Globals.GetMxProperty("mx.protocol")+"\n"
+				+"- mx.port="+Globals.GetMxProperty("mx.port")+"\n"
+				+"- mx.appname="+Globals.GetMxProperty("mx.appname")+"\n"
+				+"- mx.ftp.port.range_low="+Globals.GetMxProperty("mx.ftp.port.range_low")+"\n"
+				+"- mx.ftp.port.range_high="+Globals.GetMxProperty("mx.ftp.port.range_high")+"\n"
+				+"- mx.ftp.passive.range_low="+Globals.GetMxProperty("mx.ftp.passive.range_low")+"\n"
+				+"- mx.ftp.passive.range_high="+Globals.GetMxProperty("mx.ftp.passive.range_high")+"\n"	
+				+"- ------------------------ KIBANA ------------------------"+"\n"
+				+"- mx.kibana.host="+Globals.GetMxProperty("mx.kibana.host")+"\n"
+				+"- mx.kibana.protocol="+Globals.GetMxProperty("mx.kibana.protocol")+"\n"
+				+"- mx.kibana.port="+Globals.GetMxProperty("mx.kibana.port")+"\n"
+				+"- mx.kibana.urlparams="+Globals.GetMxProperty("mx.kibana.urlparams")+"\n"
+				+"- ------------------------ MySQL ------------------------"+"\n"
+				+"- mx.sql.host="+Globals.GetMxProperty("mx.sql.host")+"\n"
+				+"- mx.sql.port="+Globals.GetMxProperty("mx.sql.port")+"\n"
+				+"- mx.sql.dbname="+Globals.GetMxProperty("mx.sql.dbname")+"\n"
+				+"- mx.sql.user="+Globals.GetMxProperty("mx.sql.user")+"\n"
+				+"- ------------------------ ElastisSearch ------------------------"+"\n"
+				+"- mx.elk.host="+Globals.GetMxProperty("mx.elk.host")+"\n"
+				+"- mx.elk.protocol="+Globals.GetMxProperty("mx.elk.protocol")+"\n"
+				+"- mx.elk.port1="+Globals.GetMxProperty("mx.elk.port1")+"\n"
+				+"- mx.elk.port2="+Globals.GetMxProperty("mx.elk.port2")+"\n"
+				+"- -----------------------------Misc----------------------------"+"\n"
+				+"- FTP Repository : "+getWebappsFsPath()+"/data"
+			;
 	}
 
 }

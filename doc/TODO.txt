@@ -3,8 +3,16 @@
 Priority 1:
 -----------
 
+when logging -> forward to catalogs instead of back to welcome
+ 
+scrutation of "maintenance" flag in properties
 
-   
+send email to users and admin
+
+build usage statistics into ELK dedicated index
+
+backup/restore a full catalog
+
 #7 presentation page
 	- favicon
 	- sign-up form
@@ -25,9 +33,6 @@ Priority 2:
 #16 removing a term present in several perspectives, it removes it from the second perspective while user have clicked on the first perspective ones
 
 
-
-
-
 #14 check user inputs : ensure no special nor space characters and are not empty
 	- mapping names
 	- perspectives names (and sections and types)
@@ -46,7 +51,6 @@ Backlog:
 - exporter un CSV vide prêt à remplir pour aider l'utilisateur à créer son CSV
 - unable to create a new field right after creating new catalog
 - when enumeration list of a term has only one element, edit mod does not detectit as enum  (dropdown) but as text (text input)
-- backup/restore a full catalog
 - import from Excel file
 - GUI of search bar + XS version
 - onclick image field : redirect to new page

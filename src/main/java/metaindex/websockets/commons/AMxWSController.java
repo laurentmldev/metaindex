@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.commons.globals.Globals;
+import metaindex.data.commons.globals.Globals.APPLICATION_STATUS;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.IUserProfileData.USER_CATALOG_ACCESSRIGHTS;
 import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
@@ -172,7 +173,8 @@ public class AMxWSController {
 	
 	
 	protected Boolean userHasReadAccess(IUserProfileData user) {
-		return 		user.isEnabled() &&
+		return 	Globals.Get().getApplicationStatus()==APPLICATION_STATUS.RUNNING && 
+				user.isEnabled() &&
 				(
 				user.getRole()==USER_ROLE.ROLE_OBSERVER
 				||	user.getRole()==USER_ROLE.ROLE_USER
@@ -180,29 +182,34 @@ public class AMxWSController {
 	}
 	
 	protected Boolean userHasWriteAccess(IUserProfileData user) {
-		return 		user.isEnabled() &&
+		return 	Globals.Get().getApplicationStatus()==APPLICATION_STATUS.RUNNING && 
+				user.isEnabled() &&
 				(user.getRole()==USER_ROLE.ROLE_USER
 				||	user.getRole()==USER_ROLE.ROLE_ADMIN);
 	}
 	protected Boolean userHasAdminAccess(IUserProfileData user) {
-		return 	user.getRole()==USER_ROLE.ROLE_ADMIN;
+		return 	Globals.Get().getApplicationStatus()==APPLICATION_STATUS.RUNNING && 
+				user.getRole()==USER_ROLE.ROLE_ADMIN;
 	}
 
 	protected Boolean userHasReadAccess(IUserProfileData user, ICatalog cat) {
-		return 		user.isEnabled() &&
+		return 		Globals.Get().getApplicationStatus()==APPLICATION_STATUS.RUNNING && 
+				user.isEnabled() &&
 				(user.getUserCatalogAccessRights(cat.getId())==USER_CATALOG_ACCESSRIGHTS.CATALOG_READ
 				||	user.getUserCatalogAccessRights(cat.getId())==USER_CATALOG_ACCESSRIGHTS.CATALOG_EDIT
 				||  user.getUserCatalogAccessRights(cat.getId())==USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN);
 	}
 	
 	protected Boolean userHasWriteAccess(IUserProfileData user, ICatalog cat) {
-		return 		user.isEnabled() &&
+		return 		Globals.Get().getApplicationStatus()==APPLICATION_STATUS.RUNNING && 
+				user.isEnabled() &&
 				(user.getUserCatalogAccessRights(cat.getId())==USER_CATALOG_ACCESSRIGHTS.CATALOG_EDIT
 				||  user.getUserCatalogAccessRights(cat.getId())==USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN);
 	}
 	
 	protected Boolean userHasAdminAccess(IUserProfileData user, ICatalog cat) {
-		return 		user.isEnabled() &&
+		return 		Globals.Get().getApplicationStatus()==APPLICATION_STATUS.RUNNING && 
+				user.isEnabled() &&
 				(user.getUserCatalogAccessRights(cat.getId())==USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN);
 	}
 }

@@ -1,17 +1,13 @@
 <!-- 
-using metaindex.fr URL for spring XSD, otherwise it does not work offline :
-	http://metaindex.fr/spring/schema/beans/spring-beans.xsd
- 	http://metaindex.fr/spring/schema/security/spring-security.xsd
- 	
- Those file shall be served by a third party server (proxy?) in production configuration
+using classpath local versions for spring XSD, otherwise it does not work offline  						 
 -->
 <beans:beans 	xmlns="http://www.springframework.org/schema/security" 
 				xmlns:beans="http://www.springframework.org/schema/beans" 
 				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 				xsi:schemaLocation=" http://www.springframework.org/schema/beans
-									 http://metaindex.fr/spring/schema/beans/spring-beans.xsd
+									 classpath:spring/schema/beans/spring-beans.xsd
 									 http://www.springframework.org/schema/security
-									 http://metaindex.fr/spring/schema/security/spring-security.xsd"
+									 classpath:spring/schema/security/spring-security.xsd"
 									 >
 
 <http>

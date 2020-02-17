@@ -1,0 +1,45 @@
+
+
+### create index 
+curl -XPUT 'http://localhost:9200/myindex?pretty'  --header "content-type: application/JSON"
+
+### delete index 
+curl -XDELETE 'http://localhost:9200/myindex?pretty'  --header "content-type: application/JSON"
+curl -XDELETE 'http://localhost:9200/*?pretty'  --header "content-type: application/JSON"
+
+### get index details
+curl  -XGET http://metaindex.fr:9200/myindex?pretty
+
+
+### queries
+#### match all
+curl  --header "content-type: application/JSON" http://metaindex.fr:9200/myindex/_search?pretty -d '{"query": { "match_all" : {}}}'
+
+#### simple query string
+curl  --header "content-type: application/JSON" http://metaindex.fr:9200/myindex/_search?pretty -d '{"query": { "simple_query_string" : { "query": "bla bla bla"   }}}'
+
+#### query string
+curl  --header "content-type: application/JSON" http://metaindex.fr:9200/myindex/_search?pretty -d '{"query": { "query_string" : { "query": "name:lolo AND age:>30"   }}}'
+
+
+### snapshots
+curl -XGET 'http://localhost:9200/_snapshot?pretty'
+
+# declare snapshot location
+#folder 'repo.path'/my_test_backup_folder must be chmod 755
+curl -XPOST 'http://localhost:9200/_snapshot/my_test_backup?pretty' --header "content-type: application/JSON"  -d '{"type":"fs", "settings": {"location" : "my_test_backup_folder","compress" : true}}'
+
+# create snapshot
+curl -XPOST 'http://localhost:9200/_snapshot/my_test_backup/snap1?pretty'
+ 
+# check snapshot status
+curl -XGET 'http://localhost:9200/_snapshot/my_test_backup/snap1/_status?pretty'
+curl -XGET 'http://localhost:9200/_snapshot/my_test_backup/_all?pretty'
+
+# automatic snapshot name
+# PUT /_snapshot/my_backup/<snapshot-{now/d}>
+PUT /_snapshot/my_backup/%3Csnapshot-%7Bnow%2Fd%7D%3E 
+
+# delete snapshot
+DELETE /_snapshot/my_backup/snapshot_2
+

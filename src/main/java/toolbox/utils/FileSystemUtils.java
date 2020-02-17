@@ -1,5 +1,7 @@
 package toolbox.utils;
 
+import java.io.File;
+
 /*
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -22,4 +24,5 @@ public class FileSystemUtils  {
 		long size = Files.walk(path).mapToLong( p -> p.toFile().length() ).sum();
 		return size;
 	}
+	
 }
