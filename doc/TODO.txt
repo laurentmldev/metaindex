@@ -5,11 +5,11 @@ Priority 1:
 
 when logging -> forward to catalogs instead of back to welcome
  
-scrutation of "maintenance" flag in properties
+#12 scrutation of "maintenance" flag in properties
 
-send email to users and admin
+#19 send email to users and admin
 
-build usage statistics into ELK dedicated index
+#20 build usage statistics into ELK dedicated index
 
 backup/restore a full catalog
 
@@ -18,7 +18,6 @@ backup/restore a full catalog
 	- sign-up form
 	
 #8 prepare demo data, catalog/user present by default
-
 	- user profile picture
 
 #15 adapt GUI to access rights (remove forbidden actions)

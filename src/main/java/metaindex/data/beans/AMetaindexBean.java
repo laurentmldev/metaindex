@@ -61,14 +61,8 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 		try { 
 			
 			if (Globals.Get().getApplicationStatus()==APPLICATION_STATUS.STOPPED) {
-				if (!getMxStatus().equals("MAINTENANCE")) { 
 					Globals.Get().init();
-					Globals.Get().setApplicationStatus(APPLICATION_STATUS.RUNNING);
-				}				
-			} else if (Globals.Get().getApplicationStatus()==APPLICATION_STATUS.RUNNING) {
-				if (getMxStatus().equals("MAINTENANCE")) {
-					Globals.Get().setApplicationStatus(APPLICATION_STATUS.MAINTENANCE);
-				}
+					Globals.Get().setApplicationStatus(APPLICATION_STATUS.RUNNING);								
 			}
 			
 			HttpServletRequest request=ServletActionContext.getRequest();

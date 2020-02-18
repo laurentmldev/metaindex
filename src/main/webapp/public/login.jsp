@@ -53,7 +53,7 @@ onkeypress="if (event.which==13||event.keycode==13) {
            		<div class="maintenance"><p><s:text name="global.maintenance" /></p></div>
            	</c:if>
 	
-           	<c:if test="${mxStatus == 'OK'}">
+           	<c:if test="${mxStatus == 'ACTIVE'}">
            	
                   <form id="loginform" class="user" action="${loginUrl}" method="post" >
                   	<input type="hidden"  name="${_csrf.parameterName}" value="${_csrf.token}"/>
