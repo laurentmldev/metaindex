@@ -4,14 +4,20 @@ Priority 1:
 -----------
 
 when logging -> forward to catalogs instead of back to welcome
+
+detect when same user loged from 2 different IPs / port
  
 #12 scrutation of "maintenance" flag in properties
+	when reloading context after changing properties file:
+		java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 
 #19 send email to users and admin
 
 #20 build usage statistics into ELK dedicated index
 
 backup/restore a full catalog
+
+remove unused / unavailable datatypes
 
 #7 presentation page
 	- favicon
@@ -41,6 +47,7 @@ Priority 2:
 
 Backlog:
 --------
+- check DB version VS app version at application startup
 - design definition in Latek
 - waiting icon while loading real name of link 
 - when deleting a document, filters selection is cleared

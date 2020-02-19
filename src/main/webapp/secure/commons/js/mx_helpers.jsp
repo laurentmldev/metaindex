@@ -114,12 +114,16 @@ function mx_helpers_getItemDetailsById(itemId, receivedItemContentsCallback) {
 }
 
 // matches Metaindex DB table 'catalog_terms', enum of field 'datatype'
-var mx_helpers_FIELDS_DATATYPES = [	"TINY_TEXT","RICH_TEXT","DATE","INTEGER","FLOAT","LINK_URL","IMAGE_URL","AUDIO_URL","VIDEO_URL","GEO_POINT",
-									"RELATION","REFERENCE"];
-var mx_helpers_FIELDS_DATATYPES_text = ["TINY_TEXT","RICH_TEXT","LINK_URL","IMAGE_URL","AUDIO_URL","VIDEO_URL","REFERENCE"];
+// used to generate dropdown box in Field type
+//var mx_helpers_FIELDS_DATATYPES = [	"TINY_TEXT","RICH_TEXT","DATE","INTEGER","FLOAT","LINK_URL","IMAGE_URL","AUDIO_URL","VIDEO_URL","GEO_POINT",
+//									"RELATION","REFERENCE"];
+var mx_helpers_FIELDS_DATATYPES = [	"TINY_TEXT","DATE","INTEGER","FLOAT","LINK_URL","IMAGE_URL","REFERENCE"];
+//var mx_helpers_FIELDS_DATATYPES_text = ["TINY_TEXT","RICH_TEXT","LINK_URL","IMAGE_URL","AUDIO_URL","VIDEO_URL","REFERENCE"];
+var mx_helpers_FIELDS_DATATYPES_text = ["TINY_TEXT","LINK_URL","IMAGE_URL","REFERENCE"];
 var mx_helpers_FIELDS_DATATYPES_date = ["DATE"];
 var mx_helpers_FIELDS_DATATYPES_integer = ["INTEGER"];
 var mx_helpers_FIELDS_DATATYPES_float = ["FLOAT"];
+var mx_helpers_FIELDS_DATATYPES_geo_point = ["GEO_POINT"];
 var mx_helpers_FIELDS_DATATYPES_geo_point = ["GEO_POINT"];
 var mx_helpers_FIELDS_DATATYPES_relation = ["RELATION"];
 
