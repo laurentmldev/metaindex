@@ -25,7 +25,7 @@ using classpath local versions for spring XSD, otherwise it does not work offlin
 	
 	
 	<form-login login-page='/loginform?secure' 
-				default-target-url='/welcome'
+				default-target-url='/Catalogs'
 				always-use-default-target='true'
 				authentication-failure-url="/loginform?error"
 				login-processing-url="/loginprocess" />
