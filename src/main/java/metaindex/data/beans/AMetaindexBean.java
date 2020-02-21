@@ -70,21 +70,39 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 	  		if (_userProfileData==null) {
 	  			String sessionId=request.getSession().getId();
 	  			
+	  			// if LOGGED-IN user : try to get user profile by name if already logged in
 	  			if (request.getUserPrincipal()!=null) {
 	  				String userName=request.getUserPrincipal().getName();
-	  				_userProfileData=Globals.Get().getUsersMgr().getUserByName(userName);	  					  			
+	  				_userProfileData=Globals.Get().getUsersMgr().getUserByName(userName);	 
+
+	  				if (_userProfileData.getRemoteAddress().length()==0) {
+	  					_userProfileData.setRemoteAddress(request.getRemoteAddr());	  					
+	  				}
+	  				else if (!_userProfileData.getRemoteAddress().equals(request.getRemoteAddr())) {  
+	  					
+  	  					log.error("#### BOUH you are using several computers with the same account : \n"
+  	  							+"			   current="+_userProfileData.getRemoteAddress()
+  	  										+" newRequest="+request.getRemoteAddr()+"\n"
+  	  						);
+  	  				_userProfileData.sendGuiErrorMessage("Hum it seems that somebody else is using the same account ... :/");
+  	  				_userProfileData=null;
+  	  				}
 	  			} 
 	  			
+	  			// if anonymous session : try to get user profile by session id
 	  			if (_userProfileData==null) {
 	  				_userProfileData=Globals.Get().getUsersMgr().getUserByHttpSessionId(sessionId);
 	  			}
 	  			
-				if (_userProfileData==null) { _userProfileData = new UserProfileData(); }
-								
+	  			// full new user
+				if (_userProfileData==null) { 
+					_userProfileData = new UserProfileData();					
+				}
+											
 				if (_userProfileData.getHttpSessionId().length()==0) {
   					_userProfileData.setHttpSessionId(sessionId);
-  					Globals.Get().getUsersMgr().registerUser(_userProfileData);
-  				}
+  					Globals.Get().getUsersMgr().registerUser(_userProfileData);  						  				
+  				} 
 	  		} 
 	  		else { log.error("Using found test user to perform operation "+this.getClass().getName()); }
 	  		

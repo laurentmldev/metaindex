@@ -151,6 +151,8 @@ public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProc
 	public Boolean updateContentsIfNeeded() throws DataProcessException;
 	public void setLastUpdate(Date newDate);
 	
-	
+	// used to ensure that on more than one sesion for a user at the same time
+	String getRemoteAddress();
+	void setRemoteAddress(String addr);	
 	
 }

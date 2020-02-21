@@ -55,6 +55,10 @@ public class UserProfileData implements IUserProfileData
 	public final static int DEFAULT_LANG_ID=1;
 	public final static int DEFAULT_GUITHEME_ID=1;
 	
+	private String _remoteHost="";
+	private String _remoteAddr="";
+	private int _remotePort=-1;
+			
 	private String _httpSessionId = "";
 	private String _wsSessionId = "";
 	private Integer _userId = 0;
@@ -524,6 +528,11 @@ public class UserProfileData implements IUserProfileData
 		}
 		return str;
 	}
-
+	@Override
+	public String getRemoteAddress() {
+		return _remoteAddr;
+	}
+	@Override
+	public void setRemoteAddress(String addr) { _remoteAddr=addr; }
 	
 }
