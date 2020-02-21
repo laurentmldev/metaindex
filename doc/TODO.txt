@@ -4,20 +4,7 @@ Priority 1:
 -----------
 
 detect when same user logged from 2 different IPs / port
- 
-backup/restore a full catalog
- #12 scrutation of "maintenance" flag in properties
-	when reloading context after changing properties file:
-		java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
-		
-	comes from:
-		
-		févr. 20, 2020 8:17:58 AM org.apache.catalina.loader.WebappClassLoaderBase clearReferencesJdbc
-		AVERTISSEMENT: The web application [metaindex] registered the JDBC driver [com.mysql.cj.jdbc.Driver] but failed to unregister it when the web application was stopped. To prevent a memory leak, the JDBC Driver has been forcibly unregistered.
-		févr. 20, 2020 8:17:58 AM org.apache.catalina.loader.WebappClassLoaderBase clearReferencesThreads
-		AVERTISSEMENT: The web application [metaindex] appears to have started a thread named [HeartbeatSender] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
-		 java.lang.Thread.sleep(Native Method)
-		
+ 		
 
 #19 send email to users and admin
 
@@ -77,9 +64,12 @@ Backlog:
 - implement section 'table' mode
 - check neo4j pour toile de connection
 - check gephy pour visualisation de graphs
-
+- appliation need a full restart when settingstatus back to ACTIVE
+	otherwise when reloading context after changing properties file:
+			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+#12 backup/restore a full catalog / scrutation of "maintenance" flag in properties		 
 favicon
 when logging -> forward to catalogs instead of back to welcome
 	fixed also "disable apache welcome page metaindex.fr:8080"

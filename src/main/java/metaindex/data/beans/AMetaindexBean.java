@@ -80,11 +80,12 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 	  				}
 	  				else if (!_userProfileData.getRemoteAddress().equals(request.getRemoteAddr())) {  
 	  					
-  	  					log.error("#### BOUH you are using several computers with the same account : \n"
+  	  					log.warn("#### several computers with the same account "+_userProfileData.getName()+":\n"
   	  							+"			   current="+_userProfileData.getRemoteAddress()
   	  										+" newRequest="+request.getRemoteAddr()+"\n"
   	  						);
-  	  				_userProfileData.sendGuiErrorMessage("Hum it seems that somebody else is using the same account ... :/");
+  	  				_userProfileData.sendGuiWarningMessage(
+  	  							"Hum it seems that somebody else just tried to use your login credentials, it has been blocked.");
   	  				_userProfileData=null;
   	  				}
 	  			} 
