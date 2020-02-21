@@ -3,7 +3,7 @@
 Priority 1:
 -----------
 
-detect when same user logged from 2 different IPs / port
+detect when same user logged from 2 different hosts : TO BE TESTED
  		
 
 #19 send email to users and admin

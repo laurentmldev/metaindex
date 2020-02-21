@@ -87,6 +87,7 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
   	  				_userProfileData.sendGuiWarningMessage(
   	  							"Hum it seems that somebody else just tried to use your login credentials, it has been blocked.");
   	  				_userProfileData=null;
+  	  				return;
   	  				}
 	  			} 
 	  			
