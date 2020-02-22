@@ -121,6 +121,7 @@ public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProc
 	public CatalogVocabularySet getCatalogVocabulary();
 	
 	//----------
+	public void sendEmail(String subject, String body) throws DataProcessException;
 	public void sendGuiErrorMessage(String msg);
 	public void sendGuiErrorMessage(String msg,List<String> details);
 	public void sendGuiInfoMessage(String msg);

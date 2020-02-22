@@ -38,6 +38,7 @@ import metaindex.websockets.users.WsUserGuiMessageText.MESSAGE_CRITICITY;
 import toolbox.exceptions.DataAccessException;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.AutoRefreshMonitor;
+import toolbox.utils.EmailService;
 import toolbox.utils.IProcessingTask;
 
 
@@ -55,10 +56,8 @@ public class UserProfileData implements IUserProfileData
 	public final static int DEFAULT_LANG_ID=1;
 	public final static int DEFAULT_GUITHEME_ID=1;
 	
-	private String _remoteHost="";
-	private String _remoteAddr="";
-	private int _remotePort=-1;
-			
+
+	private String _remoteAddr="";			
 	private String _httpSessionId = "";
 	private String _wsSessionId = "";
 	private Integer _userId = 0;
@@ -398,6 +397,12 @@ public class UserProfileData implements IUserProfileData
 		if (getUserCatalogKibanaIFrameHtml(this.getCurrentCatalog().getId())==null) { return ""; }
 		return getUserCatalogKibanaIFrameHtml(this.getCurrentCatalog().getId());
 	}
+	
+	@Override
+	public void sendEmail(String subject, String body) throws DataProcessException {
+		EmailService.SendMail(this.getName(), subject, body);
+	}
+	
 	private void sendGuiMessage(MESSAGE_CRITICITY level, String msg, List<String> details) {
 		try {
 			WsControllerUser.UsersWsController.sendUserGuiMessageText(this,level,msg,details);

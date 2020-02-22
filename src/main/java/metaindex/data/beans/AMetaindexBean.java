@@ -84,11 +84,14 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
   	  							+"			   current="+_userProfileData.getRemoteAddress()
   	  										+" newRequest="+request.getRemoteAddr()+"\n"
   	  						);
-  	  				_userProfileData.sendGuiWarningMessage(
-  	  							"Hum it seems that somebody else just tried to use your login credentials, it has been blocked.");
-  	  				_userProfileData=null;
-  	  				return;
+  	  					String userMsg="Hum it seems that somebody else just tried to use your login credentials, it has been blocked.";
+	  	  				_userProfileData.sendGuiWarningMessage(userMsg);  	  				
+	  	  				_userProfileData.sendEmail("[METAINDEX] Your account is being used",userMsg);
+	  	  				_userProfileData=null;
+	  	  				return;
   	  				}
+	  				
+	  				_userProfileData.sendEmail("[METAINDEX] Hello world","Coucou Lolo by email");
 	  			} 
 	  			
 	  			// if anonymous session : try to get user profile by session id
