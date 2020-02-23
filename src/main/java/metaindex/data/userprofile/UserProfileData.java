@@ -38,7 +38,6 @@ import metaindex.websockets.users.WsUserGuiMessageText.MESSAGE_CRITICITY;
 import toolbox.exceptions.DataAccessException;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.AutoRefreshMonitor;
-import toolbox.utils.EmailService;
 import toolbox.utils.IProcessingTask;
 
 
@@ -400,7 +399,7 @@ public class UserProfileData implements IUserProfileData
 	
 	@Override
 	public void sendEmail(String subject, String body) throws DataProcessException {
-		EmailService.SendMail(this.getName(), subject, body);
+		Globals.Get().sendEmail(this.getName(), subject, body);
 	}
 	
 	private void sendGuiMessage(MESSAGE_CRITICITY level, String msg, List<String> details) {

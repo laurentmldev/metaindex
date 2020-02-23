@@ -90,8 +90,7 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 	  	  				_userProfileData=null;
 	  	  				return;
   	  				}
-	  				
-	  				_userProfileData.sendEmail("[METAINDEX] Hello world","Coucou Lolo by email");
+	  					  				
 	  			} 
 	  			
 	  			// if anonymous session : try to get user profile by session id

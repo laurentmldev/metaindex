@@ -21,6 +21,7 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
 
+import javax.mail.MessagingException;
 import javax.sql.DataSource;
 
 import org.apache.commons.configuration2.PropertiesConfiguration;
@@ -49,12 +50,15 @@ import toolbox.exceptions.DataAccessException;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.AutoRefreshMonitor;
 import toolbox.utils.IAutoRefresh;
+import toolbox.utils.mailing.GoogleMailSender;
+import toolbox.utils.mailing.IEmailSender;
 
 @Configuration
 public class Globals {
 
 	private static final String MX_PROPERTIES_FILE = "metaindex.properties";
 	public static final Integer AUTOREFRESH_PERIOD_SEC=5;
+	private static final String MX_EMAIL_SUBJECT_PREFIX= "[MetaindeX]";
 	
 	Properties _mx_config = new Properties();
 	static Map<String, String> env = System.getenv();
@@ -113,6 +117,27 @@ public class Globals {
 	
 	private Map<String,PropertiesConfiguration> _propertiesMap = new ConcurrentHashMap<String,PropertiesConfiguration>();
 	
+	private IEmailSender _mailSender = new GoogleMailSender();
+	
+	// -------------
+	
+	public void sendEmail(String recipientEmail, String subject, String msg) throws DataProcessException {
+		
+		if (msg.length()==0 || subject.length()==0) {
+			throw new DataProcessException("Cowardly refusing to send empty email (or with empty subject) to '"+recipientEmail+"'");
+		}
+		
+		try {			
+			_mailSender.send(GetMxProperty("mx.mailer.user"), 
+							 GetMxProperty("mx.mailer.password"), 
+							 recipientEmail, 
+							 MX_EMAIL_SUBJECT_PREFIX+" "+subject, 
+							 msg);
+			
+		} catch (MessagingException e) {
+			throw new DataProcessException("Unable to send email '"+subject+"' to '"+recipientEmail+"' : "+e.getMessage(),e);
+		}
+	}
 	public String getWebappsFsPath() { return System.getProperty("catalina.base")+"/webapps"; }
 	
 	public String getAppBaseUrl() {
