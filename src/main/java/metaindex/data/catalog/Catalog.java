@@ -33,7 +33,7 @@ import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
 import metaindex.data.term.TermVocabularySet;
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.exceptions.DataProcessException;
-import toolbox.utils.AutoRefreshMonitor;
+import toolbox.utils.PeriodicProcessMonitor;
 import toolbox.utils.FileSystemUtils;
 
 public class Catalog implements ICatalog {
@@ -44,7 +44,7 @@ public class Catalog implements ICatalog {
 	public static final Integer DEFAULT_QUOTA_DISCSPACEBYTES = 0;
 	private Log log = LogFactory.getLog(Catalog.class);
 	
-	private AutoRefreshMonitor _dbAutoRefreshProcessing=new AutoRefreshMonitor(this);
+	private PeriodicProcessMonitor _dbAutoRefreshProcessing=new PeriodicProcessMonitor(this);
 	private Semaphore _catalogLock = new Semaphore(1,true);
 	public void acquireLock() throws InterruptedException { _catalogLock.acquire(); }
 	public void releaseLock() { _catalogLock.release(); }
@@ -390,7 +390,7 @@ public class Catalog implements ICatalog {
 		return _perspectives;
 	}
 	@Override
-	public Boolean updateContentsIfNeeded() throws DataProcessException {
+	public Boolean doPeriodicProcess() throws DataProcessException {
 		Date prevCurDate = this.getLastUpdate();
 		Boolean onlyIfDbcontentsUpdated=true;
 		List<ICatalog> list = new ArrayList<>();
@@ -402,12 +402,12 @@ public class Catalog implements ICatalog {
 		else { return false; }
 	}
 	@Override 
-	public Boolean shallBeRefreshed(Date testedUpdateDate) { 
+	public Boolean shallBeProcessed(Date testedUpdateDate) { 
 		return this.getLastUpdate().before(testedUpdateDate); 
 	}
 	
 	@Override
-	public Integer getAutoRefreshPeriodSec() { return _autoRefreshPeriodSec; }
+	public Integer getPeriodicProcessPeriodSec() { return _autoRefreshPeriodSec; }
 	
 	@Override
 	public void loadStatsFromDb() throws DataProcessException {

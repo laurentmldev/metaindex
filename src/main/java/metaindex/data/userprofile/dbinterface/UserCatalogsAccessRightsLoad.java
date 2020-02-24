@@ -52,7 +52,7 @@ class UserCatalogsAccessRightsLoad extends SQLReadStmt<IUserProfileData>   {
 			
 		if (_onlyIfTimestampChanged==true) {
 			Timestamp dbDate = rs.getTimestamp(5);
-			if (!d.shallBeRefreshed(dbDate)) { return d; } 
+			if (!d.shallBeProcessed(dbDate)) { return d; } 
 		}
 		Integer catalogId=rs.getInt(3);
 		String accessRightsStr=rs.getString(4);

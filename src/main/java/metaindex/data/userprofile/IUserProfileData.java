@@ -26,7 +26,7 @@ import metaindex.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
 import metaindex.websockets.users.WsUserGuiMessageText.MESSAGE_CRITICITY;
 import toolbox.exceptions.DataProcessException;
 import toolbox.patterns.observer.IObserver;
-import toolbox.utils.IAutoRefresh;
+import toolbox.utils.IPeriodicProcess;
 import toolbox.utils.IIdentifiable;
 import toolbox.utils.IProcessingTask;
 
@@ -36,7 +36,7 @@ import toolbox.utils.IProcessingTask;
  * Retrieve also String info of corresponding foreign keys (guilanguage and guitheme).
  * @author Laurent ML
  */
-public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProcessingTask>,IAutoRefresh
+public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProcessingTask>,IPeriodicProcess
 {
 	
 	public enum USER_ROLE { ROLE_ADMIN, ROLE_USER, ROLE_OBSERVER };
@@ -149,7 +149,7 @@ public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProc
 	 * @throws DataProcessException 
 	 */
 	@Override
-	public Boolean updateContentsIfNeeded() throws DataProcessException;
+	public Boolean doPeriodicProcess() throws DataProcessException;
 	public void setLastUpdate(Date newDate);
 	
 	// used to ensure that on more than one sesion for a user at the same time

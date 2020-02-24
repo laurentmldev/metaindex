@@ -21,19 +21,19 @@ See full version of LICENSE in <https://fsf.org/>
  * @author laurentml
  *
  */
-public class AutoRefreshMonitor extends Thread implements IRunnable {	
+public class PeriodicProcessMonitor extends Thread implements IRunnable {	
 	
-	private Log log = LogFactory.getLog(AutoRefreshMonitor.class);
+	private Log log = LogFactory.getLog(PeriodicProcessMonitor.class);
 	
-	IAutoRefresh _objToRefresh=null;
+	IPeriodicProcess _objToProcess=null;
 	Boolean _continueRunning=true;
 	
-	public  AutoRefreshMonitor(IAutoRefresh obj) {
-		_objToRefresh=obj;
+	public  PeriodicProcessMonitor(IPeriodicProcess obj) {
+		_objToProcess=obj;
 	}
 	
 	/// to be overriden if needed
-	public Boolean preRefreshTest() { return true; }
+	public Boolean prePeriodicProcessTest() { return true; }
 	
 	public void stopMonitoring() {
 		_continueRunning=false;
@@ -44,24 +44,22 @@ public class AutoRefreshMonitor extends Thread implements IRunnable {
 
 		while (_continueRunning) {
 			try {
-				Thread.sleep(_objToRefresh.getAutoRefreshPeriodSec()*1000);
+				Thread.sleep(_objToProcess.getPeriodicProcessPeriodSec()*1000);
 				
-				if (preRefreshTest()) {
-					_objToRefresh.acquireLock();
-					Boolean wasUpdated = _objToRefresh.updateContentsIfNeeded();
-					if (wasUpdated) {
-						log.info("Reloaded DB-Data for "+_objToRefresh.getDetailsStr() );
-					} 
-					//else { log.info("No reloaded DB-Data for "+_objToRefresh.getDetailsStr() ); }
-					_objToRefresh.releaseLock();
+				if (prePeriodicProcessTest()) {
+					_objToProcess.acquireLock();
+					Boolean wasUpdated = _objToProcess.doPeriodicProcess();
+					if (wasUpdated) { log.info(_objToProcess.getDetailsStr()); } 
+					//else { log.info("No reloaded DB-Data for "+_objToProcess.getDetailsStr() ); }
+					_objToProcess.releaseLock();
 				}
 				
 				
 			} catch (InterruptedException|DataProcessException  e) {
-				log.error("While performing cyclic update check on "+_objToRefresh.getId()+ ": "+e.getMessage());
+				log.error("While performing cyclic update check on "+_objToProcess.getId()+ ": "+e.getMessage());
 				e.printStackTrace();
 				_continueRunning=false;
-				_objToRefresh.releaseLock();
+				_objToProcess.releaseLock();
 			}
 		}
 	}

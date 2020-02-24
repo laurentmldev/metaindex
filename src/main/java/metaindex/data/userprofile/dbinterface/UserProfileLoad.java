@@ -62,7 +62,7 @@ class UserProfileLoad extends SQLReadStmt<IUserProfileData>   {
 		Timestamp newerDbDate = dbDateUsers;
 		if (newerDbDate.before(dbDateRoles)) { newerDbDate=dbDateRoles; }
 		if (_onlyIfTimestampChanged==true) {
-			if (!d.shallBeRefreshed(newerDbDate)) { return d; } 
+			if (!d.shallBeProcessed(newerDbDate)) { return d; } 
 		}
 		d.setId(rs.getInt(1));
 		d.setName(rs.getString(2));

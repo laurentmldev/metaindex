@@ -16,20 +16,26 @@ See full version of LICENSE in <https://fsf.org/>
 
 /**
  * Gets an auto-refresh mechanism, typically monitoring DB contents for reload when changed
+ * Intended to be used with PeriodicProcessMonitor object.
  * @author laurentml
  *
  */
-public interface IAutoRefresh extends IIdentifiable<Integer>,ILockable {	
+public interface IPeriodicProcess extends IIdentifiable<Integer>,ILockable {	
 	
 	public Date getLastUpdate();
-	public Boolean shallBeRefreshed(Date testedUpdateDate);
+	public Boolean shallBeProcessed(Date testedUpdateDate);
 	/**
 	 * Update contents of this object only if needed (depending on what returns shallBeRefreshed() method).
+	 * When invoked, this object has already been acquired by the PeriodicProcessMonitor
 	 * @return true if contents actually refreshed, false otherwise
 	 * @throws DataProcessException
 	 */
-	public Boolean updateContentsIfNeeded() throws DataProcessException;
-	public Integer getAutoRefreshPeriodSec();
+	public Boolean doPeriodicProcess() throws DataProcessException;
+	public Integer getPeriodicProcessPeriodSec();
 	
+	/**
+	 * Called by PeriodicProcessMonitor when doPeriodicProcess returns true;
+	 * @return
+	 */
 	public String getDetailsStr();
 }

@@ -70,7 +70,7 @@ class LoadContentsFromDbStmt extends SQLReadStmt<ICatalog>   {
 		
 		if (_onlyIfTimestampChanged==true) {
 			Timestamp dbDate = rs.getTimestamp(11);
-			if (!d.shallBeRefreshed(dbDate)) { return d; } 
+			if (!d.shallBeProcessed(dbDate)) { return d; } 
 		}
 		d.setId(rs.getInt(1));
 		d.setName(rs.getString(2));

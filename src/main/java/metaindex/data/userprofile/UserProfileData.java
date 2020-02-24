@@ -37,7 +37,7 @@ import metaindex.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
 import metaindex.websockets.users.WsUserGuiMessageText.MESSAGE_CRITICITY;
 import toolbox.exceptions.DataAccessException;
 import toolbox.exceptions.DataProcessException;
-import toolbox.utils.AutoRefreshMonitor;
+import toolbox.utils.PeriodicProcessMonitor;
 import toolbox.utils.IProcessingTask;
 
 
@@ -91,7 +91,7 @@ public class UserProfileData implements IUserProfileData
 	
 	private Integer _autoRefreshPeriodSec=Catalog.AUTOREFRESH_PERIOD_SEC;
 	
-	private AutoRefreshMonitor _dbAutoRefreshProcessing=new AutoRefreshMonitor(this);
+	private PeriodicProcessMonitor _dbAutoRefreshProcessing=new PeriodicProcessMonitor(this);
 	
 	private Boolean _enabled=false;
 	
@@ -469,12 +469,12 @@ public class UserProfileData implements IUserProfileData
 	public void setLastUpdate(Date newDate) { _lastUpdate=newDate; }
 
 	@Override
-	public Boolean shallBeRefreshed(Date testedUpdateDate) {
+	public Boolean shallBeProcessed(Date testedUpdateDate) {
 		return this.getLastUpdate().before(testedUpdateDate);
 	}
 
 	@Override
-	public Boolean updateContentsIfNeeded() throws DataProcessException {
+	public Boolean doPeriodicProcess() throws DataProcessException {
 		Date prevCurDate = this.getLastUpdate();
 		Boolean onlyIfDbcontentsUpdated=true;
 		List<IUserProfileData> list = new ArrayList<>();
@@ -488,7 +488,7 @@ public class UserProfileData implements IUserProfileData
 	}
 
 	@Override
-	public Integer getAutoRefreshPeriodSec() {
+	public Integer getPeriodicProcessPeriodSec() {
 		return _autoRefreshPeriodSec;
 	}
 	

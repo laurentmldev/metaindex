@@ -24,7 +24,7 @@ import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
 import metaindex.data.term.TermVocabularySet;
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.exceptions.DataProcessException;
-import toolbox.utils.IAutoRefresh;
+import toolbox.utils.IPeriodicProcess;
 import toolbox.utils.IIdentifiable;
 import toolbox.utils.ILockable;
 
@@ -33,7 +33,7 @@ import toolbox.utils.ILockable;
  * @author laurent
  *
  */
-public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCustomParams, IAutoRefresh {
+public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCustomParams, IPeriodicProcess {
 
 	/** get a string displaying Catalog current infos (for logs) */
 	public String getDetailsStr();
@@ -121,7 +121,7 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 	 * @throws DataProcessException 
 	 */
 	@Override
-	public Boolean updateContentsIfNeeded() throws DataProcessException;
+	public Boolean doPeriodicProcess() throws DataProcessException;
 	
 	/** about managed fields mapping 
 	 * @throws DataProcessException */

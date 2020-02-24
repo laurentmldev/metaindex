@@ -48,10 +48,11 @@ import toolbox.database.elasticsearch.ESDataSource;
 import toolbox.database.sql.SQLDataSource;
 import toolbox.exceptions.DataAccessException;
 import toolbox.exceptions.DataProcessException;
-import toolbox.utils.AutoRefreshMonitor;
-import toolbox.utils.IAutoRefresh;
+import toolbox.utils.PeriodicProcessMonitor;
+import toolbox.utils.IPeriodicProcess;
 import toolbox.utils.mailing.GoogleMailSender;
 import toolbox.utils.mailing.IEmailSender;
+import toolbox.utils.statistics.IStatisticsManager;
 
 @Configuration
 public class Globals {
@@ -66,6 +67,7 @@ public class Globals {
 	private static Globals _singleton=new Globals();
 	public static Globals Get() { return _singleton; }
 	
+	private IStatisticsManager _mxStats= new MxStatisticsManager();
 	
 	/**
 	 * Prop value from config files.
@@ -181,6 +183,9 @@ public class Globals {
 			} catch (Exception e) {
 				throw new DataProcessException("Application initialization failed.",e);
 			}
+			
+			// starting statistics manager 
+			_mxStats.start();
 		}
 	}
 	public IGuiLanguagesManager getGuiLanguagesMgr() { return _guiLanguagesManager; }
