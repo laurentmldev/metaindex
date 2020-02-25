@@ -24,10 +24,13 @@ import org.springframework.stereotype.Controller;
 
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.commons.globals.Globals;
+import metaindex.data.commons.statistics.user.ErrorOccuredMxStat;
+import metaindex.data.commons.statistics.user.LoginUserMxStat;
+import metaindex.data.commons.statistics.user.SetPrefUserMxStat;
+import metaindex.data.commons.statistics.catalog.SetUserCustoCatalogMxStat;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.UserProfileData;
 import metaindex.websockets.commons.AMxWSController;
-import metaindex.websockets.filters.WsMsgCreateFilter_answer;
 import metaindex.websockets.catalogs.WsMsgCatalogContentsChanged_answer;
 import metaindex.websockets.users.WsMsgRegisterUser_answer;
 import metaindex.websockets.users.WsMsgRegisterUser_request;
@@ -63,18 +66,22 @@ public class WsControllerUser extends AMxWSController {
     public void handleUserRegisterRequest(SimpMessageHeaderAccessor headerAccessor, 
     												WsMsgRegisterUser_request requestMsg) throws Exception {
     	
+    	IUserProfileData user = getUserProfile(headerAccessor);
     	try {
-    		IUserProfileData user = getUserProfile(headerAccessor);
+    		
     		Boolean registrationStatus=user.isLoggedIn();
     		
     		user.setWebsocketSessionId(headerAccessor.getSessionId());
     		messageSender.convertAndSendToUser(	headerAccessor.getUser().getName(), 
 					"/queue/register_ack", 
 					new WsMsgRegisterUser_answer(registrationStatus));
+    		
+    		Globals.GetStatsMgr().handleStatItem(new LoginUserMxStat(user));
 	    	
     	} catch (DataProcessException e) 
     	{
-    		log.error("Unable to register '"+headerAccessor.getUser().getName()+"' on websockets API : "+e);    		
+    		log.error("Unable to register '"+headerAccessor.getUser().getName()+"' on websockets API : "+e);  
+    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.register_request"));
     	}
     }
    
@@ -126,13 +133,18 @@ public class WsControllerUser extends AMxWSController {
     		answer.setIsSuccess(true);
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/user_catalogcusto_set", answer);			
 	    	
+    		Globals.GetStatsMgr().handleStatItem(new SetUserCustoCatalogMxStat(user,c));
+    		
     	} catch (DataProcessException e) 
     	{
     		answer.setRejectMessage("Update operation failed : "+e.getMessage());
 			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/user_catalogcusto_set", answer);
 			e.printStackTrace();
+			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.set_user_catalogcusto"));
 			return;    		
     	}
+    	
+    	
     }
    
     
@@ -168,11 +180,14 @@ public class WsControllerUser extends AMxWSController {
     		answer.setIsSuccess(true);
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/user_preferences_set", answer);			
 	    	
+    		Globals.GetStatsMgr().handleStatItem(new SetPrefUserMxStat(user));
+    		
     	} catch (DataProcessException e) 
     	{
     		answer.setRejectMessage("Update operation failed : "+e.getMessage());
 			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/user_preferences_set", answer);
 			e.printStackTrace();
+			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.set_user_preferences"));
 			return;    		
     	}
     }

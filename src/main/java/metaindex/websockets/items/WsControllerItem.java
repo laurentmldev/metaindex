@@ -31,6 +31,11 @@ import metaindex.data.filter.IFilter;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.TERM_DATATYPE;
 import metaindex.data.commons.globals.Globals;
+import metaindex.data.commons.statistics.items.CreateItemMxStat;
+import metaindex.data.commons.statistics.items.DeleteItemsByQueryMxStat;
+import metaindex.data.commons.statistics.items.DeleteItemsMxStat;
+import metaindex.data.commons.statistics.items.UpdateFieldValueItemMxStat;
+import metaindex.data.commons.statistics.user.ErrorOccuredMxStat;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.catalog.UserItemContents;
 import metaindex.data.userprofile.IUserProfileData;
@@ -165,14 +170,16 @@ public class WsControllerItem extends AMxWSController {
     		answer.setSize(-1);
     		answer.setRejectMessage(user.getText("Items.server.DbErrorOccured",e.getMessage()));
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/items", 
-					getCompressedRawString(answer));    		    		
+					getCompressedRawString(answer));    
+    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.get_catalog_items.db_error"));
     	}  catch (Exception e) 
     	{
     		answer.setIsSuccess(false);
     		answer.setSize(-1);
     		answer.setRejectMessage(user.getText("Items.server.ErrorOccured",e.getMessage()));
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/items", 
-					getCompressedRawString(answer));    		    		
+					getCompressedRawString(answer));
+    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.get_catalog_items.server_error"));
     	}
     	
     }
@@ -204,6 +211,7 @@ public class WsControllerItem extends AMxWSController {
     		if (termDef==null) {
     			answer.setRejectMessage(user.getText("Items.serverside.uploadItems.unknownFields",c.getName(),requestMsg.getFieldName()));
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/field_value", answer);
+    			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_field_value.unknown_field"));
     			return;
     		}
     		
@@ -234,6 +242,7 @@ public class WsControllerItem extends AMxWSController {
         		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),
         												"/queue/field_value", 
     													getRawString(answer));
+        		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_field_value.refused_by_elk"));
         		c.releaseLock();
         		return;
     		}
@@ -253,7 +262,8 @@ public class WsControllerItem extends AMxWSController {
     		user.notifyCatalogContentsChanged(CATALOG_MODIF_TYPE.FIELD_VALUE,
     						itemName,
     						requestMsg.getFieldName()+"=\""+requestMsg.getFieldValue()+"\"" );
-    		
+    	
+    		Globals.GetStatsMgr().handleStatItem(new UpdateFieldValueItemMxStat(user,c,item.getId()));
     		c.releaseLock();    		
     		
     	} catch (Exception e) 
@@ -269,6 +279,7 @@ public class WsControllerItem extends AMxWSController {
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),
     												"/queue/field_value", 
 													getRawString(answer));
+    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_field_value.server_error"));
     		c.releaseLock();
     	}
     	
@@ -303,6 +314,7 @@ public class WsControllerItem extends AMxWSController {
     		itemsToDelete.add(item);
     	}
 		procTask.postDataToDelete(itemsToDelete);
+		Globals.GetStatsMgr().handleStatItem(new DeleteItemsMxStat(user,c,requestMsg.getItemsIds().size()));
     }
     
 	
@@ -362,13 +374,16 @@ public class WsControllerItem extends AMxWSController {
 			user.addProcessingTask(procTask);			
 			procTask.start();			
 			procTask.postDataToDelete(itemsToDelete);
+			Globals.GetStatsMgr().handleStatItem(new DeleteItemsByQueryMxStat(user,c,itemsToDelete.size()));
     		
     	} catch (DataProcessException e) 
     	{
     		e.printStackTrace();
+    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.delete_items_by_query.processing_error"));
     	}  catch (Exception e) 
     	{
     		e.printStackTrace();
+    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.delete_items_by_query.server_error"));
     	}
     	
     }
@@ -378,7 +393,7 @@ public class WsControllerItem extends AMxWSController {
     @SubscribeMapping ( "/user/queue/created_item")
     public void handleCreatItemRequest(SimpMessageHeaderAccessor headerAccessor, 
     		WsMsgCreateItem_request requestMsg) throws Exception {
-
+    	
     	IUserProfileData user = getUserProfile(headerAccessor);	
     	WsMsgCreateItem_answer answer = new WsMsgCreateItem_answer(requestMsg);
     	Date now = new Date();
@@ -399,7 +414,8 @@ public class WsControllerItem extends AMxWSController {
 			return;
     	}
     	
-    	ESBulkProcess procTask = Globals.Get().getDatabasesMgr().getDocumentsDbInterface().getNewItemsBulkProcessor(user, c, "Creating Item", 1, now);    	
+    	ESBulkProcess procTask = 
+    			Globals.Get().getDatabasesMgr().getDocumentsDbInterface().getNewItemsBulkProcessor(user, c, "Creating Item", 1, now);    	
     	
     	try {
 	    	    
@@ -444,6 +460,8 @@ public class WsControllerItem extends AMxWSController {
 	    	itemsList.add(itemToCreate);
 	    	procTask.postDataToIndexOrUpdate(itemsList);
 	    	
+	    	Globals.GetStatsMgr().handleStatItem(new CreateItemMxStat(user,c,itemToCreate.getName()));
+	    	
 	    	// blocking while data not added yet
 	    	while (!procTask.isTerminated() && procTask.isRunning()) { Thread.sleep(200); }	    	
 	    	
@@ -457,6 +475,7 @@ public class WsControllerItem extends AMxWSController {
 			answer.setRejectMessage("Unable to create item : "+e.getMessage());
 			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_item", answer);
 			e.printStackTrace();
+			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_item"));
     		c.releaseLock(); 			
  		}   
     		

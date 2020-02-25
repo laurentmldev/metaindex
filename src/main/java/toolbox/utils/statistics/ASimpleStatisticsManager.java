@@ -72,9 +72,10 @@ public abstract class ASimpleStatisticsManager implements IStatisticsManager {
 	
 	@Override
 	public Boolean doPeriodicProcess() throws DataProcessException {
+		log.info(this.getDetailsStr());
 		_inMemoryStats.clear();
-		_lastUpdate=new Date();	
-		return true;// true here will lead to a display of getDetailsStr()
+		_lastUpdate=new Date();		
+		return true;
 	}
 	@Override
 	public String getDetailsStr() {

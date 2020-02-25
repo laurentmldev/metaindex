@@ -13,13 +13,9 @@ See full version of LICENSE in <https://fsf.org/>
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Semaphore;
 
 import javax.mail.MessagingException;
 import javax.sql.DataSource;
@@ -39,8 +35,8 @@ import metaindex.data.commons.globals.guilanguage.GuiLanguagesManager;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguagesManager;
 import metaindex.data.commons.globals.guitheme.GuiThemesManager;
 import metaindex.data.commons.globals.guitheme.IGuiThemesManager;
+import metaindex.data.commons.statistics.MxStatisticsManager;
 import metaindex.data.catalog.CatalogsManager;
-import metaindex.data.catalog.ICatalog;
 import metaindex.data.catalog.ICatalogsManager;
 import metaindex.data.userprofile.IUsersManager;
 import metaindex.data.userprofile.UsersManager;
@@ -48,8 +44,6 @@ import toolbox.database.elasticsearch.ESDataSource;
 import toolbox.database.sql.SQLDataSource;
 import toolbox.exceptions.DataAccessException;
 import toolbox.exceptions.DataProcessException;
-import toolbox.utils.PeriodicProcessMonitor;
-import toolbox.utils.IPeriodicProcess;
 import toolbox.utils.mailing.GoogleMailSender;
 import toolbox.utils.mailing.IEmailSender;
 import toolbox.utils.statistics.IStatisticsManager;
@@ -67,7 +61,7 @@ public class Globals {
 	private static Globals _singleton=new Globals();
 	public static Globals Get() { return _singleton; }
 	
-	private IStatisticsManager _mxStats= new MxStatisticsManager();
+	private static IStatisticsManager _mxStats= new MxStatisticsManager();
 	
 	/**
 	 * Prop value from config files.
@@ -83,6 +77,9 @@ public class Globals {
 		
 		return _singleton._mx_config.getProperty(propname); 
 	}
+	
+	public static IStatisticsManager GetStatsMgr() { return _mxStats; }
+	
 	private Globals() {
 		
 		try {

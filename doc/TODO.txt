@@ -8,7 +8,7 @@ detect when same user logged from 2 different hosts : TO BE TESTED
 
 #19 send email to users and admin
 
-#20 build usage statistics into ELK dedicated index
+#20 build usage statistics 
 
 #8 prepare demo data, catalog/user present by default
 	

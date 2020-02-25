@@ -26,6 +26,12 @@ import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
 import metaindex.data.commons.globals.Globals;
+import metaindex.data.commons.statistics.catalog.CreateCatalogMxStat;
+import metaindex.data.commons.statistics.catalog.DeleteCatalogMxStat;
+import metaindex.data.commons.statistics.catalog.SetCustoCatalogMxStat;
+import metaindex.data.commons.statistics.catalog.SetUserCustoCatalogMxStat;
+import metaindex.data.commons.statistics.catalog.UpdateLexicCatalogMxStat;
+import metaindex.data.commons.statistics.user.ErrorOccuredMxStat;
 import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.CatalogVocabularySet;
 import metaindex.data.catalog.ICatalog;
@@ -78,6 +84,7 @@ public class WsControllerCatalog extends AMxWSController {
     	} catch (IOException e) 
     	{
     		log.error("Unable to process get_catalogs from '"+user.getName()+"' : "+e.getMessage());
+    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.get_catalogs"));
     		e.printStackTrace();
     	}
     }
@@ -173,6 +180,7 @@ public class WsControllerCatalog extends AMxWSController {
 		    	{    		
 		    		e.printStackTrace();
 		    		c.releaseLock();
+		    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_catalog.create_vocabulary"));
 		    	}
 	    	}
 	    	
@@ -185,12 +193,14 @@ public class WsControllerCatalog extends AMxWSController {
 	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
 	    	user.setCurrentCatalog(c.getId());
 	    	user.notifyCatalogContentsChanged(CATALOG_MODIF_TYPE.CATALOGS_LIST, user.getCatalogVocabulary().getName(),c.getName());
+	    	Globals.GetStatsMgr().handleStatItem(new CreateCatalogMxStat(user,c));	    	
 	    	
     	} catch (Exception e) 
     	{
     		answer.setIsSuccess(false);  
     		answer.setRejectMessage("Unable to process create_catalog from '"+user.getName()+"' : "+e.getMessage());
-    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);    		
+    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);    
+    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_catalog"));
     		e.printStackTrace();
     	}
     }
@@ -264,13 +274,14 @@ public class WsControllerCatalog extends AMxWSController {
 	    	c.loadCustomParamsFromdb();
 	    	answer.setIsSuccess(true);    	
 	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_customized", answer);
-	    	
+	    	Globals.GetStatsMgr().handleStatItem(new SetCustoCatalogMxStat(user,c));
 	    	c.releaseLock();
     	} catch (Exception e) 
     	{    		
     		answer.setIsSuccess(false);  
     		answer.setRejectMessage("Unable to process customize_catalog from '"+user.getName()+"' : "+e.getMessage());
 	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_customized", answer);
+	    	Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.customize_catalog"));
     		e.printStackTrace();
     	}
     	
@@ -308,6 +319,7 @@ public class WsControllerCatalog extends AMxWSController {
 	    	if (!result) {
 	    		answer.setRejectMessage("Unable to delete catalog definition");
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_catalog", answer);
+    			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.delete_catalog.delete_sql_def"));
     			return;
     		}
 	    	Globals.Get().getCatalogsMgr().removeCatalog(c.getId());
@@ -318,6 +330,7 @@ public class WsControllerCatalog extends AMxWSController {
 		    	if (!result) {
 		    		answer.setRejectMessage("Unable to delete catalog documents contents");
 	    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_catalog", answer);
+	    			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.delete_catalog.delete_documents"));
 	    			c.releaseLock();
 	    			return;
 	    		}
@@ -326,6 +339,7 @@ public class WsControllerCatalog extends AMxWSController {
 	    		if (!e.getMessage().contains("index_not_found_exception")) {	    			    			    	
 		    		log.error("Unable to delete index '"+c.getName()+"' : "+e.getMessage());
 		    		e.printStackTrace();
+		    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.delete_catalog.elasticsearch"));
 	    		}
 	    		// else the index was not in ES, but this is not a problem for the "delete catalog" operation
 	    		// so we can silently ignore it
@@ -333,12 +347,13 @@ public class WsControllerCatalog extends AMxWSController {
 	    	
 	    	answer.setIsSuccess(true);    	
 	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_catalog", answer);
-	    	
+	    	Globals.GetStatsMgr().handleStatItem(new DeleteCatalogMxStat(user,c));
 	    	c.releaseLock();
     	} catch (Exception e) {    					    	
 	    		answer.setIsSuccess(false);  
 	    		answer.setRejectMessage("Unable to process delete_catalog '"+c.getName()+"' by '"+user.getName()+"'");
 	    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_catalog", answer);
+	    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.delete_catalog.sql"));
 	    		e.printStackTrace();
 	    		c.releaseLock();
     		   		
@@ -350,7 +365,7 @@ public class WsControllerCatalog extends AMxWSController {
     public void handleUpdateCatalogLexicRequest(
     					SimpMessageHeaderAccessor headerAccessor, 
     					WsMsgUpdateCatalogLexic_request requestMsg) throws Exception {
-
+    	
     	WsMsgUpdateCatalogLexic_answer answer = new WsMsgUpdateCatalogLexic_answer(requestMsg);
     	IUserProfileData user = getUserProfile(headerAccessor);	
     	ICatalog c = user.getCurrentCatalog();
@@ -390,12 +405,14 @@ public class WsControllerCatalog extends AMxWSController {
 	    	c.loadVocabulariesFromDb();
 	    	answer.setIsSuccess(true);    	
 	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_lexic_updated", answer);
+	    	Globals.GetStatsMgr().handleStatItem(new UpdateLexicCatalogMxStat(user,c));
 	    	c.releaseLock();
     	} catch (Exception e) 
     	{    		
     		answer.setIsSuccess(false);  
     		answer.setRejectMessage("Unable to process update_catalog_lexic from '"+user.getName()+"' : "+e.getMessage());
 	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_lexic_updated", answer);
+	    	Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_catalog_lexic"));
     		e.printStackTrace();
     		c.releaseLock();
     	}

@@ -1,8 +1,5 @@
-package metaindex.data.commons.globals;
+package metaindex.data.commons.statistics;
 
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import toolbox.utils.statistics.ASimpleStatisticsManager;
 
