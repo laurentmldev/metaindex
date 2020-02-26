@@ -27,6 +27,10 @@ import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
 import metaindex.data.commons.globals.Globals;
+import metaindex.data.commons.statistics.terms.CreateTermMxStat;
+import metaindex.data.commons.statistics.terms.UpdateLexicTermMxStat;
+import metaindex.data.commons.statistics.terms.UpdateTermMxStat;
+import metaindex.data.commons.statistics.user.ErrorOccuredMxStat;
 import metaindex.data.catalog.CatalogVocabularySet;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.term.CatalogTerm;
@@ -76,7 +80,7 @@ public class WsControllerTerm extends AMxWSController {
     
     	IUserProfileData user = getUserProfile(headerAccessor);			
     	WsMsgUpdateTerm_answer answer = new WsMsgUpdateTerm_answer(requestMsg);
-		
+    	
     	try {
     		ICatalog c = Globals.Get().getCatalogsMgr().getCatalog(requestMsg.getCatalogId());
     		if (c==null) {
@@ -92,6 +96,7 @@ public class WsControllerTerm extends AMxWSController {
     		ICatalogTerm existingTerm = c.getTerms().get(requestMsg.getTermName());
     		if (existingTerm==null) {
     			sendTermUpdateErrorAnswer(user,this.messageSender,answer,"No such term");
+    			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_term.no_such_term"));
     			return;    			
     		}
     		
@@ -107,6 +112,7 @@ public class WsControllerTerm extends AMxWSController {
     		
     		if (!isSuccess) {
     			sendTermUpdateErrorAnswer(user,this.messageSender,answer,"Server operation refused");
+    			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_term.refused_by_server"));
     			return;   
     		}
     		else {
@@ -116,6 +122,7 @@ public class WsControllerTerm extends AMxWSController {
         												"/queue/updated_term", 
     													getRawString(answer)); 
         		user.notifyCatalogContentsChanged(CATALOG_MODIF_TYPE.FIELD_DEFINITION, 1);
+        		Globals.GetStatsMgr().handleStatItem(new UpdateTermMxStat(user,c,newTermDef.getName()));
     		}
     	} catch (Exception e) 
     	{
@@ -124,11 +131,12 @@ public class WsControllerTerm extends AMxWSController {
     		if (errorMessage==null) { errorMessage="???"; }
     		
     		sendTermUpdateErrorAnswer(user,this.messageSender,answer,errorMessage);
+    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_term.server_error"));
 			e.printStackTrace();
     	}
     	
     }
-
+    
     @MessageMapping("/create_term")
     @SubscribeMapping ( "/user/queue/created_term")
     public void handleCreateTermRequest(
@@ -148,6 +156,7 @@ public class WsControllerTerm extends AMxWSController {
     	if (term!=null) {    		
     		answer.setRejectMessage("term '"+requestMsg.getTermName()+"' already exist in catalog.");
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_term", answer);
+    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_term.already_exists"));
     		return;
     	}
     	term = ICatalogTerm.BuildCatalogTerm(requestMsg.getTermDatatype());
@@ -182,6 +191,7 @@ public class WsControllerTerm extends AMxWSController {
     		if (result==false) {
         		answer.setRejectMessage("unable to create term '"+requestMsg.getTermName()+"'.");
         		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_term", answer);	
+        		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_term.refused_by_server"));
         		return;
         	}
     		
@@ -190,11 +200,13 @@ public class WsControllerTerm extends AMxWSController {
     	} catch (ESDataProcessException e) {
     		e.printStackTrace();
     		user.sendGuiErrorMessage("Sorry unable to create term : "+e.getMessage());
+    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_term.elasticsearch"));
     		return;
     	}
     	catch (SQLDataProcessException e) {
     		// most probably term description already exist
     		answer.setRejectMessage("term description failed, try to refresh you page please : "+e.getMessage());
+    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_term.sql"));
     		// no return here, we still want to refresh contents (field could still be added into ES db)
     	}
     	
@@ -207,7 +219,7 @@ public class WsControllerTerm extends AMxWSController {
     	  
     	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_term", answer);
     	user.notifyCatalogContentsChanged(CATALOG_MODIF_TYPE.FIELDS_LIST, 1);
-        	
+    	Globals.GetStatsMgr().handleStatItem(new CreateTermMxStat(user,c,term.getName()));
     }
     
     /**
@@ -216,6 +228,7 @@ public class WsControllerTerm extends AMxWSController {
      * @param requestMsg
      * @throws Exception
      */
+    /*
     @MessageMapping("/delete_term")
     @SubscribeMapping ( "/user/queue/deleted_term")
     public void handleDeleteTermRequest(
@@ -234,6 +247,7 @@ public class WsControllerTerm extends AMxWSController {
     	if (term==null) {
     		user.sendGuiErrorMessage("Sorry no such term '"+requestMsg.getTermName()+"' in catalog, please refresh your page.");
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_term", answer);
+    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.delete_term.no_such_term"));
     	}
     	
     	Boolean result = Globals.Get().getDatabasesMgr().getTermsDbInterface().deleteFromDbStmt(c,term).execute();
@@ -247,6 +261,7 @@ public class WsControllerTerm extends AMxWSController {
     	if (result==false) {
     		user.sendGuiErrorMessage("Sorry unable to delete term '"+requestMsg.getTermName()+"'.");
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_term", answer);	
+    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.delete_term.refused_by_server"));
     		return;
     	}
     	
@@ -255,8 +270,7 @@ public class WsControllerTerm extends AMxWSController {
     	user.notifyCatalogContentsChanged(CATALOG_MODIF_TYPE.FIELDS_LIST, 1);
         	
     }
-    
-
+*/
     @MessageMapping("/update_term_lexic")
     @SubscribeMapping ( "/user/queue/term_lexic_updated")
     public void handleUpdateTermLexicRequest(
@@ -282,6 +296,7 @@ public class WsControllerTerm extends AMxWSController {
     		// return failure notif (default status of answer is 'failed')
     		answer.setRejectMessage("Current user catalog does contain requested term");
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/term_lexic_updated", answer);
+    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_term_lexic.no_such_term"));
     		return;
     	}
     	
@@ -312,18 +327,21 @@ public class WsControllerTerm extends AMxWSController {
 	    	if (!result) {
 	    		answer.setRejectMessage("Unable to update term translation");
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/term_lexic_updated", answer);
+    			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_term_lexic.refused_by_server"));
     			c.releaseLock();
     			return;
     		}
 	    	c.loadTermsVocabularyFromDb();
 	    	answer.setIsSuccess(true);    	
 	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/term_lexic_updated", answer);
+	    	Globals.GetStatsMgr().handleStatItem(new UpdateLexicTermMxStat(user,c,t.getName()));
 	    	c.releaseLock();
     	} catch (Exception e) 
     	{    		
     		answer.setIsSuccess(false);  
     		answer.setRejectMessage("Unable to process term_lexic_updated from '"+user.getName()+"' : "+e.getMessage());
 	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/term_lexic_updated", answer);
+	    	Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_term_lexic.server_error"));
     		e.printStackTrace();
     		c.releaseLock();
     	}

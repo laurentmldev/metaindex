@@ -20,6 +20,9 @@ import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
 import metaindex.data.commons.globals.Globals;
+import metaindex.data.commons.statistics.catalog.DeletePerspectiveCatalogMxStat;
+import metaindex.data.commons.statistics.catalog.UpdatePerspectiveCatalogMxStat;
+import metaindex.data.commons.statistics.user.ErrorOccuredMxStat;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.websockets.commons.AMxWSController;
@@ -66,6 +69,7 @@ public class WsControllerPerspective extends AMxWSController {
 	    	c.loadPerspectivesFromdb();
 	    	answer.setIsSuccess(true);    	
 	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/perspective_updated", answer);
+	    	Globals.GetStatsMgr().handleStatItem(new UpdatePerspectiveCatalogMxStat(user,c));
 	    	c.releaseLock();
     	} catch (Exception e) 
     	{    		
@@ -73,6 +77,7 @@ public class WsControllerPerspective extends AMxWSController {
     		answer.setRejectMessage("Unable to process update_perspective from '"+user.getName()+"' : "+e.getMessage());
 	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/perspective_updated", answer);
     		e.printStackTrace();
+    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_perspective"));
     		c.releaseLock();
     	}
     	
@@ -112,6 +117,7 @@ public class WsControllerPerspective extends AMxWSController {
 	    	c.loadPerspectivesFromdb();
 	    	answer.setIsSuccess(true);    	
 	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/perspective_deleted", answer);
+	    	Globals.GetStatsMgr().handleStatItem(new DeletePerspectiveCatalogMxStat(user,c));
 	    	c.releaseLock();
     	} catch (Exception e) 
     	{    		
@@ -119,6 +125,7 @@ public class WsControllerPerspective extends AMxWSController {
     		answer.setRejectMessage("Unable to process delete_perspective from '"+user.getName()+"' : "+e.getMessage());
 	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/perspective_deleted", answer);
     		e.printStackTrace();
+    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.delete_perspective"));
     		c.releaseLock();
     	}
     	
