@@ -144,12 +144,6 @@ public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProc
 	 */
 	public Date getItemsLastChangeDate();
 	
-	/**
-	 * update contents from DB. Return true if update actually occured (i.e. if db timestamp was different).
-	 * @throws DataProcessException 
-	 */
-	@Override
-	public Boolean doPeriodicProcess() throws DataProcessException;
 	public void setLastUpdate(Date newDate);
 	
 	// used to ensure that on more than one sesion for a user at the same time

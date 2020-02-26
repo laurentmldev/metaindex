@@ -30,7 +30,7 @@ public interface IPeriodicProcess extends IIdentifiable<Integer>,ILockable {
 	 * @return true if contents actually refreshed, false otherwise
 	 * @throws DataProcessException
 	 */
-	public Boolean doPeriodicProcess() throws DataProcessException;
+	public void doPeriodicProcess() throws DataProcessException;
 	public Integer getPeriodicProcessPeriodSec();
 	
 	/**

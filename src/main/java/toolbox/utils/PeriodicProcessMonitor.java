@@ -48,12 +48,9 @@ public class PeriodicProcessMonitor extends Thread implements IRunnable {
 				
 				if (prePeriodicProcessTest()) {
 					_objToProcess.acquireLock();
-					Boolean wasUpdated = _objToProcess.doPeriodicProcess();
-					//if (wasUpdated) { log.info(_objToProcess.getDetailsStr()); } 
-					//else { log.info("No reloaded DB-Data for "+_objToProcess.getDetailsStr() ); }
+					_objToProcess.doPeriodicProcess();
 					_objToProcess.releaseLock();
 				}
-				
 				
 			} catch (InterruptedException|DataProcessException  e) {
 				log.error("While performing cyclic update check on "+_objToProcess.getId()+ ": "+e.getMessage());

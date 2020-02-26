@@ -115,14 +115,6 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 	public Long getNbDocuments();
 	public void setNbDocuments(Long nbDocs);
 	
-	
-	/**
-	 * update contents from DB. Return true if update actually occured (i.e. if db timestamp was different).
-	 * @throws DataProcessException 
-	 */
-	@Override
-	public Boolean doPeriodicProcess() throws DataProcessException;
-	
 	/** about managed fields mapping 
 	 * @throws DataProcessException */
 	public void updateTermsMapping(Map<String,RAW_DATATYPE> m,Map<String,Map<String,Object>> properties) throws DataProcessException;

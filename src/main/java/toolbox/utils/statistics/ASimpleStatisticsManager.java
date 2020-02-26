@@ -71,11 +71,13 @@ public abstract class ASimpleStatisticsManager implements IStatisticsManager {
 	public Boolean shallBeProcessed(Date testedUpdateDate) { return true; }
 	
 	@Override
-	public Boolean doPeriodicProcess() throws DataProcessException {
-		log.info(this.getDetailsStr());
+	/**
+	 * clear contents currently stored. Any processing must thus be done before invoking 
+	 * this implementation of the method.
+	 */
+	public void doPeriodicProcess() throws DataProcessException {
 		_inMemoryStats.clear();
-		_lastUpdate=new Date();		
-		return true;
+		_lastUpdate=new Date();				
 	}
 	@Override
 	public String getDetailsStr() {

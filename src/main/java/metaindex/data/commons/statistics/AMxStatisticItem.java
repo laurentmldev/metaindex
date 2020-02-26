@@ -25,7 +25,7 @@ public abstract class AMxStatisticItem implements IStatisticItem {
 	private Map<String,Object> _properties = new HashMap<>();
 	
 	protected String hashString(String toHash) {
-		if (toHash.length()==0) { return ""; }
+		if (toHash==null || toHash.length()==0) { return ""; }
 		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 		return bCryptPasswordEncoder.encode(toHash);
 	}

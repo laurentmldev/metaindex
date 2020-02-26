@@ -390,7 +390,7 @@ public class Catalog implements ICatalog {
 		return _perspectives;
 	}
 	@Override
-	public Boolean doPeriodicProcess() throws DataProcessException {
+	public void doPeriodicProcess() throws DataProcessException {
 		Date prevCurDate = this.getLastUpdate();
 		Boolean onlyIfDbcontentsUpdated=true;
 		List<ICatalog> list = new ArrayList<>();
@@ -398,8 +398,8 @@ public class Catalog implements ICatalog {
 		Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getLoadFromDefDbStmt(list,onlyIfDbcontentsUpdated).execute();
 		
 		// detect if contents actually changed
-		if (this.getLastUpdate().after(prevCurDate)) { return true; }
-		else { return false; }
+		if (this.getLastUpdate().after(prevCurDate)) { log.info(this.getDetailsStr()); }
+		
 	}
 	@Override 
 	public Boolean shallBeProcessed(Date testedUpdateDate) { 

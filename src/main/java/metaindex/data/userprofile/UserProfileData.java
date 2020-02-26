@@ -474,7 +474,7 @@ public class UserProfileData implements IUserProfileData
 	}
 
 	@Override
-	public Boolean doPeriodicProcess() throws DataProcessException {
+	public void doPeriodicProcess() throws DataProcessException {
 		Date prevCurDate = this.getLastUpdate();
 		Boolean onlyIfDbcontentsUpdated=true;
 		List<IUserProfileData> list = new ArrayList<>();
@@ -483,8 +483,8 @@ public class UserProfileData implements IUserProfileData
 		Globals.Get().getDatabasesMgr().getUserProfileDbInterface().getLoadAccessRightsFromDbStmt(list,onlyIfDbcontentsUpdated).execute();
 		
 		// detect if contents actually changed
-		if (this.getLastUpdate().after(prevCurDate)) { return true; }
-		else { return false; }
+		if (this.getLastUpdate().after(prevCurDate)) { log.info(this.getDetailsStr()); }
+			 
 	}
 
 	@Override
