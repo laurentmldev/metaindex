@@ -243,7 +243,7 @@ var _curTabIndex=0;
 			 			<i class="fas fa-times fa-sm text-grey-50"></i>
 			</span>
 		</td>
-		<td class="_nav_text_" style="margin:2rem;" ></td>
+		<td class="_nav_text_" style="margin:2rem;padding-left:1rem;font-weight:bold;" ></td>
 	</tr></table>
 </a>		
 
