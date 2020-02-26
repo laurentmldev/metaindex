@@ -42,7 +42,7 @@ public abstract class ASimpleStatisticsManager implements IStatisticsManager {
 	private Map<String, List<IStatisticItem> > _inMemoryStats = new java.util.concurrent.ConcurrentHashMap<>();
 	
 	public void start() {
-		_periodicFlushMonitor.start();
+		_periodicFlushMonitor.start();		
 	}
 	public void handleStatItem(IStatisticItem s) throws DataProcessException {
 		try {

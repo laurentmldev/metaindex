@@ -27,7 +27,7 @@ public class MxStatisticsManager extends ASimpleStatisticsManager {
 	
 	@Override
 	public Integer getPeriodicProcessPeriodSec() {
-		return new Integer(Globals.GetMxProperty("mx.statistics.update_period_sec"));
+		return new Integer(Globals.GetMxProperty("mx.statistics.update_period_sec").replaceAll(" ", ""));
 	}
 	
 	@Override

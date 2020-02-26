@@ -31,7 +31,14 @@ public class PeriodicProcessMonitor extends Thread implements IRunnable {
 	public  PeriodicProcessMonitor(IPeriodicProcess obj) {
 		_objToProcess=obj;
 	}
-	
+	@Override
+	public void start() {
+		try {
+			super.start();
+		} catch (Exception e) {
+			log.error("Unable to start periodic process monitor for "+_objToProcess.getName()+" : "+e.getMessage());
+		}
+	}
 	/// to be overriden if needed
 	public Boolean prePeriodicProcessTest() { return true; }
 	
