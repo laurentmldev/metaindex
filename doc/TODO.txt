@@ -13,6 +13,11 @@ detect when same user logged from 2 different hosts : TO BE TESTED
 #15 adapt GUI 
 	- to access rights (hide forbidden actions)
 	- when entering edit mode, shall stay in current tab
+	- styling dropdowns for sorting choices
+	- visible color for selected filters
+	- help icons pour
+		- barre de recherche
+		- générateurs de graphes
 	
 #17 language properties file in español
 

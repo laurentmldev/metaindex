@@ -14,7 +14,7 @@
         </a>
         <div id="collapseStatistics" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="mx-collapse py-2 collapse-inner rounded" style="overflow:auto">             			 
-	 		  <label  style="margin-left:1rem;margin-bottom:1rem;margin-top:1rem"
+	 		  <label  style="padding-left:0.5rem;margin-left:1rem;margin-bottom:1rem;text-align:left;"
 	 		  		class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm" >
 			        <a class="collapsed" href="<s:property value='currentUserProfile.statisticsDiscoverUrl'/>" target="_blank" >
 			          <i class="fas fa-sm fa-square-root-alt text-white"></i>
@@ -23,7 +23,7 @@
 			  </label>
 			  
 						   
-			 <label  style="margin-left:1rem;margin-bottom:1rem;"
+			 <label  style="padding-left:0.5rem;margin-left:1rem;margin-bottom:1rem;text-align:left;"
 	 		  		class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm" >
 				 <a href="#" class="collapsed" 
 			           	  onclick='document.getElementById("details-wrapper").classList.toggle("toggled");'>
@@ -32,7 +32,7 @@
 			    </a>  
 			 </label>
 			 
-			  <label  style="margin-left:1rem;margin-bottom:1rem;"
+			  <label  style="padding-left:0.5rem;margin-left:1rem;margin-bottom:1rem;text-align:left;"
 	 		  		class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm" >
 				 <a href="#" class="collapsed" 
 			           	  onclick="let popupForm=document.getElementById('relations_graph_form_insertspot').querySelector('._modal_root_').toggleShowHide();">
@@ -42,8 +42,7 @@
 			    
 			 </label>
 			 
-			 <label  style="margin-left:1rem;margin-bottom:1rem;"
-	 		  		class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm" >
+			 <label  class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button" >
 				 <a href="#" class="collapsed" 
 			           	  onclick="let popupForm=document.getElementById('aggr_relations_graph_form_insertspot').querySelector('._modal_root_').toggleShowHide();">
 			          <i class="fas fa-fw fa-project-diagram text-white"></i>
@@ -91,7 +90,7 @@
           <div class="mx-collapse py-2 collapse-inner rounded" style="overflow:auto">                         			 
 			  <!-- Custom CSV FileUpload button -->
 	 		  <label for="fileUpload" 
-	 		  	style="margin-left:1rem;margin-bottom:1rem;margin-top:1rem;"
+	 		  	style="padding-left:0.5rem;margin-left:1rem;margin-bottom:1rem;text-align:left;"
 	 		  	class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm"  >
 	 		  	<i class="fas fa-upload fa-sm text-white" style="margin-right:1em"></i><s:text name="Items.uploadItems.fromCsv"></s:text>
 	 		  </label>
