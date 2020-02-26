@@ -22,6 +22,11 @@ import org.springframework.stereotype.Controller;
 import metaindex.data.filter.Filter;
 import metaindex.data.filter.IFilter;
 import metaindex.data.commons.globals.Globals;
+import metaindex.data.commons.statistics.filters.CreateFilterMxStat;
+import metaindex.data.commons.statistics.filters.DeleteFilterMxStat;
+import metaindex.data.commons.statistics.filters.UpdateFilterMxStat;
+import metaindex.data.commons.statistics.terms.UpdateLexicTermMxStat;
+import metaindex.data.commons.statistics.user.ErrorOccuredMxStat;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.websockets.commons.AMxWSController;
@@ -64,11 +69,13 @@ public class WsControllerFilter extends AMxWSController {
     	c.releaseLock();
     	
     	if (result==false) {
-    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_filter", answer);	
+    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_filter", answer);
+    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_filter.refused_by_server"));
     	}
     	
     	answer.setIsSuccess(true);  
     	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_filter", answer);
+    	Globals.GetStatsMgr().handleStatItem(new CreateFilterMxStat(user,c));
         	
     }
     
@@ -101,13 +108,15 @@ public class WsControllerFilter extends AMxWSController {
     	c.releaseLock();
     	
     	if (result==false) {
-    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/updated_filter", answer);	
+    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/updated_filter", answer);
+    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_filter.refused_by_server"));
     	}
     	
     	answer.setIsSuccess(true);  
     	answer.setFilterName(newFilter.getName());
     	answer.setQuery(newFilter.getQuery());
     	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/updated_filter", answer);
+    	Globals.GetStatsMgr().handleStatItem(new UpdateFilterMxStat(user,c));
         	
     }
     
@@ -139,12 +148,14 @@ public class WsControllerFilter extends AMxWSController {
     	c.releaseLock();
     	
     	if (result==false) {
-    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_filter", answer);	
+    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_filter", answer);
+    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.delete_filter.refused_by_server"));
     	}
     	
     	answer.setIsSuccess(true);  
     	answer.setFilterName(newFilter.getName());
     	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_filter", answer);
+    	Globals.GetStatsMgr().handleStatItem(new DeleteFilterMxStat(user,c));
         	
     }
 }
