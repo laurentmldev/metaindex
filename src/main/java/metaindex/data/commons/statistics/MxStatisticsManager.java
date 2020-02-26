@@ -1,6 +1,7 @@
 package metaindex.data.commons.statistics;
 
 
+import metaindex.data.commons.globals.Globals;
 import toolbox.utils.statistics.ASimpleStatisticsManager;
 
 
@@ -18,12 +19,12 @@ public class MxStatisticsManager extends ASimpleStatisticsManager {
 
 	@Override
 	public Integer getPeriodicProcessPeriodSec() {
-		return 10;
+		return new Integer(Globals.GetMxProperty("mx.statistics.update_period_sec"));
 	}
 	
 	@Override
 	public String getName() {
-		return "MetaindeX Simple Statistics Manager";
+		return "MetaindeX Statistics Manager";
 	}
 
 	@Override
