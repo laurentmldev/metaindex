@@ -18,6 +18,7 @@ detect when same user logged from 2 different hosts : TO BE TESTED
 	- help icons pour
 		- barre de recherche
 		- générateurs de graphes
+	- left-items submenus not visible when window width too small
 	
 #17 language properties file in español
 

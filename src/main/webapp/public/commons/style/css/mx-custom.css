@@ -22,17 +22,17 @@ input[type="file"] {
 
 .mx-current-item-area-closed {
 	max-height:0;
-	transition: max-height 0.15s ease-out;
 	overflow:hidden;
 	background:#d5d5d5;
+	transition: max-height 10ms ease-out;
 }
 
 .mx-current-item-area-open {
-	max-height:80vh;
-	min-height:250px;
-	transition: max-height 0.15s ease-in;
+	max-height:60vh;
+	transition: max-height 200ms ease-in;	
 	margin-bottom:0.5rem;
 	overflow:auto;
+	
 }
 
 .mx-details-card {
@@ -286,4 +286,5 @@ height:40px;
 	margin-bottom:1rem;
 	text-align:left;
 	font-size:0.75rem;
+	width:80%;
 }

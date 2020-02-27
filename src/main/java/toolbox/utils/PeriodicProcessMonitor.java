@@ -37,6 +37,7 @@ public class PeriodicProcessMonitor extends Thread implements IRunnable {
 			super.start();
 		} catch (Exception e) {
 			log.error("Unable to start periodic process monitor for "+_objToProcess.getName()+" : "+e.getMessage());
+			e.printStackTrace();
 		}
 	}
 	/// to be overriden if needed

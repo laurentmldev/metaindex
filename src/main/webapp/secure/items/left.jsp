@@ -13,9 +13,8 @@
           <span><s:text name="Items.statistics"></s:text></span>
         </a>
         <div id="collapseStatistics" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-          <div class="mx-collapse py-2 collapse-inner rounded" style="overflow:auto">             			 
-	 		  <label  style="padding-left:0.5rem;margin-left:1rem;margin-bottom:1rem;text-align:left;"
-	 		  		class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm" >
+          <div class="mx-collapse py-2 collapse-inner rounded pt-4" style="overflow:auto;">             			 
+	 		  <label  class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button" >
 			        <a class="collapsed" href="<s:property value='currentUserProfile.statisticsDiscoverUrl'/>" target="_blank" >
 			          <i class="fas fa-sm fa-square-root-alt text-white"></i>
 			          <span><s:text name="global.kibana"/></span>
@@ -23,8 +22,7 @@
 			  </label>
 			  
 						   
-			 <label  style="padding-left:0.5rem;margin-left:1rem;margin-bottom:1rem;text-align:left;"
-	 		  		class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm" >
+			 <label  class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button" >
 				 <a href="#" class="collapsed" 
 			           	  onclick='document.getElementById("details-wrapper").classList.toggle("toggled");'>
 			          <i class="fas fa-fw fa-chart-bar text-white"></i>
@@ -32,8 +30,7 @@
 			    </a>  
 			 </label>
 			 
-			  <label  style="padding-left:0.5rem;margin-left:1rem;margin-bottom:1rem;text-align:left;"
-	 		  		class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm" >
+			  <label  class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button" >
 				 <a href="#" class="collapsed" 
 			           	  onclick="let popupForm=document.getElementById('relations_graph_form_insertspot').querySelector('._modal_root_').toggleShowHide();">
 			          <i class="fas fa-fw fa-project-diagram text-white"></i>
@@ -87,11 +84,10 @@
           <span><s:text name="Items.uploadItems"></s:text> <s:property value='currentUserProfile.catalogVocabulary.itemsCap'/></span>
         </a>
         <div id="collapseCsv" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-          <div class="mx-collapse py-2 collapse-inner rounded" style="overflow:auto">                         			 
+          <div class="mx-collapse py-2 collapse-inner rounded pt-4" style="overflow:auto">                         			 
 			  <!-- Custom CSV FileUpload button -->
 	 		  <label for="fileUpload" 
-	 		  	style="padding-left:0.5rem;margin-left:1rem;margin-bottom:1rem;text-align:left;"
-	 		  	class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm"  >
+	 		  	class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button"  >
 	 		  	<i class="fas fa-upload fa-sm text-white" style="margin-right:1em"></i><s:text name="Items.uploadItems.fromCsv"></s:text>
 	 		  </label>
 	 		 <span style="display:none">
