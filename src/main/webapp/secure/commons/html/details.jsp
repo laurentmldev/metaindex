@@ -78,9 +78,9 @@
 
  function details_populate(card) {
 	 
-	details_clear();
 	// function declared in specific details page
 	var newDetailsNode = details_buildContents(card);
+	details_clear();	
 	_detailsInsertSpot.append(newDetailsNode);
  	_detailsInsertSpot.open();	
 	// typically will activate 'x-editable' behaviour for relevant fields

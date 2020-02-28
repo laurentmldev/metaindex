@@ -70,13 +70,14 @@ public class MxDbSearchItem implements IDbItem {
 		String dateStr=_data.get(ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP).toString();	
 		
 		try {
+			log.error("#### Date="+dateStr);
 			setLastModifTimestamp(ICatalogTerm.MX_TERM_DATE_FORMAT.parse(dateStr)); 
 		}
-		catch(ParseException e) { 
+		catch(Exception e) { 
 			//throw new DataProcessException("Unhandled date format : "+dateStr,e); 
-			log.error("Unhandled date format : "+dateStr);			
-			try { setLastModifTimestamp(ICatalogTerm.MX_TERM_DATE_FORMAT.parse("1970-01-01 00:00:00.000")); }
-			catch(ParseException ex) {e.printStackTrace();}
+			log.error("Unhandled date format : '"+dateStr+"'");	
+			e.printStackTrace();
+			setLastModifTimestamp(new Date(0));			
 		}
 		
 		_data.remove(ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP);

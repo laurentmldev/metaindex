@@ -4,6 +4,10 @@
   
  <c:url value="/logoutprocess" var="logoutUrl"/>
  
+ <c:if test="${currentUserProfile.loggedIn == false }">
+ 	<META HTTP-EQUIV="Refresh" CONTENT="0;URL=https://metaindex.fr:8443/metaindex/loginform?expired">
+ </c:if>
+ 
 <div id="show_profile_container"></div>
 <s:include value="profile_modal.jsp" />
 <script type="text/javascript">
