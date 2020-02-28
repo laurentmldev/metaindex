@@ -10,7 +10,6 @@ detect when same user logged from 2 different hosts : TO BE TESTED
 
 #8 prepare demo data, catalog/user present by default
 	
-- latModif timestamp not update : dates format error
 #15 adapt GUI 
 	- to access rights (hide forbidden actions)
 	- when entering edit mode, shall stay in current tab
@@ -75,6 +74,7 @@ Backlog:
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+x lastModif timestamp not update : dates format error
 - when logged-out, userProfileData.isLoggedIn still returns true, and user can still access to secured pages (but no web-sockets)
 #12 backup/restore a full catalog / scrutation of "maintenance" flag in properties		 
 favicon

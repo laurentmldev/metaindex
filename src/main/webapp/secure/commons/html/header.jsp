@@ -7,7 +7,20 @@
  <c:if test="${currentUserProfile.loggedIn == false }">
  	<META HTTP-EQUIV="Refresh" CONTENT="0;URL=https://metaindex.fr:8443/metaindex/loginform?expired">
  </c:if>
- 
+
+<div id="show_helps_container">
+
+	 <!--div  id="help_search_query" class="modal" style="display:block;z-index:1000;background:#fffa;">
+		  <div class="modal-dialog" style="display:block;position:absolute;margin-top:20vh;margin-left:60vh;">
+		     <div class="modal-content">
+		       <div class="modal-header">Help SOS</div>
+		       <div class="modal-body">Plop Body</div>
+		       <div class="modal-footer">Plop footer</div>				       
+		     </div>
+	     </div>
+     </div-->       
+
+</div> 
 <div id="show_profile_container"></div>
 <s:include value="profile_modal.jsp" />
 <script type="text/javascript">

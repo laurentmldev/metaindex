@@ -54,8 +54,20 @@
           <!-- Topbar Search -->
           <div id="header.filter" style="display:none;">
           
+          	
            <div class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" style="width:auto";>
+           
+           
             <div class="input-group" onkeypress="event.stopPropagation(); ">
+            
+            	     
+             <div class="input-group-append">
+              	<!--  call to external (custom) function header_onSearchClick(searchQuery) -->
+                <div class="scale" style="padding:0.4rem;" title="S.O.S">
+                  <i class="far fa-question-circle"></i>    
+                  </div>                
+              </div>
+             
               <input id="header.filter.text" type="text" class="mx-search-input form-control bg-light border-0 small" 
               		placeholder="<s:text name="Header.search.placeholder"/>" aria-label="Filter" aria-describedby="basic-addon2"   
               		onchange="document.getElementById('header.filter.text.xs').value=this.value;"           		
@@ -80,6 +92,7 @@
                   <i class="fas fa-cut fa-sm text-grey-50"></i>
                 </button>
               </div>
+             
               
               <!-- save current filter expression -->
                <div class="input-group-append dropdown no-arrow ">
@@ -116,13 +129,12 @@
 	                      <button class="btn btn-primary" type="button" >
 	                        <i class="fa fa-times fa-sm text-grey-50"></i>
 	                      </button>
-	                    </div>	                    
+	                    </div>		                                        
 	                  </div>
 	                </div>
 	              </div>
               </div>
             
-           
              <select id="header.filter.sortString" class="mx-dropdown form-control bg-light border-0 small"             	
              	onchange="MxGuiHeader.refreshSearch();"           		
               	onkeypress="if (event.which==13||event.keycode==13) { MxGuiHeader.refreshSearch();}" >
@@ -134,6 +146,8 @@
               	<option value="false" Selected><s:text name='Header.sortorder.asc' /></option>
               	<option value="true"><s:text name='Header.sortorder.desc' /></option>
               </select>
+              
+         
             </div>
             
           </div>
