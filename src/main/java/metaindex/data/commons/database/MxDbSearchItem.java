@@ -70,7 +70,6 @@ public class MxDbSearchItem implements IDbItem {
 		String dateStr=_data.get(ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP).toString();	
 		
 		try {
-			log.error("#### Date="+dateStr);
 			setLastModifTimestamp(ICatalogTerm.MX_TERM_DATE_FORMAT.parse(dateStr)); 
 		}
 		catch(Exception e) { 

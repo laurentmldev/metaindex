@@ -91,15 +91,10 @@ class UpdateFieldValueIntoDbStmt extends ESWriteStmt<IDbItem>   {
 			request.routing(DEFAULT_ES_UPDATEFIELD_ROUTING.toString());
 			
 			Map<String, Object> jsonMap = new HashMap<>();					
-			jsonMap.put(ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP,ICatalogTerm.MX_TERM_DATE_FORMAT.format(_timestamp));
-			jsonMap.put(ICatalogTerm.MX_TERM_LASTMODIF_USERID, _user.getId());
-			request.doc(jsonMap);
 			
 			// basic fields values are encoding as string
 			if (_fieldValue instanceof String) {
-				Map<String, Object> fieldJsonMap = new HashMap<>();
-				fieldJsonMap.put(_fieldName, _fieldValue);			
-				request.doc(fieldJsonMap);
+				jsonMap.put(_fieldName, _fieldValue);			
 			// more complex fields might use structured description (in JSON)
 			} else if (_fieldValue instanceof JSONObject) {
 				JSONObject paramDef = new JSONObject();
@@ -107,7 +102,9 @@ class UpdateFieldValueIntoDbStmt extends ESWriteStmt<IDbItem>   {
 				String jsonString =  paramDef.toString();
 				request.doc(jsonString,XContentType.JSON);
 			}
-			
+			jsonMap.put(ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP,ICatalogTerm.MX_TERM_DATE_FORMAT.format(_timestamp));
+			jsonMap.put(ICatalogTerm.MX_TERM_LASTMODIF_USERID, _user.getId());			
+			request.doc(jsonMap);
 			UpdateResponse updateResponse = this.getDatasource()
 					.getHighLevelClient().update(request, RequestOptions.DEFAULT);
 			
