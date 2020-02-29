@@ -8,17 +8,19 @@
  	<META HTTP-EQUIV="Refresh" CONTENT="0;URL=https://metaindex.fr:8443/metaindex/loginform?expired">
  </c:if>
 
-<div id="show_helps_container">
-
-	 <!--div  id="help_search_query" class="modal" style="display:block;z-index:1000;background:#fffa;">
-		  <div class="modal-dialog" style="display:block;position:absolute;margin-top:20vh;margin-left:60vh;">
-		     <div class="modal-content">
-		       <div class="modal-header">Help SOS</div>
-		       <div class="modal-body">Plop Body</div>
-		       <div class="modal-footer">Plop footer</div>				       
+<div id="show_info_container"  style="display:none;opacity:0.0;transition: opacity 100ms ease-in-out 100ms;">
+	 <div  id="info_modal" class="modal" style="display:block;z-index:1000;background:#fffa;">
+		  <div id="info_dialog" class="modal-dialog" style="min-width:30vw;display:block;position:absolute;margin-top:20vh;margin-left:60vh;">		  	 
+		     <div class="modal-content">		     
+		       <div class="modal-header">
+		            <span id="info_modal_title"> </span>
+		        	<span class="scale" style="cursor:pointer" onclick="MxGuiHeader.hideInfoModal()">X</span>
+		       </div>
+		       <div id="info_modal_body" class="modal-body"></div>
+		       <div id="info_modal_footer" class="modal-footer"></div>				       
 		     </div>
 	     </div>
-     </div-->       
+     </div>       
 
 </div> 
 <div id="show_profile_container"></div>
@@ -121,7 +123,40 @@
   
   <script type="text/javascript" >
   
-  MxGuiHeader.getInsertSpot=function() {
+  MxGuiHeader.getInsertSpot=function() { 
 	  return document.getElementById('MxGui.header.insertSpot');
+  }
+  
+  MxGuiHeader.showInfoModal=function(titleTxt,bodyTxt,footerTxt) {
+	  
+	  let title = document.getElementById("info_modal_title");
+	  title.innerHTML=titleTxt;
+	  
+	  let body = document.getElementById("info_modal_body");
+	  body.innerHTML=bodyTxt;
+	  
+	  let footer = document.getElementById("info_modal_footer");
+	  if (footerTxt==null || footerTxt=='') { footer.style.display='none'; }
+	  else { 
+		  footer.style.display='block';
+		  footer.innerHTML=footerTxt;
+	  }
+	  
+	  document.getElementById("show_info_container").style.opacity=0.0;
+	  document.getElementById("show_info_container").style.display='block';
+	  // need to give time to the transition to be loaded before applying property
+	  window.setTimeout( function() {
+		  document.getElementById("show_info_container").style.opacity=1.0;
+		}, 110);
+	  
+
+  }
+  MxGuiHeader.hideInfoModal=function() {
+	  
+	  document.getElementById("show_info_container").style.opacity=0.0;
+	  document.getElementById("show_info_container").style.display='none';
+	
+	
+	 
   }
   </script>
