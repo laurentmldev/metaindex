@@ -253,7 +253,7 @@ height:40px;
 	
 }
 
-.scale,.scale-color-white,.scale-color-blue,.scale-bgcolor-white {	
+.scale,.scale-color-white,.scale-color-blue,.scale-bgcolor-white,.mx-help-icon {	
 	transition: all 0.3s ease-in-out;
 }
 .scale:hover {	
@@ -287,4 +287,14 @@ height:40px;
 	text-align:left;
 	font-size:0.75rem;
 	width:80%;
+}
+
+.mx-help-icon {
+	padding:0.4rem;	
+}
+.mx-help-icon:hover {
+	color:#36d;
+	font-weight:bold;
+	cursor:pointer;
+	transform:scale(1.5);
 }

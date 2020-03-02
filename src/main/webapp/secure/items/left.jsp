@@ -36,6 +36,11 @@
 			          <i class="fas fa-fw fa-project-diagram text-white"></i>
 			          <span><s:text name="Items.graphsGenerator"/></span>			                           		
 			    </a>  
+			    <span title="S.O.S" 
+		                	onclick="event.stopPropagation();event.preventDefault();
+		                			MxGuiHeader.showInfoModal('<s:text name="help.items.connection_graph.title" />','<s:text name="help.items.connection_graph.body" />')">
+		                   <i class="mx-help-icon far fa-question-circle" style="color:white"></i>    
+		          </span>
 			    
 			 </label>
 			 
@@ -45,6 +50,11 @@
 			          <i class="fas fa-fw fa-project-diagram text-white"></i>
 			          <span><s:text name="Items.groupGraphsGenerator"/></span>			                           		
 			    </a>  
+			    <span title="S.O.S" 
+		                	onclick="event.stopPropagation();event.preventDefault();
+		                			MxGuiHeader.showInfoModal('<s:text name="help.items.connection_graph_group.title" />','<s:text name="help.items.connection_graph_group.body" />')">
+		                   <i class="mx-help-icon far fa-question-circle" style="color:white"></i>    
+		          </span>
 			    
 			 </label>
 	 		
@@ -86,18 +96,27 @@
         <div id="collapseCsv" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="mx-collapse py-2 collapse-inner rounded pt-4" style="overflow:auto">                         			 
 			  <!-- Custom CSV FileUpload button -->
+			 
 	 		  <label for="fileUpload" 
 	 		  	class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button"  >
 	 		  	<i class="fas fa-upload fa-sm text-white" style="margin-right:1em"></i><s:text name="Items.uploadItems.fromCsv"></s:text>
+	 		  	 <span title="S.O.S" 
+		                	onclick="event.stopPropagation();event.preventDefault();
+		                			MxGuiHeader.showInfoModal('<s:text name="help.items.csv_upload.title" />','<s:text name="help.items.csv_upload.body" />')">
+		                   <i class="mx-help-icon far fa-question-circle" style="color:white"></i>    
+		          </span>
 	 		  </label>
-	 		 <span style="display:none">
+	 		  <!-- not displayed but used for the file input -->
+	 		 <span style="display:none">	 		 	
 			 		 <input id="fileUpload" type="file"
 			 		  	accept=".csv,.txt"
 			 		  	name="formFile"  
-			 		  	onChange="ws_handlers_requestUploadCsvFile(this);" />
+			 		  	onChange="ws_handlers_requestUploadCsvFile(this);" />				
 	 		  </span>
 	 		  
+	 		  
           </div>
+            
         </div>
  </li>
  

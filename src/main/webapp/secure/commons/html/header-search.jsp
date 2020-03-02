@@ -62,10 +62,8 @@
             
             	     
              <div class="input-group-append">
-              	<!--  call to external (custom) function header_onSearchClick(searchQuery) -->
-                <div class="scale" style="padding:0.4rem;" title="S.O.S" 
-                	onclick="MxGuiHeader.showInfoModal('<s:text name="help.search.title" />','<s:text name="help.search.body" />')">
-                  <i class="far fa-question-circle"></i>    
+              	<div title="S.O.S" onclick="MxGuiHeader.showInfoModal('<s:text name="help.search.title" />','<s:text name="help.search.body" />')">
+                  <i class="mx-help-icon far fa-question-circle"></i>    
                   </div>                
               </div>
              

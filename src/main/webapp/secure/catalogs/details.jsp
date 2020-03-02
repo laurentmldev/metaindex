@@ -231,9 +231,27 @@ function details_memGui() {
 				<nav>
 					<div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
 						<a class="nav-item nav-link active mx-tab-tiny-shadow " id="nav-custompres-tab" data-toggle="tab" href="#nav-custompres" role="tab" aria-controls="nav-custompres" aria-selected="true"><s:text name="Catalogs.overview"></s:text></a>
-						<a class="nav-item nav-link mx-tab-tiny-shadow " id="nav-mapping-tab" data-toggle="tab" href="#nav-mapping" role="tab" aria-controls="nav-mapping" aria-selected="false"><s:text name="Catalogs.fields"></s:text></a>
-						<a class="nav-item nav-link mx-tab-tiny-shadow " id="nav-lexic-tab" data-toggle="tab" href="#nav-lexic" role="tab" aria-controls="nav-lexic" aria-selected="false"><s:text name="Catalogs.lexic"></s:text></a>
-						<a class="nav-item nav-link mx-tab-tiny-shadow " id="nav-perspectives-tab" data-toggle="tab" href="#nav-perspectives" role="tab" aria-controls="nav-perspectives" aria-selected="false"><s:text name="Catalogs.perspectives"></s:text></a>
+						<a class="nav-item nav-link mx-tab-tiny-shadow " id="nav-mapping-tab" data-toggle="tab" href="#nav-mapping" role="tab" aria-controls="nav-mapping" aria-selected="false"><s:text name="Catalogs.fields"></s:text>
+							<span title="S.O.S" 
+				                	onclick="event.stopPropagation();event.preventDefault();
+				                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.fields.title" />','<s:text name="help.catalog.fields.body" />')">
+				                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
+				             </span>
+					    </a>
+						<a class="nav-item nav-link mx-tab-tiny-shadow " id="nav-lexic-tab" data-toggle="tab" href="#nav-lexic" role="tab" aria-controls="nav-lexic" aria-selected="false"><s:text name="Catalogs.lexic"></s:text>
+							<span title="S.O.S" 
+				                	onclick="event.stopPropagation();event.preventDefault();
+				                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.lexic.title" />','<s:text name="help.catalog.lexic.body" />')">
+				                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
+				             </span>
+						</a>
+						<a class="nav-item nav-link mx-tab-tiny-shadow " id="nav-perspectives-tab" data-toggle="tab" href="#nav-perspectives" role="tab" aria-controls="nav-perspectives" aria-selected="false"><s:text name="Catalogs.perspectives"></s:text>
+							<span title="S.O.S" 
+				                	onclick="event.stopPropagation();event.preventDefault();
+				                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.perspective.title" />','<s:text name="help.catalog.perspective.body" />')">
+				                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
+				             </span>
+						</a>
 					</div>
 				</nav>
 				<div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
@@ -263,27 +281,63 @@ function details_memGui() {
 						      	  onclick="copyToClipBoard(this.querySelector('._ftp_port_').innerHTML);
 						      		footer_showAlert(INFO, '<s:text name="globals.ftpPortCopiedToClipboard"/>');
 						      			" >
-						        <td style="font-style:italic" ><s:text name="Catalogs.overview.ftpPort" /></td>
+						        <td style="font-style:italic" ><s:text name="Catalogs.overview.ftpPort" />
+						        	<span title="S.O.S" 
+						                	onclick="event.stopPropagation();event.preventDefault();
+						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.ftp.title" />','<s:text name="help.catalog.overview.ftp.body" />')">
+						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
+						             </span>
+						        </td>
 						        <td style="font-style:italic" class="_ftp_port_" ></td>						        
 						      </tr>
 						      <tr>
-						        <td ><s:text name="Catalogs.overview.thumbnailUrl" /></td>
+						        <td ><s:text name="Catalogs.overview.thumbnailUrl" />
+						        	<span title="S.O.S" 
+						                	onclick="event.stopPropagation();event.preventDefault();
+						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.thumbnail_url.title" />','<s:text name="help.catalog.overview.thumbnail_url.body" />')">
+						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
+						             </span>
+						        </td>
 						        <td class="_thumbnail_url_"></td>						        
 						      </tr>
 						      <tr>
-						        <td ><s:text name="Catalogs.overview.urlsPrefix" /></td>
+						        <td ><s:text name="Catalogs.overview.urlsPrefix" />
+						        	<span class=""  title="S.O.S" 
+						                	onclick="event.stopPropagation();event.preventDefault();
+						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.urls_prefix.title" />','<s:text name="help.catalog.overview.urls_prefix.body" />')">
+						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
+						             </span>
+						        </td>
 						        <td class="_url_prefix_"></td>						        
 						      </tr>
 						      <tr>
-						        <td><s:text name="Catalogs.overview.cardsTitles" /></td>
+						        <td><s:text name="Catalogs.overview.cardsTitles" />
+						        	<span class=""  title="S.O.S" 
+						                	onclick="event.stopPropagation();event.preventDefault();
+						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.cards_title.title" />','<s:text name="help.catalog.overview.cards_title.body" />')">
+						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
+						             </span>
+						        </td>
 						        <td class="_items_name_fields_"></td>						        
 						      </tr>
 						      <tr>
-						        <td ><s:text name="Catalogs.overview.cardsThumbnailField" /></td>
+						        <td ><s:text name="Catalogs.overview.cardsThumbnailField" />
+						        	<span class=""  title="S.O.S" 
+						                	onclick="event.stopPropagation();event.preventDefault();
+						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.cards_thumbnail.title" />','<s:text name="help.catalog.overview.cards_thumbnail.body" />')">
+						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
+						             </span>
+						        </td>
 						        <td class="_items_url_field_"></td>						        
 						      </tr>
 						      <tr>
-						        <td><s:text name="Catalogs.overview.perspectiveMatchField" /></td>
+						        <td><s:text name="Catalogs.overview.perspectiveMatchField" />
+						        	<span class=""  title="S.O.S" 
+						                	onclick="event.stopPropagation();event.preventDefault();
+						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.detect_perspective_on_field.title" />','<s:text name="help.catalog.overview.detect_perspective_on_field.body" />')">
+						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
+						             </span>
+						        </td>
 						        <td class="_perspective_match_field_"></td>						        
 						      </tr>
 						      						      
@@ -295,7 +349,7 @@ function details_memGui() {
 						<table class="table table-striped" >
 						    <thead>
 						      <tr>
-						        <th style="min-width:5rem;"><s:text name="Catalogs.field"></s:text>
+						        <th style="min-width:5rem;"><s:text name="Catalogs.field"></s:text>						        	
 						        	 <span class="dropdown no-arrow mx-1" style="padding:1rem;">
 							              <a class="dropdown-toggle" href="#" id="createTermDropdown" 
 							              	role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

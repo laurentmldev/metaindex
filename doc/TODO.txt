@@ -12,12 +12,10 @@ detect when same user logged from 2 different hosts : TO BE TESTED
 	
 #15 adapt GUI 
 	- to access rights (hide forbidden actions)
-	- when entering edit mode, shall stay in current tab
-	- styling dropdowns for sorting choices
+	
 	x visible color for selected filters
-	- help icons pour
-		- barre de recherche
-		- générateurs de graphes
+	x help icons 
+	- help texts
 	- left-items submenus not visible when window width too small
 	
 	
@@ -43,6 +41,8 @@ Priority 2:
 
 Backlog:
 --------
+- when entering edit mode, shall stay in current tab
+- styling dropdowns for sorting choices
 - check DB version VS app version at application startup
 - design definition in Latek
 - waiting icon while loading real name of link 
