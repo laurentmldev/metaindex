@@ -4,26 +4,24 @@ Priority 1:
 -----------
 
 detect when same user logged from 2 different hosts : TO BE TESTED
+#20 build usage statistics : TO BE TESTED
 
-#19 send email to users and admin
-#20 build usage statistics 
+deployement test scenario
 
 #8 prepare demo data, catalog/user present by default
 	
 #15 adapt GUI 
-	- to access rights (hide forbidden actions)
-	
+	- to access rights (hide forbidden actions)	
 	x visible color for selected filters
 	x help icons 
 	- help texts
-	- left-items submenus not visible when window width too small
-	
-	
+		
 #17 language properties file in español
-
 
 Priority 2:
 -----------
+
+#19 send email to users and admin when useful
 #6 Kibana access control to indices
 
 #16 removing a term present in several perspectives, it removes it from the second perspective while user have clicked on the first perspective ones
@@ -37,10 +35,12 @@ Priority 2:
 #7 presentation page
 	- sign-up form
 
+- left-items submenus not visible when window width too small
 - user profile picture
 
 Backlog:
 --------
+
 - when entering edit mode, shall stay in current tab
 - styling dropdowns for sorting choices
 - check DB version VS app version at application startup
