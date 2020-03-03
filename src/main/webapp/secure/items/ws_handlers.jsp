@@ -183,8 +183,8 @@ function ws_handlers_requestUpdateFilter(filterName,queryString) {
 	MxApi.requestUpdateFilter(filterName,queryString);
 }
 
-function ws_handlers_requestUploadCsvFile(fileHandle) {
-	MxApi.requestUploadItemsFromCsv(fileHandle);    
+function ws_handlers_requestUploadCsvFile(fileHandle,selectedCsvColsDef) {	
+	MxApi.requestUploadItemsFromCsv(fileHandle,selectedCsvColsDef);    
 }
 
 function ws_handlers_deleteItem(itemsId) {

@@ -6,6 +6,8 @@
 
 <script type="text/javascript" >
 
+var _curCatalogDescr=null;
+
 function header_onFilterClick(searchQuery,orderString,reversedOrder)  {
 	var selectedFiltersNames=MxGuiLeftBar.getSelectedFiltersNames();	
 	ws_handlers_requestItemsSearch(searchQuery,selectedFiltersNames,orderString,reversedOrder);	
@@ -27,12 +29,14 @@ function header_handleCatalogDetails(catalogDescr) {
 		termTranslation=mx_helpers_getTermName(termDescr, catalogDescr)
 		MxGuiHeader.addSortingChoice(termTranslation,termName);
 	}
+	_curCatalogDescr=catalogDescr;
 	MxGuiHeader.showFilter();
 }
 MxGuiHeader.onFilterClick=header_onFilterClick;
 MxGuiHeader.onFilterSave=header_onFilterSave;
 MxGuiHeader.handleCatalogDetails=header_handleCatalogDetails;
-
+MxGuiHeader.getCurCatalogTermsList=function() { return _curCatalogDescr.terms; }
+MxGuiHeader.getCurCatalogDescr=function() { return _curCatalogDescr; }
 
 
 </script>

@@ -456,7 +456,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		myself._callback_UploadCsv_debug=debug;
 		myself._callback_UploadCsv=callback_func;
 	}	
-	this.requestUploadItemsFromCsv = function(fileHandle) {
+	this.requestUploadItemsFromCsv = function(fileHandle,selectedCsvColsDef) {
 	 	
 		let jsonData = {};
 		jsonData.clientFileId=mx_files_to_be_uploaded.length;
@@ -489,13 +489,14 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	    	let fieldsDefStr=CSVrows[0];
 	    	if (fieldsDefStr[0]!='#') {
 	    		alert("MxAPI CsvUpload error : first line of CSV file shall be a commented line (starting with a '#') describing fields names and types,"
-	    						+"for example '#fields1;field2:TEXT;field3:NUMBER'. Given line is : "+fieldsDefStr);
+	    				+"for example '# name,age'. Given line was : "+fieldsDefStr);
 	    		return;
 	    	}
 	    	let fieldsDefsArray=fieldsDefStr.split(';');
+	    	if (fieldsDefsArray.length==1) { fieldsDefsArray=fieldsDefStr.split(','); }
 	    	for (curFieldIdx in fieldsDefsArray) {
 	    		curField=fieldsDefsArray[curFieldIdx];	  
-	    		if (curFieldIdx==0) { curField=curField.replace(/^#/,""); }
+	    		if (curFieldIdx==0) { curField=curField.replace(/^#\s*/,""); }
 	    		jsonData.csvFieldsList.push(stripStr(curField));
 	    	}
 	    	//console.log('### Sending file upload request : '+JSON.stringify(jsonData));

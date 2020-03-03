@@ -10,13 +10,13 @@
 
 <div id="show_info_container"  style="display:none;opacity:0.0;transition: opacity 100ms ease-in-out 100ms;">
 	 <div  id="info_modal" class="modal" style="display:block;z-index:1000;background:#fffa;">
-		  <div id="info_dialog" class="modal-dialog" style="min-width:30vw;display:block;position:absolute;margin-top:20vh;margin-left:60vh;">		  	 
+		  <div id="info_dialog" class="modal-dialog" style="min-width:30vw;display:block;position:absolute;margin-top:20vh;margin-left:60vh;max-height:80vh;">		  	 
 		     <div class="modal-content">		     
 		       <div class="modal-header">
 		            <span id="info_modal_title"> </span>
 		        	<span class="scale" style="cursor:pointer" onclick="MxGuiHeader.hideInfoModal()">X</span>
 		       </div>
-		       <div id="info_modal_body" class="modal-body"></div>
+		       <div id="info_modal_body" class="modal-body"  style="overflow:auto;max-height:50vh;"></div>
 		       <div id="info_modal_footer" class="modal-footer"></div>				       
 		     </div>
 	     </div>
@@ -133,13 +133,17 @@
 	  title.innerHTML=titleTxt;
 	  
 	  let body = document.getElementById("info_modal_body");
-	  body.innerHTML=bodyTxt;
+	  body.innerHTML="";
+	  if (typeof(bodyTxt)=='string') { body.innerHTML=bodyTxt; }
+	  else { body.appendChild(bodyTxt); }
 	  
 	  let footer = document.getElementById("info_modal_footer");
 	  if (footerTxt==null || footerTxt=='') { footer.style.display='none'; }
 	  else { 
 		  footer.style.display='block';
-		  footer.innerHTML=footerTxt;
+		  footer.innerHTML="";
+		  if (typeof(footerTxt)=='string') { footer.innerHTML=footerTxt; }
+		  else { footer.appendChild(footerTxt); }
 	  }
 	  
 	  document.getElementById("show_info_container").style.opacity=0.0;
@@ -147,16 +151,13 @@
 	  // need to give time to the transition to be loaded before applying property
 	  window.setTimeout( function() {
 		  document.getElementById("show_info_container").style.opacity=1.0;
-		}, 110);
-	  
-
+		}, 110);	 
   }
+
   MxGuiHeader.hideInfoModal=function() {
 	  
 	  document.getElementById("show_info_container").style.opacity=0.0;
 	  document.getElementById("show_info_container").style.display='none';
-	
-	
 	 
   }
   </script>
