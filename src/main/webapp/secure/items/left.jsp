@@ -392,12 +392,20 @@ function _getColTypeNode(csvColName,checkBox) {
 		}		
 		colTermNodeSelect.appendChild(choiceNode);
 	}
+	
+	let idChoiceNode=document.createElement("option");
+	idChoiceNode.value="_id";
+	idChoiceNode.innerHTML="<id>";
+	colTermNodeSelect.appendChild(idChoiceNode);
+	idChoiceNode.onclick=function() { checkBox.checked=true; }
+	
 	let choiceIgnoreNode=document.createElement("option");
 	choiceIgnoreNode.value="ignore";
 	choiceIgnoreNode.innerHTML="- ignore -";
 	choiceIgnoreNode.onclick=function() { checkBox.checked=false; }
 	if (found==false) { choiceIgnoreNode.selected=true; }
 	colTermNodeSelect.appendChild(choiceIgnoreNode);
+	
 	
 	for (datatypeIdx in mx_helpers_FIELDS_DATATYPES) {
 		let datatypeStr=mx_helpers_FIELDS_DATATYPES[datatypeIdx];

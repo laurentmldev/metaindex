@@ -20,8 +20,10 @@ import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
 
 public class WsMsgFileUpload_request {
 
+	public static final String CSV_MAPPING_NEWTERM_PREFIX="__new__";
 	private Integer _clientFileId = 0;
-	private List<String> _csvFieldsList= new ArrayList<String>();
+	private List<String> _csvFieldsList= new ArrayList<>();
+	private Map<String,String> _csvMapping= new HashMap<>();
 	private Integer _totalNbEntries = 0;
 	
 	
@@ -37,6 +39,13 @@ public class WsMsgFileUpload_request {
 		return _csvFieldsList;
 	}
 
+	public Map<String,String> getCsvMapping() {
+		return _csvMapping;
+	}
+	public void setCsvMapping(Map<String,String> map) {
+		_csvMapping=map;
+	}
+	
 	public void setCsvFieldsList(List<String> csvMapping) {
 		this._csvFieldsList = csvMapping;
 	}

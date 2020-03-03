@@ -12,7 +12,9 @@ See full version of LICENSE in <https://fsf.org/>
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,8 +29,11 @@ import metaindex.data.commons.globals.Globals;
 import metaindex.data.catalog.UserItemCsvParser;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
+import metaindex.data.term.ICatalogTerm.TERM_DATATYPE;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.websockets.commons.AMxWSController;
+import metaindex.websockets.terms.WsControllerTerm;
+import metaindex.websockets.terms.WsMsgCreateTerm_request;
 import toolbox.database.IDbItem;
 import toolbox.database.elasticsearch.ESBulkProcess;
 import toolbox.exceptions.DataProcessException;
@@ -63,8 +68,9 @@ public class WsControllerItemsFileUpload extends AMxWSController {
  													user.getText("Items.serverside.createFromCsvTask"), 
 													requestMsg.getTotalNbEntries(),now);    		
     		UserItemCsvParser csvParser = new UserItemCsvParser();
-    		List<IPair<String,PARSING_FIELD_TYPE>> csvMapping = new ArrayList<IPair<String,PARSING_FIELD_TYPE>>();
-    	
+    		List<IPair<String,PARSING_FIELD_TYPE>> csvParsingType = new ArrayList<IPair<String,PARSING_FIELD_TYPE>>();
+    		Map<String,String> requiredCsvMapping = requestMsg.getCsvMapping();
+    		
     		// check quota won't be exceeded after uploading the file
     		if (user.getCurrentCatalog().getNbDocuments()+requestMsg.getTotalNbEntries()
     												>user.getCurrentCatalog().getQuotaNbDocs()) {
@@ -82,12 +88,41 @@ public class WsControllerItemsFileUpload extends AMxWSController {
 				return;
     		}
     		List<String> fieldsNotFound=new ArrayList<String>();
-    		for (String fieldName : requestMsg.getCsvFieldsList()) {
+    		WsControllerTerm termsController = new WsControllerTerm(this.messageSender);
+    		// go through required mapping, and check that temrs exist or create them
+    		for (String csvColName : requiredCsvMapping.keySet()) {
+    			
+    			String fieldName=requiredCsvMapping.get(csvColName);
+    			// if given term is actually a request for an automatic term creation, then try 
+    			// to create corresponding term
+    			if (fieldName.startsWith(WsMsgFileUpload_request.CSV_MAPPING_NEWTERM_PREFIX)) {
+    				// TODO create corresponding term if not already exist
+    				WsMsgCreateTerm_request newTermRequest = new WsMsgCreateTerm_request();
+    				newTermRequest.setCatalogId(user.getCurrentCatalog().getId());
+    				newTermRequest.setTermName(csvColName);
+    				newTermRequest.setTermDatatype(TERM_DATATYPE.valueOf(fieldName.replace(WsMsgFileUpload_request.CSV_MAPPING_NEWTERM_PREFIX, "")));    				
+    				
+    				try {
+						termsController.handleCreateTermRequest(headerAccessor, newTermRequest);
+					} catch (Exception e) {
+						String msgStr = user.getText("Items.serverside.uploadItems.unableToAutomaticallyCreateTerm");
+		    			WsMsgFileUpload_answer msg = new WsMsgFileUpload_answer(procTask.getId(),requestMsg.getClientFileId());
+						msg.setIsSuccess(false);
+						msg.setRejectMessage(msgStr);						
+							this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),
+								"/queue/upload_items_csv_response", 
+			    				msg);						
+						return;
+					}
+    				fieldName=csvColName;
+    			}
+    			
+    			// else check term already exists
     			ICatalogTerm term =  user.getCurrentCatalog().getTerms().get(fieldName);
     			// if field not found, send back an error message
     			if (term==null) { 
-    				if (fieldName.equals("id")) { 
-    					csvMapping.add(new BasicPair<String,PARSING_FIELD_TYPE>("_id",PARSING_FIELD_TYPE.TEXT));
+    				if (fieldName.equals("id") || fieldName.equals("_id")) { 
+    					csvParsingType.add(new BasicPair<String,PARSING_FIELD_TYPE>("_id",PARSING_FIELD_TYPE.TEXT));
     					continue;
     				}
     				else { fieldsNotFound.add(fieldName); continue; } 
@@ -99,7 +134,7 @@ public class WsControllerItemsFileUpload extends AMxWSController {
     					|| dbType==RAW_DATATYPE.Tshort) {
     				parsingType=PARSING_FIELD_TYPE.NUMBER;
     			}
-    			csvMapping.add(new BasicPair<String,PARSING_FIELD_TYPE>(fieldName,parsingType));
+    			csvParsingType.add(new BasicPair<String,PARSING_FIELD_TYPE>(fieldName,parsingType));
     		}
     		
     		// if some fields in CSV file could not be found in catalog, reject the request
@@ -123,7 +158,7 @@ public class WsControllerItemsFileUpload extends AMxWSController {
     		    		
     		// set-up the parser and start the processing task
     		user.addProcessingTask(procTask);
-    		csvParser.setFieldsDescriptions(csvMapping);
+    		csvParser.setFieldsDescriptions(csvParsingType);
     		procTask.setParser(csvParser);
     		procTask.start();
     		

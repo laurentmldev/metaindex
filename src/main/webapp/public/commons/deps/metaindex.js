@@ -456,7 +456,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		myself._callback_UploadCsv_debug=debug;
 		myself._callback_UploadCsv=callback_func;
 	}	
-	this.requestUploadItemsFromCsv = function(fileHandle,selectedCsvColsDef) {
+	this.requestUploadItemsFromCsv = function(fileHandle,csvColsMapping) {
 	 	
 		let jsonData = {};
 		jsonData.clientFileId=mx_files_to_be_uploaded.length;
@@ -483,7 +483,8 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	    		curLineNb++;	    		
 	    	}
 	    	jsonData.totalNbEntries=nbItemsToBeCreated;
-	 	    
+	    	jsonData.csvMapping=csvColsMapping;
+	    	
 	    	// parse fields names and types
 	    	jsonData.csvFieldsList=[];
 	    	let fieldsDefStr=CSVrows[0];
