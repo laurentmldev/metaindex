@@ -23,6 +23,5 @@ public class UserItemCsvParser extends ACsvParser<IDbItem> {
 		result.setData(fieldsMap);
 		return result;
 	}
-	
 
 }

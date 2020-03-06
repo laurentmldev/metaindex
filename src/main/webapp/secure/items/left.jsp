@@ -395,7 +395,7 @@ function _getColTypeNode(csvColName,checkBox) {
 	
 	let idChoiceNode=document.createElement("option");
 	idChoiceNode.value="_id";
-	idChoiceNode.innerHTML="<id>";
+	idChoiceNode.innerHTML="- ID -";
 	colTermNodeSelect.appendChild(idChoiceNode);
 	idChoiceNode.onclick=function() { checkBox.checked=true; }
 	
@@ -434,7 +434,7 @@ function _getColTypeNode(csvColName,checkBox) {
 }
 
 // showCsvPrevisu : build CSV columns table
-function _getCsvColumnsList(fileHandle,nbEntriesNode,csvColsTable) {
+function _buildCsvColumnsTable(fileHandle,nbEntriesNode,csvColsTable) {
 	
 	let reader = new FileReader();
     reader.onload = function (file_contents) 
@@ -456,7 +456,6 @@ function _getCsvColumnsList(fileHandle,nbEntriesNode,csvColsTable) {
     	nbEntriesNode.innerHTML=nbEntries;    	
  	    
     	// parse fields names and types
-    	let csvFieldsList=[];
     	let fieldsDefStr=CSVrows[0];
     	if (fieldsDefStr[0]!='#') {
     		alert("CsvUpload error : first line of CSV file shall be a commented line (starting with a '#') describing fields names,"
@@ -464,12 +463,14 @@ function _getCsvColumnsList(fileHandle,nbEntriesNode,csvColsTable) {
     		return;
     	}
     	let fieldsDefsArray=fieldsDefStr.split(';');
-    	if (fieldsDefsArray.length==1) { fieldsDefsArray=fieldsDefStr.split(','); }
+    	if (fieldsDefsArray.length==1) { 
+    		fieldsDefsArray=fieldsDefStr.split(','); 
+    	}
+    	
     	for (curFieldIdx in fieldsDefsArray) {
     		curField=fieldsDefsArray[curFieldIdx];	  
     		if (curFieldIdx==0) { curField=curField.replace(/^#/,""); }
-    		let curFieldStr=stripStr(curField)
-    		csvFieldsList.push(curFieldStr);
+    		let curFieldStr=stripStr(curField)    		
     		
     		let newRow=document.createElement("tr");
     		
@@ -523,7 +524,7 @@ MxGuiLeftBar.showCsvPrevisu=function(fileHandle) {
 	let nbEntries=previsuNode.querySelector("._nbEntries_");
 	let csvColsTable=previsuNode.querySelector("._csv_columns_tbl_");
 	
-	let csvColsList = _getCsvColumnsList(fileHandle.files[0],nbEntries,csvColsTable)
+	_buildCsvColumnsTable(fileHandle.files[0],nbEntries,csvColsTable)
 	
 	// footer
 	let previsuNodeFooter=document.getElementById('csv_contents_previsu_footer').cloneNode(true);

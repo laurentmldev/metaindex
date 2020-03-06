@@ -68,8 +68,8 @@ public class WsControllerItemsFileUpload extends AMxWSController {
  													user.getText("Items.serverside.createFromCsvTask"), 
 													requestMsg.getTotalNbEntries(),now);    		
     		UserItemCsvParser csvParser = new UserItemCsvParser();
-    		List<IPair<String,PARSING_FIELD_TYPE>> csvParsingType = new ArrayList<IPair<String,PARSING_FIELD_TYPE>>();
-    		Map<String,String> requiredCsvMapping = requestMsg.getCsvMapping();
+    		csvParser.setCsvSeparator(requestMsg.getSeparator());
+    		List<IPair<String,PARSING_FIELD_TYPE>> csvParsingType = new ArrayList<IPair<String,PARSING_FIELD_TYPE>>();    		
     		
     		// check quota won't be exceeded after uploading the file
     		if (user.getCurrentCatalog().getNbDocuments()+requestMsg.getTotalNbEntries()
@@ -89,43 +89,59 @@ public class WsControllerItemsFileUpload extends AMxWSController {
     		}
     		List<String> fieldsNotFound=new ArrayList<String>();
     		WsControllerTerm termsController = new WsControllerTerm(this.messageSender);
-    		// go through required mapping, and check that temrs exist or create them
-    		for (String csvColName : requiredCsvMapping.keySet()) {
+    		
+    		if (requestMsg.getCsvColsList().size()==0) {
+    			String msgStr = user.getText("Items.serverside.uploadItems.emptyCsvColsList");
+    			WsMsgFileUpload_answer msg = new WsMsgFileUpload_answer(
+						procTask.getId(),requestMsg.getClientFileId());
+				msg.setIsSuccess(false);
+				msg.setRejectMessage(msgStr);
+				
+				this.messageSender.convertAndSendToUser(
+	    				headerAccessor.getUser().getName(),
+	    				"/queue/upload_items_csv_response", 
+	    				msg);
+				
+				return;
+    		}
+    		// go through required mapping, and check that terms exist or create them
+    		for (String csvColName : requestMsg.getCsvColsList()) {
     			
-    			String fieldName=requiredCsvMapping.get(csvColName);
-    			// if given term is actually a request for an automatic term creation, then try 
-    			// to create corresponding term
-    			if (fieldName.startsWith(WsMsgFileUpload_request.CSV_MAPPING_NEWTERM_PREFIX)) {
-    				// TODO create corresponding term if not already exist
+    			String termName=requestMsg.getChosenFieldsMapping().get(csvColName);
+    			
+    			// '_id' special field or field to be ignored so no need to check if corresponding term exists
+    			if (termName==null || termName.equals("_id")) { 
+    				// declare it with TEXT as default, but anyway that won't be used later on because field
+    				// is not part of the getChosenFieldsMapping, so it will be ignored when processing file contents
+    				csvParsingType.add(new BasicPair<String,PARSING_FIELD_TYPE>(csvColName,PARSING_FIELD_TYPE.TEXT));
+    				continue; 
+    			}    			
+    			
+    			if (termName.startsWith(WsMsgFileUpload_request.CSV_MAPPING_NEWTERM_PREFIX)) {
+    				String newTermName = csvColName.toLowerCase();
     				WsMsgCreateTerm_request newTermRequest = new WsMsgCreateTerm_request();
     				newTermRequest.setCatalogId(user.getCurrentCatalog().getId());
-    				newTermRequest.setTermName(csvColName);
-    				newTermRequest.setTermDatatype(TERM_DATATYPE.valueOf(fieldName.replace(WsMsgFileUpload_request.CSV_MAPPING_NEWTERM_PREFIX, "")));    				
+    				newTermRequest.setTermName(newTermName);
+    				newTermRequest.setTermDatatype(TERM_DATATYPE.valueOf(termName.replace(WsMsgFileUpload_request.CSV_MAPPING_NEWTERM_PREFIX, "")));    				
     				
     				try {
 						termsController.handleCreateTermRequest(headerAccessor, newTermRequest);
 					} catch (Exception e) {
 						String msgStr = user.getText("Items.serverside.uploadItems.unableToAutomaticallyCreateTerm");
-		    			WsMsgFileUpload_answer msg = new WsMsgFileUpload_answer(procTask.getId(),requestMsg.getClientFileId());
-						msg.setIsSuccess(false);
-						msg.setRejectMessage(msgStr);						
-							this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),
-								"/queue/upload_items_csv_response", 
-			    				msg);						
+		    			user.sendGuiErrorMessage(msgStr);
 						return;
 					}
-    				fieldName=csvColName;
+    				user.sendGuiInfoMessage("Term '"+newTermName+"' created in catalog "+user.getCurrentCatalog().getName());
+    				termName=newTermName;
+    				requestMsg.getChosenFieldsMapping().put(csvColName, termName);
     			}
     			
     			// else check term already exists
-    			ICatalogTerm term =  user.getCurrentCatalog().getTerms().get(fieldName);
+    			ICatalogTerm term =  user.getCurrentCatalog().getTerms().get(termName);
     			// if field not found, send back an error message
     			if (term==null) { 
-    				if (fieldName.equals("id") || fieldName.equals("_id")) { 
-    					csvParsingType.add(new BasicPair<String,PARSING_FIELD_TYPE>("_id",PARSING_FIELD_TYPE.TEXT));
-    					continue;
-    				}
-    				else { fieldsNotFound.add(fieldName); continue; } 
+    					fieldsNotFound.add(termName); 
+    					continue;  
     			}    				
     			RAW_DATATYPE dbType = term.getRawDatatype();    			
     			PARSING_FIELD_TYPE parsingType = PARSING_FIELD_TYPE.TEXT;
@@ -134,7 +150,7 @@ public class WsControllerItemsFileUpload extends AMxWSController {
     					|| dbType==RAW_DATATYPE.Tshort) {
     				parsingType=PARSING_FIELD_TYPE.NUMBER;
     			}
-    			csvParsingType.add(new BasicPair<String,PARSING_FIELD_TYPE>(fieldName,parsingType));
+    			csvParsingType.add(new BasicPair<String,PARSING_FIELD_TYPE>(termName,parsingType));
     		}
     		
     		// if some fields in CSV file could not be found in catalog, reject the request
@@ -158,7 +174,8 @@ public class WsControllerItemsFileUpload extends AMxWSController {
     		    		
     		// set-up the parser and start the processing task
     		user.addProcessingTask(procTask);
-    		csvParser.setFieldsDescriptions(csvParsingType);
+    		csvParser.setCsvColsTypes(csvParsingType);
+    		csvParser.setChosenFieldsMapping(requestMsg.getChosenFieldsMapping());
     		procTask.setParser(csvParser);
     		procTask.start();
     		

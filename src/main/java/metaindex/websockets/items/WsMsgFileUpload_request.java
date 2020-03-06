@@ -22,10 +22,14 @@ public class WsMsgFileUpload_request {
 
 	public static final String CSV_MAPPING_NEWTERM_PREFIX="__new__";
 	private Integer _clientFileId = 0;
-	private List<String> _csvFieldsList= new ArrayList<>();
+	private List<String> _csvColsList= new ArrayList<>();
 	private Map<String,String> _csvMapping= new HashMap<>();
 	private Integer _totalNbEntries = 0;
+	private String _separator=";";
 	
+	
+	public String getSeparator() { return _separator; }
+	public void setSeparator(String sep) { _separator = sep; }
 	
 	public Integer getClientFileId() {
 		return _clientFileId;
@@ -35,19 +39,20 @@ public class WsMsgFileUpload_request {
 		this._clientFileId = clientFileId;
 	}
 
-	public List<String> getCsvFieldsList() {
-		return _csvFieldsList;
+	public List<String> getCsvColsList() {
+		return _csvColsList;
 	}
 
-	public Map<String,String> getCsvMapping() {
+	
+	public void setCsvColsList(List<String> csvColsList) {
+		this._csvColsList = csvColsList;		
+	}
+
+	public Map<String,String> getChosenFieldsMapping() {
 		return _csvMapping;
 	}
-	public void setCsvMapping(Map<String,String> map) {
+	public void setChosenFieldsMapping(Map<String,String> map) {
 		_csvMapping=map;
-	}
-	
-	public void setCsvFieldsList(List<String> csvMapping) {
-		this._csvFieldsList = csvMapping;
 	}
 
 	public Integer getTotalNbEntries() {

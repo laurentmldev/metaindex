@@ -456,11 +456,10 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		myself._callback_UploadCsv_debug=debug;
 		myself._callback_UploadCsv=callback_func;
 	}	
-	this.requestUploadItemsFromCsv = function(fileHandle,csvColsMapping) {
+	this.requestUploadItemsFromCsv = function(fileHandle,chosenFieldsMapping) {
 	 	
 		let jsonData = {};
-		jsonData.clientFileId=mx_files_to_be_uploaded.length;
-
+		jsonData.clientFileId=mx_files_to_be_uploaded.length;		
 		let nbItemsToBeCreated=0;
 		
 		// instantiate a new FileReader object to count total amount of items 
@@ -483,22 +482,29 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	    		curLineNb++;	    		
 	    	}
 	    	jsonData.totalNbEntries=nbItemsToBeCreated;
-	    	jsonData.csvMapping=csvColsMapping;
+	    	jsonData.chosenFieldsMapping=chosenFieldsMapping;	    	
 	    	
 	    	// parse fields names and types
-	    	jsonData.csvFieldsList=[];
 	    	let fieldsDefStr=CSVrows[0];
 	    	if (fieldsDefStr[0]!='#') {
 	    		alert("MxAPI CsvUpload error : first line of CSV file shall be a commented line (starting with a '#') describing fields names and types,"
 	    				+"for example '# name,age'. Given line was : "+fieldsDefStr);
 	    		return;
 	    	}
-	    	let fieldsDefsArray=fieldsDefStr.split(';');
-	    	if (fieldsDefsArray.length==1) { fieldsDefsArray=fieldsDefStr.split(','); }
+	    	let separator=";"
+	    	let fieldsDefsArray=fieldsDefStr.split(separator);
+	    	if (fieldsDefsArray.length==1) {
+	    		separator=",";
+	    		fieldsDefsArray=fieldsDefStr.split(separator);	    		
+	    	}
+
+	    	jsonData.separator=separator;
+	    	
+	    	jsonData.csvColsList=[];	    	
 	    	for (curFieldIdx in fieldsDefsArray) {
-	    		curField=fieldsDefsArray[curFieldIdx];	  
+	    		let curField=fieldsDefsArray[curFieldIdx];	  
 	    		if (curFieldIdx==0) { curField=curField.replace(/^#\s*/,""); }
-	    		jsonData.csvFieldsList.push(stripStr(curField));
+	    		jsonData.csvColsList.push(stripStr(curField));
 	    	}
 	    	//console.log('### Sending file upload request : '+JSON.stringify(jsonData));
 	    	myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/upload_items_csv_request", {},JSON.stringify(jsonData));		

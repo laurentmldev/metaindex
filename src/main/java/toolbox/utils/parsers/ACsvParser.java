@@ -14,11 +14,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Semaphore;
 
-import toolbox.utils.BasicPair;
 import toolbox.utils.IPair;
-import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import metaindex.websockets.items.WsControllerItemsFileUpload;
+
 
 /**
  * Convert CSV lines into decoded fields. Need to be overridden in order
@@ -28,21 +34,40 @@ import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
  */
 public abstract class ACsvParser<TTo> implements IFieldsListParser<String,TTo> {
 	
-	Integer _nbEntriesParsed=0;
-	List<IPair<String,PARSING_FIELD_TYPE> > _columnsDef = new ArrayList<IPair<String,PARSING_FIELD_TYPE> >();
+	private Log log = LogFactory.getLog(ACsvParser.class);
+	
+	private static final String MX_SEP_ESCAPE_STR="__MX_ESCAPED_SEPARATOR__";
+	private String _csvSeparator=";";
+	private String _stringIdentifier="\"";
+	private Integer _nbEntriesParsed=0;
+	private List<IPair<String,PARSING_FIELD_TYPE> > _csvColumnsTypes = new ArrayList<>();
+	private Map<String,String> _chosenFieldsMapping = new HashMap<>();
 	
 	/// To be overridden by specialization
 	protected abstract TTo buildObjectFromFieldsMap(Map<String, Object> fieldsMap);
 	
-	public String getCsvSeparator() { return ";"; }
+	public String getCsvSeparator() { return _csvSeparator; }
+	public void setCsvSeparator(String sep) { _csvSeparator=sep; }
 	
 	@Override
-	public List<IPair<String,PARSING_FIELD_TYPE> > getFieldsDescriptions() { return _columnsDef; }
+	public List<IPair<String,PARSING_FIELD_TYPE> > getCsvColsTypes() { return _csvColumnsTypes; }
 	
 	@Override
-	public void setFieldsDescriptions(List<IPair<String,PARSING_FIELD_TYPE> > fieldsDescr) {
-		_columnsDef=fieldsDescr;
+	public void setCsvColsTypes(List<IPair<String,PARSING_FIELD_TYPE> > csvColsTypesDescr) {
+		_csvColumnsTypes=csvColsTypesDescr;
 	}
+	
+
+	@Override
+	public Map<String, String> getChosenFieldsMapping() {
+		return _chosenFieldsMapping;
+	}
+
+	@Override
+	public void setChosenFieldsMapping(Map<String, String> fieldsNamesDescr) {
+		_chosenFieldsMapping=fieldsNamesDescr;		
+	}
+	
 	
 	@Override
 	public TTo parse(String str) throws ParseException {
@@ -83,19 +108,30 @@ public abstract class ACsvParser<TTo> implements IFieldsListParser<String,TTo> {
 		catch (Exception e3) { throw new ParseException("Expected number, got '"+csvContents+"'"); }}}
 	}
 	
-	private Map<String, Object> toMap(String d) throws ParseException {
-		// ignore empty line
-		if (d.startsWith("#") || d.length()==0) { return null; }
+	
+	/**
+	 * Extract a single line from csv file and populate a corresponding map with only fields requested by user
+	 */
+	private Map<String, Object> toMap(String csvLine) throws ParseException {
 		
-		// -1 prevents to remove empty columns
-		String cols[] = d.split(getCsvSeparator(),-1);
-		if (cols.length!=_columnsDef.size()) { 
-			throw new ParseException("expected "+_columnsDef.size()+" columns, found "+cols.length+" : "+d); 
+		// ignore empty line
+		if (csvLine.startsWith("#") || csvLine.length()==0) { return null; }
+		
+		// clean input line from separators within quotes
+		Matcher m = Pattern.compile(_stringIdentifier+"[^"+_stringIdentifier+"]+"+_stringIdentifier).matcher(csvLine);
+		while(m.find()) {
+			String escaped_col = m.group().replaceAll(this.getCsvSeparator(), MX_SEP_ESCAPE_STR);
+			csvLine=csvLine.replaceAll(Pattern.quote(m.group()),escaped_col);
+		}		
+		
+		String cols[] = csvLine.split(getCsvSeparator(),-1);
+		if (cols.length!=getCsvColsTypes().size()) { 
+			throw new ParseException("expected "+getCsvColsTypes().size()+" columns, found "+cols.length+" : "+csvLine); 
 		}
 		
 		Map<String, Object> result= new HashMap<String,Object>();
 		int colidx=0;
-		for (IPair<String,PARSING_FIELD_TYPE> coldef : _columnsDef) {
+		for (IPair<String,PARSING_FIELD_TYPE> coldef : getCsvColsTypes()) {
 			colidx++;
 			String curColContents=cols[colidx-1];
 			
@@ -104,24 +140,32 @@ public abstract class ACsvParser<TTo> implements IFieldsListParser<String,TTo> {
 			// Example : when type is elasticsearch geo-point : it cannot have empty value 
 			if (curColContents.length()==0) { continue; }
 			
-			String fieldName = coldef.getFirst();
+			// restore escaped separator
+			curColContents=curColContents.replaceAll(MX_SEP_ESCAPE_STR, this.getCsvSeparator());
+			
+			String csvFieldName = coldef.getFirst();
 			PARSING_FIELD_TYPE fieldType = coldef.getSecond();
+			if (this.getChosenFieldsMapping().size()>0 && !this.getChosenFieldsMapping().containsKey(csvFieldName)) {
+				continue;
+			}
+			String mappedFieldName=csvFieldName;
+			if (this.getChosenFieldsMapping().size()>0) { mappedFieldName=this.getChosenFieldsMapping().get(csvFieldName); }
 			
 			try {
 				switch (fieldType) {
 					case TEXT:
-						result.put(fieldName, parseStrField(curColContents));
+						result.put(mappedFieldName, parseStrField(curColContents));
 						break;
 					case NUMBER:
-						result.put(fieldName, parseNumberFieldContents(curColContents));
+						result.put(mappedFieldName, parseNumberFieldContents(curColContents));
 						break;
 					default:
 						throw new ParseException("Unhandled field type "+coldef.getFirst());						
 				}
 			} catch (ParseException e) {
 				throw new ParseException("Contents not compatible with type '"+coldef.getSecond().toString()
-							+"' of field '"+coldef.getFirst()
-							+"' : "	+e.getMessage()+" : "+d);
+							+"' of field '"+mappedFieldName+"' (CSV column '"+coldef.getFirst()
+							+"') : "	+e.getMessage()+" : "+csvLine);
 			}
 
 		}

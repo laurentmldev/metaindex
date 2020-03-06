@@ -14,7 +14,7 @@ Deloyement test
 - check that amount of elements is 1 in the filtered catalog
 - doing same search in 'all' catalog ensure result is 1 too
 - delete community
-- import n elements from Excel/CSV, populating title and at least one metadata
+- import n elements from CSV, populating title and at least one metadata, and one field as doc id
 
 - docs quota (unary and by csv import)
 - FTP disconnect on quota exceeded
