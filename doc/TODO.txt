@@ -3,7 +3,6 @@
 Priority 1:
 -----------
 
-detect when same user logged from 2 different hosts : TO BE TESTED
 #20 build usage statistics : TO BE TESTED
 
 deployement test scenario
@@ -18,8 +17,11 @@ deployement test scenario
 		
 #17 language properties file in español
 
+
+
 Priority 2:
 -----------
+#22 import data as CSV
 renaming a perspective actually duplicates it
 search on accentuated characters imported from UTF-16 does not seem to work
 #19 send email to users and admin when useful
@@ -42,6 +44,7 @@ search on accentuated characters imported from UTF-16 does not seem to work
 Backlog:
 --------
 
+- detect when same user logged from 2 different hosts : TO BE TESTED
 - when entering edit mode, shall stay in current tab
 - styling dropdowns for sorting choices
 - check DB version VS app version at application startup
