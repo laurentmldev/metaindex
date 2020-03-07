@@ -457,19 +457,17 @@ function _buildCsvColumnsTable(fileHandle,nbEntriesNode,csvColsTable) {
  	    
     	// parse fields names and types
     	let fieldsDefStr=CSVrows[0];
-    	if (fieldsDefStr[0]!='#') {
-    		alert("CsvUpload error : first line of CSV file shall be a commented line (starting with a '#') describing fields names,"
-    						+"for example '# name,age'. Given line was : "+fieldsDefStr);
-    		return;
-    	}
+    	fieldsDefStr=stripStr(fieldsDefStr.replace("#",""));
     	let fieldsDefsArray=fieldsDefStr.split(';');
     	if (fieldsDefsArray.length==1) { 
     		fieldsDefsArray=fieldsDefStr.split(','); 
     	}
+    	if (fieldsDefsArray.length==1) { 
+    		fieldsDefsArray=fieldsDefStr.split('\t'); 
+    	}
     	
     	for (curFieldIdx in fieldsDefsArray) {
     		curField=fieldsDefsArray[curFieldIdx];	  
-    		if (curFieldIdx==0) { curField=curField.replace(/^#/,""); }
     		let curFieldStr=stripStr(curField)    		
     		
     		let newRow=document.createElement("tr");

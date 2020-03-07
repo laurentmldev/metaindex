@@ -66,8 +66,11 @@ a.anchor_top {
 	background:inherit;
 	border:none;
 	max-width:50vw !important;
-	min-width:100px !important;	
-	/*text-align:left;*/
+	min-width:100px !important;
+	/*	
+	justify-content:center !important;
+	display:flex !important;
+	*/
 }
 .mx-perspective-field-custom-table {	
 	padding:0.2rem;

@@ -39,7 +39,7 @@ public abstract class ACsvParser<TTo> implements IFieldsListParser<String,TTo> {
 	private static final String MX_SEP_ESCAPE_STR="__MX_ESCAPED_SEPARATOR__";
 	private String _csvSeparator=";";
 	private String _stringIdentifier="\"";
-	private Integer _nbEntriesParsed=0;
+	private Integer _nbLinesParsed=0;
 	private List<IPair<String,PARSING_FIELD_TYPE> > _csvColumnsTypes = new ArrayList<>();
 	private Map<String,String> _chosenFieldsMapping = new HashMap<>();
 	
@@ -68,14 +68,6 @@ public abstract class ACsvParser<TTo> implements IFieldsListParser<String,TTo> {
 		_chosenFieldsMapping=fieldsNamesDescr;		
 	}
 	
-	
-	@Override
-	public TTo parse(String str) throws ParseException {
-		Map<String, Object> parsed = toMap(str);
-		if (parsed!=null) { return buildObjectFromFieldsMap(parsed); } 		
-		return null;
-	}
-	
 	@Override
 	public List<TTo> parseAll(List<String> listStr) throws ParseException {		
 		
@@ -83,12 +75,13 @@ public abstract class ACsvParser<TTo> implements IFieldsListParser<String,TTo> {
 		
 		List<TTo> result = new ArrayList<TTo>();
 		for (String str : listStr) {
-			_nbEntriesParsed++;
+			_nbLinesParsed++;
+			if (_nbLinesParsed==1) { continue; } // ignore heading line which contains columns names
 			try { 
 				TTo parsed = parse(str);
 				if (parsed!=null) { result.add(parsed); }
 			} catch (ParseException e) {
-				parseErrors.add("l."+_nbEntriesParsed+" : "+e.getMessage());
+				parseErrors.add("l."+_nbLinesParsed+" : "+e.getMessage());
 			}
 		}
 
@@ -102,12 +95,21 @@ public abstract class ACsvParser<TTo> implements IFieldsListParser<String,TTo> {
 	}
 	
 	private Object parseNumberFieldContents(String csvContents) throws ParseException { 
+		csvContents=csvContents.replaceAll(",","."); // handle bloody Excel text-export format
 		try { return Integer.parseUnsignedInt(csvContents); }
 		catch (Exception e1) { try { return Integer.parseInt(csvContents); }
 		catch (Exception e2) { try { return Double.parseDouble(csvContents); }
-		catch (Exception e3) { throw new ParseException("Expected number, got '"+csvContents+"'"); }}}
+		catch (Exception e3) { try { return Double.valueOf(csvContents).longValue(); }
+		catch (Exception e4) { throw new ParseException("Expected number, got '"+csvContents+"'"); }}}}
 	}
+		
 	
+	@Override
+	public TTo parse(String str) throws ParseException {
+		Map<String, Object> parsed = toMap(str);
+		if (parsed!=null) { return buildObjectFromFieldsMap(parsed); } 		
+		return null;
+	}
 	
 	/**
 	 * Extract a single line from csv file and populate a corresponding map with only fields requested by user

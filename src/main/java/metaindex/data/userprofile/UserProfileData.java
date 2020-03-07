@@ -136,15 +136,23 @@ public class UserProfileData implements IUserProfileData
 	}
 	
 	@Override
-	public String getStatisticsUrl() { 
-		return Globals.GetMxProperty("mx.kibana.protocol")+"://"
-				+Globals.GetMxProperty("mx.kibana.host")+":"+Globals.GetMxProperty("mx.kibana.port")
-				+"/app/kibana"; 
+	public String getStatisticsUrl() {
+		String url=Globals.GetMxProperty("mx.kibana.protocol")+"://"
+								+Globals.GetMxProperty("mx.kibana.host");
+		
+		if (Globals.GetMxProperty("mx.kibana.port").length()>0) {
+			url+=":"+Globals.GetMxProperty("mx.kibana.port");
+		}
+		
+		url+="/metaindex/kibana";
+		return url; 
 	}
 	@Override
 	public String getStatisticsDiscoverUrl() { 
-		return getStatisticsUrl()+"#/discover"
-				+Globals.GetMxProperty("mx.kibana.urlparams"); 
+		String url = getStatisticsUrl()+"#/discover"
+				+Globals.GetMxProperty("mx.kibana.urlparams");
+		
+		return url;
 	}
 	
 	@Override

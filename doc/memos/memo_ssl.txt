@@ -1,0 +1,8 @@
+ openssl req -new -newkey rsa:4096 -days 3650 -nodes -x509 -subj     "/C=FR/ST=BZH/L=PARIS/O=TILLEUL_EDITIONS/CN=METAINDEX"     -keyout ./ssl.key -out ./ssl.crt
+ 
+ cat ssl.key > metaindex.txt
+ cat ssl.crt >> metaindex.txt
+ openssl pkcs12 -export -in metaindex.txt -out metaindex.pkcs12
+ 
+ mv metaindex.pkcs12 metaindex.keystore.RSA.pkcs12.dev
+ sudo cp metaindex.keystore.RSA.pkcs12.dev /etc/metaindex/keystore/metaindex.keystore.RSA.pkcs12 
