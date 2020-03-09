@@ -32,11 +32,9 @@ function card_extractId(objDescr) { return objDescr.id; }
 function card_extractName(objDescr) { return objDescr.name; }
 function card_extractThumbnailUrl(objDescr)  { 
 	let urlStr=objDescr.thumbnailUrl;
-	console.log("######## urlStr="+urlStr);
 	if (objDescr.itemsUrlPrefix!=null && objDescr.itemsUrlPrefix!="" && !urlStr.startsWith('http')) {
 		urlStr=objDescr.itemsUrlPrefix+"/"+urlStr;
 	}
-	console.log("	######## final urlStr="+urlStr);
 	return urlStr; 
 }
 

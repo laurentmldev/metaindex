@@ -117,6 +117,10 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	myself._callback_DeletedFilter=null;	
 	myself._callback_DeletedFilter_debug=false;
 	
+	// Download CSV file
+	myself._callback_DownloadCsv=null;
+	myself._callback_DownloadCsv_debug=false;
+	
 	// Upload CSV file
 	myself._callback_UploadCsv=null;
 	myself._callback_UploadCsv_debug=false;
@@ -209,6 +213,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			myself._stompClient.subscribe('/user/queue/items',myself._handleCatalogItemsMsg);
 			myself._stompClient.subscribe('/user/queue/selected_item',myself._handleCatalogSelectedItemMsg);
 			myself._stompClient.subscribe('/user/queue/upload_items_csv_response',myself._handleUploadItemsFromCsvAnswer);
+			myself._stompClient.subscribe('/user/queue/download_items_csv_response',myself._handleDownloadItemsCsvAnswer);
 			myself._stompClient.subscribe('/user/queue/created_item',myself._handleCreatedItemResponseMsg);
 			
 			
@@ -449,13 +454,43 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 				}
 			}
 
+//------- Download CSV file --------
+	this.subscribeToCsvDownload=function(callback_func,debug) {
+		debug=debug||false;
+		myself._callback_DownloadCsv_debug=debug;
+		myself._callback_DownloadCsv=callback_func;
+	}
+	this._handleDowloadItemsCsvAnswer=function(msg) {
+		
+		var parsedMsg = JSON.parse(msg.body);
+		
+		if (myself._callback_DownloadCsv_debug==true) {
+			console.log("[MxApi] Received answer to request for 'Download Items from CSV' accepted : "+parsedMsg.isSuccess);
+			if (parsedMsg.isSuccess==false) {
+				console.log("Reject msg = "+parsedMsg.rejectMessage);
+			}
+		}
 
+	    // Open link to generated file
+	    
+	}
+	
+			
 //------- Upload Items file --------	
 	this.subscribeToCsvUpload=function(callback_func,debug) {
 		debug=debug||false;
 		myself._callback_UploadCsv_debug=debug;
 		myself._callback_UploadCsv=callback_func;
 	}	
+	this.requestDownloadItemsCsv = function(termNamesList) {	 	
+		let jsonData = {};
+		jsonData.maxNbEntries=-1;		
+
+    	//console.log('### Sending download request : '+JSON.stringify(jsonData));
+    	myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/download_items_csv_request", {},JSON.stringify(jsonData));		
+	 		
+	    		
+	}
 	this.requestUploadItemsFromCsv = function(fileHandle,chosenFieldsMapping) {
 	 	
 		let jsonData = {};

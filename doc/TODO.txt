@@ -7,6 +7,8 @@ Priority 1:
 
 deployement test scenario
 
+#22 import data as CSV
+
 #8 prepare demo data, catalog/user present by default
 	
 #15 adapt GUI 
@@ -21,7 +23,7 @@ deployement test scenario
 
 Priority 2:
 -----------
-#22 import data as CSV
+
 renaming a perspective actually duplicates it
 search on accentuated characters imported from UTF-16 does not seem to work
 #19 send email to users and admin when useful

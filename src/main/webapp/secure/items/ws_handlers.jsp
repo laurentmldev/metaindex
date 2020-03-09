@@ -187,6 +187,11 @@ function ws_handlers_requestUploadCsvFile(fileHandle,selectedCsvColsDef) {
 	MxApi.requestUploadItemsFromCsv(fileHandle,selectedCsvColsDef);    
 }
 
+function ws_handlers_requestDownloadCsvFile(selectedTermsList) {	
+	MxApi.requestDownloadCsv(selectedTermsList);    
+}
+
+
 function ws_handlers_deleteItem(itemsId) {
 	itemsIdsArray=[];
 	itemsIdsArray.push(itemsId);
