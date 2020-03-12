@@ -20,10 +20,11 @@ import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.UserProfileData;
 import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
 import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.database.sql.SQLReadStmt;
 import toolbox.exceptions.DataProcessException;
 
-class UserProfileLoad extends SQLReadStmt<IUserProfileData>   {
+class PopulateUserProfileFromDb extends SQLPopulateStmt<IUserProfileData>   {
 
 	public static final String SQL_REQUEST = 
 			"select users.user_id,users.email,users.password, "
@@ -34,29 +35,32 @@ class UserProfileLoad extends SQLReadStmt<IUserProfileData>   {
 	
 	private List<IUserProfileData> _data;
 	
-	public UserProfileLoad(List<IUserProfileData> d, SQLDataSource ds) throws DataProcessException { 
+	public PopulateUserProfileFromDb(List<IUserProfileData> d, SQLDataSource ds) throws DataProcessException { 
 		super(ds);
 		_data=d;
 	}
-	public UserProfileLoad(List<IUserProfileData> d, SQLDataSource ds,Boolean onlyIfTimestampChanged) throws DataProcessException { 
+	public PopulateUserProfileFromDb(List<IUserProfileData> d, SQLDataSource ds,Boolean onlyIfTimestampChanged) throws DataProcessException { 
 		super(ds);
 		_data=d;
 		_onlyIfTimestampChanged=onlyIfTimestampChanged;
 	}
-	public UserProfileLoad(SQLDataSource ds) throws DataProcessException { 
+	public PopulateUserProfileFromDb(SQLDataSource ds) throws DataProcessException { 
 		super(ds);
 	}
 	@Override
 	public IUserProfileData mapRow(ResultSet rs, int rowNum) throws SQLException {
 		IUserProfileData d;
 		String dbKey = rs.getString(2);
-		if (_data==null) { d =new UserProfileData(); }
-		else { 
-			d = _data.stream()
+		d = _data.stream()
 				.filter(p -> p.getName().equals(dbKey))
 				.findFirst()
 				.orElse(null);
+		
+		if (d==null) { 
+			d =new UserProfileData();
+			_data.add(d);
 		}
+		
 		Timestamp dbDateUsers = rs.getTimestamp(8);
 		Timestamp dbDateRoles = rs.getTimestamp(9);
 		Timestamp newerDbDate = dbDateUsers;
@@ -81,7 +85,7 @@ class UserProfileLoad extends SQLReadStmt<IUserProfileData>   {
 	public String buildSqlQuery()  {				
 		String sql = SQL_REQUEST;
 		sql += " where users.user_id=user_roles.user_id ";
-		if (_data!=null && _data.size()>0) {
+		if (_data.size()>0) {
 			sql+=" and (";
 			Iterator<IUserProfileData> it = _data.iterator();
 			Boolean firstOne=true;

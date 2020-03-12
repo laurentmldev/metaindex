@@ -13,6 +13,7 @@ See full version of LICENSE in <https://fsf.org/>
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import toolbox.database.IDbItem;
 
@@ -74,5 +75,20 @@ public class UserItemContents implements IDbItem {
 		if (_fields.containsKey("_id") && _fields.get("_id").equals("")) {
 			_fields.remove("_id");
 		}
+	}
+
+	@Override
+	public Object getValue(String fieldName) {
+		return _fields.get(fieldName);
+	}
+
+	@Override
+	public void setValue(String fieldName, Object value) {
+		_fields.put(fieldName, value);		
+	}
+
+	@Override
+	public Set<String> getFieldsList() {
+		return _fields.keySet();
 	}
 };

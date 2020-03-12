@@ -9,6 +9,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
@@ -93,7 +94,8 @@ public class UsersManager implements IUsersManager {
 	public void loadFromDb() throws DataProcessException {
 		try {
 			_usersLock.acquire();
-			List<IUserProfileData> loadedUsers=Globals.Get().getDatabasesMgr().getUserProfileDbInterface().getLoadFromDbStmt().execute();
+			List<IUserProfileData> loadedUsers=new ArrayList<>();
+			Globals.Get().getDatabasesMgr().getUserProfileDbInterface().getPopulateUserProfileFromDbStmt(loadedUsers).execute();
 			for (IUserProfileData u : loadedUsers) {
 				_usersByName.put(u.getName(), u);
 			}

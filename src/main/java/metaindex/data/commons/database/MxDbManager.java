@@ -95,17 +95,17 @@ public class MxDbManager implements IMxDbManager {
 	public void loadFullUserData(IUserProfileData u) throws DataProcessException {
 		// load user data from DB
 		this.getUserProfileDbInterface()
-				.getLoadFromDbStmt(u)
+				.getPopulateUserProfileFromDbStmt(u)
 				.execute();
 		
 		// load user roles data from DB
 		this.getUserProfileDbInterface()
-				.getLoadAccessRightsFromDbStmt(u)
+				.getPopulateAccessRightsFromDbStmt(u)
 				.execute();
 		
 		// load user custos
 		this.getUserProfileDbInterface()
-				.getLoadCatalogCustomizationFromDbStmt(u)
+				.getPopulateCatalogCustomizationFromDbStmt(u)
 				.execute();
 	}
 	

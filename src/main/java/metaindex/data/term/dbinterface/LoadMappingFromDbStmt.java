@@ -30,6 +30,7 @@ import metaindex.data.catalog.ICatalog;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
 import toolbox.database.elasticsearch.ESDataSource;
+import toolbox.database.elasticsearch.ESPopulateStmt;
 import toolbox.database.elasticsearch.ESReadStmt;
 import toolbox.exceptions.DataProcessException;
 
@@ -42,7 +43,7 @@ import toolbox.exceptions.DataProcessException;
  * @author laurentml
  *
  */
-public class LoadMappingFromDbStmt extends ESReadStmt<ICatalog>   {
+public class LoadMappingFromDbStmt extends ESPopulateStmt<ICatalog>   {
 
 	private Log log = LogFactory.getLog(Catalog.class);
 	
@@ -67,7 +68,7 @@ public class LoadMappingFromDbStmt extends ESReadStmt<ICatalog>   {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<ICatalog> execute() throws DataProcessException {
+	public void execute() throws DataProcessException {
 		try {
 			
 			GetMappingsResponse getMappingResponse = 
@@ -114,8 +115,6 @@ public class LoadMappingFromDbStmt extends ESReadStmt<ICatalog>   {
 					c.updateTermsMapping(catalogMapping,catalogMappingProperties);			
 				}
 			}
-						
-			return _catalogs;		
 			
 		} catch (ElasticsearchException e) {
 			e.printStackTrace();

@@ -20,8 +20,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import metaindex.data.commons.globals.Globals;
+import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.commons.globals.guitheme.IGuiTheme;
 import toolbox.exceptions.DataProcessException;
+import toolbox.utils.IStreamHandler;
 
 public class CatalogsManager implements ICatalogsManager {
 	
@@ -37,10 +39,11 @@ public class CatalogsManager implements ICatalogsManager {
 	@Override
 	public void loadFromDb() throws DataProcessException {
 		
-		List<ICatalog> loadedCatalogs=Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getLoadFromDefDbStmt().execute();
+		List<ICatalog> loadedCatalogs = new ArrayList<>();						
+		Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getPopulateFromDefDbStmt(loadedCatalogs).execute();
 		
-		// Loading filters definition
-		Globals.Get().getDatabasesMgr().getFiltersDbInterface().getLoadFromDbStmt(loadedCatalogs).execute();
+		// Loading filters definition		
+		Globals.Get().getDatabasesMgr().getFiltersDbInterface().getPopulateFilterFromDbStmt(loadedCatalogs).execute();
 		
 		for (ICatalog c : loadedCatalogs) {			
 			// loading catalogs contents

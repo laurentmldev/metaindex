@@ -12,8 +12,10 @@ See full version of LICENSE in <https://fsf.org/>
 
 import toolbox.database.elasticsearch.ESDataSource;
 import toolbox.database.elasticsearch.ESDatabaseInterface;
+import toolbox.database.elasticsearch.ESPopulateStmt;
 import toolbox.database.elasticsearch.ESReadStmt;
 import toolbox.database.elasticsearch.ESWriteStmt;
+import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.exceptions.DataProcessException;
 
 import java.util.ArrayList;
@@ -31,20 +33,20 @@ public class ESCatalogDbInterface  extends ESDatabaseInterface<ICatalog>
 	}
 	
 	// --- load index mapping
-	public ESReadStmt<ICatalog> getLoadMappingFromDocsDbStmt(List<ICatalog> data) throws DataProcessException {
+	public ESPopulateStmt<ICatalog> getLoadMappingFromDocsDbStmt(List<ICatalog> data) throws DataProcessException {
 		return new LoadMappingFromDbStmt(data, getDatasource());
 	}
-	public ESReadStmt<ICatalog> getLoadMappingFromDocsDbStmt(ICatalog data) throws DataProcessException {
+	public ESPopulateStmt<ICatalog> getLoadMappingFromDocsDbStmt(ICatalog data) throws DataProcessException {
 		List<ICatalog> list = new ArrayList<>();
 		list.add(data);
 		return getLoadMappingFromDocsDbStmt(list);
 	}
 	
 	// --- load index stats	
-	public ESReadStmt<ICatalog> getLoadStatsFromDocsDbStmt(List<ICatalog> data) throws DataProcessException {
+	public ESPopulateStmt<ICatalog> getLoadStatsFromDocsDbStmt(List<ICatalog> data) throws DataProcessException {
 		return new LoadStatsFromDbStmt(data, getDatasource());
 	}
-	public ESReadStmt<ICatalog> getLoadStatsFromDocsDbStmt(ICatalog data) throws DataProcessException {
+	public ESPopulateStmt<ICatalog> getLoadStatsFromDocsDbStmt(ICatalog data) throws DataProcessException {
 		List<ICatalog> list = new ArrayList<>();
 		list.add(data);
 		return getLoadStatsFromDocsDbStmt(list);

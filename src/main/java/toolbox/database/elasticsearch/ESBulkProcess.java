@@ -84,7 +84,7 @@ public class ESBulkProcess extends AProcessingTask   {
 	    		}
 	    
 	    	
-	    	_process.addProcessedNbData(response.getItems().length);
+	    	_process.addProcessedNbData(new Long(response.getItems().length));
 	    	
 	    	getActiveUser().sendGuiProgressMessage(
 	    			_process.getId(),
@@ -126,7 +126,7 @@ public class ESBulkProcess extends AProcessingTask   {
 		_catalog=c;
 		_datasource=ds;
 		_timestamp=timestamp;
-		this.setTargetNbData(expectedNbActions);
+		this.setTargetNbData(new Long(expectedNbActions));
 		this.addObserver(u);
 		BulkProcessor.Listener listener = new MxESBulkListener(this);
 		
@@ -187,7 +187,7 @@ public class ESBulkProcess extends AProcessingTask   {
 			IndexRequest request = new IndexRequest().source(itemToIndex.getData());
 			_processor.add(request);
 		}
-		this.addReceivedNbData(d.size());
+		this.addReceivedNbData(new Long(d.size()));
 	}
 	
 	/** Update document or create it with requested id if it does not exist */
@@ -210,7 +210,7 @@ public class ESBulkProcess extends AProcessingTask   {
 			_processor.add(request);
 		}
 		if (errors.size()>0) { sendErrorMessageToUser("Some data could not be updated",errors); }
-		this.addReceivedNbData(d.size());
+		this.addReceivedNbData(new Long(d.size()));
 	}
 	public void postDataToDelete(List<IDbItem> d) throws DataProcessException {
 		if (!isRunning()) {
@@ -226,7 +226,7 @@ public class ESBulkProcess extends AProcessingTask   {
 			_processor.add(request);
 		}
 		if (errors.size()>0) { sendErrorMessageToUser("Some data could not be deleted",errors); }
-		this.addReceivedNbData(d.size());
+		this.addReceivedNbData(new Long(d.size()));
 	}
 
 	

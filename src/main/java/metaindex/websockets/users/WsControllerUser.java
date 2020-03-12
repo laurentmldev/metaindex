@@ -210,7 +210,7 @@ public class WsControllerUser extends AMxWSController {
     @SendTo("/queue/catalog_contents_changed")
     public void sendBroadCastCatalogContentsChanged(IUserProfileData user, 
     												 CATALOG_MODIF_TYPE modifType, 
-    												 Integer nbImpactedItems) throws Exception {
+    												 Long nbImpactedItems) throws Exception {
 
     		messageSender.convertAndSend(
 					"/queue/catalog_contents_changed", 

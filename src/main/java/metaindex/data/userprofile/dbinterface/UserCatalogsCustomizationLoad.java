@@ -19,10 +19,11 @@ import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.IUserProfileData.USER_CATALOG_ACCESSRIGHTS;
 import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
 import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.database.sql.SQLReadStmt;
 import toolbox.exceptions.DataProcessException;
 
-class UserCatalogsCustomizationLoad extends SQLReadStmt<IUserProfileData>   {
+class UserCatalogsCustomizationLoad extends SQLPopulateStmt<IUserProfileData>   {
 
 	public static final String SQL_REQUEST = 
 			"select user_catalogs_customization_id,user_id,"

@@ -27,6 +27,10 @@ function _getColTypeNode(csvColName,checkBox) {
 	idChoiceNode.innerHTML="- ID -";
 	colTermNodeSelect.appendChild(idChoiceNode);
 	idChoiceNode.onclick=function() { checkBox.checked=true; }
+	if (csvColName=="_id") {
+		idChoiceNode.selected=true;
+		found=true;
+	}
 	
 	let choiceIgnoreNode=document.createElement("option");
 	choiceIgnoreNode.value="ignore";
@@ -218,11 +222,6 @@ MxGuiLeftBar.showDownloadCsvPrevisu=function() {
 	// footer
 	let previsuNodeFooter=document.getElementById('csv_contents_previsu_download_footer').cloneNode(true);
 	previsuNodeFooter.style.display='block';
-	let downloadBtn=previsuNodeFooter.querySelector('._downloadBtn_');
-	downloadBtn.onclick=function() {
-		//let selectedCsvColsDef = _getSelectedCsvColumnsDef(csvColsTable);
-		//ws_handlers_requestDownloadCsvFile(fileHandle,selectedCsvColsDef); 
-	}
 	
 	// Go button
 	let downloadBtn=previsuNodeFooter.querySelector('._downloadBtn_');
@@ -234,7 +233,12 @@ MxGuiLeftBar.showDownloadCsvPrevisu=function() {
 			if (typeof(curCheckBox)!='object') { continue; }
 			if (curCheckBox.checked) { selectedTermNames.push(curCheckBox.termName); }		
 		}	
-		ws_handlers_requestDownloadCsvFile(selectedTermNames); 
+		
+		let query = MxGuiHeader.getCurrentSearchQuery();
+		let selectedFiltersNames=MxGuiLeftBar.getSelectedFiltersNames();
+		let sortString = MxGuiHeader.getCurrentSearchSortString();
+		let reversedOrder = MxGuiHeader.getCurrentSearchReversedOrder();
+		ws_handlers_requestDownloadCsvFile(selectedTermNames,query,selectedFiltersNames,sortString,reversedOrder); 
 	}
 	
 	

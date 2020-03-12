@@ -24,8 +24,7 @@ public class WsMsgCsvDownload_answer implements IWsMsg_answer {
 	private String _csvFileUrl = "";
 	
 
-	public WsMsgCsvDownload_answer(String csvFileUrl) {
-		this._csvFileUrl=csvFileUrl;
+	public WsMsgCsvDownload_answer() {
 		
 	}
 	public String getCsvFileUrl() {

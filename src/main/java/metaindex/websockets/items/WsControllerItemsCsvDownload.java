@@ -1,5 +1,7 @@
 package metaindex.websockets.items;
 
+import java.io.IOException;
+
 /*
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -19,6 +21,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.MessagingException;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -26,6 +29,8 @@ import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
 import metaindex.data.commons.globals.Globals;
+import metaindex.data.filter.IFilter;
+import metaindex.data.catalog.ICatalog;
 import metaindex.data.catalog.UserItemCsvParser;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
@@ -35,7 +40,10 @@ import metaindex.websockets.commons.AMxWSController;
 import metaindex.websockets.terms.WsControllerTerm;
 import metaindex.websockets.terms.WsMsgCreateTerm_request;
 import toolbox.database.IDbItem;
+import toolbox.database.IDbSearchResult.SORTING_ORDER;
 import toolbox.database.elasticsearch.ESBulkProcess;
+import toolbox.database.elasticsearch.ESDataSource;
+import toolbox.database.elasticsearch.ESDownloadCsvProcess;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.BasicPair;
 import toolbox.utils.IPair;
@@ -49,6 +57,7 @@ public class WsControllerItemsCsvDownload extends AMxWSController {
 	
 	private Log log = LogFactory.getLog(WsControllerItemsFileUpload.class);
 	
+	 
 	@Autowired
 	public WsControllerItemsCsvDownload(SimpMessageSendingOperations messageSender) {
 		super(messageSender);		
@@ -62,24 +71,62 @@ public class WsControllerItemsCsvDownload extends AMxWSController {
     	try {
 	    	
 	    	IUserProfileData user = getUserProfile(headerAccessor);
-	    	
+	    	WsMsgCsvDownload_answer answer = new  WsMsgCsvDownload_answer();
+	    	// populate filters from selected filters
+    		List<String> preFilters = new ArrayList<String>();    
+    		for (String filterName : requestMsg.getFiltersNames()) {
+    			IFilter c = user.getCurrentCatalog().getFilter(filterName);
+    			if (c==null) {
+    				answer.setIsSuccess(false);
+    	    		
+    	    		answer.setRejectMessage(user.getText("Items.server.unknownFilterForSearch",
+    	    							filterName.toString(),user.getCurrentCatalog().getName()));
+    	    		
+    	    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/items", 
+    						getCompressedRawString(answer));
+    	    		return;
+    			}
+    			preFilters.add(c.getQuery());
+    		}		
+    		
+    		// popoulate sorting order definition
+    		SORTING_ORDER sortOrder = SORTING_ORDER.ASC;
+    		if (requestMsg.getReverseSortOrder()) { sortOrder = SORTING_ORDER.DESC; }
+    		List< IPair<String,SORTING_ORDER> > sortByFieldName = new ArrayList<>();
+    		if (requestMsg.getSortByFieldName().length()>0) {
+    			sortByFieldName.add(new BasicPair<String,SORTING_ORDER>(requestMsg.getSortByFieldName(),sortOrder));
+    		}    
+    		String targetFileBasename=user.getCurrentCatalog().getName()+".csv";
+    		String targetFileFsPath=Globals.Get().getWebappsTmpFsPath()+targetFileBasename;
+    		String targetFileUri=Globals.Get().getWebappsTmpUrl()+targetFileBasename;
+	    	ESDownloadCsvProcess procTask = Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
+					.getNewCsvExtractProcessor(
+		    			user, 
+		    			user.getCurrentCatalog(),
+		    			 "Extract from "+user.getCurrentCatalog().getName(), 
+		    			 targetFileFsPath,
+		    			 requestMsg.getTermNamesList(),
+		    			 requestMsg.getSize(),
+		    			 requestMsg.getFromIdx(),
+		    			 requestMsg.getQuery(),
+		    			 preFilters,
+		    			 sortByFieldName,
+		    			 now);
     		// set-up the download and start the processing task
-	    	/*
-    		user.addProcessingTask(procTask);
-    		procTask.setParser(csvParser);
+	    	user.addProcessingTask(procTask);
     		procTask.start();
-	    	 */
-    		String csvFileUrl="TODO";
- 
-			WsMsgCsvDownload_answer msg = new WsMsgCsvDownload_answer(csvFileUrl);
-			msg.setIsSuccess(true);
+    		// wait for end of processing
+    		procTask.stop();
+    		//String csvFileUrl="http://metaindex.fr/metaindex/downloads/xyzazertutj2454RHHF433a";
+    		
+			answer.setIsSuccess(true);
     		this.messageSender.convertAndSendToUser(
     				headerAccessor.getUser().getName(),
     				"/queue/upload_items_csv_response", 
-    				msg);
+    				answer);
         	
 			
-	    } catch (DataProcessException e) 
+	    } catch (DataProcessException | MessagingException | IOException e) 
 		{
 			log.error("Unable to process download_items_csv_file from '"+headerAccessor.getUser().getName()+"' : "+e);
 			e.printStackTrace();

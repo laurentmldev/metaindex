@@ -31,6 +31,7 @@ import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.TERM_DATATYPE;
 import metaindex.data.term.TermVocabularySet;
 import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.database.sql.SQLReadStmt;
 import toolbox.exceptions.DataProcessException;
 
@@ -39,9 +40,9 @@ import toolbox.exceptions.DataProcessException;
  * @author laurentml
  *
  */
-class LoadVocabularyFromDbStmt extends SQLReadStmt<ICatalogTerm>   {
+class PopulateVocabularyFromDbStmt extends SQLPopulateStmt<ICatalogTerm>   {
 	
-	private Log log = LogFactory.getLog(LoadVocabularyFromDbStmt.class);
+	private Log log = LogFactory.getLog(PopulateVocabularyFromDbStmt.class);
 
 	public static final String SQL_REQUEST = 
 			"select catalog_terms_vocabulary_id,catalog_term_id,guilanguage_id,termTraduction "							
@@ -49,7 +50,7 @@ class LoadVocabularyFromDbStmt extends SQLReadStmt<ICatalogTerm>   {
 
 	private Collection<ICatalogTerm> _data;	
 	
-	public LoadVocabularyFromDbStmt(Collection<ICatalogTerm> d, SQLDataSource ds) throws DataProcessException { 
+	public PopulateVocabularyFromDbStmt(Collection<ICatalogTerm> d, SQLDataSource ds) throws DataProcessException { 
 		super(ds);
 		_data=d;
 		assert(d.size()>0);

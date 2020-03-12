@@ -21,7 +21,9 @@ import org.apache.commons.logging.LogFactory;
 import metaindex.data.catalog.Catalog;
 import metaindex.data.commons.globals.Globals;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
+import metaindex.data.commons.globals.guitheme.IGuiTheme;
 import toolbox.exceptions.DataProcessException;
+import toolbox.utils.IStreamHandler;
 
 public class GuiLanguagesManager implements IGuiLanguagesManager {
 		
@@ -31,12 +33,14 @@ public class GuiLanguagesManager implements IGuiLanguagesManager {
 	@Override
 	public void loadFromDb() throws DataProcessException {
 		try {
-			List<IGuiLanguage> loadedGuiLanguages=Globals.Get().getDatabasesMgr().getGuiLanguageDbInterface().getLoadFromDbStmt().execute();
-			Iterator<IGuiLanguage> it = loadedGuiLanguages.iterator();
-			while (it.hasNext()) {
-				IGuiLanguage curGuiLanguage = it.next();
-				_guiLanguages.put(curGuiLanguage.getId(),curGuiLanguage);
-			}
+			class GuiLanguagesHandler implements IStreamHandler<IGuiLanguage> {
+				@Override public void handle(List<IGuiLanguage> loadedGuiLanguages) {
+					Iterator<IGuiLanguage> it = loadedGuiLanguages.iterator();
+					while (it.hasNext()) {
+						IGuiLanguage curGuiLanguage = it.next();
+						_guiLanguages.put(curGuiLanguage.getId(),curGuiLanguage);
+			}}}
+			Globals.Get().getDatabasesMgr().getGuiLanguageDbInterface().getLoadFromDbStmt().execute(new GuiLanguagesHandler());			
 		}
 		catch(Exception e) {			
 			throw new DataProcessException("Unable to load languages definition from database",e);

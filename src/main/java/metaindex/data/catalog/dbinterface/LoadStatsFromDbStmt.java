@@ -24,11 +24,12 @@ import org.json.JSONObject;
 import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.ICatalog;
 import toolbox.database.elasticsearch.ESDataSource;
+import toolbox.database.elasticsearch.ESPopulateStmt;
 import toolbox.database.elasticsearch.ESReadStmt;
 
 import toolbox.exceptions.DataProcessException;
 
-class LoadStatsFromDbStmt extends ESReadStmt<ICatalog>   {
+class LoadStatsFromDbStmt extends ESPopulateStmt<ICatalog>   {
 
 	private Log log = LogFactory.getLog(Catalog.class);
 	
@@ -54,7 +55,7 @@ class LoadStatsFromDbStmt extends ESReadStmt<ICatalog>   {
 
 	
 	@Override
-	public List<ICatalog> execute() throws DataProcessException {
+	public void execute() throws DataProcessException {
 		try {
 			
 			Response response = this.getDatasource()
@@ -80,7 +81,6 @@ class LoadStatsFromDbStmt extends ESReadStmt<ICatalog>   {
 				c.setDbIndexFound(true);
 			}
 			
-			return _data;			
 			
 		} catch (ResponseException e) {
 			throw new DataProcessException(e.getMessage());

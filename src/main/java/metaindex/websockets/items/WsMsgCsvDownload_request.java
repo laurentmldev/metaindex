@@ -18,10 +18,9 @@ import java.util.Map;
 import toolbox.utils.IPair;
 import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
 
-public class WsMsgCsvDownload_request {
+public class WsMsgCsvDownload_request extends WsMsgGetItems_request {
 
 	private List<String> _termNamesList= new ArrayList<>();
-	private Integer _maxNbEntries = -1;
 	private String _separator=";";
 	
 	
@@ -36,15 +35,5 @@ public class WsMsgCsvDownload_request {
 	public void setTermNamesList(List<String> termNamesList) {
 		this._termNamesList = termNamesList;		
 	}
-
-	public Integer getMaxNbEntries() {
-		return _maxNbEntries;
-	}
-
-	public void setMaxNbEntries(Integer maxNbEntries) {
-		this._maxNbEntries = maxNbEntries;
-	}
-
-	
 	
 }

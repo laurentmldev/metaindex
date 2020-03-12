@@ -12,16 +12,13 @@ See full version of LICENSE in <https://fsf.org/>
 
 import toolbox.database.sql.SQLDataSource;
 import toolbox.database.sql.SQLDatabaseInterface;
-import toolbox.database.sql.SQLReadStmt;
+import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.database.sql.SQLWriteStmt;
 import toolbox.exceptions.DataProcessException;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import metaindex.data.perspective.dbinterface.CreateOrUpdatePerspectiveIntoSqlDbStmt;
-import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.catalog.ICatalogCustomParams;
 import metaindex.data.userprofile.IUserProfileData;
@@ -32,16 +29,12 @@ public class SQLDbInterface  extends SQLDatabaseInterface<ICatalog>
 	public SQLDbInterface(SQLDataSource ds) { super(ds); }
 	
 	
-	public SQLReadStmt<ICatalog> getLoadFromDefDbStmt() throws DataProcessException {
-		return new LoadContentsFromDbStmt(getDatasource());
+	public SQLPopulateStmt<ICatalog> getPopulateFromDefDbStmt(List<ICatalog> data) throws DataProcessException {
+		return new PopulateCatalogFromDbStmt(data, getDatasource());
 	}
 	
-	public SQLReadStmt<ICatalog> getLoadFromDefDbStmt(List<ICatalog> data) throws DataProcessException {
-		return new LoadContentsFromDbStmt(data, getDatasource());
-	}
-	
-	public SQLReadStmt<ICatalog> getLoadFromDefDbStmt(List<ICatalog> data, Boolean onlyIfTimestampChanged) throws DataProcessException {
-		return new LoadContentsFromDbStmt(data, getDatasource(),onlyIfTimestampChanged);
+	public SQLPopulateStmt<ICatalog> getPopulateFromDefDbStmt(List<ICatalog> data, Boolean onlyIfTimestampChanged) throws DataProcessException {
+		return new PopulateCatalogFromDbStmt(data, getDatasource(),onlyIfTimestampChanged);
 	}
 	
 	// --- create catalog

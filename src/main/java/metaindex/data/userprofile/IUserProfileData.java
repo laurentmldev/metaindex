@@ -132,7 +132,7 @@ public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProc
 
 	
 	public void notifyCatalogContentsChanged(CATALOG_MODIF_TYPE modifType, 
-			 										  Integer nbImpactedItems);
+																Long nbImpactedItems);
 	public void notifyCatalogContentsChanged(CATALOG_MODIF_TYPE modifType, 
 								String impactedItemName, String impactDetails);
 		

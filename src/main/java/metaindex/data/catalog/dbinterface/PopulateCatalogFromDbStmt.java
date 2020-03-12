@@ -25,12 +25,13 @@ import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.userprofile.UserProfileData;
 import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.database.sql.SQLReadStmt;
 import toolbox.exceptions.DataProcessException;
 
-class LoadContentsFromDbStmt extends SQLReadStmt<ICatalog>   {
+class PopulateCatalogFromDbStmt extends SQLPopulateStmt<ICatalog>   {
 
-	private Log log = LogFactory.getLog(LoadContentsFromDbStmt.class);
+	private Log log = LogFactory.getLog(PopulateCatalogFromDbStmt.class);
 	
 	public static final String SQL_REQUEST = 
 			"select catalogs.catalog_id,catalogs.shortname, "
@@ -42,16 +43,16 @@ class LoadContentsFromDbStmt extends SQLReadStmt<ICatalog>   {
 	List<ICatalog> _data;
 	Boolean _onlyIfTimestampChanged=false;
 	
-	public LoadContentsFromDbStmt(List<ICatalog> d, SQLDataSource ds) throws DataProcessException { 
+	public PopulateCatalogFromDbStmt(List<ICatalog> d, SQLDataSource ds) throws DataProcessException { 
 		super(ds);
 		_data=d;
 	}
-	public LoadContentsFromDbStmt(List<ICatalog> d, SQLDataSource ds, Boolean onlyIfTimestampChanged) throws DataProcessException { 
+	public PopulateCatalogFromDbStmt(List<ICatalog> d, SQLDataSource ds, Boolean onlyIfTimestampChanged) throws DataProcessException { 
 		super(ds);
 		_data=d;
 		_onlyIfTimestampChanged=onlyIfTimestampChanged;
 	}
-	public LoadContentsFromDbStmt(SQLDataSource ds) throws DataProcessException { 
+	public PopulateCatalogFromDbStmt(SQLDataSource ds) throws DataProcessException { 
 		super(ds);
 	}
 	
@@ -60,12 +61,13 @@ class LoadContentsFromDbStmt extends SQLReadStmt<ICatalog>   {
 	public ICatalog mapRow(ResultSet rs, int rowNum) throws SQLException {
 		ICatalog d;
 		String dbKey = rs.getString(2);
-		if (_data==null) { d = new Catalog(); }
-		else { 
-			d = _data.stream()
+		d = _data.stream()
 				.filter(p -> p.getName().equals(dbKey))
 				.findFirst()
 				.orElse(null);
+		if (d==null) {
+			d = new Catalog();
+			_data.add(d);
 		}
 		
 		if (_onlyIfTimestampChanged==true) {
@@ -94,7 +96,7 @@ class LoadContentsFromDbStmt extends SQLReadStmt<ICatalog>   {
 	@Override
 	public String buildSqlQuery()  {				
 		String sql = SQL_REQUEST;
-		if (_data!=null) {
+		if (_data.size()>0) {
 			sql+=" where ";		
 			Iterator<ICatalog> it = _data.iterator();
 			Boolean firstOne=true;

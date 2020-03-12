@@ -12,6 +12,8 @@ See full version of LICENSE in <https://fsf.org/>
 
 import java.util.Date;
 import java.util.Map;
+
+import toolbox.utils.IFieldValueMapObject;
 import toolbox.utils.IIdentifiable;
 
 /**
@@ -20,7 +22,7 @@ import toolbox.utils.IIdentifiable;
  * @author laurentml
  *
  */
-public interface IDbItem extends IIdentifiable<String> {
+public interface IDbItem extends IIdentifiable<String>,IFieldValueMapObject {
 
 	public Date getLastModifTimestamp();
 	public Integer getLastModifUserId();

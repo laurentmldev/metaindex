@@ -19,25 +19,26 @@ import metaindex.data.filter.Filter;
 import metaindex.data.filter.IFilter;
 import metaindex.data.catalog.ICatalog;
 import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.database.sql.SQLReadStmt;
 import toolbox.exceptions.DataProcessException;
 
-class FilterLoadStmt extends SQLReadStmt<IFilter>   {
+class PopulateFilterStmt extends SQLPopulateStmt<IFilter>   {
 
 	public static final String SQL_REQUEST = 
 			"select filters.filter_id,filters.catalog_id,filters.name,filters.query"							
 			+" from filters";
 
 	List<ICatalog> _catalogs;
-	List<IFilter> _data;
+	List<IFilter> _data = new ArrayList<>();
 	
-	public FilterLoadStmt(ICatalog c, List<IFilter> d, SQLDataSource ds) throws DataProcessException { 
+	public PopulateFilterStmt(ICatalog c, List<IFilter> d, SQLDataSource ds) throws DataProcessException { 
 		super(ds);
 		_catalogs=new ArrayList<ICatalog>();
 		_catalogs.add(c);
 		_data=d;
 	}
-	public FilterLoadStmt(List<ICatalog> c, SQLDataSource ds) throws DataProcessException { 
+	public PopulateFilterStmt(List<ICatalog> c, SQLDataSource ds) throws DataProcessException { 
 		super(ds);
 		_catalogs=c;
 	}
@@ -54,13 +55,16 @@ class FilterLoadStmt extends SQLReadStmt<IFilter>   {
 				.findFirst()
 				.orElse(null);
 		
-		if (_data==null) { d = new Filter(); }
-		else { 
-			d = _data.stream()
+		d = _data.stream()
 				.filter(p -> p.getId().equals(dbKey))
 				.findFirst()
 				.orElse(null);
+		
+		if (d==null) { 
+			d = new Filter();
+			_data.add(d);
 		}
+
 		d.setId(rs.getInt(1));
 		d.setName(rs.getString(3));
 		d.setQuery(rs.getString(4));
@@ -88,7 +92,7 @@ class FilterLoadStmt extends SQLReadStmt<IFilter>   {
 		}
 		
 		// add specific filters
-		if (_data!=null) {
+		if (_data.size()>0) {
 			if (_catalogs.size()==0) { sql+=" where "; }
 			else { sql+=" and "; } 
 			sql+=" (";

@@ -12,26 +12,23 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
-import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-import metaindex.data.commons.globals.guitheme.IGuiTheme;
-import toolbox.database.IDataSource;
-import toolbox.database.IDatabaseReadStmt;
+
+import toolbox.database.IDatabasePopulateStmt;
 import toolbox.database.IDatasourcedStmt;
 import toolbox.exceptions.DataProcessException;
-import toolbox.utils.IStreamHandler;
 
-public abstract class SQLReadStmt<TData> implements IDatabaseReadStmt<TData>, 
+public abstract class SQLPopulateStmt<TData> implements IDatabasePopulateStmt, 
 													IDatasourcedStmt<SQLDataSource>, 
 													RowMapper<TData> {
 
 	private SQLDataSource _datasource;
 	private final JdbcTemplate jdbcTemplate;
 	
-	public SQLReadStmt(SQLDataSource ds) throws DataProcessException {		
+	public SQLPopulateStmt(SQLDataSource ds) throws DataProcessException {		
 		_datasource=ds; 
 		try {
 			  jdbcTemplate = new JdbcTemplate(_datasource.getSqlDataSource());
@@ -41,10 +38,9 @@ public abstract class SQLReadStmt<TData> implements IDatabaseReadStmt<TData>,
 	protected abstract String buildSqlQuery() throws DataProcessException;	
 	
 	@Override
-	public void execute(IStreamHandler<TData> h) throws DataProcessException {
+	public void execute() throws DataProcessException {
 		try {
-			List<TData> result = jdbcTemplate.query(buildSqlQuery(), this);	
-			h.handle(result);			
+			jdbcTemplate.query(buildSqlQuery(), this);							
 		} catch(Exception e) {
 			String clientInfo = "???";
 			try { clientInfo=_datasource.getConnection().getClientInfo().toString(); } catch (Exception ex) {}

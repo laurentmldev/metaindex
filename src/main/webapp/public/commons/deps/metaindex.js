@@ -379,7 +379,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	
 	
 
-//------- Set User Catzlog Customizations --------	
+//------- Set User Catalog Customizations --------	
 	
 	this.requestUserCatalogCustoCallbacks=[];
 	
@@ -475,22 +475,42 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	    
 	}
 	
-			
-//------- Upload Items file --------	
-	this.subscribeToCsvUpload=function(callback_func,debug) {
-		debug=debug||false;
-		myself._callback_UploadCsv_debug=debug;
-		myself._callback_UploadCsv=callback_func;
-	}	
-	this.requestDownloadItemsCsv = function(termNamesList) {	 	
-		let jsonData = {};
-		jsonData.maxNbEntries=-1;		
+	// dataObj {
+	//   termNamesList = []
+	//   fromIdx=0
+	//   size=-1
+	//   filtersNames=[]
+	//	 query=""
+	//   sortByFieldName=""
+	//   reverseSortOrder=false
+	//   successCallback (func)({items:[],totalHits:<int>,totalItems:<int>})
+	//   errorCallback (func)(msg)
+	// }
+	this.requestDownloadItemsCsv = function(dataObj) {
+		if (dataObj.fromIdx==null) { dataObj.fromIdx=0; }
+		if (dataObj.size==null) { dataObj.size=-1; }
+		if (dataObj.filtersNames==null) { dataObj.filtersNames=[]; }
+		if (dataObj.query==null) { dataObj.query=""; }
+		if (dataObj.sortByFieldName==null) { dataObj.sortByFieldName=""; }
+		if (dataObj.reverseSortOrder==null) { dataObj.reverseSortOrder=false; }
+		if (myself._callback_CatalogItems_debug==true) {
+			console.log("MxAPI Requesting [Items CSV]");
+		}
 
     	//console.log('### Sending download request : '+JSON.stringify(jsonData));
-    	myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/download_items_csv_request", {},JSON.stringify(jsonData));		
+    	myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/download_items_csv_request", {},JSON.stringify(dataObj));		
 	 		
 	    		
 	}
+	
+	
+	//------- DownloUpload Items file --------	
+		this.subscribeToCsvUpload=function(callback_func,debug) {
+			debug=debug||false;
+			myself._callback_UploadCsv_debug=debug;
+			myself._callback_UploadCsv=callback_func;
+		}
+		
 	this.requestUploadItemsFromCsv = function(fileHandle,chosenFieldsMapping) {
 	 	
 		let jsonData = {};

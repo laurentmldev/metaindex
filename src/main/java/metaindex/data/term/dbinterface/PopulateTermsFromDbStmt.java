@@ -12,6 +12,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +25,7 @@ import metaindex.data.term.CatalogTerm;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.TERM_DATATYPE;
 import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.database.sql.SQLReadStmt;
 import toolbox.exceptions.DataProcessException;
 
@@ -32,53 +34,52 @@ import toolbox.exceptions.DataProcessException;
  * @author laurentml
  *
  */
-class LoadContentsFromDbStmt extends SQLReadStmt<ICatalogTerm>   {
+class PopulateTermsFromDbStmt extends SQLPopulateStmt<ICatalogTerm>   {
 
 	public static final String SQL_REQUEST = 
 			"select catalog_term_id,catalog_id,datatype,name,enumsList,isMultiEnum "							
 			+"from catalog_terms";
 	private List<ICatalog> _catalogs;
-	private List<ICatalogTerm> _data;
+	private List<ICatalogTerm> _data = new ArrayList<>();
 	
-	public LoadContentsFromDbStmt(List<ICatalog> c, List<ICatalogTerm> d, SQLDataSource ds) throws DataProcessException { 
+	public PopulateTermsFromDbStmt(List<ICatalog> c, List<ICatalogTerm> d, SQLDataSource ds) throws DataProcessException { 
 		super(ds);
 		_catalogs=c;
 		_data=d;
 	}
-	public LoadContentsFromDbStmt(List<ICatalog> c, SQLDataSource ds) throws DataProcessException { 
+	public PopulateTermsFromDbStmt(List<ICatalog> c, SQLDataSource ds) throws DataProcessException { 
 		super(ds);
 		_catalogs=c;
 		
 	}
 
 	@Override
-	public List<ICatalogTerm> execute() throws DataProcessException {
+	public void execute() throws DataProcessException {
 		
-		List<ICatalogTerm> termsFromSqlDb = super.execute();
+		super.execute();
 		
 		// update catalogs terms lists
 		for (ICatalog c :  _catalogs) {
-			List<ICatalogTerm> commTerms = termsFromSqlDb.stream()
+			List<ICatalogTerm> commTerms = _data.stream()
 					.filter(t -> t.getCatalogId().equals(c.getId())).collect(Collectors.toList());
 			c.updateTermsApplicativeInfo(commTerms);			
 		}
-		return termsFromSqlDb;
 		
 	}
 	@Override
 	public ICatalogTerm mapRow(ResultSet rs, int rowNum) throws SQLException {
 		ICatalogTerm d;
-		Integer dbKey = rs.getInt(1);		
-		if (_data==null) {
-			String typeStr = rs.getString(3);
-			d = ICatalogTerm.BuildCatalogTerm(typeStr); 
-		}
-		else { 
-			d = _data.stream()
+		Integer dbKey = rs.getInt(1);	
+		d = _data.stream()
 				.filter(p -> p.getId().equals(dbKey))
 				.findFirst()
 				.orElse(null);
+		if (d==null) {
+			String typeStr = rs.getString(3);
+			d = ICatalogTerm.BuildCatalogTerm(typeStr); 
+			_data.add(d);
 		}
+		
 		d.setId(rs.getInt(1));
 		d.setCatalogId(rs.getInt(2));
 		d.setDatatype(TERM_DATATYPE.valueOf(rs.getString(3)));
@@ -101,7 +102,7 @@ class LoadContentsFromDbStmt extends SQLReadStmt<ICatalogTerm>   {
 			firstOne=false;
 		}
 		sql+=")";
-		if (_data!=null) {
+		if (_data.size()>0) {
 			sql+=" and (";		
 			Iterator<ICatalogTerm> it = _data.iterator();
 			firstOne=true;

@@ -395,7 +395,7 @@ public class Catalog implements ICatalog {
 		Boolean onlyIfDbcontentsUpdated=true;
 		List<ICatalog> list = new ArrayList<>();
 		list.add(this);		
-		Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getLoadFromDefDbStmt(list,onlyIfDbcontentsUpdated).execute();
+		Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getPopulateFromDefDbStmt(list,onlyIfDbcontentsUpdated).execute();
 		
 		// detect if contents actually changed
 		if (this.getLastUpdate().after(prevCurDate)) { log.info(this.getDetailsStr()); }
@@ -426,7 +426,7 @@ public class Catalog implements ICatalog {
 	public void loadCustomParamsFromdb() throws DataProcessException {
 		List<ICatalog> list = new ArrayList<ICatalog>();
 		list.add(this);
-		Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getLoadFromDefDbStmt(list).execute();
+		Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getPopulateFromDefDbStmt(list).execute();
 	}
 	@Override 
 	public void loadPerspectivesFromdb() throws DataProcessException {
@@ -438,7 +438,7 @@ public class Catalog implements ICatalog {
 	public void loadTermsFromDb() throws DataProcessException {
 		List<ICatalog> list = new ArrayList<>();
 		list.add(this);
-		Globals.Get().getDatabasesMgr().getTermsDbInterface().getLoadTermsFromDbStmt(list).execute();
+		Globals.Get().getDatabasesMgr().getTermsDbInterface().getPopulateTermsFromDbStmt(list).execute();
 	}
 	@Override 
 	 /** 
@@ -549,7 +549,7 @@ public class Catalog implements ICatalog {
 		try {
 			_termsLock.acquire();
 			if (this.getTerms().size()>0) {
-				Globals.Get().getDatabasesMgr().getTermsDbInterface().getLoadVocabularyFromDbStmt(this.getTerms().values()).execute();
+				Globals.Get().getDatabasesMgr().getTermsDbInterface().getPopulateVocabularyFromDbStmt(this.getTerms().values()).execute();
 			}
 			_termsLock.release();
 			

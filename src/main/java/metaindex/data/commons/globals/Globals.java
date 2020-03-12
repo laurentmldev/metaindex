@@ -138,12 +138,19 @@ public class Globals {
 		}
 	}
 	public String getWebappsFsPath() { return System.getProperty("catalina.base")+"/webapps"; }
+	public String getWebappsTmpFsPath() {
+		String path=getWebappsFsPath()+"/mxtmp/";		
+		File directory = new File(path);
+        if (! directory.exists()){ directory.mkdir(); }        
+        return path;
+    }
 	
 	public String getAppBaseUrl() {
 		return Globals.GetMxProperty("mx.protocol")+"://"
 				+Globals.GetMxProperty("mx.host")+":"+Globals.GetMxProperty("mx.port")
 				+"/";		
 	}
+	public String getWebappsTmpUrl() { return getAppBaseUrl()+"/mxtmp/"; }
 	public void init() throws DataProcessException {
 		
 		log.info(getDetailsStr());

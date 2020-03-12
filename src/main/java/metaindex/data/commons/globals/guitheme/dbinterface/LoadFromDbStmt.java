@@ -27,13 +27,6 @@ class LoadFromDbStmt extends SQLReadStmt<IGuiTheme>   {
 			"select guithemes.guitheme_id,guithemes.name,"
 			+"guithemes.shortname from guithemes";	
 
-	private List<IGuiTheme> _data;
-	
-	public LoadFromDbStmt(List<IGuiTheme> data,SQLDataSource ds) throws DataProcessException { 
-		super(ds);
-		_data=data;
-	}
-
 	public LoadFromDbStmt(SQLDataSource ds) throws DataProcessException { 
 		super(ds);
 	}
@@ -41,14 +34,7 @@ class LoadFromDbStmt extends SQLReadStmt<IGuiTheme>   {
 	@Override
 	public IGuiTheme mapRow(ResultSet rs, int rowNum) throws SQLException {		
 		IGuiTheme d;
-		Integer dbKey=rs.getInt(1);
-		if (_data==null) { d = new GuiTheme(); }
-		else {
-			d = _data.stream()
-					.filter(l -> l.getId().equals(dbKey))
-					.findFirst()
-					.orElse(null);
-		}
+		d = new GuiTheme();
 		d.setId(rs.getInt(1));
 		d.setName(rs.getString(2));
 		d.setShortName(rs.getString(3));

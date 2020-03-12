@@ -12,6 +12,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 import toolbox.database.sql.SQLDataSource;
 import toolbox.database.sql.SQLDatabaseInterface;
+import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.database.sql.SQLReadStmt;
 import toolbox.database.sql.SQLWriteStmt;
 import toolbox.exceptions.DataProcessException;
@@ -27,22 +28,18 @@ public class DbInterface  extends SQLDatabaseInterface<IUserProfileData>
 	
 	public DbInterface(SQLDataSource ds) { super(ds); }
 	
-	public SQLReadStmt<IUserProfileData> getLoadFromDbStmt() throws DataProcessException {
-		return new UserProfileLoad(getDatasource());
+	public SQLPopulateStmt<IUserProfileData> getPopulateUserProfileFromDbStmt(List<IUserProfileData> data) throws DataProcessException {
+		return new PopulateUserProfileFromDb(data, getDatasource());
 	}
 
-	public SQLReadStmt<IUserProfileData> getLoadFromDbStmt(List<IUserProfileData> data) throws DataProcessException {
-		return new UserProfileLoad(data, getDatasource());
+	public SQLPopulateStmt<IUserProfileData> getPopulateUserProfileFromDbStmt(List<IUserProfileData> data,Boolean onlyIfContentsUpdated) throws DataProcessException {
+		return new PopulateUserProfileFromDb(data, getDatasource(),onlyIfContentsUpdated);
 	}
 
-	public SQLReadStmt<IUserProfileData> getLoadFromDbStmt(List<IUserProfileData> data,Boolean onlyIfContentsUpdated) throws DataProcessException {
-		return new UserProfileLoad(data, getDatasource(),onlyIfContentsUpdated);
-	}
-
-	public SQLReadStmt<IUserProfileData> getLoadFromDbStmt(IUserProfileData data) throws DataProcessException {
+	public SQLPopulateStmt<IUserProfileData> getPopulateUserProfileFromDbStmt(IUserProfileData data) throws DataProcessException {
 		List<IUserProfileData> list = new ArrayList<IUserProfileData>();
 		list.add(data);
-		return getLoadFromDbStmt(list);
+		return getPopulateUserProfileFromDbStmt(list);
 	}
 
 	public SQLWriteStmt<IUserProfileData> getUpdateIntoDbStmt(List<IUserProfileData> data) throws DataProcessException {
@@ -56,29 +53,29 @@ public class DbInterface  extends SQLDatabaseInterface<IUserProfileData>
 	}
 	
 	// Access Rights
-	public SQLReadStmt<IUserProfileData> getLoadAccessRightsFromDbStmt(List<IUserProfileData> data,Boolean onlyIfRequired) throws DataProcessException {
-		return new UserCatalogsAccessRightsLoad(data,getDatasource(),onlyIfRequired);
+	public SQLPopulateStmt<IUserProfileData> getPopulateAccessRightsFromDbStmt(List<IUserProfileData> data,Boolean onlyIfRequired) throws DataProcessException {
+		return new PopulateUserCatalogsAccessRights(data,getDatasource(),onlyIfRequired);
 	}
-	public SQLReadStmt<IUserProfileData> getLoadAccessRightsFromDbStmt(IUserProfileData data,Boolean onlyIfRequired) throws DataProcessException {
+	public SQLPopulateStmt<IUserProfileData> getPopulateAccessRightsFromDbStmt(IUserProfileData data,Boolean onlyIfRequired) throws DataProcessException {
 		List<IUserProfileData> list = new ArrayList<IUserProfileData>();
 		list.add(data);
-		return getLoadAccessRightsFromDbStmt(list,onlyIfRequired);
+		return getPopulateAccessRightsFromDbStmt(list,onlyIfRequired);
 	}
-	public SQLReadStmt<IUserProfileData> getLoadAccessRightsFromDbStmt(IUserProfileData data) throws DataProcessException {
-		return getLoadAccessRightsFromDbStmt(data,false);
+	public SQLPopulateStmt<IUserProfileData> getPopulateAccessRightsFromDbStmt(IUserProfileData data) throws DataProcessException {
+		return getPopulateAccessRightsFromDbStmt(data,false);
 	}
 	public SQLWriteStmt<IUserProfileData> getSetUserAccessRightsIntoDbStmt(IUserProfileData data, ICatalog catalog) throws DataProcessException {
 		return new CreateOrUpdateUserCatalogsAccessRights(data,catalog,getDatasource());
 	}
 	
 	// Catalogs Customization
-	public SQLReadStmt<IUserProfileData> getLoadCatalogCustomizationFromDbStmt(List<IUserProfileData> data) throws DataProcessException {
+	public SQLPopulateStmt<IUserProfileData> getPopulateCatalogCustomizationFromDbStmt(List<IUserProfileData> data) throws DataProcessException {
 		return new UserCatalogsCustomizationLoad(data,getDatasource());
 	}
-	public SQLReadStmt<IUserProfileData> getLoadCatalogCustomizationFromDbStmt(IUserProfileData data) throws DataProcessException {
+	public SQLPopulateStmt<IUserProfileData> getPopulateCatalogCustomizationFromDbStmt(IUserProfileData data) throws DataProcessException {
 		List<IUserProfileData> list = new ArrayList<IUserProfileData>();
 		list.add(data);
-		return getLoadCatalogCustomizationFromDbStmt(list);
+		return getPopulateCatalogCustomizationFromDbStmt(list);
 	}
 	public SQLWriteStmt<IUserProfileData> getSetUserCatalogCustomizationIntoDbStmt(IUserProfileData data, ICatalog catalog) throws DataProcessException {
 		return new CreateOrUpdateUserCatalogsCustomization(data,catalog,getDatasource());

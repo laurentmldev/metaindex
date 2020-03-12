@@ -1,5 +1,7 @@
 package metaindex.data.perspective.dbinterface;
 
+import toolbox.database.elasticsearch.ESPopulateStmt;
+
 /*
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -12,6 +14,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 import toolbox.database.sql.SQLDataSource;
 import toolbox.database.sql.SQLDatabaseInterface;
+import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.database.sql.SQLReadStmt;
 import toolbox.database.sql.SQLWriteStmt;
 import toolbox.exceptions.DataProcessException;
@@ -30,13 +33,13 @@ public class DbInterface  extends SQLDatabaseInterface<ICatalogPerspective>
 	}
 
 	// ---
-	public SQLReadStmt<ICatalogPerspective> getLoadFromDbStmt(List<ICatalog> list) throws DataProcessException {
-		return new LoadContentsFromDbStmt(list, getDatasource());
+	public SQLPopulateStmt<ICatalogPerspective> getLoadFromDbStmt(List<ICatalog> list) throws DataProcessException {
+		return new PopulateCatalogPerspectiveFromDbStmt(list, getDatasource());
 	}
-	public SQLReadStmt<ICatalogPerspective> getLoadFromDbStmt(ICatalog c) throws DataProcessException {
+	public SQLPopulateStmt<ICatalogPerspective> getLoadFromDbStmt(ICatalog c) throws DataProcessException {
 		List<ICatalog> list = new ArrayList<>();
 		list.add(c);
-		return new LoadContentsFromDbStmt(list, getDatasource());
+		return new PopulateCatalogPerspectiveFromDbStmt(list, getDatasource());
 	}
 	
 

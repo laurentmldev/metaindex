@@ -22,10 +22,11 @@ import metaindex.data.catalog.ICatalog;
 import metaindex.data.perspective.ICatalogPerspective;
 import metaindex.data.userprofile.UserProfileData;
 import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.database.sql.SQLReadStmt;
 import toolbox.exceptions.DataProcessException;
 
-class LoadVocabularyFromDbStmt extends SQLReadStmt<ICatalog>   {
+class PopulateCatalogVocFromDbStmt extends SQLPopulateStmt<ICatalog>   {
 
 	public static final String SQL_REQUEST = 
 			"select catalog_vocabulary_id,"
@@ -36,7 +37,7 @@ class LoadVocabularyFromDbStmt extends SQLReadStmt<ICatalog>   {
 			+ " from catalog_vocabulary ";
 	
 	List<ICatalog> _data;
-	public LoadVocabularyFromDbStmt(List<ICatalog> d, SQLDataSource ds) throws DataProcessException { 
+	public PopulateCatalogVocFromDbStmt(List<ICatalog> d, SQLDataSource ds) throws DataProcessException { 
 		super(ds);
 		_data=d;
 	}
@@ -75,7 +76,7 @@ class LoadVocabularyFromDbStmt extends SQLReadStmt<ICatalog>   {
 	@Override
 	public String buildSqlQuery()  {				
 		String sql = SQL_REQUEST;
-		if (_data!=null) {
+		if (_data.size()>0) {
 			sql+=" where ";		
 			Iterator<ICatalog> it = _data.iterator();
 			Boolean firstOne=true;

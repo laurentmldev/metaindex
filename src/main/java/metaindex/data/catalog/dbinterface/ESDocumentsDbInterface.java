@@ -16,6 +16,7 @@ import toolbox.database.IDbSearchResult.SORTING_ORDER;
 import toolbox.database.elasticsearch.ESBulkProcess;
 import toolbox.database.elasticsearch.ESDataSource;
 import toolbox.database.elasticsearch.ESDatabaseInterface;
+import toolbox.database.elasticsearch.ESDownloadCsvProcess;
 import toolbox.database.elasticsearch.ESReadStmt;
 import toolbox.database.elasticsearch.ESWriteStmt;
 import toolbox.exceptions.DataProcessException;
@@ -52,6 +53,14 @@ public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem>
 		return new GetItemsFromDbStmt(c,fromIdx,size,query,filter,sort,getDatasource());
 	}
 	
+	public ESReadStmt<DbSearchResult> getStreamFromDbStmt(ICatalog c, Integer fromIdx, Integer size,
+			String query,
+			List<String> filter, 
+			List< IPair<String,SORTING_ORDER> > sort) 
+	throws DataProcessException {
+	return new GetItemsFromDbStmt(c,fromIdx,size,query,filter,sort,getDatasource());
+	}
+	
 	// -- update document field value
 	public ESWriteStmt<IDbItem> getUpdateFieldValueIntoDbStmt(IUserProfileData u, ICatalog c, 
 															  String docId, String fieldName, Object fieldValue, 
@@ -70,4 +79,19 @@ public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem>
 		return new ESBulkProcess(u,name,expectedNbActions,c,timestamp,getDatasource());
 	}
 	
+	// -- extract CSV from given search
+	public ESDownloadCsvProcess getNewCsvExtractProcessor(IUserProfileData u,
+												  ICatalog c, 
+												  String name, 
+												  String targetFileName,
+												  List<String> csvColsList,
+												  Integer maxNbItems,
+												  Integer fromIndex,
+												  String query,
+												  List<String> preFilters,
+												  List< IPair<String,SORTING_ORDER> > sortingOrder,
+												  Date timestamp) throws DataProcessException 
+	{
+		return new ESDownloadCsvProcess(u,name, targetFileName,csvColsList,maxNbItems,c,fromIndex,query,preFilters,sortingOrder,timestamp);
+	}
 }

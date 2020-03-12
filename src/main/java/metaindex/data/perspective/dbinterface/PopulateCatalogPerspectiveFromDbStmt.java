@@ -12,6 +12,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +27,7 @@ import metaindex.data.perspective.CatalogPerspective;
 import metaindex.data.perspective.ICatalogPerspective;
 
 import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.database.sql.SQLReadStmt;
 import toolbox.exceptions.DataProcessException;
 
@@ -34,51 +36,53 @@ import toolbox.exceptions.DataProcessException;
  * @author laurentml
  *
  */
-public class LoadContentsFromDbStmt extends SQLReadStmt<ICatalogPerspective>   {
+public class PopulateCatalogPerspectiveFromDbStmt extends SQLPopulateStmt<ICatalogPerspective>   {
 
-	private Log log = LogFactory.getLog(LoadContentsFromDbStmt.class);
+	private Log log = LogFactory.getLog(PopulateCatalogPerspectiveFromDbStmt.class);
 	
 	public static final String SQL_REQUEST = 
 			"select catalog_perspective_id,catalog_id,name,perspective_json_string "							
 			+"from catalog_perspectives";
 	private List<ICatalog> _catalogs;
-	private List<ICatalogPerspective> _data;
+	private List<ICatalogPerspective> _data = new ArrayList<>();
 	
-	public LoadContentsFromDbStmt(List<ICatalog> c, List<ICatalogPerspective> d, SQLDataSource ds) throws DataProcessException { 
+	public PopulateCatalogPerspectiveFromDbStmt(List<ICatalog> c, List<ICatalogPerspective> d, SQLDataSource ds) throws DataProcessException { 
 		super(ds);
 		_catalogs=c;
 		_data=d;
 	}
-	public LoadContentsFromDbStmt(List<ICatalog> c, SQLDataSource ds) throws DataProcessException { 
+	public PopulateCatalogPerspectiveFromDbStmt(List<ICatalog> c, SQLDataSource ds) throws DataProcessException { 
 		super(ds);
 		_catalogs=c;
 		
 	}
 
 	@Override
-	public List<ICatalogPerspective> execute() throws DataProcessException {
+	public void execute() throws DataProcessException {
 		
-		List<ICatalogPerspective> perspectivesFromSqlDb = super.execute();
+		super.execute();
 		
 		// update catalogs perspectives lists
 		for (ICatalog c :  _catalogs) {
-			List<ICatalogPerspective> commPerspectives = perspectivesFromSqlDb.stream()
+			List<ICatalogPerspective> commPerspectives = _data.stream()
 					.filter(t -> t.getCatalogId().equals(c.getId())).collect(Collectors.toList());
 			c.updateCatalogPerspectives(commPerspectives);			
 		}
-		return perspectivesFromSqlDb;
+		
 		
 	}
 	@Override
 	public ICatalogPerspective mapRow(ResultSet rs, int rowNum) throws SQLException {
 		ICatalogPerspective d;
 		Integer dbKey = rs.getInt(1);
-		if (_data==null) { d = new CatalogPerspective(); }
-		else { 
-			d = _data.stream()
-				.filter(p -> p.getId().equals(dbKey))
-				.findFirst()
-				.orElse(null);
+		 
+		d = _data.stream()
+			.filter(p -> p.getId().equals(dbKey))
+			.findFirst()
+			.orElse(null);
+		if (d==null) {
+			d = new CatalogPerspective(); 
+			_data.add(d);
 		}
 		d.setId(rs.getInt(1));
 		d.setCatalogId(rs.getInt(2));
@@ -108,7 +112,7 @@ public class LoadContentsFromDbStmt extends SQLReadStmt<ICatalogPerspective>   {
 			firstOne=false;
 		}
 		sql+=")";
-		if (_data!=null) {
+		if (_data.size()>0) {
 			sql+=" and (";		
 			Iterator<ICatalogPerspective> it = _data.iterator();
 			firstOne=true;

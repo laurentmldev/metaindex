@@ -121,7 +121,7 @@ public class WsControllerTerm extends AMxWSController {
         		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),
         												"/queue/updated_term", 
     													getRawString(answer)); 
-        		user.notifyCatalogContentsChanged(CATALOG_MODIF_TYPE.FIELD_DEFINITION, 1);
+        		user.notifyCatalogContentsChanged(CATALOG_MODIF_TYPE.FIELD_DEFINITION, 1L);
         		Globals.GetStatsMgr().handleStatItem(new UpdateTermMxStat(user,c,newTermDef.getName()));
     		}
     	} catch (Exception e) 
@@ -218,7 +218,7 @@ public class WsControllerTerm extends AMxWSController {
     	c.releaseLock();
     	  
     	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_term", answer);
-    	user.notifyCatalogContentsChanged(CATALOG_MODIF_TYPE.FIELDS_LIST, 1);
+    	user.notifyCatalogContentsChanged(CATALOG_MODIF_TYPE.FIELDS_LIST, 1L);
     	Globals.GetStatsMgr().handleStatItem(new CreateTermMxStat(user,c,term.getName()));
     }
     

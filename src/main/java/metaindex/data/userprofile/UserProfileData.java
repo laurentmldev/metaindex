@@ -443,7 +443,7 @@ public class UserProfileData implements IUserProfileData
 	}
 	
 	@Override
-	public void notifyCatalogContentsChanged(CATALOG_MODIF_TYPE modifType, Integer nbImpactedItems) {
+	public void notifyCatalogContentsChanged(CATALOG_MODIF_TYPE modifType, Long nbImpactedItems) {
 		try {
 			WsControllerUser.UsersWsController.sendBroadCastCatalogContentsChanged(this,modifType,nbImpactedItems);
 		} catch (Exception e) {
@@ -487,8 +487,8 @@ public class UserProfileData implements IUserProfileData
 		Boolean onlyIfDbcontentsUpdated=true;
 		List<IUserProfileData> list = new ArrayList<>();
 		list.add(this);		
-		Globals.Get().getDatabasesMgr().getUserProfileDbInterface().getLoadFromDbStmt(list,onlyIfDbcontentsUpdated).execute();
-		Globals.Get().getDatabasesMgr().getUserProfileDbInterface().getLoadAccessRightsFromDbStmt(list,onlyIfDbcontentsUpdated).execute();
+		Globals.Get().getDatabasesMgr().getUserProfileDbInterface().getPopulateUserProfileFromDbStmt(list,onlyIfDbcontentsUpdated).execute();
+		Globals.Get().getDatabasesMgr().getUserProfileDbInterface().getPopulateAccessRightsFromDbStmt(list,onlyIfDbcontentsUpdated).execute();
 		
 		// detect if contents actually changed
 		if (this.getLastUpdate().after(prevCurDate)) { log.info(this.getDetailsStr()); }

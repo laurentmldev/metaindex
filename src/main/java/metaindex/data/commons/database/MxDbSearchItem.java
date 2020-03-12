@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -75,7 +76,7 @@ public class MxDbSearchItem implements IDbItem {
 		catch(Exception e) { 
 			//throw new DataProcessException("Unhandled date format : "+dateStr,e); 
 			log.error("Unhandled date format : '"+dateStr+"'");	
-			e.printStackTrace();
+			//e.printStackTrace();
 			setLastModifTimestamp(new Date(0));			
 		}
 		
@@ -174,6 +175,19 @@ public class MxDbSearchItem implements IDbItem {
 		if (Globals.Get().getUsersMgr().getUserById(getLastModifUserId())!=null) {
 			return Globals.Get().getUsersMgr().getUserById(getLastModifUserId()).getNickname();
 		} else { return getLastModifUserId().toString(); }
+	}
+	@Override
+	public Object getValue(String fieldName) {
+		return _data.get(fieldName);
+	}
+	@Override
+	public void setValue(String fieldName, Object value) {
+		_data.put(fieldName, value);
+		
+	}
+	@Override
+	public Set<String> getFieldsList() {
+		return _data.keySet();
 	}
 	
 	

@@ -19,8 +19,8 @@ import metaindex.data.userprofile.IUserProfileData;
 
 public abstract class AProcessingTask implements IProcessingTask {
 	
-	public static Float pourcentage(Integer current, Integer target) {
-		if (target.equals(0)) { return 0F; }
+	public static Float pourcentage(Long current, Long target) {
+		if (target.equals(0L)) { return 0F; }
     	return (current.floatValue() / target.floatValue()) * 100.0F;    	
 	}
 	
@@ -51,9 +51,9 @@ public abstract class AProcessingTask implements IProcessingTask {
 	
 	private String _processingId="";
 	
-	private Integer _targetNbData=0;	
-	private Integer _receivedNbData=0;
-	private Integer _processedNbData=0;
+	private Long _targetNbData=0L;	
+	private Long _receivedNbData=0L;
+	private Long _processedNbData=0L;
 	
 	public AProcessingTask(IUserProfileData activeUser,String name) {
 		this._activeUser=activeUser;		
@@ -99,27 +99,27 @@ public abstract class AProcessingTask implements IProcessingTask {
 	}
 
 	@Override
-	public Integer getTargetNbData() {
+	public Long getTargetNbData() {
 		return _targetNbData;
 	}
 	@Override
-	public void setTargetNbData(Integer targetNbData) {
+	public void setTargetNbData(Long targetNbData) {
 		this._targetNbData = targetNbData;
 	}
 	@Override
-	public Integer getReceivedNbData() {
+	public Long getReceivedNbData() {
 		return _receivedNbData;
 	}
 	@Override
-	public void addReceivedNbData(Integer nbDataAdded) {
+	public void addReceivedNbData(Long nbDataAdded) {
 		_receivedNbData+=nbDataAdded;
 	}
 	@Override
-	public Integer getProcessedNbData() {
+	public Long getProcessedNbData() {
 		return _processedNbData;
 	}
 	@Override
-	public void addProcessedNbData(Integer nbDataProcessed) {
+	public void addProcessedNbData(Long nbDataProcessed) {
 		_processedNbData+=nbDataProcessed;
 	}
 	

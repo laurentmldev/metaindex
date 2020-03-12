@@ -28,12 +28,12 @@ public interface IProcessingTask extends IObservable<IObserver<IProcessingTask> 
 	String getProcessingType();
 	void setProcessingType(String processingType);
 
-	Integer getTargetNbData();
-	void setTargetNbData(Integer targetNbData);
-	Integer getReceivedNbData();
-	void addReceivedNbData(Integer nbDataAdded);
-	Integer getProcessedNbData();
-	void addProcessedNbData(Integer nbDataProcessed);
+	Long getTargetNbData();
+	void setTargetNbData(Long targetNbData);
+	Long getReceivedNbData();
+	void addReceivedNbData(Long nbDataAdded);
+	Long getProcessedNbData();
+	void addProcessedNbData(Long nbDataProcessed);
 
 	
 	IUserProfileData getActiveUser();

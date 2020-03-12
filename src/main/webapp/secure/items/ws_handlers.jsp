@@ -187,8 +187,23 @@ function ws_handlers_requestUploadCsvFile(fileHandle,selectedCsvColsDef) {
 	MxApi.requestUploadItemsFromCsv(fileHandle,selectedCsvColsDef);    
 }
 
-function ws_handlers_requestDownloadCsvFile(selectedTermsList) {	
-	MxApi.requestDownloadCsv(selectedTermsList);    
+function ws_handlers_requestDownloadCsvFile(selectedTermsList,query,selectedFiltersNames,sortByFieldName,reversedSortOrder) {
+	
+	 retrieveCsvSuccess=function(itemsAnswerMsg) {
+		footer_showAlert(SUCCESS, "CSV Ready! ;)"); 
+	 }
+	
+	 retrieveCsvError=function(msg) { footer_showAlert(ERROR, msg.rejectMessage); }
+	 MxApi.requestDownloadItemsCsv({	"termNamesList":selectedTermsList,
+		 						"fromIdx":0,
+		 						"size":-1,
+		 						"query":query,
+		 						"filtersNames":selectedFiltersNames,
+		 						"sortByFieldName":sortByFieldName,
+		 						"reverseSortOrder":reversedSortOrder,
+		 						"successCallback":retrieveCsvSuccess,
+		 						"errorCallback":retrieveCsvError});
+	  
 }
 
 

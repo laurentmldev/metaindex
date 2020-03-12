@@ -17,6 +17,7 @@ import java.util.Map;
 
 import metaindex.data.commons.globals.Globals;
 import toolbox.exceptions.DataProcessException;
+import toolbox.utils.IStreamHandler;
 
 public class GuiThemesManager implements IGuiThemesManager {
 	
@@ -27,12 +28,15 @@ public class GuiThemesManager implements IGuiThemesManager {
 	
 	@Override
 	public void loadFromDb() throws DataProcessException {
-		List<IGuiTheme> loadedGuiThemes=Globals.Get().getDatabasesMgr().getGuiThemeDbInterface().getLoadFromDbStmt().execute();
-		Iterator<IGuiTheme> it = loadedGuiThemes.iterator();
-		while (it.hasNext()) {
-			IGuiTheme curGuiTheme = it.next();
-			_guiThemes.put(curGuiTheme.getId(),curGuiTheme);
-		}
+		class GuiThemesHandler implements IStreamHandler<IGuiTheme> {
+			@Override public void handle(List<IGuiTheme> loadedGuiThemes) {
+				Iterator<IGuiTheme> it = loadedGuiThemes.iterator();
+				while (it.hasNext()) {
+					IGuiTheme curGuiTheme = it.next();
+					_guiThemes.put(curGuiTheme.getId(),curGuiTheme);
+		}}}
+		Globals.Get().getDatabasesMgr().getGuiThemeDbInterface().getLoadFromDbStmt().execute(new GuiThemesHandler());
+		
 	}
 	
 	@Override

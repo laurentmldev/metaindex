@@ -48,6 +48,7 @@ import toolbox.database.elasticsearch.ESBulkProcess;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.BasicPair;
 import toolbox.utils.IPair;
+import toolbox.utils.IStreamHandler;
 
 @Controller
 public class WsControllerItem extends AMxWSController {
@@ -59,20 +60,27 @@ public class WsControllerItem extends AMxWSController {
 	public WsControllerItem(SimpMessageSendingOperations messageSender) {
 		super(messageSender);		
 	}		
+	
+	private class ItemsHandler implements IStreamHandler<DbSearchResult> {
+		List<DbSearchResult> _res = null;
+		public ItemsHandler(List<DbSearchResult> result) { _res=result;}
+		@Override public void handle(List<DbSearchResult> d) { _res.addAll(d); }				
+	}
 		
 	private IDbItem getDocumentContents(IUserProfileData user,String documentId) {
 		
 		List<String> preFilters = new ArrayList<String>();
 		List< IPair<String,SORTING_ORDER> > sortByFieldName = new ArrayList<IPair<String,SORTING_ORDER>>();
-		List<DbSearchResult> results;
+		List<DbSearchResult> results = new ArrayList<>();
 		try {
-			results = Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
+			
+			Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
 					.getLoadFromDbStmt(user.getCurrentCatalog(),
 					    				0, // offset
 					    				1, // nb docs
 					    				"_id:"+documentId,
 					    				preFilters,							    				
-					    				sortByFieldName).execute();
+					    				sortByFieldName).execute(new ItemsHandler(results));
 			
 			if (results.size()!=1 || results.get(0).getItems().size()!=1) { 
 				return null; 
@@ -135,19 +143,21 @@ public class WsControllerItem extends AMxWSController {
     		// popoulate sorting order definition
     		SORTING_ORDER sortOrder = SORTING_ORDER.ASC;
     		if (requestMsg.getReverseSortOrder()) { sortOrder = SORTING_ORDER.DESC; }
-    		List< IPair<String,SORTING_ORDER> > sortByFieldName = new ArrayList<IPair<String,SORTING_ORDER>>();
+    		List< IPair<String,SORTING_ORDER> > sortByFieldName = new ArrayList<>();
     		if (requestMsg.getSortByFieldName().length()>0) {
     			sortByFieldName.add(new BasicPair<String,SORTING_ORDER>(requestMsg.getSortByFieldName(),sortOrder));
     		}    		
 			
 			// actually perform search query
-			List<DbSearchResult> results = Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
+			List<DbSearchResult> results = new ArrayList<>();
+			
+			Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
 							.getLoadFromDbStmt(user.getCurrentCatalog(),
 							    				requestMsg.getFromIdx(), 
 							    				requestMsg.getSize(),
 							    				requestMsg.getQuery(),
 							    				preFilters,							    				
-							    				sortByFieldName).execute();
+							    				sortByFieldName).execute(new ItemsHandler(results));
     		
     		answer.setIsSuccess(true);
     		// seems to return null value when 0 hits
@@ -348,13 +358,14 @@ public class WsControllerItem extends AMxWSController {
     		List<IDbItem> itemsToDelete=new ArrayList<IDbItem>();
     		Integer lastResultsize=MAX_ELASTIC_SEARCH_RESULT_SIZE;
     		while (lastResultsize==MAX_ELASTIC_SEARCH_RESULT_SIZE) {
-    			List<DbSearchResult> results = Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
+    			List<DbSearchResult> results = new ArrayList<>(); 
+    			Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
 							.getLoadFromDbStmt(user.getCurrentCatalog(),
 									fromIdx, 
 									size,
 				    				requestMsg.getQuery(),
 				    				preFilters,
-				    				new ArrayList< IPair<String,SORTING_ORDER> >()).execute();
+				    				new ArrayList< IPair<String,SORTING_ORDER> >()).execute(new ItemsHandler(results));
     		
     			// only one query --> only one result
     			assert(results.size()==1);

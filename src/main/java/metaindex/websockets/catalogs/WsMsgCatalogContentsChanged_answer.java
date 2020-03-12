@@ -18,7 +18,7 @@ public class WsMsgCatalogContentsChanged_answer   {
 	
 	private String _catalogName;
 	private String _userNickname;
-	private Integer _nbImpactedDocs;
+	private Long _nbImpactedDocs;
 	
 	// used if only one document has been modified
 	private String _impactedDocName="";
@@ -28,7 +28,7 @@ public class WsMsgCatalogContentsChanged_answer   {
 	
 	public WsMsgCatalogContentsChanged_answer(String catalogName,
 												String userNickname,
-												Integer nbImpactedDocs,
+												Long nbImpactedDocs,
 												CATALOG_MODIF_TYPE modifType) {
 		_catalogName=catalogName;
 		_userNickname=userNickname;
@@ -43,7 +43,7 @@ public class WsMsgCatalogContentsChanged_answer   {
 												CATALOG_MODIF_TYPE modifType) {
 		_catalogName=catalogName;
 		_userNickname=userNickname;
-		_nbImpactedDocs=1;
+		_nbImpactedDocs=1L;
 		_modifType=modifType;
 		_impactedDocName=impactedDocName;
 		_impactDetails=impactDetails;
@@ -68,12 +68,12 @@ public class WsMsgCatalogContentsChanged_answer   {
 	}
 
 
-	public Integer getNbImpactedDocs() {
+	public Long getNbImpactedDocs() {
 		return _nbImpactedDocs;
 	}
 
 
-	public void setNbImpactedDocs(Integer nbImpactedDocs) {
+	public void setNbImpactedDocs(Long nbImpactedDocs) {
 		this._nbImpactedDocs = nbImpactedDocs;
 	}
 

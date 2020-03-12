@@ -18,17 +18,22 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.action.search.ClearScrollRequest;
+import org.elasticsearch.action.search.ClearScrollResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.core.CountRequest;
 import org.elasticsearch.client.core.CountResponse;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.rest.RestStatus;
+import org.elasticsearch.search.Scroll;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchScrollRequest;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.json.JSONObject;
@@ -49,12 +54,14 @@ import toolbox.exceptions.DataProcessException;
 import toolbox.utils.IPair;
 import toolbox.utils.IStreamHandler;
 
-class GetItemsFromDbStmt extends ESReadStmt<DbSearchResult>   {
+class GetItemsStreamFromDbStmt extends ESReadStmt<DbSearchResult>   {
 	
 	private Log log = LogFactory.getLog(Catalog.class);
 	
+	// need a separate 'count' request to count over max EL limit (usually 10000)
 	private SearchRequest _searchRequest;
 	private CountRequest _countRequest;
+	
 	private Integer _fromIdx;
 	private Integer _size;
 	private ICatalog _catalog;
@@ -67,8 +74,7 @@ class GetItemsFromDbStmt extends ESReadStmt<DbSearchResult>   {
 		// if its a valid JSON string we consider it is an ElasticSearch raw query
 		try { new JSONObject(queryStr); }
 		catch (Exception e) { return QueryBuilders.queryStringQuery(queryStr); } 
-		return QueryBuilders.wrapperQuery(queryStr);		
-				
+		return QueryBuilders.wrapperQuery(queryStr);						
 	}
 	
 	
@@ -83,7 +89,9 @@ class GetItemsFromDbStmt extends ESReadStmt<DbSearchResult>   {
 	 * @param ds
 	 * @throws ESDataProcessException
 	 */
-	public GetItemsFromDbStmt(ICatalog c, Integer fromIdx, Integer size, 
+	public GetItemsStreamFromDbStmt(ICatalog c, 
+			Integer fromIdx, 
+			Integer size, 
 			String query,
 			List<String> prefilters, 
 			List< IPair<String,SORTING_ORDER> > sort, 
@@ -122,6 +130,7 @@ class GetItemsFromDbStmt extends ESReadStmt<DbSearchResult>   {
 		if (_query.length()==0 && _prefilters.size()==0) {
 			searchSourceBuilder.query(QueryBuilders.matchAllQuery());
 			countSourceBuilder.query(QueryBuilders.matchAllQuery());
+			
 		// some specific filtering required by user
 		} else {
 			BoolQueryBuilder currentQuery = QueryBuilders.boolQuery();
@@ -169,30 +178,41 @@ class GetItemsFromDbStmt extends ESReadStmt<DbSearchResult>   {
 	public void execute(IStreamHandler<DbSearchResult> h) throws DataProcessException {
 		try {
 	
-			List<DbSearchResult> resultList = new ArrayList<DbSearchResult>();
+			List<DbSearchResult> resultList = new ArrayList<DbSearchResult>(); 
 			
 			// first get total count (even if over max EL search size limit
 			CountResponse countResponse = this.getDatasource()
 											.getHighLevelClient()
 											.count(_countRequest,RequestOptions.DEFAULT);
 			
-			SearchResponse searchResponse = this.getDatasource()
-											.getHighLevelClient()
-											.search(_searchRequest,RequestOptions.DEFAULT);
-			
 			DbSearchResult result = new DbSearchResult();
+			
+			final Scroll scroll = new Scroll(TimeValue.timeValueMinutes(1L));
+			_searchRequest.scroll(scroll);
+			
+			SearchResponse searchResponse = this.getDatasource()
+					.getHighLevelClient().search(_searchRequest, RequestOptions.DEFAULT); 
 			
 			if (searchResponse.status()!=RestStatus.OK) { 
 				throw new DataProcessException("Error while performing search request : "+searchResponse.status()); 
 			}
 			
-			if (searchResponse.getHits()!=null && searchResponse.getHits().getHits().length>0) {
+			result.setTotalHits(countResponse.getCount());
+			result.setFromIdx(_fromIdx);
 			
-				result.setTotalHits(countResponse.getCount());
-				result.setFromIdx(_fromIdx);
-				SearchHit[] hits = searchResponse.getHits().getHits();
-				
-				for (SearchHit hit : hits) {
+			String scrollId = searchResponse.getScrollId();
+			SearchHit[] searchHits = searchResponse.getHits().getHits();
+
+			while (searchHits != null && searchHits.length > 0 && result.getItems().size()<_size) { 
+			    
+			    SearchScrollRequest scrollRequest = new SearchScrollRequest(scrollId); 
+			    scrollRequest.scroll(scroll);
+			    searchResponse = this.getDatasource()
+						.getHighLevelClient().scroll(scrollRequest, RequestOptions.DEFAULT);
+			    scrollId = searchResponse.getScrollId();
+			    searchHits = searchResponse.getHits().getHits();
+			    
+			    for (SearchHit hit : searchHits) {
 					Map<String,Object> data = hit.getSourceAsMap();
 					// handle elements not created by metaindex, missing lastmodif and userId special fields
 					if (!data.containsKey(ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP)) {
@@ -206,12 +226,23 @@ class GetItemsFromDbStmt extends ESReadStmt<DbSearchResult>   {
 												_catalog.getItemNameFields(),
 												_catalog.getItemThumbnailUrlField(),
 												_catalog.getItemsUrlPrefix());
-					result.addItem(item);									
-				}				
+					result.addItem(item);	
+					if (result.getItems().size()==_size) { break; }
+				}
+			    resultList.add(result);
+			    h.handle(resultList);
+			    resultList.clear();
 			}
 			
-			resultList.add(result);			
-			h.handle(resultList);			
+			ClearScrollRequest clearScrollRequest = new ClearScrollRequest(); 
+			clearScrollRequest.addScrollId(scrollId);
+			ClearScrollResponse clearScrollResponse = this.getDatasource()
+					.getHighLevelClient().clearScroll(clearScrollRequest, RequestOptions.DEFAULT);
+			
+			if (!clearScrollResponse.isSucceeded()) {
+				log.error("ES clearScroll operation did not succeed");
+			}
+					
 			
 		} catch (ElasticsearchException e) {
 			e.printStackTrace();
@@ -221,5 +252,6 @@ class GetItemsFromDbStmt extends ESReadStmt<DbSearchResult>   {
 			e.printStackTrace();
 			throw new DataProcessException(e.getMessage(),e);
 		}
-	}					
+	}
+				
 };

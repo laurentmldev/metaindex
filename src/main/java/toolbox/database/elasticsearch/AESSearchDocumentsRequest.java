@@ -26,6 +26,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
 
 import toolbox.exceptions.DataProcessException;
+import toolbox.utils.IStreamHandler;
 
 public abstract class AESSearchDocumentsRequest<TData> extends ESReadStmt<TData> {
 
@@ -65,10 +66,10 @@ public abstract class AESSearchDocumentsRequest<TData> extends ESReadStmt<TData>
 	
 	
 	@Override
-	public List<TData> execute() throws DataProcessException {
+	public void execute(IStreamHandler<TData> d) throws DataProcessException {
 		try {
 			SearchResponse searchResponse = this.getDatasource().getHighLevelClient().search(_request,RequestOptions.DEFAULT);
-			return mapSearchResponse(searchResponse);			
+			d.handle(mapSearchResponse(searchResponse));	
 			
 		} catch (IOException e) {
 			throw new DataProcessException(e);

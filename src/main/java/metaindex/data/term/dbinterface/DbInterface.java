@@ -15,6 +15,7 @@ import toolbox.database.elasticsearch.ESDataSource;
 import toolbox.database.elasticsearch.ESReadStmt;
 import toolbox.database.sql.SQLDataSource;
 import toolbox.database.sql.SQLDatabaseInterface;
+import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.database.sql.SQLReadStmt;
 import toolbox.database.sql.SQLWriteStmt;
 import toolbox.exceptions.DataProcessException;
@@ -36,27 +37,20 @@ public class DbInterface  extends SQLDatabaseInterface<ICatalogTerm>
 	}
 	
 	// ---
-	public SQLReadStmt<ICatalogTerm> getLoadTermsFromDbStmt(List<ICatalog> c) throws DataProcessException {
+	public SQLPopulateStmt<ICatalogTerm> getPopulateTermsFromDbStmt(List<ICatalog> c) throws DataProcessException {
 		assert(c.size()>0);
-		return new LoadContentsFromDbStmt(c,getDatasource());
+		return new PopulateTermsFromDbStmt(c,getDatasource());
 	}
-	public SQLReadStmt<ICatalogTerm> getLoadTermsFromDbStmt(ICatalog data) throws DataProcessException {
+	public SQLPopulateStmt<ICatalogTerm> getPopulateTermsFromDbStmt(ICatalog data) throws DataProcessException {
 		List<ICatalog> list = new ArrayList<>();
 		list.add(data);
-		return getLoadTermsFromDbStmt(list);
-	}
-
-	// ---
-	public SQLReadStmt<ICatalogTerm> getLoadFromDbStmt(ICatalog c) throws DataProcessException {
-		List<ICatalog> list = new ArrayList<>();
-		list.add(c);
-		return new LoadContentsFromDbStmt(list, getDatasource());
+		return getPopulateTermsFromDbStmt(list);
 	}
 	
-	public SQLReadStmt<ICatalogTerm> getLoadFromDbStmt(ICatalog c, List<ICatalogTerm> data) throws DataProcessException {
+	public SQLPopulateStmt<ICatalogTerm> getLoadFromDbStmt(ICatalog c, List<ICatalogTerm> data) throws DataProcessException {
 		List<ICatalog> list = new ArrayList<>();
 		list.add(c);
-		return new LoadContentsFromDbStmt(list, data, getDatasource());
+		return new PopulateTermsFromDbStmt(list, data, getDatasource());
 	}
 	
 	public SQLWriteStmt<ICatalogTerm> getUpdateIntoDbStmt(List<ICatalogTerm> data) throws DataProcessException {
@@ -91,8 +85,8 @@ public class DbInterface  extends SQLDatabaseInterface<ICatalogTerm>
 	}
 	
 	// --- load vocabulary
-	public SQLReadStmt<ICatalogTerm> getLoadVocabularyFromDbStmt(Collection<ICatalogTerm> data) throws DataProcessException {
-		return new LoadVocabularyFromDbStmt(data, getDatasource());
+	public SQLPopulateStmt<ICatalogTerm> getPopulateVocabularyFromDbStmt(Collection<ICatalogTerm> data) throws DataProcessException {
+		return new PopulateVocabularyFromDbStmt(data, getDatasource());
 	}
 	// --- create or update vocabulary
 	public SQLWriteStmt<TermVocabularySet> getCreateOrUpdateVocabularyIntoDbStmt(List<TermVocabularySet> data) throws DataProcessException {

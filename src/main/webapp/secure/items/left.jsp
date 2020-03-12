@@ -138,7 +138,7 @@
 	 		  <div id="csv_contents_previsu_body" style="display:none">
 	 		  		 <div><span class="_filename_"></span> : <span class="_nbEntries_"></span> entries</div>
 	 		  		 <table style="margin-top:1rem;" class="_csv_columns_tbl_">
-	 		  		 	<tr><th style="padding-right:1rem;"><input type="checkbox"/></th><th>Csv Column</th><th>Catalog Field</th></tr>
+	 		  		 	<tr><th style="padding-right:1rem;min-width:2rem;"></th><th>Csv Column</th><th>Catalog Field</th></tr>
 	 		  		 </table>
 				</div>
 				<div id="csv_contents_previsu_footer" style="display:none">
