@@ -17,10 +17,10 @@ import java.util.List;
 import metaindex.data.commons.globals.guilanguage.GuiLanguage;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import toolbox.database.sql.SQLDataSource;
-import toolbox.database.sql.SQLReadStmt;
+import toolbox.database.sql.SQLReadStreamStmt;
 import toolbox.exceptions.DataProcessException;
 
-class LoadFromDbStmt extends SQLReadStmt<IGuiLanguage>   {
+class LoadFromDbStmt extends SQLReadStreamStmt<IGuiLanguage>   {
 
 	public static final String SQL_REQUEST = 
 			"select guilanguages.guilanguage_id,guilanguages.name,"

@@ -12,7 +12,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
-import toolbox.database.IDatabaseReadStmt;
+import toolbox.database.IDatabaseReadStreamStmt;
 import toolbox.database.IDatasourcedStmt;
 import toolbox.database.sql.SQLDataSource;
 import toolbox.exceptions.DataProcessException;

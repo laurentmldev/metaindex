@@ -22,17 +22,31 @@ public class WsMsgCsvDownload_answer implements IWsMsg_answer {
 	@Override public void setRejectMessage(String rejectMessage) { this._rejectMessage = rejectMessage; }
 	
 	private String _csvFileUrl = "";
-	
+	private String _csvFileName = "";
+	private Integer _requestId=0;
 
-	public WsMsgCsvDownload_answer() {
-		
+	public WsMsgCsvDownload_answer(WsMsgCsvDownload_request request) {
+		this.setRequestId(request.getRequestId());
 	}
+	
 	public String getCsvFileUrl() {
 		return _csvFileUrl;
 	}
 
 	public void setCsvFileUrl(String csvFileUrl) {
 		this._csvFileUrl = csvFileUrl;
+	}
+	public Integer getRequestId() {
+		return _requestId;
+	}
+	public void setRequestId(Integer requestId) {
+		this._requestId = requestId;
+	}
+	public String getCsvFileName() {
+		return _csvFileName;
+	}
+	public void setCsvFileName(String _csvFileName) {
+		this._csvFileName = _csvFileName;
 	}
 	
 }

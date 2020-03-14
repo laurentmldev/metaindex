@@ -21,7 +21,7 @@ public class DbSearchResult implements IDbSearchResult {
 	/// the total items mathing corresponding search
 	private Long _totalHits;
 	/// starting index of items found in this DBSearchResult
-	private Integer _fromIdx;
+	private Long _fromIdx;
 	/// The items themselves
 	private List<IDbItem> _items = new ArrayList<IDbItem>();
 	
@@ -49,11 +49,11 @@ public class DbSearchResult implements IDbSearchResult {
 		this._totalHits = totalHits;
 	}
 	@Override
-	public Integer getFromIdx() {
+	public Long getFromIdx() {
 		return _fromIdx;
 	}
 
-	public void setFromIdx(Integer fromIdx) {
+	public void setFromIdx(Long fromIdx) {
 		this._fromIdx = fromIdx;
 	}
 	

@@ -47,7 +47,7 @@ import metaindex.data.catalog.ICatalog;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.database.elasticsearch.ESDataSource;
-import toolbox.database.elasticsearch.ESReadStmt;
+import toolbox.database.elasticsearch.ESReadStreamStmt;
 import toolbox.database.elasticsearch.ESWriteStmt;
 import toolbox.database.DbSearchResult;
 import toolbox.database.IDbItem;

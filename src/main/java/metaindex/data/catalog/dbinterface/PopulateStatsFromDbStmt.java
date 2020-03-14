@@ -25,11 +25,11 @@ import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.ICatalog;
 import toolbox.database.elasticsearch.ESDataSource;
 import toolbox.database.elasticsearch.ESPopulateStmt;
-import toolbox.database.elasticsearch.ESReadStmt;
+import toolbox.database.elasticsearch.ESReadStreamStmt;
 
 import toolbox.exceptions.DataProcessException;
 
-class LoadStatsFromDbStmt extends ESPopulateStmt<ICatalog>   {
+class PopulateStatsFromDbStmt extends ESPopulateStmt<ICatalog>   {
 
 	private Log log = LogFactory.getLog(Catalog.class);
 	
@@ -37,7 +37,7 @@ class LoadStatsFromDbStmt extends ESPopulateStmt<ICatalog>   {
 	
 	List<ICatalog> _data;
 	
-	public LoadStatsFromDbStmt(List<ICatalog> d, ESDataSource ds) throws DataProcessException { 
+	public PopulateStatsFromDbStmt(List<ICatalog> d, ESDataSource ds) throws DataProcessException { 
 		super(ds);
 	
 		_data=d;

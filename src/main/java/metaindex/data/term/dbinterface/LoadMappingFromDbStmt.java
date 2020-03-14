@@ -31,7 +31,7 @@ import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
 import toolbox.database.elasticsearch.ESDataSource;
 import toolbox.database.elasticsearch.ESPopulateStmt;
-import toolbox.database.elasticsearch.ESReadStmt;
+import toolbox.database.elasticsearch.ESReadStreamStmt;
 import toolbox.exceptions.DataProcessException;
 
 /**

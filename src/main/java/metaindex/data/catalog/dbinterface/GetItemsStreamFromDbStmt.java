@@ -46,7 +46,8 @@ import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
 import metaindex.data.term.ICatalogTerm.TERM_DATATYPE;
 import toolbox.database.elasticsearch.ESDataSource;
-import toolbox.database.elasticsearch.ESReadStmt;
+import toolbox.database.elasticsearch.ESDocumentsRequestBuilder;
+import toolbox.database.elasticsearch.ESReadStreamStmt;
 import toolbox.database.DbSearchResult;
 import toolbox.database.IDbItem;
 import toolbox.database.IDbSearchResult.SORTING_ORDER;
@@ -54,29 +55,22 @@ import toolbox.exceptions.DataProcessException;
 import toolbox.utils.IPair;
 import toolbox.utils.IStreamHandler;
 
-class GetItemsStreamFromDbStmt extends ESReadStmt<DbSearchResult>   {
+class GetItemsStreamFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 	
 	private Log log = LogFactory.getLog(Catalog.class);
 	
-	// need a separate 'count' request to count over max EL limit (usually 10000)
-	private SearchRequest _searchRequest;
-	private CountRequest _countRequest;
-	
-	private Integer _fromIdx;
-	private Integer _size;
 	private ICatalog _catalog;
-	private List<String> _prefilters = new ArrayList<String>();	
-	private String _query;
-	private List< IPair<String,SORTING_ORDER> > _sortByFieldName = new ArrayList< IPair<String,SORTING_ORDER> >();
+	private ESDocumentsRequestBuilder _requestsBuilder;
 	
+	// nb docs with been going through, starting from 1
+	private Long _curDocIdx=0L;
+	private Long _curNbDocs=0L;	
+	private Long _fromIdx=-1L;
+	private Long _maxNbDocs=-1L;
 	
-	private QueryBuilder buildESQuery(String queryStr) {
-		// if its a valid JSON string we consider it is an ElasticSearch raw query
-		try { new JSONObject(queryStr); }
-		catch (Exception e) { return QueryBuilders.queryStringQuery(queryStr); } 
-		return QueryBuilders.wrapperQuery(queryStr);						
-	}
-	
+	private String _query="";
+	private List<String> _prefilters = new ArrayList<>();
+	private List< IPair<String,SORTING_ORDER> > _sort = new ArrayList<>();
 	
 	/**
 	 * Retrieve list of items from ElasticSearch
@@ -90,8 +84,8 @@ class GetItemsStreamFromDbStmt extends ESReadStmt<DbSearchResult>   {
 	 * @throws ESDataProcessException
 	 */
 	public GetItemsStreamFromDbStmt(ICatalog c, 
-			Integer fromIdx, 
-			Integer size, 
+			Long fromIdx, 
+			Long size, 
 			String query,
 			List<String> prefilters, 
 			List< IPair<String,SORTING_ORDER> > sort, 
@@ -99,111 +93,100 @@ class GetItemsStreamFromDbStmt extends ESReadStmt<DbSearchResult>   {
 		super(ds);
 		_catalog=c;
 		_fromIdx=fromIdx;
-		_size=size;
-		_prefilters=prefilters;
+		_maxNbDocs=size;
 		_query=query;
-		_sortByFieldName=sort;
+		_prefilters=prefilters;
+		_sort=sort;
 		
-		// ES index matches catalog name
-		_searchRequest = new SearchRequest(c.getName());
-		_countRequest = new CountRequest(c.getName());
-		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		SearchSourceBuilder countSourceBuilder = new SearchSourceBuilder();
-		searchSourceBuilder.from(_fromIdx);
-		searchSourceBuilder.size(_size);
-		
-		// Combine filter queries :
-		// user query
-		//    AND
-		//  (Filter1Query OR Filter2Query ... ) :
-		//
-		// BoolQuery:
-		//    must :
-		//		- user query
-		//	  should
-		//		- filter1
-		//		- filter2
-		//		...
-		
-				
-		// no specific query, just retrieve all
-		if (_query.length()==0 && _prefilters.size()==0) {
-			searchSourceBuilder.query(QueryBuilders.matchAllQuery());
-			countSourceBuilder.query(QueryBuilders.matchAllQuery());
-			
-		// some specific filtering required by user
-		} else {
-			BoolQueryBuilder currentQuery = QueryBuilders.boolQuery();
-			// user query, either 'match' query or a full Json query
-			if (_query.length()>0) { 
-				currentQuery.must(buildESQuery(_query)); 
-			}
-				
-			// add selected filters if any, cumulative
-			for (String q : _prefilters) {
-				if (q.length()==0) { continue; }
-				currentQuery.should(buildESQuery(q));								
-			}
-			
-			searchSourceBuilder.query(currentQuery);
-			countSourceBuilder.query(currentQuery);
-		}
-		
-		// Sorting (by fieldName)
-		for (IPair<String,SORTING_ORDER> curSort : _sortByFieldName) {
-			SortOrder order = SortOrder.ASC;
-			if (curSort.getSecond()==SORTING_ORDER.DESC) { order = SortOrder.DESC; }
-			
-			// Ttext fields need to use our 'raw' Tkeyword subtype for sorting
+		// Applying proper raw field for terms requiring it
+		for (IPair<String,SORTING_ORDER> curSort : _sort) {
 			String sortFieldName=curSort.getFirst();			
 			TERM_DATATYPE fieldType = c.getTerms().get(sortFieldName).getDatatype();
 			if (ICatalogTerm.getRawDatatype(fieldType).equals(RAW_DATATYPE.Ttext)) {
-				sortFieldName+=".raw";
-			}
-			searchSourceBuilder.sort(new FieldSortBuilder(sortFieldName).order(order));
+				curSort.setFirst(sortFieldName+=".raw");
+			}			
 		}
-				
-		// by score
-		searchSourceBuilder.sort(new ScoreSortBuilder());
 		
-		// for same score, by modification date (more recent first)
-		searchSourceBuilder.sort(new FieldSortBuilder(ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP).order(SortOrder.DESC));
-				
-		_searchRequest.source(searchSourceBuilder);
-		_countRequest.source(countSourceBuilder);
+		_requestsBuilder=new ESDocumentsRequestBuilder(
+				_catalog.getName(),_query,_prefilters,_sort,ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP);
 	}
 
+	private void streamSearchHits(IStreamHandler<DbSearchResult> h,SearchHit[] searchHits) {
+		
+		
+		try {
+			List<DbSearchResult> resultList= new ArrayList<>();
+			DbSearchResult result = new DbSearchResult();
+			result.setFromIdx(this.getFromIdx());
+			result.setTotalHits(this.getMaxNbDocs());
+		
+			for (SearchHit hit : searchHits) {
+		    	_curDocIdx++;
+		    	// skipping first elements until we reach required position
+		    	if (_curDocIdx<_fromIdx) { continue; }
+		    	
+				Map<String,Object> data = hit.getSourceAsMap();
+				// handle elements not created by metaindex, missing lastmodif and userId special fields
+				if (!data.containsKey(ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP)) {
+					data.put(ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP, ICatalogTerm.MX_TERM_EPOCH_TIMESTAMP);
+				}
+				if (!data.containsKey(ICatalogTerm.MX_TERM_LASTMODIF_USERID)) {
+					data.put(ICatalogTerm.MX_TERM_LASTMODIF_USERID, 0);
+				}
+				IDbItem item = new MxDbSearchItem(
+											hit.getId(), data,
+											_catalog.getItemNameFields(),
+											_catalog.getItemThumbnailUrlField(),
+											_catalog.getItemsUrlPrefix());
+				result.addItem(item);
+				_curNbDocs++;
+				if (_curNbDocs>=_maxNbDocs) { break; }
+			}
+			//log.error("#### streaming "+result.getItems().size()+" documents ("+_curNbDocs+"/"+_maxNbDocs+")"); 
+			resultList.add(result);
+			h.handle(resultList);
+			
+		} catch (DataProcessException | InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	@Override
 	public void execute(IStreamHandler<DbSearchResult> h) throws DataProcessException {
 		try {
-	
-			List<DbSearchResult> resultList = new ArrayList<DbSearchResult>(); 
+			
+			
 			
 			// first get total count (even if over max EL search size limit
 			CountResponse countResponse = this.getDatasource()
 											.getHighLevelClient()
-											.count(_countRequest,RequestOptions.DEFAULT);
+											.count(_requestsBuilder.getCountRequest(),RequestOptions.DEFAULT);
 			
 			DbSearchResult result = new DbSearchResult();
 			
 			final Scroll scroll = new Scroll(TimeValue.timeValueMinutes(1L));
-			_searchRequest.scroll(scroll);
+			_requestsBuilder.getSearchRequest().scroll(scroll);
 			
 			SearchResponse searchResponse = this.getDatasource()
-					.getHighLevelClient().search(_searchRequest, RequestOptions.DEFAULT); 
+					.getHighLevelClient().search(_requestsBuilder.getSearchRequest(), RequestOptions.DEFAULT); 
 			
 			if (searchResponse.status()!=RestStatus.OK) { 
 				throw new DataProcessException("Error while performing search request : "+searchResponse.status()); 
 			}
 			
 			result.setTotalHits(countResponse.getCount());
-			result.setFromIdx(_fromIdx);
+			if (_maxNbDocs==-1 || countResponse.getCount()<_maxNbDocs) { _maxNbDocs=countResponse.getCount(); }
+			result.setFromIdx(this.getFromIdx());
 			
 			String scrollId = searchResponse.getScrollId();
 			SearchHit[] searchHits = searchResponse.getHits().getHits();
-
-			while (searchHits != null && searchHits.length > 0 && result.getItems().size()<_size) { 
+			
+			streamSearchHits(h,searchHits);
+			
+			while (searchHits != null
+					&& searchHits.length > 0 
+					&& _curNbDocs<_maxNbDocs) { 
 			    
 			    SearchScrollRequest scrollRequest = new SearchScrollRequest(scrollId); 
 			    scrollRequest.scroll(scroll);
@@ -212,26 +195,8 @@ class GetItemsStreamFromDbStmt extends ESReadStmt<DbSearchResult>   {
 			    scrollId = searchResponse.getScrollId();
 			    searchHits = searchResponse.getHits().getHits();
 			    
-			    for (SearchHit hit : searchHits) {
-					Map<String,Object> data = hit.getSourceAsMap();
-					// handle elements not created by metaindex, missing lastmodif and userId special fields
-					if (!data.containsKey(ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP)) {
-						data.put(ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP, ICatalogTerm.MX_TERM_EPOCH_TIMESTAMP);
-					}
-					if (!data.containsKey(ICatalogTerm.MX_TERM_LASTMODIF_USERID)) {
-						data.put(ICatalogTerm.MX_TERM_LASTMODIF_USERID, 0);
-					}
-					IDbItem item = new MxDbSearchItem(
-												hit.getId(), data,
-												_catalog.getItemNameFields(),
-												_catalog.getItemThumbnailUrlField(),
-												_catalog.getItemsUrlPrefix());
-					result.addItem(item);	
-					if (result.getItems().size()==_size) { break; }
-				}
-			    resultList.add(result);
-			    h.handle(resultList);
-			    resultList.clear();
+			    streamSearchHits(h,searchHits);
+			    
 			}
 			
 			ClearScrollRequest clearScrollRequest = new ClearScrollRequest(); 
@@ -253,5 +218,19 @@ class GetItemsStreamFromDbStmt extends ESReadStmt<DbSearchResult>   {
 			throw new DataProcessException(e.getMessage(),e);
 		}
 	}
+
+
+	public Long getFromIdx() {
+		return _fromIdx;
+	}
+
+	public Long getCurDocIdx() {
+		return _curDocIdx;
+	}
+
+	public Long getMaxNbDocs() {
+		return _maxNbDocs;
+	}
+
 				
 };

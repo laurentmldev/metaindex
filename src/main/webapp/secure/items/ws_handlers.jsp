@@ -190,7 +190,10 @@ function ws_handlers_requestUploadCsvFile(fileHandle,selectedCsvColsDef) {
 function ws_handlers_requestDownloadCsvFile(selectedTermsList,query,selectedFiltersNames,sortByFieldName,reversedSortOrder) {
 	
 	 retrieveCsvSuccess=function(itemsAnswerMsg) {
-		footer_showAlert(SUCCESS, "CSV Ready! ;)"); 
+		footer_showAlert(SUCCESS, "<s:text name="Items.downloadItems.csvFileReady" /> : <a href='"+itemsAnswerMsg.csvFileUrl+"' "
+				+" title='<s:text name="Items.downloadItems.csvFileReady.title" />'"
+				+">"+itemsAnswerMsg.csvFileName+"</a>","",999999999);
+		
 	 }
 	
 	 retrieveCsvError=function(msg) { footer_showAlert(ERROR, msg.rejectMessage); }
@@ -202,8 +205,7 @@ function ws_handlers_requestDownloadCsvFile(selectedTermsList,query,selectedFilt
 		 						"sortByFieldName":sortByFieldName,
 		 						"reverseSortOrder":reversedSortOrder,
 		 						"successCallback":retrieveCsvSuccess,
-		 						"errorCallback":retrieveCsvError});
-	  
+		 						"errorCallback":retrieveCsvError});	  
 }
 
 

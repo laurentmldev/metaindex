@@ -12,10 +12,10 @@ See full version of LICENSE in <https://fsf.org/>
 
 import java.util.List;
 
-import toolbox.exceptions.DataProcessException;
 
-public interface IStreamHandler<TData> {
-	
-	public void handle(List<TData> d) throws InterruptedException;	
-
+public class StreamHandler<T> implements IStreamHandler<T> {
+	List<T> _res = null;
+	public StreamHandler(List<T> result) { _res=result;}
+	@Override public void handle(List<T> d) { _res.addAll(d); }				
 }
+

@@ -15,7 +15,7 @@ See full version of LICENSE in <https://fsf.org/>
 import toolbox.database.sql.SQLDataSource;
 import toolbox.database.sql.SQLDatabaseInterface;
 import toolbox.database.sql.SQLPopulateStmt;
-import toolbox.database.sql.SQLReadStmt;
+import toolbox.database.sql.SQLReadStreamStmt;
 import toolbox.database.sql.SQLWriteStmt;
 import toolbox.exceptions.DataProcessException;
 

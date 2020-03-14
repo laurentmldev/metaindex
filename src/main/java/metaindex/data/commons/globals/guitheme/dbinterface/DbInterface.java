@@ -14,7 +14,7 @@ See full version of LICENSE in <https://fsf.org/>
 import metaindex.data.commons.globals.guitheme.IGuiTheme;
 import toolbox.database.sql.SQLDataSource;
 import toolbox.database.sql.SQLDatabaseInterface;
-import toolbox.database.sql.SQLReadStmt;
+import toolbox.database.sql.SQLReadStreamStmt;
 import toolbox.exceptions.DataProcessException;
 
 public class DbInterface extends SQLDatabaseInterface<IGuiTheme> {
@@ -24,7 +24,7 @@ public class DbInterface extends SQLDatabaseInterface<IGuiTheme> {
 	}
 	
 	
-	public SQLReadStmt<IGuiTheme> getLoadFromDbStmt() throws DataProcessException {
+	public SQLReadStreamStmt<IGuiTheme> getLoadFromDbStmt() throws DataProcessException {
 		return new LoadFromDbStmt(getDatasource());
 	}
 	

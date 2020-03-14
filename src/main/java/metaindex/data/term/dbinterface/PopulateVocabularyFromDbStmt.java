@@ -32,7 +32,7 @@ import metaindex.data.term.ICatalogTerm.TERM_DATATYPE;
 import metaindex.data.term.TermVocabularySet;
 import toolbox.database.sql.SQLDataSource;
 import toolbox.database.sql.SQLPopulateStmt;
-import toolbox.database.sql.SQLReadStmt;
+import toolbox.database.sql.SQLReadStreamStmt;
 import toolbox.exceptions.DataProcessException;
 
 /**

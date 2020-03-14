@@ -48,6 +48,7 @@ import toolbox.exceptions.DataProcessException;
 import toolbox.utils.BasicPair;
 import toolbox.utils.IPair;
 import toolbox.utils.IProcessingTask;
+import toolbox.utils.StrTools;
 import toolbox.utils.parsers.ACsvParser;
 import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
 import toolbox.utils.parsers.IListParser.ParseException;
@@ -64,21 +65,21 @@ public class WsControllerItemsCsvDownload extends AMxWSController {
 	}		
 	
     @MessageMapping("/download_items_csv_request")
-    @SubscribeMapping ("/user/queue/download_items_csv_response")
+    @SubscribeMapping ("/user/queue/download_items_csv_response")    				    
     public void handleDownloadItemsCsvRequest( SimpMessageHeaderAccessor headerAccessor, 
     											WsMsgCsvDownload_request requestMsg) {
     	Date now = new Date();
+    	WsMsgCsvDownload_answer answer = new  WsMsgCsvDownload_answer(requestMsg);
     	try {
 	    	
 	    	IUserProfileData user = getUserProfile(headerAccessor);
-	    	WsMsgCsvDownload_answer answer = new  WsMsgCsvDownload_answer();
+	    	
 	    	// populate filters from selected filters
     		List<String> preFilters = new ArrayList<String>();    
     		for (String filterName : requestMsg.getFiltersNames()) {
     			IFilter c = user.getCurrentCatalog().getFilter(filterName);
     			if (c==null) {
-    				answer.setIsSuccess(false);
-    	    		
+    				answer.setIsSuccess(false);    	    	
     	    		answer.setRejectMessage(user.getText("Items.server.unknownFilterForSearch",
     	    							filterName.toString(),user.getCurrentCatalog().getName()));
     	    		
@@ -89,16 +90,18 @@ public class WsControllerItemsCsvDownload extends AMxWSController {
     			preFilters.add(c.getQuery());
     		}		
     		
-    		// popoulate sorting order definition
+    		// populate sorting order definition
     		SORTING_ORDER sortOrder = SORTING_ORDER.ASC;
     		if (requestMsg.getReverseSortOrder()) { sortOrder = SORTING_ORDER.DESC; }
     		List< IPair<String,SORTING_ORDER> > sortByFieldName = new ArrayList<>();
     		if (requestMsg.getSortByFieldName().length()>0) {
     			sortByFieldName.add(new BasicPair<String,SORTING_ORDER>(requestMsg.getSortByFieldName(),sortOrder));
     		}    
-    		String targetFileBasename=user.getCurrentCatalog().getName()+".csv";
+    		String timestamp = StrTools.Timestamp(new Date());
+    		String targetFileBasename=user.getCurrentCatalog().getName()+"-extract_"+timestamp+".csv";
     		String targetFileFsPath=Globals.Get().getWebappsTmpFsPath()+targetFileBasename;
-    		String targetFileUri=Globals.Get().getWebappsTmpUrl()+targetFileBasename;
+    		
+    		
 	    	ESDownloadCsvProcess procTask = Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
 					.getNewCsvExtractProcessor(
 		    			user, 
@@ -106,8 +109,8 @@ public class WsControllerItemsCsvDownload extends AMxWSController {
 		    			 "Extract from "+user.getCurrentCatalog().getName(), 
 		    			 targetFileFsPath,
 		    			 requestMsg.getTermNamesList(),
-		    			 requestMsg.getSize(),
-		    			 requestMsg.getFromIdx(),
+		    			 new Long(requestMsg.getSize()),
+		    			 new Long(requestMsg.getFromIdx()),
 		    			 requestMsg.getQuery(),
 		    			 preFilters,
 		    			 sortByFieldName,
@@ -119,17 +122,26 @@ public class WsControllerItemsCsvDownload extends AMxWSController {
     		procTask.stop();
     		//String csvFileUrl="http://metaindex.fr/metaindex/downloads/xyzazertutj2454RHHF433a";
     		
-			answer.setIsSuccess(true);
+    		Boolean success = procTask.isCsvDataGenerated();
+			answer.setIsSuccess(success);
+			String targetFileUri=Globals.Get().getWebappsTmpUrl()+targetFileBasename;
+			answer.setCsvFileUrl(targetFileUri);
+			answer.setCsvFileName(targetFileBasename);
     		this.messageSender.convertAndSendToUser(
     				headerAccessor.getUser().getName(),
-    				"/queue/upload_items_csv_response", 
+    				"/queue/download_items_csv_response", 
     				answer);
         	
-			
 	    } catch (DataProcessException | MessagingException | IOException e) 
 		{
 			log.error("Unable to process download_items_csv_file from '"+headerAccessor.getUser().getName()+"' : "+e);
 			e.printStackTrace();
+			
+			answer.setIsSuccess(false);
+			this.messageSender.convertAndSendToUser(
+    				headerAccessor.getUser().getName(),
+    				"/queue/download_items_csv_response", 
+    				answer);
 		}   
     }
     

@@ -52,8 +52,6 @@ public class CsvDumper<T extends IFieldValueMapObject> extends AProcessingTask  
 	private Semaphore _postingDataLock = new Semaphore(1,true);	
 	private Semaphore _stoppingProcessingLock = new Semaphore(1,true);
 	
-	private Date _timestamp=new Date(0);
-	
 	private String _targetFileName="";
 	private String _separator=";";
 	private String _strMarker="\"";
@@ -71,7 +69,6 @@ public class CsvDumper<T extends IFieldValueMapObject> extends AProcessingTask  
 						 Date timestamp,
 						 String targetFileName) throws DataProcessException { 
 		super(u,name);
-		_timestamp=timestamp;
 		this.setTargetNbData(expectedNbActions);
 		this.setTargetFileName(targetFileName);
 		this.setCsvColumnsList(csvColumnsList);
@@ -83,7 +80,9 @@ public class CsvDumper<T extends IFieldValueMapObject> extends AProcessingTask  
 		_postingDataLock.acquire();
 		_dataToDump.addAll(o);
 		addReceivedNbData(new Long(o.size()));
+		//log.error("### added "+o.size()+" data to dump -> "+_dataToDump.size()+" to be dumped");
 		_postingDataLock.release();
+		Thread.sleep(10);
 	}
 	
 	public void lock() throws InterruptedException { _postingDataLock.acquire(); }
@@ -94,12 +93,6 @@ public class CsvDumper<T extends IFieldValueMapObject> extends AProcessingTask  
 	@Override
 	public void run()  { 
 		
-		getActiveUser().sendGuiProgressMessage(
-    			getId(),
-    			getActiveUser().getText("Items.serverside.gencsvprocess.progress", getName()),
-    			AProcessingTask.pourcentage(getProcessedNbData(),getTargetNbData()));
-		
-		
 		try {
 			_outputstream = new FileOutputStream(this.getTargetFileName());
 		} catch (FileNotFoundException e1) {
@@ -107,6 +100,12 @@ public class CsvDumper<T extends IFieldValueMapObject> extends AProcessingTask  
 			this.abort();
 			return;
 		}
+		
+		getActiveUser().sendGuiProgressMessage(
+    			getId(),
+    			getActiveUser().getText("Items.serverside.gencsvprocess.progress", getName()),
+    			AProcessingTask.pourcentage(getProcessedNbData(),getTargetNbData()));
+		
 		
 		while (!this.isAllDataProcessed()) {
 			try { 
@@ -122,6 +121,7 @@ public class CsvDumper<T extends IFieldValueMapObject> extends AProcessingTask  
 					
 				}
 				_postingDataLock.acquire();
+				//if (_dataToDump.size()>0) { log.error("#### dumping "+_dataToDump.size()+" lines"); }
 				for (IFieldValueMapObject d : _dataToDump) {
 					String curCsvLine=d.getId();
 					Integer colIdx=0;
@@ -146,11 +146,17 @@ public class CsvDumper<T extends IFieldValueMapObject> extends AProcessingTask  
 				_postingDataLock.release();
 				
 				// actually write lines in file
-				for (String line : linesToWrite) { _outputstream.write((line+"\n").getBytes()); }
+				for (String line : linesToWrite) {
+					if (!line.startsWith("#")) { addProcessedNbData(1L); }
+					_outputstream.write((line+"\n").getBytes()); 
+				}
 				_outputstream.flush();
 				// --------
 				
-				addProcessedNbData(new Long(linesToWrite.size()));
+				getActiveUser().sendGuiProgressMessage(
+		    			getId(),
+		    			getActiveUser().getText("Items.serverside.gencsvprocess.progress", getName()),
+		    			AProcessingTask.pourcentage(getProcessedNbData(), getTargetNbData()), true /*processing continuing*/);
 				
 			} catch (InterruptedException | IOException e) { 
 				e.printStackTrace(); 
@@ -168,13 +174,11 @@ public class CsvDumper<T extends IFieldValueMapObject> extends AProcessingTask  
 	public void stop() {
 		
 		try {
-			_stoppingProcessingLock.acquire();
-			while (!this.isTerminated() && this.isRunning() 
-					&& this.getProcessedNbData()<this.getTargetNbData()) {
+			while (!this.isAllDataProcessed()) {
 				Thread.sleep(200);
 			}
-			
-			_outputstream.close();
+			_stoppingProcessingLock.acquire();
+			_outputstream.close();	
 			_stoppingProcessingLock.release();
 		} catch (InterruptedException | IOException e) {
 			e.printStackTrace();
@@ -185,7 +189,7 @@ public class CsvDumper<T extends IFieldValueMapObject> extends AProcessingTask  
     			getId(),
     			getActiveUser().getText("Items.serverside.gencsvprocess.progress", getName()),
     			AProcessingTask.pourcentage(getProcessedNbData(), getTargetNbData()), false /*processing ended*/);
-		
+	
 		getActiveUser().removeProccessingTask(this.getId());
 	}
 	@Override

@@ -10,17 +10,16 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
-import toolbox.database.IDatabaseReadStmt;
+import toolbox.database.IDatabaseReadStreamStmt;
 import toolbox.database.IDatasourcedStmt;
-import toolbox.database.sql.SQLDataSource;
 import toolbox.exceptions.DataProcessException;
 
-public abstract class ESReadStmt<TData> implements IDatabaseReadStmt<TData>,IDatasourcedStmt<ESDataSource> 
+public abstract class ESReadStreamStmt<TData> implements IDatabaseReadStreamStmt<TData>,IDatasourcedStmt<ESDataSource> 
  {
 
 	private ESDataSource _datasource;
 	
-	public ESReadStmt(ESDataSource ds) throws DataProcessException {		
+	public ESReadStreamStmt(ESDataSource ds) throws DataProcessException {		
 		_datasource=ds;
 	}
 	

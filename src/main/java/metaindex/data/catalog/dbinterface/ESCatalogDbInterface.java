@@ -13,7 +13,7 @@ See full version of LICENSE in <https://fsf.org/>
 import toolbox.database.elasticsearch.ESDataSource;
 import toolbox.database.elasticsearch.ESDatabaseInterface;
 import toolbox.database.elasticsearch.ESPopulateStmt;
-import toolbox.database.elasticsearch.ESReadStmt;
+import toolbox.database.elasticsearch.ESReadStreamStmt;
 import toolbox.database.elasticsearch.ESWriteStmt;
 import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.exceptions.DataProcessException;
@@ -44,7 +44,7 @@ public class ESCatalogDbInterface  extends ESDatabaseInterface<ICatalog>
 	
 	// --- load index stats	
 	public ESPopulateStmt<ICatalog> getLoadStatsFromDocsDbStmt(List<ICatalog> data) throws DataProcessException {
-		return new LoadStatsFromDbStmt(data, getDatasource());
+		return new PopulateStatsFromDbStmt(data, getDatasource());
 	}
 	public ESPopulateStmt<ICatalog> getLoadStatsFromDocsDbStmt(ICatalog data) throws DataProcessException {
 		List<ICatalog> list = new ArrayList<>();

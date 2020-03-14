@@ -270,7 +270,6 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	
 	
 	this._handleServerHeartbeat= function (mxServerHeartbeatMsg) {
-		
 		lastHeartbeatDate=new Date();		
 		var parsedMsg = JSON.parse(mxServerHeartbeatMsg.body);
 		if (parsedMsg.applicationStatus!=curApplicationStatus) {
@@ -278,12 +277,14 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			// FAILURE|MAINTENANCE|STOPPED|RUNNING			
 			myself._callback_ServerHeartbeatEvent(parsedMsg.applicationStatus);			
 		}
-		
+		console.log("MxAPI Received [Server Heartbeat] : '"+curApplicationStatus+"'\n"+parsedMsg.count);
 		if (myself._callback_ServerHeartbeatEvent_debug==true) {
-			console.log("MxAPI Received [Server Heartbeat] : '"+curApplicationStatus+"'\n"+parsedMsg);
+			console.log("MxAPI Received [Server Heartbeat] : '"+curApplicationStatus+"'\n"+parsedMsg.count);
 		}
 		
 		// check periodicaly that heartbeat arrive often enough
+		// wait for 2 consecutive holes, bcause sometimes the jaavascript is blocked
+		// for example when a "save as" window is open
 		if (heartbeatTimerCheck==null) {
 			heartbeatTimerCheck=setInterval(function() { 
 				var curDate = new Date(); 
@@ -455,25 +456,8 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			}
 
 //------- Download CSV file --------
-	this.subscribeToCsvDownload=function(callback_func,debug) {
-		debug=debug||false;
-		myself._callback_DownloadCsv_debug=debug;
-		myself._callback_DownloadCsv=callback_func;
-	}
-	this._handleDowloadItemsCsvAnswer=function(msg) {
-		
-		var parsedMsg = JSON.parse(msg.body);
-		
-		if (myself._callback_DownloadCsv_debug==true) {
-			console.log("[MxApi] Received answer to request for 'Download Items from CSV' accepted : "+parsedMsg.isSuccess);
-			if (parsedMsg.isSuccess==false) {
-				console.log("Reject msg = "+parsedMsg.rejectMessage);
-			}
-		}
-
-	    // Open link to generated file
-	    
-	}
+			
+	this.requestCsvDownloasCallbacks=[];
 	
 	// dataObj {
 	//   termNamesList = []
@@ -497,19 +481,57 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			console.log("MxAPI Requesting [Items CSV]");
 		}
 
+		var curRequestId=myself.requestCsvDownloasCallbacks.length;
+		myself.requestCsvDownloasCallbacks.push(dataObj);
+		dataObj.requestId=curRequestId;
+		
     	//console.log('### Sending download request : '+JSON.stringify(jsonData));
     	myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/download_items_csv_request", {},JSON.stringify(dataObj));		
-	 		
-	    		
+
+	}
+	
+	this.subscribeToCsvDownload=function(callback_func,debug) {
+		debug=debug||false;
+		myself._callback_DownloadCsv_debug=debug;
+		myself._callback_DownloadCsv=callback_func;
+	}
+	
+	this._handleDownloadItemsCsvAnswer=function(msg) {
+		
+		var parsedMsg = JSON.parse(msg.body);
+		
+		if (myself._callback_DownloadCsv_debug==true) {
+			console.log("[MxApi] Received answer to request for 'Download Items from CSV' accepted : "+parsedMsg.isSuccess);
+			if (parsedMsg.isSuccess==false) {
+				console.log("Reject msg = "+parsedMsg.rejectMessage);
+			}
+		}
+
+		let requestId=parsedMsg.requestId;
+		requestObj=myself.requestCsvDownloasCallbacks[requestId];
+		//console.log("received customization requestId="+requestId+" -> "+requestObj);
+		if (requestObj==null) { return; }
+		if (parsedMsg.isSuccess==true) { requestObj.successCallback(parsedMsg); }
+		else {
+			let errorMsg=parsedMsg.rejectMessage;
+			// ensure error message is not empty
+			// (otherwise can lead to some mis behaviour in user app (ex: x-editable) )
+			if (errorMsg==undefined) { errorMsg="perspective delete refused by server, sorry." }
+			requestObj.errorCallback(errorMsg); 
+		}	
+	    
 	}
 	
 	
-	//------- DownloUpload Items file --------	
-		this.subscribeToCsvUpload=function(callback_func,debug) {
-			debug=debug||false;
-			myself._callback_UploadCsv_debug=debug;
-			myself._callback_UploadCsv=callback_func;
-		}
+	//------- Upload Items file --------	
+	
+	
+	
+	this.subscribeToCsvUpload=function(callback_func,debug) {
+		debug=debug||false;
+		myself._callback_UploadCsv_debug=debug;
+		myself._callback_UploadCsv=callback_func;
+	}
 		
 	this.requestUploadItemsFromCsv = function(fileHandle,chosenFieldsMapping) {
 	 	

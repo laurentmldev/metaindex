@@ -41,7 +41,8 @@ import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
 import metaindex.data.term.ICatalogTerm.TERM_DATATYPE;
 import toolbox.database.elasticsearch.ESDataSource;
-import toolbox.database.elasticsearch.ESReadStmt;
+import toolbox.database.elasticsearch.ESDocumentsRequestBuilder;
+import toolbox.database.elasticsearch.ESReadStreamStmt;
 import toolbox.database.DbSearchResult;
 import toolbox.database.IDbItem;
 import toolbox.database.IDbSearchResult.SORTING_ORDER;
@@ -49,27 +50,12 @@ import toolbox.exceptions.DataProcessException;
 import toolbox.utils.IPair;
 import toolbox.utils.IStreamHandler;
 
-class GetItemsFromDbStmt extends ESReadStmt<DbSearchResult>   {
+class GetItemsFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 	
 	private Log log = LogFactory.getLog(Catalog.class);
 	
-	private SearchRequest _searchRequest;
-	private CountRequest _countRequest;
-	private Integer _fromIdx;
-	private Integer _size;
 	private ICatalog _catalog;
-	private List<String> _prefilters = new ArrayList<String>();	
-	private String _query;
-	private List< IPair<String,SORTING_ORDER> > _sortByFieldName = new ArrayList< IPair<String,SORTING_ORDER> >();
-	
-	
-	private QueryBuilder buildESQuery(String queryStr) {
-		// if its a valid JSON string we consider it is an ElasticSearch raw query
-		try { new JSONObject(queryStr); }
-		catch (Exception e) { return QueryBuilders.queryStringQuery(queryStr); } 
-		return QueryBuilders.wrapperQuery(queryStr);		
-				
-	}
+	private ESDocumentsRequestBuilder _requestsBuilder;
 	
 	
 	/**
@@ -90,78 +76,18 @@ class GetItemsFromDbStmt extends ESReadStmt<DbSearchResult>   {
 			ESDataSource ds) throws DataProcessException { 
 		super(ds);
 		_catalog=c;
-		_fromIdx=fromIdx;
-		_size=size;
-		_prefilters=prefilters;
-		_query=query;
-		_sortByFieldName=sort;
 		
-		// ES index matches catalog name
-		_searchRequest = new SearchRequest(c.getName());
-		_countRequest = new CountRequest(c.getName());
-		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		SearchSourceBuilder countSourceBuilder = new SearchSourceBuilder();
-		searchSourceBuilder.from(_fromIdx);
-		searchSourceBuilder.size(_size);
-		
-		// Combine filter queries :
-		// user query
-		//    AND
-		//  (Filter1Query OR Filter2Query ... ) :
-		//
-		// BoolQuery:
-		//    must :
-		//		- user query
-		//	  should
-		//		- filter1
-		//		- filter2
-		//		...
-		
-				
-		// no specific query, just retrieve all
-		if (_query.length()==0 && _prefilters.size()==0) {
-			searchSourceBuilder.query(QueryBuilders.matchAllQuery());
-			countSourceBuilder.query(QueryBuilders.matchAllQuery());
-		// some specific filtering required by user
-		} else {
-			BoolQueryBuilder currentQuery = QueryBuilders.boolQuery();
-			// user query, either 'match' query or a full Json query
-			if (_query.length()>0) { 
-				currentQuery.must(buildESQuery(_query)); 
-			}
-				
-			// add selected filters if any, cumulative
-			for (String q : _prefilters) {
-				if (q.length()==0) { continue; }
-				currentQuery.should(buildESQuery(q));								
-			}
-			
-			searchSourceBuilder.query(currentQuery);
-			countSourceBuilder.query(currentQuery);
-		}
-		
-		// Sorting (by fieldName)
-		for (IPair<String,SORTING_ORDER> curSort : _sortByFieldName) {
-			SortOrder order = SortOrder.ASC;
-			if (curSort.getSecond()==SORTING_ORDER.DESC) { order = SortOrder.DESC; }
-			
-			// Ttext fields need to use our 'raw' Tkeyword subtype for sorting
+		// Applying proper raw field for terms requiring it
+		for (IPair<String,SORTING_ORDER> curSort : sort) {
 			String sortFieldName=curSort.getFirst();			
 			TERM_DATATYPE fieldType = c.getTerms().get(sortFieldName).getDatatype();
 			if (ICatalogTerm.getRawDatatype(fieldType).equals(RAW_DATATYPE.Ttext)) {
-				sortFieldName+=".raw";
-			}
-			searchSourceBuilder.sort(new FieldSortBuilder(sortFieldName).order(order));
+				curSort.setFirst(sortFieldName+=".raw");
+			}			
 		}
+		_requestsBuilder=new ESDocumentsRequestBuilder(
+				c.getName(), fromIdx,size,query,prefilters,sort,ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP);
 				
-		// by score
-		searchSourceBuilder.sort(new ScoreSortBuilder());
-		
-		// for same score, by modification date (more recent first)
-		searchSourceBuilder.sort(new FieldSortBuilder(ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP).order(SortOrder.DESC));
-				
-		_searchRequest.source(searchSourceBuilder);
-		_countRequest.source(countSourceBuilder);
 	}
 
 	
@@ -174,11 +100,11 @@ class GetItemsFromDbStmt extends ESReadStmt<DbSearchResult>   {
 			// first get total count (even if over max EL search size limit
 			CountResponse countResponse = this.getDatasource()
 											.getHighLevelClient()
-											.count(_countRequest,RequestOptions.DEFAULT);
+											.count(_requestsBuilder.getCountRequest(),RequestOptions.DEFAULT);
 			
 			SearchResponse searchResponse = this.getDatasource()
 											.getHighLevelClient()
-											.search(_searchRequest,RequestOptions.DEFAULT);
+											.search(_requestsBuilder.getSearchRequest(),RequestOptions.DEFAULT);
 			
 			DbSearchResult result = new DbSearchResult();
 			
@@ -189,7 +115,7 @@ class GetItemsFromDbStmt extends ESReadStmt<DbSearchResult>   {
 			if (searchResponse.getHits()!=null && searchResponse.getHits().getHits().length>0) {
 			
 				result.setTotalHits(countResponse.getCount());
-				result.setFromIdx(_fromIdx);
+				result.setFromIdx(new Long(_requestsBuilder.getFromIdx()));
 				SearchHit[] hits = searchResponse.getHits().getHits();
 				
 				for (SearchHit hit : hits) {

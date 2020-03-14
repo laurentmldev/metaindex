@@ -1,6 +1,5 @@
 package toolbox.database;
 
-import metaindex.data.commons.globals.guitheme.IGuiTheme;
 
 /*
 GNU GENERAL PUBLIC LICENSE
@@ -16,7 +15,7 @@ import toolbox.exceptions.DataProcessException;
 import toolbox.utils.IStreamHandler;
 import toolbox.utils.IStreamProducer;
 
-public interface IDatabaseReadStmt<TData> extends IStreamProducer<TData> {
+public interface IDatabaseReadStreamStmt<TData> extends IStreamProducer<TData> {
 
 	public void execute(IStreamHandler<TData> h) throws DataProcessException;	
 	

@@ -20,7 +20,7 @@ import metaindex.data.filter.IFilter;
 import metaindex.data.catalog.ICatalog;
 import toolbox.database.sql.SQLDataSource;
 import toolbox.database.sql.SQLPopulateStmt;
-import toolbox.database.sql.SQLReadStmt;
+import toolbox.database.sql.SQLReadStreamStmt;
 import toolbox.exceptions.DataProcessException;
 
 class PopulateFilterStmt extends SQLPopulateStmt<IFilter>   {

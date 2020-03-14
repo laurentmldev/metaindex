@@ -13,22 +13,16 @@ See full version of LICENSE in <https://fsf.org/>
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.lucene.search.TotalHits;
-import org.elasticsearch.action.get.GetRequest;
-import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
 
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.IStreamHandler;
 
-public abstract class AESSearchDocumentsRequest<TData> extends ESReadStmt<TData> {
+public abstract class AESSearchDocumentsRequest<TData> extends ESReadStreamStmt<TData> {
 
 	private SearchRequest _request;
 	
@@ -71,7 +65,7 @@ public abstract class AESSearchDocumentsRequest<TData> extends ESReadStmt<TData>
 			SearchResponse searchResponse = this.getDatasource().getHighLevelClient().search(_request,RequestOptions.DEFAULT);
 			d.handle(mapSearchResponse(searchResponse));	
 			
-		} catch (IOException e) {
+		} catch (IOException | InterruptedException e) {
 			throw new DataProcessException(e);
 		}
 	}

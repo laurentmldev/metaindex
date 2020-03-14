@@ -1,5 +1,7 @@
 package toolbox.utils;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 /*
@@ -25,6 +27,13 @@ public class StrTools {
         }
         lineScan.close();
         return result;
+	}
+	
+	
+	public static String Timestamp(Date d) {
+		assert(d!=null);		
+		String timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(d);		
+		return timeStamp;
 	}
 	
 }

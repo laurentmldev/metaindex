@@ -13,8 +13,8 @@ See full version of LICENSE in <https://fsf.org/>
 public class WsMsgGetItems_request extends WsMsgDeleteItemsByQuery_request  {
 		
 	private Integer _requestId=0;
-	private Integer _fromIdx=0;
-	private Integer _size=0;
+	private Integer _fromIdx=-1;
+	private Integer _size=-1;
 	private String _sortByFieldName="";
 	private Boolean _reverseSortOrder=false;
 

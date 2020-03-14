@@ -17,7 +17,7 @@ import toolbox.database.elasticsearch.ESBulkProcess;
 import toolbox.database.elasticsearch.ESDataSource;
 import toolbox.database.elasticsearch.ESDatabaseInterface;
 import toolbox.database.elasticsearch.ESDownloadCsvProcess;
-import toolbox.database.elasticsearch.ESReadStmt;
+import toolbox.database.elasticsearch.ESReadStreamStmt;
 import toolbox.database.elasticsearch.ESWriteStmt;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.IPair;
@@ -45,7 +45,7 @@ public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem>
 	 * @return
 	 * @throws DataProcessException
 	 */
-	public ESReadStmt<DbSearchResult> getLoadFromDbStmt(ICatalog c, Integer fromIdx, Integer size,
+	public ESReadStreamStmt<DbSearchResult> getLoadDocsFromDbStmt(ICatalog c, Integer fromIdx, Integer size,
 														String query,
 														List<String> filter, 
 														List< IPair<String,SORTING_ORDER> > sort) 
@@ -53,12 +53,12 @@ public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem>
 		return new GetItemsFromDbStmt(c,fromIdx,size,query,filter,sort,getDatasource());
 	}
 	
-	public ESReadStmt<DbSearchResult> getStreamFromDbStmt(ICatalog c, Integer fromIdx, Integer size,
+	public ESReadStreamStmt<DbSearchResult> getLoadDocsStreamFromDbStmt(ICatalog c, Long fromIdx, Long size,
 			String query,
 			List<String> filter, 
 			List< IPair<String,SORTING_ORDER> > sort) 
 	throws DataProcessException {
-	return new GetItemsFromDbStmt(c,fromIdx,size,query,filter,sort,getDatasource());
+	return new GetItemsStreamFromDbStmt(c,fromIdx,size,query,filter,sort,getDatasource());
 	}
 	
 	// -- update document field value
@@ -85,8 +85,8 @@ public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem>
 												  String name, 
 												  String targetFileName,
 												  List<String> csvColsList,
-												  Integer maxNbItems,
-												  Integer fromIndex,
+												  Long maxNbItems,
+												  Long fromIndex,
 												  String query,
 												  List<String> preFilters,
 												  List< IPair<String,SORTING_ORDER> > sortingOrder,

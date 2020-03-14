@@ -18,10 +18,10 @@ import java.util.List;
 import metaindex.data.commons.globals.guitheme.GuiTheme;
 import metaindex.data.commons.globals.guitheme.IGuiTheme;
 import toolbox.database.sql.SQLDataSource;
-import toolbox.database.sql.SQLReadStmt;
+import toolbox.database.sql.SQLReadStreamStmt;
 import toolbox.exceptions.DataProcessException;
 
-class LoadFromDbStmt extends SQLReadStmt<IGuiTheme>   {
+class LoadFromDbStmt extends SQLReadStreamStmt<IGuiTheme>   {
 
 	public static final String SQL_REQUEST = 
 			"select guithemes.guitheme_id,guithemes.name,"

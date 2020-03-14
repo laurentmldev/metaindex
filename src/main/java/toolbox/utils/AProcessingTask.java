@@ -134,6 +134,8 @@ public abstract class AProcessingTask implements IProcessingTask {
 	@Override
 	public void start() { _runnerThread.start(); }
 	
+	public void joinRunnerThread() throws InterruptedException { _runnerThread.join(); }
+	
 	@Override
 	public Boolean isRunning() { return _runnerThread.isAlive(); }
 }

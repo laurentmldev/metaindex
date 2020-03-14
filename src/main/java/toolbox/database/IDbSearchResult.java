@@ -17,7 +17,7 @@ public interface IDbSearchResult {
 	public enum SORTING_ORDER { ASC, DESC };
 	public List<IDbItem> getItems();
 	public Long getTotalHits();
-	public Integer getFromIdx();
+	public Long getFromIdx();
 	public Boolean getIsSuccessful();
 	
 }

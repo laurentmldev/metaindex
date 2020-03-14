@@ -21,7 +21,7 @@ import metaindex.data.userprofile.IUserProfileData.USER_CATALOG_ACCESSRIGHTS;
 import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
 import toolbox.database.sql.SQLDataSource;
 import toolbox.database.sql.SQLPopulateStmt;
-import toolbox.database.sql.SQLReadStmt;
+import toolbox.database.sql.SQLReadStreamStmt;
 import toolbox.exceptions.DataProcessException;
 
 class PopulateUserCatalogsAccessRights extends SQLPopulateStmt<IUserProfileData>   {

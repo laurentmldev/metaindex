@@ -49,6 +49,7 @@ import toolbox.exceptions.DataProcessException;
 import toolbox.utils.BasicPair;
 import toolbox.utils.IPair;
 import toolbox.utils.IStreamHandler;
+import toolbox.utils.StreamHandler;
 
 @Controller
 public class WsControllerItem extends AMxWSController {
@@ -61,11 +62,6 @@ public class WsControllerItem extends AMxWSController {
 		super(messageSender);		
 	}		
 	
-	private class ItemsHandler implements IStreamHandler<DbSearchResult> {
-		List<DbSearchResult> _res = null;
-		public ItemsHandler(List<DbSearchResult> result) { _res=result;}
-		@Override public void handle(List<DbSearchResult> d) { _res.addAll(d); }				
-	}
 		
 	private IDbItem getDocumentContents(IUserProfileData user,String documentId) {
 		
@@ -75,12 +71,12 @@ public class WsControllerItem extends AMxWSController {
 		try {
 			
 			Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
-					.getLoadFromDbStmt(user.getCurrentCatalog(),
+					.getLoadDocsFromDbStmt(user.getCurrentCatalog(),
 					    				0, // offset
 					    				1, // nb docs
 					    				"_id:"+documentId,
 					    				preFilters,							    				
-					    				sortByFieldName).execute(new ItemsHandler(results));
+					    				sortByFieldName).execute(new StreamHandler<DbSearchResult>(results));
 			
 			if (results.size()!=1 || results.get(0).getItems().size()!=1) { 
 				return null; 
@@ -152,12 +148,12 @@ public class WsControllerItem extends AMxWSController {
 			List<DbSearchResult> results = new ArrayList<>();
 			
 			Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
-							.getLoadFromDbStmt(user.getCurrentCatalog(),
+							.getLoadDocsFromDbStmt(user.getCurrentCatalog(),
 							    				requestMsg.getFromIdx(), 
 							    				requestMsg.getSize(),
 							    				requestMsg.getQuery(),
 							    				preFilters,							    				
-							    				sortByFieldName).execute(new ItemsHandler(results));
+							    				sortByFieldName).execute(new StreamHandler<DbSearchResult>(results));
     		
     		answer.setIsSuccess(true);
     		// seems to return null value when 0 hits
@@ -360,12 +356,12 @@ public class WsControllerItem extends AMxWSController {
     		while (lastResultsize==MAX_ELASTIC_SEARCH_RESULT_SIZE) {
     			List<DbSearchResult> results = new ArrayList<>(); 
     			Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
-							.getLoadFromDbStmt(user.getCurrentCatalog(),
+							.getLoadDocsFromDbStmt(user.getCurrentCatalog(),
 									fromIdx, 
 									size,
 				    				requestMsg.getQuery(),
 				    				preFilters,
-				    				new ArrayList< IPair<String,SORTING_ORDER> >()).execute(new ItemsHandler(results));
+				    				new ArrayList< IPair<String,SORTING_ORDER> >()).execute(new StreamHandler<DbSearchResult>(results));
     		
     			// only one query --> only one result
     			assert(results.size()==1);

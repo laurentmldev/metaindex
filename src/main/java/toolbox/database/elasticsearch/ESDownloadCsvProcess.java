@@ -14,39 +14,25 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.elasticsearch.action.bulk.BulkItemResponse;
-import org.elasticsearch.action.bulk.BulkProcessor;
-import org.elasticsearch.action.bulk.BulkRequest;
-import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.delete.DeleteRequest;
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.update.UpdateRequest;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.common.unit.TimeValue;
 
 import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.commons.globals.Globals;
-import metaindex.data.term.ICatalogTerm;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
 import toolbox.database.DbSearchResult;
 import toolbox.database.IDbItem;
 import toolbox.database.IDbSearchResult.SORTING_ORDER;
-import toolbox.database.elasticsearch.ESDataSource;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.AProcessingTask;
 import toolbox.utils.IPair;
-import toolbox.utils.parsers.ACsvParser;
+import toolbox.utils.IStreamHandler;
 import toolbox.utils.parsers.CsvDumper;
 
 public class ESDownloadCsvProcess extends AProcessingTask   {
-
-	private static final Integer RETRIEVALS_SIZE = 1000;
 	
 	private Log log = LogFactory.getLog(Catalog.class);
 	
@@ -57,7 +43,7 @@ public class ESDownloadCsvProcess extends AProcessingTask   {
 	private ICatalog _catalog; 
 	private String _targeFileName;
 
-	private Integer _fromIndex=0;
+	private Long _fromIndex=0L;
 	private String _query="";
 	private List<String> _csvColsList=new ArrayList<>();
 	private List<String> _preFilters=new ArrayList<>();
@@ -65,13 +51,15 @@ public class ESDownloadCsvProcess extends AProcessingTask   {
 	
 	private CsvDumper<IDbItem> _csvDump=null;
 	
+	private Boolean _csvDataGenerated = false;
+	 
 	public ESDownloadCsvProcess(IUserProfileData u, 
 						 String name, 
 						 String targeFileName,
 						 List<String> csvColsList,
-						 Integer maxNbItems,
+						 Long maxNbItems,
 						 ICatalog c,
-						 Integer fromIndex,
+						 Long fromIndex,
 						 String query,
 						 List<String> preFilters,
 						 List< IPair<String,SORTING_ORDER> > sortingOrder,
@@ -87,8 +75,9 @@ public class ESDownloadCsvProcess extends AProcessingTask   {
 		this.setPreFilters(preFilters);
 		this.setSortByFieldName(sortingOrder);
 		
-		this.addObserver(u);
-		
+		// progres messages will be sent by the CSV-Dump task
+		// rather by than by the DB-extract task
+		//this.addObserver(u);		
 	}
 	
 	
@@ -107,54 +96,49 @@ public class ESDownloadCsvProcess extends AProcessingTask   {
 	@Override
 	public void run()  { 
 		
-		getActiveUser().sendGuiProgressMessage(
-    			getId(),
-    			getActiveUser().getText("Items.serverside.csvdownload.progress", getName()),
-    			AProcessingTask.pourcentage(getProcessedNbData(),getTargetNbData()));
-		
-		while (!this.isAllDataProcessed()) {
-			try { 
-				
-				List<DbSearchResult> results = new ArrayList<>();
-				log.error("#########@ TODO");
-				/*
-				Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
-						.getLoadFromDbStmt(this.getCatalog(),
-						    				this.getFromIndex(), 
-						    				RETRIEVALS_SIZE,
-						    				this.getQuery(),
-						    				this.getPreFilters(),							    				
-						    				this.getSortByFieldName()).execute();
-				*/
-				// seems to return null value when 0 hits
-	    		Long totalHits = results.get(0).getTotalHits();
-	    		if (totalHits==null) { 
-	    			log.error("No Hits for given CSV-dump request");
-	    			break;
-	    		}
-	    		this.setTargetNbData(totalHits);
-	    		List<IDbItem> items = results.get(0).getItems();
-	    		this.addReceivedNbData(new Long(items.size()));
-	    		this.setFromIndex(this.getFromIndex()+items.size());
+		try { 
+			
+			_csvDump=new CsvDumper<IDbItem>(this.getActiveUser(),
+					this.getName()+":CsvGenerator",
+					this.getTargetNbData(),
+					this.getCsvColsList(),
+					_timestamp,
+					this.getTargeFileName());
+			_csvDump.start();
 
-	    		if (_csvDump==null) { 
-	    			_csvDump=new CsvDumper<IDbItem>(this.getActiveUser(),
-	    								this.getName()+":CsvGenerator",
-	    								this.getTargetNbData(),
-	    								this.getCsvColsList(),
-	    								_timestamp,
-	    								this.getTargeFileName());
-	    			_csvDump.start();
-	    		}	    		
-	    		_csvDump.postDataToDump(items);
-	    		
-	    		this.addProcessedNbData(new Long(items.size()));
-	    		
-	    		
-			} catch (DataProcessException | InterruptedException e) { 
-				e.printStackTrace(); 
-				break;
-			}
+			class CsvDumpForwarder implements IStreamHandler<DbSearchResult> {
+				@Override public void handle(List<DbSearchResult> loadedDocsResults) throws InterruptedException {
+					if (loadedDocsResults.size()>1) {
+						log.warn("only one dbresult expected for thus usecase, got "+loadedDocsResults.size());						
+					}
+					DbSearchResult loadedResult = loadedDocsResults.get(0);
+					
+					// seems to return null value when 0 hits
+		    		Long totalHits = loadedResult.getTotalHits();
+		    		if (totalHits==null) { 
+		    			log.error("No Hits for given CSV-dump request");			    			
+		    		}
+		    		_csvDump.setTargetNbData(totalHits);
+		    		setTargetNbData(totalHits);
+		    		List<IDbItem> items = loadedResult.getItems();
+		    		addReceivedNbData(new Long(items.size()));
+		    		_csvDump.postDataToDump(items);			    		
+		    		addProcessedNbData(new Long(items.size()));						
+			}}
+			
+			Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
+					.getLoadDocsStreamFromDbStmt(this.getCatalog(),
+					    				this.getFromIndex(), 
+					    				this.getTargetNbData(),
+					    				this.getQuery(),
+					    				this.getPreFilters(),							    				
+					    				this.getSortByFieldName()).execute(new CsvDumpForwarder());
+			
+			
+    		
+    		
+		} catch (DataProcessException e) { 
+			e.printStackTrace(); 				
 		}
 		
 		stop();
@@ -169,6 +153,10 @@ public class ESDownloadCsvProcess extends AProcessingTask   {
 	public void stop() {
 		
 		try {
+			
+			while (!this.isAllDataProcessed()) {
+				Thread.sleep(200);
+			}
 			_stoppingProcessingLock.acquire();
 			if (_csvDump!=null) { _csvDump.stop(); }
 			
@@ -182,11 +170,9 @@ public class ESDownloadCsvProcess extends AProcessingTask   {
 				// notify active user that its processing finished
 				getActiveUser().sendGuiSuccessMessage(getActiveUser().getText("Items.serverside.csvdownload.success", 
 																				getName(),
-																				this.getProcessedNbData().toString()));								
+																				this.getProcessedNbData().toString()));
+				_csvDataGenerated=true;
 			}
-			
-			// notify all users that some contents changed
-			getActiveUser().notifyCatalogContentsChanged(CATALOG_MODIF_TYPE.DOCS_LIST, this.getProcessedNbData());			
 			
 			_stoppingProcessingLock.release();
 		} catch (InterruptedException e) {
@@ -195,21 +181,11 @@ public class ESDownloadCsvProcess extends AProcessingTask   {
 			
 		}
 		
-		getActiveUser().sendGuiProgressMessage(
-    			getId(),
-    			getActiveUser().getText("Items.serverside.bulkprocess.progress", getName()),
-    			AProcessingTask.pourcentage(getProcessedNbData(), getTargetNbData()), false /*processing ended*/);
-		
 		getActiveUser().removeProccessingTask(this.getId());
 	}
 	@Override
 	public void abort() {
 		_csvDump.abort();			
-		
-		getActiveUser().sendGuiProgressMessage(
-    			getId(),
-    			getActiveUser().getText("Items.serverside.bulkprocess.progress", getName()),
-    			AProcessingTask.pourcentage(getProcessedNbData(), getTargetNbData()), false /*processing ended*/);
 		
 		getActiveUser().removeProccessingTask(this.getId());
 	}
@@ -225,12 +201,12 @@ public class ESDownloadCsvProcess extends AProcessingTask   {
 	}
 
 	
-	public Integer getFromIndex() {
+	public Long getFromIndex() {
 		return _fromIndex;
 	}
 
 
-	public void setFromIndex(Integer _fromIndex) {
+	public void setFromIndex(Long _fromIndex) {
 		this._fromIndex = _fromIndex;
 	}
 
@@ -282,6 +258,6 @@ public class ESDownloadCsvProcess extends AProcessingTask   {
 		this._csvColsList = _csvColsList;
 	}
 
-	
+	public Boolean isCsvDataGenerated() { return _csvDataGenerated; }
 
 };

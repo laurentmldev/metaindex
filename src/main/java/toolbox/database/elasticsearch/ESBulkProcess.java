@@ -278,7 +278,7 @@ public class ESBulkProcess extends AProcessingTask   {
 			
 			// notify all users that some contents changed
 			getActiveUser().notifyCatalogContentsChanged(CATALOG_MODIF_TYPE.DOCS_LIST, this.getProcessedNbData());			
-			
+			joinRunnerThread();
 			_stoppingProcessingLock.release();
 		} catch (InterruptedException | DataProcessException e) {
 			e.printStackTrace();
