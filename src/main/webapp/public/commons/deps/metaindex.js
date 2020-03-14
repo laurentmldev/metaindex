@@ -277,7 +277,6 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			// FAILURE|MAINTENANCE|STOPPED|RUNNING			
 			myself._callback_ServerHeartbeatEvent(parsedMsg.applicationStatus);			
 		}
-		console.log("MxAPI Received [Server Heartbeat] : '"+curApplicationStatus+"'\n"+parsedMsg.count);
 		if (myself._callback_ServerHeartbeatEvent_debug==true) {
 			console.log("MxAPI Received [Server Heartbeat] : '"+curApplicationStatus+"'\n"+parsedMsg.count);
 		}

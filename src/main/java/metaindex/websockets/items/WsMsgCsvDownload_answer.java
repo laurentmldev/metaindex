@@ -24,6 +24,7 @@ public class WsMsgCsvDownload_answer implements IWsMsg_answer {
 	private String _csvFileUrl = "";
 	private String _csvFileName = "";
 	private Integer _requestId=0;
+	private Double _csvFileSizeMB=0.0;
 
 	public WsMsgCsvDownload_answer(WsMsgCsvDownload_request request) {
 		this.setRequestId(request.getRequestId());
@@ -47,6 +48,12 @@ public class WsMsgCsvDownload_answer implements IWsMsg_answer {
 	}
 	public void setCsvFileName(String _csvFileName) {
 		this._csvFileName = _csvFileName;
+	}
+	public Double getCsvFileSizeMB() {
+		return _csvFileSizeMB;
+	}
+	public void setCsvFileSizeMB(Double csvFileSizeMB) {
+		this._csvFileSizeMB = csvFileSizeMB;
 	}
 	
 }

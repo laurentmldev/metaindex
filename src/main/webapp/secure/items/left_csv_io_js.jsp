@@ -190,6 +190,7 @@ function _buildCsvDownloadColumnsTable(csvColsTable) {
 		checkBox.classList.add("_csvColCheck_");
 		colSelected.appendChild(checkBox);
 		checkBox.termName=termName;
+		checkBox.checked=true;
 		// term Name
 		let colName=document.createElement("td");
 		newRow.appendChild(colName);
@@ -207,6 +208,7 @@ function _buildCsvDownloadColumnsTable(csvColsTable) {
 			curCheckBox.checked=mainCheckBox.checked;		
 		}
 	}
+	mainCheckBox.checked=true;
 }
 
 MxGuiLeftBar.showDownloadCsvPrevisu=function() {

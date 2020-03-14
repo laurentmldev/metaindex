@@ -129,7 +129,7 @@ function ws_handlers_requestItemsSearch(query,selectedFiltersNames,sortByFieldNa
 		 MxGuiCards.deselectAll();
 		 MxGuiDetails.setNbMatchingItems(itemsAnswerMsg.totalHits);
 		 MxGuiDetails.setNbTotalItems(itemsAnswerMsg.totalItems);
-		 
+		 MxGuiLeftBar.setNbMatchingItems(itemsAnswerMsg.totalHits);
 		 if (itemsAnswerMsg.fromIdx==0) { MxGuiCards.clearCards(); }
 		 
 		 for (var idx=0;idx<itemsAnswerMsg.items.length;idx++) {
@@ -190,10 +190,9 @@ function ws_handlers_requestUploadCsvFile(fileHandle,selectedCsvColsDef) {
 function ws_handlers_requestDownloadCsvFile(selectedTermsList,query,selectedFiltersNames,sortByFieldName,reversedSortOrder) {
 	
 	 retrieveCsvSuccess=function(itemsAnswerMsg) {
-		footer_showAlert(SUCCESS, "<s:text name="Items.downloadItems.csvFileReady" /> : <a href='"+itemsAnswerMsg.csvFileUrl+"' "
+		footer_showAlert(SUCCESS, "<s:text name="Items.downloadItems.csvFileReady" /> : <a target='_blank' href='"+itemsAnswerMsg.csvFileUrl+"' "
 				+" title='<s:text name="Items.downloadItems.csvFileReady.title" />'"
-				+">"+itemsAnswerMsg.csvFileName+"</a>","",999999999);
-		
+				+">"+itemsAnswerMsg.csvFileName+"</a> ("+Math.round(itemsAnswerMsg.csvFileSizeMB*1000)/1000+"MB)","",999999999);						
 	 }
 	
 	 retrieveCsvError=function(msg) { footer_showAlert(ERROR, msg.rejectMessage); }

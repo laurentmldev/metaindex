@@ -110,16 +110,20 @@
 	 		  </label>
 	 		  
 	 		  <div id="csv_contents_previsu_body_download" style="display:none">
-	 		  		 
-	 		  		 <table style="margin-top:1rem;margin-left:2rem;" class="_csv_columns_tbl_">
-	 		  		 	<tr><th style="padding-right:1rem;">
-	 		  		 		<input class="_global_checkbox_" type="checkbox" /></th><th>Catalog Field</th> 
-	 		  		 	</tr>
-	 		  		 </table>
+	 		  	 
+ 	 		  	<s:text name="Items.currentSearch" /> : <span id="MxGui.left.csvdownload.nbMatchDocs"></span>  <s:property value='currentUserProfile.catalogVocabulary.itemsCap'/>
+ 		  			
+ 		  		 
+ 		  		 <hr/>
+ 		  		 <table style="margin-top:1rem;margin-left:2rem;" class="_csv_columns_tbl_">
+ 		  		 	<tr><th style="padding-right:1rem;">
+ 		  		 		<input class="_global_checkbox_" type="checkbox" /></th><th><s:text name="Items.downloadItems.csvSelectedCols" /></th> 
+ 		  		 	</tr>
+ 		  		 </table>
 				</div>
 				<div id="csv_contents_previsu_download_footer" style="display:none">
 	 		  		 <label class="_downloadBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button"  >
-	 		  				<i class="fas fa-download fa-sm text-white" style="margin-right:1em"></i><s:text name="global.go"></s:text>
+	 		  				<i class="fas fa-download fa-sm text-white" style="margin-right:1em"></i><s:text name="Items.downloadItems.generate"></s:text>
 	 		  		</label>
 				</div>
 	 		 
@@ -282,6 +286,10 @@ MxGuiLeftBar.getFiltersInsertSpot=function() {
 MxGuiLeftBar.buildNewFilter=left_buildNewFilter;
 MxGuiLeftBar.openFiltersArea=function() {
 	document.getElementById('leftbar_filters_list').querySelector("._list_").classList.add("show");
+}
+MxGuiLeftBar.setNbMatchingItems=function(nbMatchingItems) {
+	let nbMatchNode=document.getElementById('MxGui.left.csvdownload.nbMatchDocs');	 
+	 nbMatchNode.innerHTML=nbMatchingItems;	 
 }
 
 function _left_build_newitem_form_field_desc(termId,fieldName,termDesc,catalogDesc) {

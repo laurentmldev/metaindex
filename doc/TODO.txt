@@ -9,6 +9,8 @@ deployement test scenario
 
 #22 import data as CSV
 
+remove tmp files older than 10min
+
 #8 prepare demo data, catalog/user present by default
 	
 #15 adapt GUI 
@@ -46,7 +48,7 @@ search on accentuated characters imported from UTF-16 does not seem to work
 
 Backlog:
 --------
-
+- websocket connection lost when 'save as...' window open ?
 - detect when same user logged from 2 different hosts : TO BE TESTED
 - when entering edit mode, shall stay in current tab
 - styling dropdowns for sorting choices

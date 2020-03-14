@@ -46,6 +46,7 @@ import toolbox.database.elasticsearch.ESDataSource;
 import toolbox.database.elasticsearch.ESDownloadCsvProcess;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.BasicPair;
+import toolbox.utils.FileSystemUtils;
 import toolbox.utils.IPair;
 import toolbox.utils.IProcessingTask;
 import toolbox.utils.StrTools;
@@ -127,6 +128,7 @@ public class WsControllerItemsCsvDownload extends AMxWSController {
 			String targetFileUri=Globals.Get().getWebappsTmpUrl()+targetFileBasename;
 			answer.setCsvFileUrl(targetFileUri);
 			answer.setCsvFileName(targetFileBasename);
+			answer.setCsvFileSizeMB(new Double(FileSystemUtils.getTotalSizeBytes(targetFileFsPath)/1000000.0));
     		this.messageSender.convertAndSendToUser(
     				headerAccessor.getUser().getName(),
     				"/queue/download_items_csv_response", 
