@@ -16,7 +16,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 /**
  * Gets an auto-refresh mechanism, typically monitoring DB contents for reload when changed
- * Intended to be used with PeriodicProcessMonitor object.
+ * Intended to be used with CatalogPeriodicDbMonitor object.
  * @author laurentml
  *
  */
@@ -26,7 +26,7 @@ public interface IPeriodicProcess extends IIdentifiable<Integer>,ILockable {
 	public Boolean shallBeProcessed(Date testedUpdateDate);
 	/**
 	 * Update contents of this object only if needed (depending on what returns shallBeRefreshed() method).
-	 * When invoked, this object has already been acquired by the PeriodicProcessMonitor
+	 * When invoked, this object has already been acquired by the CatalogPeriodicDbMonitor
 	 * @return true if contents actually refreshed, false otherwise
 	 * @throws DataProcessException
 	 */
@@ -34,7 +34,7 @@ public interface IPeriodicProcess extends IIdentifiable<Integer>,ILockable {
 	public Integer getPeriodicProcessPeriodSec();
 	
 	/**
-	 * Called by PeriodicProcessMonitor when doPeriodicProcess returns true;
+	 * Called by CatalogPeriodicDbMonitor when doPeriodicProcess returns true;
 	 * @return
 	 */
 	public String getDetailsStr();

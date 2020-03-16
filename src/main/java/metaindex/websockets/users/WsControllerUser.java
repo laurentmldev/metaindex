@@ -22,12 +22,12 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
+import metaindex.app.periodic.statistics.catalog.SetUserCustoCatalogMxStat;
+import metaindex.app.periodic.statistics.user.ErrorOccuredMxStat;
+import metaindex.app.periodic.statistics.user.LoginUserMxStat;
+import metaindex.app.periodic.statistics.user.SetPrefUserMxStat;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.commons.globals.Globals;
-import metaindex.data.commons.statistics.user.ErrorOccuredMxStat;
-import metaindex.data.commons.statistics.user.LoginUserMxStat;
-import metaindex.data.commons.statistics.user.SetPrefUserMxStat;
-import metaindex.data.commons.statistics.catalog.SetUserCustoCatalogMxStat;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.UserProfileData;
 import metaindex.websockets.commons.AMxWSController;

@@ -26,7 +26,6 @@ remove tmp files older than 10min
 Priority 2:
 -----------
 
-clean periodically files older that x days
 renaming a perspective actually duplicates it
 search on accentuated characters imported from UTF-16 does not seem to work
 #19 send email to users and admin when useful

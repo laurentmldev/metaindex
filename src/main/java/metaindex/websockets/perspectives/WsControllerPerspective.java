@@ -20,9 +20,9 @@ import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
 import metaindex.data.commons.globals.Globals;
-import metaindex.data.commons.statistics.catalog.DeletePerspectiveCatalogMxStat;
-import metaindex.data.commons.statistics.catalog.UpdatePerspectiveCatalogMxStat;
-import metaindex.data.commons.statistics.user.ErrorOccuredMxStat;
+import metaindex.app.periodic.statistics.catalog.DeletePerspectiveCatalogMxStat;
+import metaindex.app.periodic.statistics.catalog.UpdatePerspectiveCatalogMxStat;
+import metaindex.app.periodic.statistics.user.ErrorOccuredMxStat;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.websockets.commons.AMxWSController;

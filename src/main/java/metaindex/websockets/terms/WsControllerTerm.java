@@ -27,10 +27,10 @@ import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
 import metaindex.data.commons.globals.Globals;
-import metaindex.data.commons.statistics.terms.CreateTermMxStat;
-import metaindex.data.commons.statistics.terms.UpdateLexicTermMxStat;
-import metaindex.data.commons.statistics.terms.UpdateTermMxStat;
-import metaindex.data.commons.statistics.user.ErrorOccuredMxStat;
+import metaindex.app.periodic.statistics.terms.CreateTermMxStat;
+import metaindex.app.periodic.statistics.terms.UpdateLexicTermMxStat;
+import metaindex.app.periodic.statistics.terms.UpdateTermMxStat;
+import metaindex.app.periodic.statistics.user.ErrorOccuredMxStat;
 import metaindex.data.catalog.CatalogVocabularySet;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.term.CatalogTerm;

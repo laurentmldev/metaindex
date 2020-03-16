@@ -35,7 +35,7 @@ import metaindex.data.commons.globals.guilanguage.GuiLanguagesManager;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguagesManager;
 import metaindex.data.commons.globals.guitheme.GuiThemesManager;
 import metaindex.data.commons.globals.guitheme.IGuiThemesManager;
-import metaindex.data.commons.statistics.MxStatisticsManager;
+import metaindex.app.periodic.statistics.MxStatisticsManager;
 import metaindex.data.catalog.CatalogsManager;
 import metaindex.data.catalog.ICatalogsManager;
 import metaindex.data.userprofile.IUsersManager;

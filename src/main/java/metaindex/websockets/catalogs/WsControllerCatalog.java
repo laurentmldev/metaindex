@@ -26,12 +26,12 @@ import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
 import metaindex.data.commons.globals.Globals;
-import metaindex.data.commons.statistics.catalog.CreateCatalogMxStat;
-import metaindex.data.commons.statistics.catalog.DeleteCatalogMxStat;
-import metaindex.data.commons.statistics.catalog.SetCustoCatalogMxStat;
-import metaindex.data.commons.statistics.catalog.SetUserCustoCatalogMxStat;
-import metaindex.data.commons.statistics.catalog.UpdateLexicCatalogMxStat;
-import metaindex.data.commons.statistics.user.ErrorOccuredMxStat;
+import metaindex.app.periodic.statistics.catalog.CreateCatalogMxStat;
+import metaindex.app.periodic.statistics.catalog.DeleteCatalogMxStat;
+import metaindex.app.periodic.statistics.catalog.SetCustoCatalogMxStat;
+import metaindex.app.periodic.statistics.catalog.SetUserCustoCatalogMxStat;
+import metaindex.app.periodic.statistics.catalog.UpdateLexicCatalogMxStat;
+import metaindex.app.periodic.statistics.user.ErrorOccuredMxStat;
 import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.CatalogVocabularySet;
 import metaindex.data.catalog.ICatalog;

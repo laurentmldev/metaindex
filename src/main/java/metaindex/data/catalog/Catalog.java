@@ -25,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.ftpserver.ftplet.FtpException;
 
 import metaindex.data.filter.IFilter;
+import metaindex.app.periodic.db.CatalogPeriodicDbMonitor;
 import metaindex.data.commons.globals.Globals;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.perspective.ICatalogPerspective;
@@ -44,7 +45,7 @@ public class Catalog implements ICatalog {
 	public static final Integer DEFAULT_QUOTA_DISCSPACEBYTES = 0;
 	private Log log = LogFactory.getLog(Catalog.class);
 	
-	private PeriodicProcessMonitor _dbAutoRefreshProcessing=new PeriodicProcessMonitor(this);
+	private PeriodicProcessMonitor _dbAutoRefreshProcessing=new CatalogPeriodicDbMonitor(this);
 	private Semaphore _catalogLock = new Semaphore(1,true);
 	public void acquireLock() throws InterruptedException { _catalogLock.acquire(); }
 	public void releaseLock() { _catalogLock.release(); }
