@@ -33,11 +33,11 @@ import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.common.unit.TimeValue;
 
+import metaindex.app.control.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
 import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.userprofile.IUserProfileData;
-import metaindex.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
 import toolbox.database.IDbItem;
 import toolbox.database.elasticsearch.ESDataSource;
 import toolbox.exceptions.DataProcessException;

@@ -19,9 +19,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import metaindex.app.control.websockets.items.WsControllerItem;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.commons.globals.Globals;
-import metaindex.websockets.items.WsControllerItem;
 import toolbox.exceptions.DataProcessException;
 
 public class CatalogTerm implements ICatalogTerm {
