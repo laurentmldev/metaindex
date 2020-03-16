@@ -1,4 +1,4 @@
-package metaindex.data.commons.globals;
+package metaindex.app;
 
 /*
 GNU GENERAL PUBLIC LICENSE

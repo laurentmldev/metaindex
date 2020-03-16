@@ -29,8 +29,8 @@ import org.apache.ftpserver.usermanager.impl.BaseUser;
 import org.apache.ftpserver.usermanager.impl.WritePermission;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import metaindex.app.Globals;
 import metaindex.data.catalog.ICatalog;
-import metaindex.data.commons.globals.Globals;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.IUserProfileData.USER_CATALOG_ACCESSRIGHTS;
 

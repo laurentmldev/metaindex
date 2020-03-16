@@ -19,7 +19,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
-import metaindex.data.commons.globals.Globals;
+import metaindex.app.Globals;
 import metaindex.app.control.websockets.commons.AMxWSController;
 import metaindex.app.periodic.statistics.catalog.DeletePerspectiveCatalogMxStat;
 import metaindex.app.periodic.statistics.catalog.UpdatePerspectiveCatalogMxStat;

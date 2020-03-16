@@ -6,7 +6,7 @@ import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import metaindex.data.commons.globals.Globals;
+import metaindex.app.Globals;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.statistics.ASimpleStatisticsManager;
 

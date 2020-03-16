@@ -24,8 +24,8 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.Preparable;
 
 import metaindex.data.filter.IFilter;
-import metaindex.data.commons.globals.Globals;
-import metaindex.data.commons.globals.Globals.APPLICATION_STATUS;
+import metaindex.app.Globals;
+import metaindex.app.Globals.APPLICATION_STATUS;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.IUserProfileData.USER_ROLE;

@@ -18,8 +18,8 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import metaindex.app.Globals;
 import metaindex.data.catalog.Catalog;
-import metaindex.data.commons.globals.Globals;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.commons.globals.guitheme.IGuiTheme;
 import toolbox.exceptions.DataProcessException;

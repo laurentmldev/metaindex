@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import metaindex.data.commons.globals.Globals;
+import metaindex.app.Globals;
 
 public abstract class AVocabularySet implements IVocabularySet {
 	

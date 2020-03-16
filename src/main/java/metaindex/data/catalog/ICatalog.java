@@ -33,7 +33,7 @@ import toolbox.utils.ILockable;
  * @author laurent
  *
  */
-public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCustomParams, IPeriodicProcess {
+public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCustomParams,IPeriodicProcess {
 
 	/** get a string displaying Catalog current infos (for logs) */
 	public String getDetailsStr();
@@ -41,6 +41,7 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 	public void setId(Integer id);
 	public void setName(String shortname);
 	
+	public Date getLastUpdate();
 	public void setLastUpdate(Date timetampDate);
 		
 	/// get UserId for whom created it

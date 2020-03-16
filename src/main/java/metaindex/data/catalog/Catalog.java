@@ -25,8 +25,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.ftpserver.ftplet.FtpException;
 
 import metaindex.data.filter.IFilter;
-import metaindex.app.periodic.db.CatalogPeriodicDbMonitor;
-import metaindex.data.commons.globals.Globals;
+import metaindex.app.Globals;
+import metaindex.app.periodic.db.CatalogPeriodicDbReloader;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.perspective.ICatalogPerspective;
 import metaindex.data.term.ICatalogTerm;
@@ -39,20 +39,22 @@ import toolbox.utils.FileSystemUtils;
 
 public class Catalog implements ICatalog {
 
-	public static final Integer AUTOREFRESH_PERIOD_SEC=5;
 
+	public static final Integer AUTOREFRESH_PERIOD_SEC=5;
 	public static final Long DEFAULT_QUOTA_NBDOCS = 200L;
 	public static final Integer DEFAULT_QUOTA_DISCSPACEBYTES = 0;
 	private Log log = LogFactory.getLog(Catalog.class);
 	
-	private PeriodicProcessMonitor _dbAutoRefreshProcessing=new CatalogPeriodicDbMonitor(this);
+	private PeriodicProcessMonitor _dbAutoRefreshProcessing=new CatalogPeriodicDbReloader(this);
 	private Semaphore _catalogLock = new Semaphore(1,true);
 	public void acquireLock() throws InterruptedException { _catalogLock.acquire(); }
 	public void releaseLock() { _catalogLock.release(); }
 	
+	private Integer _autoRefreshPeriodSec=AUTOREFRESH_PERIOD_SEC;
+	private Date _lastUpdate=new Date(0);
+	
 	private Boolean _dbIndexFound=false;
 	
-	private Integer _autoRefreshPeriodSec=AUTOREFRESH_PERIOD_SEC;
 	
 	// from SQL DB
 	private Integer _id=0;
@@ -63,7 +65,7 @@ public class Catalog implements ICatalog {
 	private String _itemThumbnailUrlField="";
 	private String _urlPrefix="";
 	private String _perspectiveMatchField="";
-	private Date _lastUpdate=new Date(0);
+
 	
 	// Quota data
 	private Long _quotaNbDocs=DEFAULT_QUOTA_NBDOCS;
@@ -390,25 +392,6 @@ public class Catalog implements ICatalog {
 	public Map<String, ICatalogPerspective> getPerspectives() {
 		return _perspectives;
 	}
-	@Override
-	public void doPeriodicProcess() throws DataProcessException {
-		Date prevCurDate = this.getLastUpdate();
-		Boolean onlyIfDbcontentsUpdated=true;
-		List<ICatalog> list = new ArrayList<>();
-		list.add(this);		
-		Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getPopulateFromDefDbStmt(list,onlyIfDbcontentsUpdated).execute();
-		
-		// detect if contents actually changed
-		if (this.getLastUpdate().after(prevCurDate)) { log.info(this.getDetailsStr()); }
-		
-	}
-	@Override 
-	public Boolean shallBeProcessed(Date testedUpdateDate) { 
-		return this.getLastUpdate().before(testedUpdateDate); 
-	}
-	
-	@Override
-	public Integer getPeriodicProcessPeriodSec() { return _autoRefreshPeriodSec; }
 	
 	@Override
 	public void loadStatsFromDb() throws DataProcessException {
@@ -629,14 +612,37 @@ public class Catalog implements ICatalog {
 	public Boolean checkQuotasDisckSpaceOk() {
 		return getDiscSpaceUseBytes()<this.getQuotaFtpDiscSpaceBytes();
 	}
+
 	@Override
 	public Date getLastUpdate() {
 		return _lastUpdate;
 	}
+	
 	@Override
 	public void setLastUpdate(Date modifDate) {
 		_lastUpdate=modifDate;		
 	}
+	
+	@Override
+	public void doPeriodicProcess() throws DataProcessException {
+		Date prevCurDate = this.getLastUpdate();
+		Boolean onlyIfDbcontentsUpdated=true;
+		List<ICatalog> list = new ArrayList<>();
+		list.add(this);		
+		Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getPopulateFromDefDbStmt(list,onlyIfDbcontentsUpdated).execute();
+		
+		// detect if contents actually changed
+		if (this.getLastUpdate().after(prevCurDate)) { log.info(this.getDetailsStr()); }
+		
+	}
+	@Override 
+	public Boolean shallBeProcessed(Date testedUpdateDate) { 
+		return this.getLastUpdate().before(testedUpdateDate); 
+	}
+
+	@Override
+	public Integer getPeriodicProcessPeriodSec() { return _autoRefreshPeriodSec; }
+
 
 	
 }

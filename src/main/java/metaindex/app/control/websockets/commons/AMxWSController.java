@@ -37,10 +37,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 //import com.sun.org.apache.xml.internal.security.utils.Base64;
 
+import metaindex.app.Globals;
+import metaindex.app.Globals.APPLICATION_STATUS;
 import metaindex.app.control.websockets.catalogs.WsControllerCatalog;
 import metaindex.data.catalog.ICatalog;
-import metaindex.data.commons.globals.Globals;
-import metaindex.data.commons.globals.Globals.APPLICATION_STATUS;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.IUserProfileData.USER_CATALOG_ACCESSRIGHTS;
 import metaindex.data.userprofile.IUserProfileData.USER_ROLE;

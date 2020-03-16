@@ -25,7 +25,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
-import metaindex.data.commons.globals.Globals;
+import metaindex.app.Globals;
 import metaindex.app.control.websockets.commons.AMxWSController;
 import metaindex.app.control.websockets.terms.WsControllerTerm;
 import metaindex.app.control.websockets.terms.WsMsgCreateTerm_request;

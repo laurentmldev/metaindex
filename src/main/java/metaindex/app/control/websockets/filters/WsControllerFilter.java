@@ -21,7 +21,7 @@ import org.springframework.stereotype.Controller;
 
 import metaindex.data.filter.Filter;
 import metaindex.data.filter.IFilter;
-import metaindex.data.commons.globals.Globals;
+import metaindex.app.Globals;
 import metaindex.app.control.websockets.commons.AMxWSController;
 import metaindex.app.periodic.statistics.filters.CreateFilterMxStat;
 import metaindex.app.periodic.statistics.filters.DeleteFilterMxStat;

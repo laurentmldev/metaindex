@@ -30,7 +30,7 @@ import org.springframework.stereotype.Controller;
 import metaindex.data.filter.IFilter;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.TERM_DATATYPE;
-import metaindex.data.commons.globals.Globals;
+import metaindex.app.Globals;
 import metaindex.app.control.websockets.commons.AMxWSController;
 import metaindex.app.control.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
 import metaindex.app.periodic.statistics.items.CreateItemMxStat;

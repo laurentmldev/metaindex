@@ -19,7 +19,7 @@ import java.util.concurrent.Semaphore;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import metaindex.data.commons.globals.Globals;
+import metaindex.app.Globals;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.commons.globals.guitheme.IGuiTheme;
 import toolbox.exceptions.DataProcessException;

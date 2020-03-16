@@ -1,9 +1,13 @@
 package metaindex.app.periodic.db;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import toolbox.utils.IPeriodicProcess;
+import metaindex.data.catalog.ICatalog;
 import toolbox.utils.PeriodicProcessMonitor;
 
 /*
@@ -22,12 +26,12 @@ See full version of LICENSE in <https://fsf.org/>
  * @author laurentml
  *
  */
-public class CatalogPeriodicDbMonitor extends PeriodicProcessMonitor {	
+public class CatalogPeriodicDbReloader extends PeriodicProcessMonitor {	
 	
-	private Log log = LogFactory.getLog(CatalogPeriodicDbMonitor.class);
+	private Log log = LogFactory.getLog(CatalogPeriodicDbReloader.class);
 	
-	public CatalogPeriodicDbMonitor(IPeriodicProcess obj) {
-		super(obj);	
+	public CatalogPeriodicDbReloader(ICatalog c) {
+		super(c);	
 	}
 	
 }

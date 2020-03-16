@@ -9,7 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.stereotype.Component;
 
-import metaindex.data.commons.globals.Globals;
+import metaindex.app.Globals;
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.exceptions.DataProcessException;
 

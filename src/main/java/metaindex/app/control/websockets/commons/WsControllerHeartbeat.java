@@ -17,8 +17,8 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 
+import metaindex.app.Globals;
 import metaindex.app.control.websockets.commons.AMxWSController;
-import metaindex.data.commons.globals.Globals;
 import toolbox.utils.IRunnable;
 
 @Controller

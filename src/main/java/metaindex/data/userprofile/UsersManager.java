@@ -17,8 +17,8 @@ import java.util.concurrent.Semaphore;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import metaindex.app.Globals;
 import metaindex.data.catalog.ICatalog;
-import metaindex.data.commons.globals.Globals;
 import toolbox.exceptions.DataProcessException;
 
 public class UsersManager implements IUsersManager {

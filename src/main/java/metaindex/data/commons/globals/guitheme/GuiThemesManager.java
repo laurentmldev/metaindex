@@ -15,7 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import metaindex.data.commons.globals.Globals;
+import metaindex.app.Globals;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.IStreamHandler;
 

@@ -25,10 +25,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.apache.commons.configuration2.PropertiesConfiguration;
 
 import metaindex.data.filter.IFilter;
-import metaindex.data.commons.globals.Globals;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.commons.globals.guitheme.GuiThemesManager;
 import metaindex.data.commons.globals.guitheme.IGuiTheme;
+import metaindex.app.Globals;
 import metaindex.app.control.websockets.users.WsControllerUser;
 import metaindex.app.control.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
 import metaindex.app.control.websockets.users.WsUserGuiMessageText.MESSAGE_CRITICITY;

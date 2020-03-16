@@ -22,6 +22,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
+import metaindex.app.Globals;
 import metaindex.app.control.websockets.catalogs.WsMsgCatalogContentsChanged_answer;
 import metaindex.app.control.websockets.commons.AMxWSController;
 import metaindex.app.control.websockets.users.WsMsgRegisterUser_answer;
@@ -32,7 +33,6 @@ import metaindex.app.periodic.statistics.user.ErrorOccuredMxStat;
 import metaindex.app.periodic.statistics.user.LoginUserMxStat;
 import metaindex.app.periodic.statistics.user.SetPrefUserMxStat;
 import metaindex.data.catalog.ICatalog;
-import metaindex.data.commons.globals.Globals;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.UserProfileData;
 import toolbox.exceptions.DataProcessException;

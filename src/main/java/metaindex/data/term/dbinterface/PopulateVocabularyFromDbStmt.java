@@ -23,9 +23,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import metaindex.app.Globals;
 import metaindex.data.catalog.CatalogsManager;
 import metaindex.data.catalog.ICatalog;
-import metaindex.data.commons.globals.Globals;
 import metaindex.data.term.CatalogTerm;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.TERM_DATATYPE;
