@@ -22,28 +22,28 @@
 </global-exception-mappings>
 
 		
-		<action name="welcome" class="metaindex.data.userprofile.beans.BeanProfile">
+		<action name="welcome" class="metaindex.app.beans.BeanProfile">
 			<result name="BeanProcess_SUCCESS" >/public/welcome.jsp</result>			
 		</action>
-		<action name="" class="metaindex.data.userprofile.beans.BeanProfile">
+		<action name="" class="metaindex.app.beans.BeanProfile">
 			<result name="BeanProcess_SUCCESS" >/public/login.jsp</result>			
 		</action>
-		<action name="loginform" class="metaindex.data.userprofile.beans.BeanProfile">
+		<action name="loginform" class="metaindex.app.beans.BeanProfile">
 			<result name="BeanProcess_SUCCESS" >/public/login.jsp</result>  		
 		</action>  		
-		<action name="loginprocess" class="metaindex.data.userprofile.beans.BeanProfile">
+		<action name="loginprocess" class="metaindex.app.beans.BeanProfile">
 			<result name="BeanProcess_SUCCESS" >/secure/catalogs/main.jsp</result>  		
 		</action>  		
-		<action name="Catalogs" class="metaindex.data.userprofile.beans.BeanProfile">
+		<action name="Catalogs" class="metaindex.app.beans.BeanProfile">
 			<result name="BeanProcess_SUCCESS" >/secure/catalogs/main.jsp</result>  			
 		</action> 
-		<action name="Items" class="metaindex.data.userprofile.beans.BeanProfile">
+		<action name="Items" class="metaindex.app.beans.BeanProfile">
 			<result name="BeanProcess_SUCCESS" >/secure/items/main.jsp</result>  			
 		</action>
-		<action name="Statistics" class="metaindex.data.userprofile.beans.BeanProfile">
+		<action name="Statistics" class="metaindex.app.beans.BeanProfile">
 			<result name="BeanProcess_SUCCESS" >/secure/statistics/main.jsp</result>  			
 		</action> 
-		<action name="Files" class="metaindex.data.userprofile.beans.BeanProfile">
+		<action name="Files" class="metaindex.app.beans.BeanProfile">
 			<result name="BeanProcess_SUCCESS" >/secure/files/main.jsp</result>  			
 		</action> 
 		

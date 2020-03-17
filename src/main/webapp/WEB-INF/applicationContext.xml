@@ -18,7 +18,7 @@
    ">
       
     <!-- Annotation-based declaration of websockets -->  
-    <context:component-scan base-package="metaindex.websockets"/>
+    <context:component-scan base-package="metaindex.app.control.websockets"/>
       
  	<mvc:resources mapping="/media/**" location="/media/" />
  	<mvc:resources mapping="/public/**" location="/public/" />

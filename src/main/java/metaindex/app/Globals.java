@@ -35,6 +35,7 @@ import metaindex.data.commons.globals.guilanguage.GuiLanguagesManager;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguagesManager;
 import metaindex.data.commons.globals.guitheme.GuiThemesManager;
 import metaindex.data.commons.globals.guitheme.IGuiThemesManager;
+import metaindex.app.periodic.fs.MxTmpFolderMonitor;
 import metaindex.app.periodic.statistics.MxStatisticsManager;
 import metaindex.data.catalog.CatalogsManager;
 import metaindex.data.catalog.ICatalogsManager;
@@ -62,6 +63,7 @@ public class Globals {
 	public static Globals Get() { return _singleton; }
 	
 	private static IStatisticsManager _mxStats= new MxStatisticsManager();
+	private static MxTmpFolderMonitor _mxTmpFolderCleaner= new MxTmpFolderMonitor();
 	
 	/**
 	 * Prop value from config files.
@@ -95,7 +97,6 @@ public class Globals {
 	
 	// ------------------------
 	
-	// TODO move it into Metaindex 
 	public enum MX_PROCESSING_TYPE { UNKNOWN_PROCESSING,
 								CATALOG_UPLOAD_PROCESSING,
 								CATALOG_UPLOAD_DB_UPLOADING};
@@ -151,6 +152,11 @@ public class Globals {
 				+"/";		
 	}
 	public String getWebappsTmpUrl() { return getAppBaseUrl()+"/mxtmp/"; }
+	
+	/**
+	 * This is the main application initialisation function, called once at startup (i.e. at connection of first user)
+	 * @throws DataProcessException
+	 */
 	public void init() throws DataProcessException {
 		
 		log.info(getDetailsStr());
@@ -161,17 +167,7 @@ public class Globals {
 									 Integer.valueOf(GetMxProperty("mx.elk.port1")),
 									 Integer.valueOf(GetMxProperty("mx.elk.port2")),
 									 GetMxProperty("mx.elk.proto"));
-			/*
-			MysqlDataSource mysqlDS = new MysqlDataSource();
-			String sqlUrl="jdbc:mysql://"
-							+this.getConfig().getProperty("mx.sql.host")
-							+":"+this.getConfig().getProperty("mx.sql.port")
-							+"/"+this.getConfig().getProperty("mx.sql.dbname")
-							+"?useUnicode=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC";
-			mysqlDS.setURL(sqlUrl);
-			mysqlDS.setUser(this.getConfig().getProperty("mx.sql.user"));
-			mysqlDS.setPassword(this.getConfig().getProperty("mx.sql.password"));
-			*/
+
 			// using same SQL datasource then for users authentication
 			DataSource ds = (DataSource)ContextLoader.getCurrentWebApplicationContext().getBean(DB_DATASOURCE_SQL);
 			
@@ -190,6 +186,7 @@ public class Globals {
 			
 			// starting statistics manager 
 			_mxStats.start();
+			_mxTmpFolderCleaner.start();
 		}
 	}
 	public IGuiLanguagesManager getGuiLanguagesMgr() { return _guiLanguagesManager; }

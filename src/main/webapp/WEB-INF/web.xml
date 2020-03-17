@@ -74,7 +74,7 @@
 
 	
 	<listener>
-	    <listener-class>metaindex.app.SessionLogoutListener</listener-class>
+	    <listener-class>metaindex.app.session.SessionLogoutListener</listener-class>
 	</listener>
 	
  <!-- 

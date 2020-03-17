@@ -1,11 +1,13 @@
 package metaindex.app.periodic.fs;
 
+import java.io.File;
 import java.util.Date;
 import java.util.concurrent.Semaphore;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import metaindex.app.Globals;
 import metaindex.data.catalog.Catalog;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.IPeriodicProcess;
@@ -22,21 +24,28 @@ See full version of LICENSE in <https://fsf.org/>
 */
 
 /**
- * Cleaning Temp Folder from files older than x minutes
+ * Cleaning Tmp Folder from files older than x minutes
  * @author laurentml
  *
  */
-public class TempFolderCleaningProcess implements IPeriodicProcess {
+public class MxTmpFolderMonitor implements IPeriodicProcess {
 
-		private Log log = LogFactory.getLog(TempFolderCleaningProcess.class);
+		public static final Long TMP_FILE_TTL_SEC=600L;
+		
+		private Log log = LogFactory.getLog(MxTmpFolderMonitor.class);
 		public static final Integer AUTOREFRESH_PERIOD_SEC=5;
 		private Integer _autoRefreshPeriodSec=AUTOREFRESH_PERIOD_SEC;
 		
+		private PeriodicProcessMonitor _periodicCleanMonitor=new PeriodicProcessMonitor(this);
 		private Semaphore _tmpFsLock = new Semaphore(1,true);
 		public void acquireLock() throws InterruptedException { _tmpFsLock.acquire(); }
 		public void releaseLock() { _tmpFsLock.release(); }
 		private Date _lastUpdate=new Date(0);
 		
+		public void start() {
+			log.info("Starting tmp-files cleaner over '"+Globals.Get().getWebappsTmpFsPath()+"' (Tmp Files TTL = "+TMP_FILE_TTL_SEC+"s)");
+			_periodicCleanMonitor.start();				
+		}
 		@Override
 		public String getName() {
 			return "MX Temp Folder Cleaner";
@@ -59,10 +68,20 @@ public class TempFolderCleaningProcess implements IPeriodicProcess {
 
 		@Override
 		public void doPeriodicProcess() throws DataProcessException {
-			// TODO :
 			// scan tmp folder for files older than x minutes and remove them
-			log.info("CLeaning temp folder");
-			
+			Date now = new Date();
+			//log.info("CLeaning temp folder");
+			String webappsTmpFolderPath = Globals.Get().getWebappsTmpFsPath();
+			File tmpFolder = new File(webappsTmpFolderPath);
+			assert(tmpFolder.isDirectory());
+			for (File curFile : tmpFolder.listFiles()) {
+				Date fileTimestamp = new Date(curFile.lastModified());
+				if (now.getTime()-fileTimestamp.getTime() > TMP_FILE_TTL_SEC) {
+					Boolean rst = curFile.delete();
+					if (!rst) { log.info("Unable to remove old tmp file "+curFile.getName()); }
+					//log.info("cleaning old tmp file "+curFile.getName());
+				}				
+			}
 		}
 
 		@Override
