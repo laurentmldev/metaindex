@@ -2,6 +2,7 @@
 
 $ docker system prune --force --volumes
 $ docker images
+$ docker inspect <imgid> 
 # log to running container
 $ docker exec -it <container_id> bash
 
@@ -24,3 +25,7 @@ $ docker stats
 
 $ docker volume ls
 $ docker volume inspect <volum name> 
+
+
+# copy file from docker container to host
+docker cp <containerId>:/file/path/within/container /host/path/target

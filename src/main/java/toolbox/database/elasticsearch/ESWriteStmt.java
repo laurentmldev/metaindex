@@ -17,16 +17,16 @@ import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
 import org.elasticsearch.client.RequestOptions;
 
 import toolbox.database.IDatabaseWriteStmt;
-import toolbox.database.IDatasourcedStmt;
+import toolbox.database.IDataStmt;
 import toolbox.exceptions.DataProcessException;
 
 // no templatisation needed for ESWarite statement, so using Object as a Tdata template parameter
-public abstract class ESWriteStmt<T> implements IDatabaseWriteStmt<T>,IDatasourcedStmt<ESDataSource> {
+public abstract class ESWriteStmt<T> implements IDatabaseWriteStmt<T>,IDataStmt<ElasticSearchConnector> {
 
 	private static Integer ELASTIC_SEARCH_UPDATE_DELAY_SECONDS = 1;
-	private ESDataSource _datasource;
+	private ElasticSearchConnector _datasource;
 	
-	public ESWriteStmt(ESDataSource ds) {		
+	public ESWriteStmt(ElasticSearchConnector ds) {		
 		_datasource=ds; 
 	}
 	
@@ -36,11 +36,11 @@ public abstract class ESWriteStmt<T> implements IDatabaseWriteStmt<T>,IDatasourc
 	}
 	
 	@Override
-	public ESDataSource getDatasource() {
+	public ElasticSearchConnector getDataConnector() {
 		return _datasource;
 	}
 	
-	public static void waitUntilEsIndexRefreshed(String indexName, ESDataSource datasource) throws DataProcessException {
+	public static void waitUntilEsIndexRefreshed(String indexName, ElasticSearchConnector datasource) throws DataProcessException {
 		try {
 			// give time to ElasticSearch to update its state
 			Thread.sleep(ELASTIC_SEARCH_UPDATE_DELAY_SECONDS*1000);

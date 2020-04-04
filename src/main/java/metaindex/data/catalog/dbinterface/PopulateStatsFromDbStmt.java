@@ -23,7 +23,7 @@ import org.json.JSONObject;
 
 import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.ICatalog;
-import toolbox.database.elasticsearch.ESDataSource;
+import toolbox.database.elasticsearch.ElasticSearchConnector;
 import toolbox.database.elasticsearch.ESPopulateStmt;
 import toolbox.database.elasticsearch.ESReadStreamStmt;
 
@@ -37,7 +37,7 @@ class PopulateStatsFromDbStmt extends ESPopulateStmt<ICatalog>   {
 	
 	List<ICatalog> _data;
 	
-	public PopulateStatsFromDbStmt(List<ICatalog> d, ESDataSource ds) throws DataProcessException { 
+	public PopulateStatsFromDbStmt(List<ICatalog> d, ElasticSearchConnector ds) throws DataProcessException { 
 		super(ds);
 	
 		_data=d;
@@ -58,7 +58,7 @@ class PopulateStatsFromDbStmt extends ESPopulateStmt<ICatalog>   {
 	public void execute() throws DataProcessException {
 		try {
 			
-			Response response = this.getDatasource()
+			Response response = this.getDataConnector()
 								.getHighLevelClient().getLowLevelClient()
 								.performRequest(_request);
 			

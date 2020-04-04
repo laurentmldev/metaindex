@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import metaindex.data.term.ICatalogTerm;
-import toolbox.database.elasticsearch.ESDataSource;
+import toolbox.database.elasticsearch.ElasticSearchConnector;
 import toolbox.database.elasticsearch.ESWriteStmt;
 import toolbox.exceptions.DataProcessException;
 
@@ -22,7 +22,7 @@ import toolbox.exceptions.DataProcessException;
 class DeleteFieldFromEsDbStmt extends ESWriteStmt<ICatalogTerm>   {
 
 	List<ICatalogTerm> _data = new ArrayList<ICatalogTerm>();
-	public DeleteFieldFromEsDbStmt(List<ICatalogTerm> terms, ESDataSource ds) throws DataProcessException { 
+	public DeleteFieldFromEsDbStmt(List<ICatalogTerm> terms, ElasticSearchConnector ds) throws DataProcessException { 
 		super(ds);
 		_data.addAll(terms);
 		

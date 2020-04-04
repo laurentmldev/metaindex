@@ -17,9 +17,9 @@ import metaindex.data.catalog.ICatalog;
 import metaindex.data.term.ICatalogTerm;
 import toolbox.database.IDatabaseWriteStmt;
 import toolbox.database.elasticsearch.ESDataProcessException;
-import toolbox.database.elasticsearch.ESDataSource;
+import toolbox.database.elasticsearch.ElasticSearchConnector;
 import toolbox.database.sql.SQLDataProcessException;
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.exceptions.DataProcessException;
 
 class CreateTermIntoDbStmt implements IDatabaseWriteStmt<ICatalogTerm>   {
@@ -28,7 +28,7 @@ class CreateTermIntoDbStmt implements IDatabaseWriteStmt<ICatalogTerm>   {
 	
 	CreateFieldIntoEsDbStmt _esFieldDbStmt = null;
 	CreateTermIntoSqlDbStmt _sqlTermDbStmt = null;
-	public CreateTermIntoDbStmt(ICatalog c, List<ICatalogTerm> terms, SQLDataSource dsSql, ESDataSource dsEs) throws DataProcessException {
+	public CreateTermIntoDbStmt(ICatalog c, List<ICatalogTerm> terms, SQLDataConnector dsSql, ElasticSearchConnector dsEs) throws DataProcessException {
 		// create ES field if not already present
 		List<ICatalogTerm> termsWithoutESField = new ArrayList<>();
 		for (ICatalogTerm term : terms) {

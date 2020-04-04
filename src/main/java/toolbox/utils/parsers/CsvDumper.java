@@ -39,7 +39,7 @@ import metaindex.data.catalog.ICatalog;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.database.IDbItem;
-import toolbox.database.elasticsearch.ESDataSource;
+import toolbox.database.elasticsearch.ElasticSearchConnector;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.AProcessingTask;
 import toolbox.utils.IFieldValueMapObject;

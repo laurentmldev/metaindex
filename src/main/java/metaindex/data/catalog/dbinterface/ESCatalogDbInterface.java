@@ -10,7 +10,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
-import toolbox.database.elasticsearch.ESDataSource;
+import toolbox.database.elasticsearch.ElasticSearchConnector;
 import toolbox.database.elasticsearch.ESDatabaseInterface;
 import toolbox.database.elasticsearch.ESPopulateStmt;
 import toolbox.database.elasticsearch.ESReadStreamStmt;
@@ -28,13 +28,13 @@ import metaindex.data.term.dbinterface.LoadMappingFromDbStmt;
 public class ESCatalogDbInterface  extends ESDatabaseInterface<ICatalog> 
 {
 	
-	public ESCatalogDbInterface(ESDataSource ds) { 
+	public ESCatalogDbInterface(ElasticSearchConnector ds) { 
 		super(ds); 
 	}
 	
 	// --- load index mapping
 	public ESPopulateStmt<ICatalog> getLoadMappingFromDocsDbStmt(List<ICatalog> data) throws DataProcessException {
-		return new LoadMappingFromDbStmt(data, getDatasource());
+		return new LoadMappingFromDbStmt(data, getDataConnector());
 	}
 	public ESPopulateStmt<ICatalog> getLoadMappingFromDocsDbStmt(ICatalog data) throws DataProcessException {
 		List<ICatalog> list = new ArrayList<>();
@@ -44,7 +44,7 @@ public class ESCatalogDbInterface  extends ESDatabaseInterface<ICatalog>
 	
 	// --- load index stats	
 	public ESPopulateStmt<ICatalog> getLoadStatsFromDocsDbStmt(List<ICatalog> data) throws DataProcessException {
-		return new PopulateStatsFromDbStmt(data, getDatasource());
+		return new PopulateStatsFromDbStmt(data, getDataConnector());
 	}
 	public ESPopulateStmt<ICatalog> getLoadStatsFromDocsDbStmt(ICatalog data) throws DataProcessException {
 		List<ICatalog> list = new ArrayList<>();
@@ -54,7 +54,7 @@ public class ESCatalogDbInterface  extends ESDatabaseInterface<ICatalog>
 	
 	// --- create index
 	public ESWriteStmt<ICatalog> getCreateIndexIntoDocsDbStmt(List<ICatalog> data) throws DataProcessException {
-		return new CreateIndexIntoEsDbStmt(data, getDatasource());
+		return new CreateIndexIntoEsDbStmt(data, getDataConnector());
 	}
 	public ESWriteStmt<ICatalog> getCreateIndexIntoDocsDbStmt(ICatalog data) throws DataProcessException {
 		List<ICatalog> list = new ArrayList<>();
@@ -64,7 +64,7 @@ public class ESCatalogDbInterface  extends ESDatabaseInterface<ICatalog>
 	
 	// --- delete catalog
 	public ESWriteStmt<ICatalog> getDeleteFromDocsDbStmt(IUserProfileData activeUser,List<ICatalog> data) throws DataProcessException {
-		return new DeleteIndexFromESDbStmt(activeUser,data, getDatasource());
+		return new DeleteIndexFromESDbStmt(activeUser,data, getDataConnector());
 	}
 	public ESWriteStmt<ICatalog> getDeleteFromDocsDbStmt(IUserProfileData activeUser,ICatalog data) throws DataProcessException {
 		List<ICatalog> list = new ArrayList<>();

@@ -1,4 +1,4 @@
-
+### ELK Rest API ###
 
 ### create index 
 curl -XPUT 'http://localhost:9200/myindex?pretty'  --header "content-type: application/JSON"
@@ -10,6 +10,8 @@ curl -XDELETE 'http://localhost:9200/*?pretty'  --header "content-type: applicat
 ### get index details
 curl  -XGET http://metaindex.fr:9200/myindex?pretty
 
+### with anthentication
+curl -u <user>:<password> -XGET ...
 
 ### queries
 #### match all
@@ -42,4 +44,57 @@ PUT /_snapshot/my_backup/%3Csnapshot-%7Bnow%2Fd%7D%3E
 
 # delete snapshot
 DELETE /_snapshot/my_backup/snapshot_2
+
+
+#### users and security
+### set basic users and passwords
+# in elasticsearch host : 
+elasticsearch-setup-passwords auto|interactive
+bin/elasticsearch-keystore add xpack.security.transport.ssl.keystore.secure_password
+bin/elasticsearch-keystore add xpack.security.transport.ssl.truststore.secure_password
+bin/elasticsearch-keystore list
+
+# change built-in user password
+curl -u elastic:<elasticpwd> -XPOST http://localhost:9200/_security/user/kibana/_password  --header "content-type: application/JSON"  -d '{"password":"<pwd>"}'
+
+# test user
+curl -u <user>:<pwd> -XGET http://metaindex.fr:9200/?pretty
+
+# in kibana host
+./bin/kibana-keystore create
+./bin/kibana-keystore add elasticsearch.username
+./bin/kibana-keystore add elasticsearch.password
+
+### KIBANA Rest API ###
+
+ curl -u elastic:xxx -XGET 'http://localhost:5601/api/spaces/space/test_catalog'
+
+ curl -u elastic:xxx  -H 'kbn-xsrf: true ' -H 'Content-Type: application/json'  -XPUT http://localhost:5601/api/security/role/test_role -d '{ "kibana": [ { "feature" : { "dashboard": ["read"] } , "spaces" : []  } ] }'
+ 
+ELK rights
+----------
+
+Default space :
+ - disable all plugins
+ 
+For catalog CatX
+* Space "CatX": 
+  - enable only discover/visualize/dashboard
+
+* Roles :
+  - role CatX_readonly
+       - index CatX read
+       - spaces privileges CatX : READ for dashboard
+  - role CatX_managevisu
+  	   - index CatX read
+  	   - spaces privileges CatX : ALL for discover/visualize/dashboard
+
+* user myUserRO:
+  - CatX_readonly
+  - kibana_dashboard_only_user
+  
+* user myUserWrite | myUserAdmin :
+  - role CatX_managevisu
+  - kibana_user
+
 

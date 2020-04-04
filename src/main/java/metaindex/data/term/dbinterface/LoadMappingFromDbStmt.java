@@ -29,7 +29,7 @@ import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
-import toolbox.database.elasticsearch.ESDataSource;
+import toolbox.database.elasticsearch.ElasticSearchConnector;
 import toolbox.database.elasticsearch.ESPopulateStmt;
 import toolbox.database.elasticsearch.ESReadStreamStmt;
 import toolbox.exceptions.DataProcessException;
@@ -50,7 +50,7 @@ public class LoadMappingFromDbStmt extends ESPopulateStmt<ICatalog>   {
 	private List<ICatalog> _catalogs;
 	GetMappingsRequest _request;
 	
-	public LoadMappingFromDbStmt(List<ICatalog> c,ESDataSource ds) throws DataProcessException { 
+	public LoadMappingFromDbStmt(List<ICatalog> c,ElasticSearchConnector ds) throws DataProcessException { 
 		super(ds);
 		_catalogs=c;
 	 			
@@ -72,7 +72,7 @@ public class LoadMappingFromDbStmt extends ESPopulateStmt<ICatalog>   {
 		try {
 			
 			GetMappingsResponse getMappingResponse = 
-					this.getDatasource().getHighLevelClient().indices().getMapping(
+					this.getDataConnector().getHighLevelClient().indices().getMapping(
 							_request, RequestOptions.DEFAULT);
 
 			Map<String, MappingMetaData> allMappings = getMappingResponse.mappings();

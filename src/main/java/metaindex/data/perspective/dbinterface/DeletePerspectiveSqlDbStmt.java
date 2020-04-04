@@ -20,7 +20,7 @@ import org.apache.commons.logging.LogFactory;
 
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.userprofile.IUserProfileData;
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLWriteStmt;
 import toolbox.exceptions.DataProcessException;
 
@@ -34,7 +34,7 @@ public class DeletePerspectiveSqlDbStmt extends SQLWriteStmt<Integer>   {
 	public DeletePerspectiveSqlDbStmt(IUserProfileData activeUser, 
 										ICatalog catalog, 
 										List<Integer> perspectivesIds,
-										SQLDataSource ds) throws DataProcessException { 
+										SQLDataConnector ds) throws DataProcessException { 
 		super(ds);
 		_activeUser=activeUser;
 		_data.addAll(perspectivesIds);		
@@ -51,7 +51,7 @@ public class DeletePerspectiveSqlDbStmt extends SQLWriteStmt<Integer>   {
 		List<PreparedStatement> result = new ArrayList<PreparedStatement>();
 		
 		try {
-			result.add(this.getDatasource().getConnection().prepareStatement(
+			result.add(this.getDataConnector().getConnection().prepareStatement(
 					"delete from catalog_perspectives where catalog_id=? and catalog_perspective_id=?"));
 			
 		} catch (SQLException e) { throw new DataProcessException(e); }

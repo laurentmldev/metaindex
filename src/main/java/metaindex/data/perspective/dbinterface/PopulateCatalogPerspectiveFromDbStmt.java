@@ -26,7 +26,7 @@ import metaindex.data.catalog.ICatalog;
 import metaindex.data.perspective.CatalogPerspective;
 import metaindex.data.perspective.ICatalogPerspective;
 
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.database.sql.SQLReadStreamStmt;
 import toolbox.exceptions.DataProcessException;
@@ -46,12 +46,12 @@ public class PopulateCatalogPerspectiveFromDbStmt extends SQLPopulateStmt<ICatal
 	private List<ICatalog> _catalogs;
 	private List<ICatalogPerspective> _data = new ArrayList<>();
 	
-	public PopulateCatalogPerspectiveFromDbStmt(List<ICatalog> c, List<ICatalogPerspective> d, SQLDataSource ds) throws DataProcessException { 
+	public PopulateCatalogPerspectiveFromDbStmt(List<ICatalog> c, List<ICatalogPerspective> d, SQLDataConnector ds) throws DataProcessException { 
 		super(ds);
 		_catalogs=c;
 		_data=d;
 	}
-	public PopulateCatalogPerspectiveFromDbStmt(List<ICatalog> c, SQLDataSource ds) throws DataProcessException { 
+	public PopulateCatalogPerspectiveFromDbStmt(List<ICatalog> c, SQLDataConnector ds) throws DataProcessException { 
 		super(ds);
 		_catalogs=c;
 		

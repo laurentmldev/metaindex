@@ -10,7 +10,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLDatabaseInterface;
 import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.database.sql.SQLReadStreamStmt;
@@ -26,10 +26,10 @@ import metaindex.data.catalog.ICatalog;
 public class DbInterface  extends SQLDatabaseInterface<IFilter> 
 {
 	
-	public DbInterface(SQLDataSource ds) { super(ds); }
+	public DbInterface(SQLDataConnector ds) { super(ds); }
 	
 	public SQLPopulateStmt<IFilter> getPopulateFilterFromDbStmt(List<ICatalog> c) throws DataProcessException {
-		return new PopulateFilterStmt(c,getDatasource());
+		return new PopulateFilterStmt(c,getDataConnector());
 	}
 	
 	public SQLPopulateStmt<IFilter> getLoadFromDbStmt(ICatalog c) throws DataProcessException {
@@ -39,7 +39,7 @@ public class DbInterface  extends SQLDatabaseInterface<IFilter>
 	}
 
 	public SQLPopulateStmt<IFilter> getLoadFromDbStmt(ICatalog c, List<IFilter> data) throws DataProcessException {
-		return new PopulateFilterStmt(c, data, getDatasource());
+		return new PopulateFilterStmt(c, data, getDataConnector());
 	}
 
 	public SQLPopulateStmt<IFilter> getLoadFromDbStmt(ICatalog c,IFilter data) throws DataProcessException {
@@ -49,15 +49,15 @@ public class DbInterface  extends SQLDatabaseInterface<IFilter>
 	}
 	
 	public SQLWriteStmt<IFilter> createIntoDbStmt(ICatalog c,IFilter data) throws DataProcessException {
-		return new CreateFilterIntoDbStmt(c,data, getDatasource());
+		return new CreateFilterIntoDbStmt(c,data, getDataConnector());
 	}
 	
 	public SQLWriteStmt<IFilter> updateIntoDbStmt(ICatalog c,IFilter data) throws DataProcessException {
-		return new UpdateFilterIntoDbStmt(c,data, getDatasource());
+		return new UpdateFilterIntoDbStmt(c,data, getDataConnector());
 	}
 	
 	public SQLWriteStmt<IFilter> deleteFromDbStmt(ICatalog c,IFilter data) throws DataProcessException {
-		return new DeleteFilterFromDbStmt(c,data, getDatasource());
+		return new DeleteFilterFromDbStmt(c,data, getDataConnector());
 	}
 
 }

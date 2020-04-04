@@ -16,14 +16,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import metaindex.data.term.ICatalogTerm;
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLWriteStmt;
 import toolbox.exceptions.DataProcessException;
 
 class CreateTermIntoSqlDbStmt extends SQLWriteStmt<ICatalogTerm>   {
 
 	List<ICatalogTerm> _data = new ArrayList<ICatalogTerm>();
-	public CreateTermIntoSqlDbStmt(List<ICatalogTerm> terms, SQLDataSource ds) throws DataProcessException { 
+	public CreateTermIntoSqlDbStmt(List<ICatalogTerm> terms, SQLDataConnector ds) throws DataProcessException { 
 		super(ds);
 		_data.addAll(terms);
 		
@@ -38,7 +38,7 @@ class CreateTermIntoSqlDbStmt extends SQLWriteStmt<ICatalogTerm>   {
 		List<PreparedStatement> result = new ArrayList<PreparedStatement>();
 		
 		try {
-			result.add(this.getDatasource().getConnection().prepareStatement(
+			result.add(this.getDataConnector().getConnection().prepareStatement(
 					"insert into catalog_terms (catalog_id,name,datatype,enumsList,isMultiEnum) values (?,?,?,?,?) "));
 			
 		} catch (SQLException e) { throw new DataProcessException(e); }

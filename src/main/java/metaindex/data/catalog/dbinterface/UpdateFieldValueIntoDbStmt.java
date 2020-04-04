@@ -46,7 +46,7 @@ import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.userprofile.IUserProfileData;
-import toolbox.database.elasticsearch.ESDataSource;
+import toolbox.database.elasticsearch.ElasticSearchConnector;
 import toolbox.database.elasticsearch.ESReadStreamStmt;
 import toolbox.database.elasticsearch.ESWriteStmt;
 import toolbox.database.DbSearchResult;
@@ -69,7 +69,7 @@ class UpdateFieldValueIntoDbStmt extends ESWriteStmt<IDbItem>   {
 	private Date _timestamp;
 	
 	
-	public UpdateFieldValueIntoDbStmt(IUserProfileData u,ICatalog c, String docId, String fieldName, Object fieldValue, Date timestamp,ESDataSource ds) throws DataProcessException { 
+	public UpdateFieldValueIntoDbStmt(IUserProfileData u,ICatalog c, String docId, String fieldName, Object fieldValue, Date timestamp,ElasticSearchConnector ds) throws DataProcessException { 
 		super(ds);
 		_catalog=c;
 		_user=u;
@@ -105,7 +105,7 @@ class UpdateFieldValueIntoDbStmt extends ESWriteStmt<IDbItem>   {
 			jsonMap.put(ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP,ICatalogTerm.MX_TERM_DATE_FORMAT.format(_timestamp));
 			jsonMap.put(ICatalogTerm.MX_TERM_LASTMODIF_USERID, _user.getId());			
 			request.doc(jsonMap);
-			UpdateResponse updateResponse = this.getDatasource()
+			UpdateResponse updateResponse = this.getDataConnector()
 					.getHighLevelClient().update(request, RequestOptions.DEFAULT);
 			
 			ReplicationResponse.ShardInfo shardInfo = updateResponse.getShardInfo();

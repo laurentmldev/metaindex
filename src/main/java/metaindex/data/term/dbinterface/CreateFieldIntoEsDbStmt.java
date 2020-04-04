@@ -25,7 +25,7 @@ import metaindex.data.term.CatalogTerm;
 import metaindex.data.term.CatalogTermRelation;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
-import toolbox.database.elasticsearch.ESDataSource;
+import toolbox.database.elasticsearch.ElasticSearchConnector;
 import toolbox.database.elasticsearch.ESWriteStmt;
 import toolbox.exceptions.DataProcessException;
 
@@ -33,7 +33,7 @@ class CreateFieldIntoEsDbStmt extends ESWriteStmt<ICatalogTerm>   {
 
 	ICatalog _catalog;
 	List<ICatalogTerm> _data = new ArrayList<ICatalogTerm>();
-	public CreateFieldIntoEsDbStmt(ICatalog c, List<ICatalogTerm> terms, ESDataSource ds) throws DataProcessException { 
+	public CreateFieldIntoEsDbStmt(ICatalog c, List<ICatalogTerm> terms, ElasticSearchConnector ds) throws DataProcessException { 
 		super(ds);
 		_data.addAll(terms);		
 		_catalog=c;
@@ -109,7 +109,7 @@ class CreateFieldIntoEsDbStmt extends ESWriteStmt<ICatalogTerm>   {
 			request.source(builder);
 					
 			AcknowledgedResponse putMappingResponse = 
-					this.getDatasource().getHighLevelClient().indices().putMapping(request, RequestOptions.DEFAULT);
+					this.getDataConnector().getHighLevelClient().indices().putMapping(request, RequestOptions.DEFAULT);
 
 			//waitUntilEsIndexRefreshed(_catalog.getName(),this.getDatasource());
 			return putMappingResponse.isAcknowledged(); 				

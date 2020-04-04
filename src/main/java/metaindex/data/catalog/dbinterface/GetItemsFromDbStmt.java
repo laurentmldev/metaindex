@@ -40,7 +40,7 @@ import metaindex.data.catalog.ICatalog;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
 import metaindex.data.term.ICatalogTerm.TERM_DATATYPE;
-import toolbox.database.elasticsearch.ESDataSource;
+import toolbox.database.elasticsearch.ElasticSearchConnector;
 import toolbox.database.elasticsearch.ESDocumentsRequestBuilder;
 import toolbox.database.elasticsearch.ESReadStreamStmt;
 import toolbox.database.DbSearchResult;
@@ -73,7 +73,7 @@ class GetItemsFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 			String query,
 			List<String> prefilters, 
 			List< IPair<String,SORTING_ORDER> > sort, 
-			ESDataSource ds) throws DataProcessException { 
+			ElasticSearchConnector ds) throws DataProcessException { 
 		super(ds);
 		_catalog=c;
 		
@@ -98,11 +98,11 @@ class GetItemsFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 			List<DbSearchResult> resultList = new ArrayList<DbSearchResult>();
 			
 			// first get total count (even if over max EL search size limit
-			CountResponse countResponse = this.getDatasource()
+			CountResponse countResponse = this.getDataConnector()
 											.getHighLevelClient()
 											.count(_requestsBuilder.getCountRequest(),RequestOptions.DEFAULT);
 			
-			SearchResponse searchResponse = this.getDatasource()
+			SearchResponse searchResponse = this.getDataConnector()
 											.getHighLevelClient()
 											.search(_requestsBuilder.getSearchRequest(),RequestOptions.DEFAULT);
 			

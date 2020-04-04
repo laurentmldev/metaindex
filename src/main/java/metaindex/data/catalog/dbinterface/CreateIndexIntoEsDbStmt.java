@@ -22,7 +22,7 @@ import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.client.indices.CreateIndexResponse;
 
 import metaindex.data.catalog.ICatalog;
-import toolbox.database.elasticsearch.ESDataSource;
+import toolbox.database.elasticsearch.ElasticSearchConnector;
 import toolbox.database.elasticsearch.ESWriteStmt;
 import toolbox.exceptions.DataProcessException;
 
@@ -35,7 +35,7 @@ public class CreateIndexIntoEsDbStmt extends ESWriteStmt<ICatalog>   {
 	private Log log = LogFactory.getLog(CreateIndexIntoEsDbStmt.class);
 	
 	List<ICatalog> _data = new ArrayList<ICatalog>();
-	public CreateIndexIntoEsDbStmt(List<ICatalog> catalogs, ESDataSource ds) throws DataProcessException { 
+	public CreateIndexIntoEsDbStmt(List<ICatalog> catalogs, ElasticSearchConnector ds) throws DataProcessException { 
 		super(ds);
 		_data.addAll(catalogs);
 	}
@@ -47,7 +47,7 @@ public class CreateIndexIntoEsDbStmt extends ESWriteStmt<ICatalog>   {
 				CreateIndexRequest request = new CreateIndexRequest(c.getName()); 
 				
 				CreateIndexResponse createIndexResponse = 
-						this.getDatasource().getHighLevelClient().indices().create(request, RequestOptions.DEFAULT);	
+						this.getDataConnector().getHighLevelClient().indices().create(request, RequestOptions.DEFAULT);	
 				
 				return createIndexResponse.isAcknowledged();					
 			}
@@ -58,7 +58,7 @@ public class CreateIndexIntoEsDbStmt extends ESWriteStmt<ICatalog>   {
 			throw new DataProcessException(e.getMessage());
 		} catch (ConnectException e) {		
 			log.error("Unable to connect to create index into ElasticSearch, unable to establish connection to server "
-																							+this.getDatasource().toString());
+																							+this.getDataConnector().toString());
 			return false;
 		} catch (Exception e) {		
 			e.printStackTrace();

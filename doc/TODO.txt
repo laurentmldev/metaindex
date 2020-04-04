@@ -7,9 +7,22 @@ Priority 1:
 
 deployement test scenario
 
-#22 import data as CSV
-	remove tmp files older than 10min
-
+#6 Kibana access control to indices
+      - new catalog 
+      		. create index
+      		. create space
+      		. create index-pattern
+      		. create RO and WR roles
+      		. assign WR role to catalog admin
+      - create user
+      		. create user in ElasticSearch
+      - user change passwd
+      		. sync passwd in ElasticSearch
+      - user change role
+      		. update roles list (update role for each accessible catalogs) in Kibana
+      - user change index access-rights
+      		. update roles list in Kibana
+      
 #8 prepare demo data, catalog/user present by default
 	
 #15 adapt GUI 
@@ -28,7 +41,7 @@ Priority 2:
 renaming a perspective actually duplicates it
 search on accentuated characters imported from UTF-16 does not seem to work
 #19 send email to users and admin when useful
-#6 Kibana access control to indices
+
 
 #16 removing a term present in several perspectives, it removes it from the second perspective while user have clicked on the first perspective ones
 
@@ -81,6 +94,9 @@ Backlog:
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+
+#22 import data as CSV
+	remove tmp files older than 10min
 x lastModif timestamp not update : dates format error
 - when logged-out, userProfileData.isLoggedIn still returns true, and user can still access to secured pages (but no web-sockets)
 #12 backup/restore a full catalog / scrutation of "maintenance" flag in properties		 

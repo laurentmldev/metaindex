@@ -24,7 +24,7 @@ import org.elasticsearch.client.indices.CreateIndexResponse;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.catalog.dbinterface.CreateIndexIntoEsDbStmt.IndexAlreadyExistException;
 import metaindex.data.userprofile.IUserProfileData;
-import toolbox.database.elasticsearch.ESDataSource;
+import toolbox.database.elasticsearch.ElasticSearchConnector;
 import toolbox.database.elasticsearch.ESWriteStmt;
 import toolbox.exceptions.DataProcessException;
 
@@ -34,7 +34,7 @@ class DeleteIndexFromESDbStmt extends ESWriteStmt<ICatalog>   {
 	List<ICatalog> _data = new ArrayList<>();
 	public DeleteIndexFromESDbStmt(IUserProfileData activeUser, 
 										List<ICatalog> catalogs, 
-										ESDataSource ds) throws DataProcessException { 
+										ElasticSearchConnector ds) throws DataProcessException { 
 		super(ds);
 		_activeUser=activeUser;
 		_data=catalogs;		
@@ -48,7 +48,7 @@ class DeleteIndexFromESDbStmt extends ESWriteStmt<ICatalog>   {
 				DeleteIndexRequest request = new DeleteIndexRequest(c.getName()); 
 				
 				AcknowledgedResponse deleteIndexResponse = 
-						this.getDatasource().getHighLevelClient().indices().delete(request, RequestOptions.DEFAULT);	
+						this.getDataConnector().getHighLevelClient().indices().delete(request, RequestOptions.DEFAULT);	
 				
 				return deleteIndexResponse.isAcknowledged();					
 			}

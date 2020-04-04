@@ -23,7 +23,7 @@ import metaindex.app.control.websockets.perspectives.WsControllerPerspective;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.catalog.ICatalogCustomParams;
 import metaindex.data.userprofile.IUserProfileData;
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLWriteStmt;
 import toolbox.exceptions.DataProcessException;
 
@@ -37,7 +37,7 @@ public class CreateOrUpdatePerspectiveIntoSqlDbStmt extends SQLWriteStmt<String>
 	public CreateOrUpdatePerspectiveIntoSqlDbStmt(IUserProfileData activeUser, 
 										ICatalog catalog, 
 										List<String> perspectivesJsonStr,
-										SQLDataSource ds) throws DataProcessException { 
+										SQLDataConnector ds) throws DataProcessException { 
 		super(ds);
 		_activeUser=activeUser;
 		_data.addAll(perspectivesJsonStr);		
@@ -54,7 +54,7 @@ public class CreateOrUpdatePerspectiveIntoSqlDbStmt extends SQLWriteStmt<String>
 		List<PreparedStatement> result = new ArrayList<PreparedStatement>();
 		
 		try {
-			result.add(this.getDatasource().getConnection().prepareStatement(
+			result.add(this.getDataConnector().getConnection().prepareStatement(
 					"insert into catalog_perspectives (catalog_id,name,perspective_json_string) values (?,?,?)"
 					+"ON DUPLICATE KEY UPDATE name=?, perspective_json_string=?"));
 			

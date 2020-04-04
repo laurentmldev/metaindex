@@ -12,20 +12,20 @@ See full version of LICENSE in <https://fsf.org/>
 
 
 import metaindex.data.commons.globals.guitheme.IGuiTheme;
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLDatabaseInterface;
 import toolbox.database.sql.SQLReadStreamStmt;
 import toolbox.exceptions.DataProcessException;
 
 public class DbInterface extends SQLDatabaseInterface<IGuiTheme> {
 
-	public DbInterface(SQLDataSource ds) {
+	public DbInterface(SQLDataConnector ds) {
 		super(ds);
 	}
 	
 	
 	public SQLReadStreamStmt<IGuiTheme> getLoadFromDbStmt() throws DataProcessException {
-		return new LoadFromDbStmt(getDatasource());
+		return new LoadFromDbStmt(getDataConnector());
 	}
 	
 }

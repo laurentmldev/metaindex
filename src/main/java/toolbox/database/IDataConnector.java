@@ -10,6 +10,6 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
-public interface IDataSource {
+public interface IDataConnector {
 	void close();	
 }

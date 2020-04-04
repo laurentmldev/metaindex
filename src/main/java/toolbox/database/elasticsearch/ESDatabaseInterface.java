@@ -12,14 +12,14 @@ See full version of LICENSE in <https://fsf.org/>
 
 import toolbox.database.IDatabaseInterface;
 
-public class ESDatabaseInterface<T> implements IDatabaseInterface<ESDataSource> {
+public class ESDatabaseInterface<T> implements IDatabaseInterface<ElasticSearchConnector> {
 
-	private ESDataSource _ds;
+	private ElasticSearchConnector _ds;
 
-	public ESDatabaseInterface(ESDataSource ds) { 
+	public ESDatabaseInterface(ElasticSearchConnector ds) { 
 		_ds=ds;
 	}
 	@Override
-	public ESDataSource getDatasource() { return _ds; }
+	public ElasticSearchConnector getDataConnector() { return _ds; }
 	
 }

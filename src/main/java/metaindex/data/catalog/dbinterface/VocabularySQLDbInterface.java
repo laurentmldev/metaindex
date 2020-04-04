@@ -10,7 +10,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLDatabaseInterface;
 import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.database.sql.SQLWriteStmt;
@@ -25,11 +25,11 @@ import metaindex.data.catalog.ICatalog;
 public class VocabularySQLDbInterface  extends SQLDatabaseInterface<ICatalog> 
 {
 	
-	public VocabularySQLDbInterface(SQLDataSource ds) { super(ds); }
+	public VocabularySQLDbInterface(SQLDataConnector ds) { super(ds); }
 	
 	
 	public SQLPopulateStmt<ICatalog> getPopulateCatalogVocFromDbStmt(List<ICatalog> data) throws DataProcessException {
-		return new PopulateCatalogVocFromDbStmt(data, getDatasource());
+		return new PopulateCatalogVocFromDbStmt(data, getDataConnector());
 	}
 	public SQLPopulateStmt<ICatalog> getLoadFromDbStmt(ICatalog data) throws DataProcessException {
 		List<ICatalog> list = new ArrayList<>();
@@ -38,7 +38,7 @@ public class VocabularySQLDbInterface  extends SQLDatabaseInterface<ICatalog>
 	}
 	
 	public SQLWriteStmt<CatalogVocabularySet> getWriteIntoDbStmt(List<CatalogVocabularySet> data) throws DataProcessException {
-		return new CreateOrUpdateVocabularyIntoDbStmt(data, getDatasource());
+		return new CreateOrUpdateVocabularyIntoDbStmt(data, getDataConnector());
 	}
 	public SQLWriteStmt<CatalogVocabularySet> getWriteIntoDbStmt(CatalogVocabularySet data) throws DataProcessException {
 		List<CatalogVocabularySet> list = new ArrayList<>();

@@ -34,7 +34,7 @@ import metaindex.data.catalog.ICatalog;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.database.IDbItem;
-import toolbox.database.elasticsearch.ESDataSource;
+import toolbox.database.elasticsearch.ElasticSearchConnector;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.AProcessingTask;
 import toolbox.utils.parsers.ACsvParser;
@@ -105,7 +105,7 @@ public class ESBulkProcess extends AProcessingTask   {
 	    }
 	}
 	
-	private ESDataSource _datasource;
+	private ElasticSearchConnector _datasource;
 	private ICatalog _catalog; 
 	private BulkProcessor.Builder _builder; 
 	private BulkProcessor _processor;
@@ -121,7 +121,7 @@ public class ESBulkProcess extends AProcessingTask   {
 						 Integer expectedNbActions,
 						 ICatalog c,
 						 Date timestamp,
-						 ESDataSource ds) throws DataProcessException { 
+						 ElasticSearchConnector ds) throws DataProcessException { 
 		super(u,name);
 		_catalog=c;
 		_datasource=ds;

@@ -11,9 +11,9 @@ See full version of LICENSE in <https://fsf.org/>
 */
 
 import toolbox.database.IDatabaseWriteStmt;
-import toolbox.database.elasticsearch.ESDataSource;
+import toolbox.database.elasticsearch.ElasticSearchConnector;
 import toolbox.database.elasticsearch.ESReadStreamStmt;
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLDatabaseInterface;
 import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.database.sql.SQLReadStreamStmt;
@@ -30,8 +30,8 @@ import metaindex.data.term.TermVocabularySet;
 
 public class DbInterface  extends SQLDatabaseInterface<ICatalogTerm> 
 {
-	ESDataSource _dsEs;
-	public DbInterface(SQLDataSource ds, ESDataSource dsEs) { 
+	ElasticSearchConnector _dsEs;
+	public DbInterface(SQLDataConnector ds, ElasticSearchConnector dsEs) { 
 		super(ds);
 		_dsEs=dsEs;
 	}
@@ -39,7 +39,7 @@ public class DbInterface  extends SQLDatabaseInterface<ICatalogTerm>
 	// ---
 	public SQLPopulateStmt<ICatalogTerm> getPopulateTermsFromDbStmt(List<ICatalog> c) throws DataProcessException {
 		assert(c.size()>0);
-		return new PopulateTermsFromDbStmt(c,getDatasource());
+		return new PopulateTermsFromDbStmt(c,getDataConnector());
 	}
 	public SQLPopulateStmt<ICatalogTerm> getPopulateTermsFromDbStmt(ICatalog data) throws DataProcessException {
 		List<ICatalog> list = new ArrayList<>();
@@ -50,20 +50,20 @@ public class DbInterface  extends SQLDatabaseInterface<ICatalogTerm>
 	public SQLPopulateStmt<ICatalogTerm> getLoadFromDbStmt(ICatalog c, List<ICatalogTerm> data) throws DataProcessException {
 		List<ICatalog> list = new ArrayList<>();
 		list.add(c);
-		return new PopulateTermsFromDbStmt(list, data, getDatasource());
+		return new PopulateTermsFromDbStmt(list, data, getDataConnector());
 	}
 	
 	public SQLWriteStmt<ICatalogTerm> getUpdateIntoDbStmt(List<ICatalogTerm> data) throws DataProcessException {
-		return new CreateOrUpdateTermIntoDbStmt(data, getDatasource());
+		return new CreateOrUpdateTermIntoDbStmt(data, getDataConnector());
 	}
 	public SQLWriteStmt<ICatalogTerm> getUpdateIntoDbStmt(ICatalogTerm data) throws DataProcessException {
 		List<ICatalogTerm> terms = new ArrayList<>();
 		terms.add(data);
-		return new CreateOrUpdateTermIntoDbStmt(terms, getDatasource());
+		return new CreateOrUpdateTermIntoDbStmt(terms, getDataConnector());
 	}
 	
 	public IDatabaseWriteStmt<ICatalogTerm> deleteFromDbStmt(ICatalog c, List<ICatalogTerm> data) throws DataProcessException {
-		return new DeleteTermFromDbStmt(c,data, getDatasource(), _dsEs);
+		return new DeleteTermFromDbStmt(c,data, getDataConnector(), _dsEs);
 	}
 	public IDatabaseWriteStmt<ICatalogTerm> deleteFromDbStmt(ICatalog c, ICatalogTerm data) throws DataProcessException {
 		List<ICatalogTerm> list = new ArrayList<>();
@@ -76,7 +76,7 @@ public class DbInterface  extends SQLDatabaseInterface<ICatalogTerm>
 		return new CreateFieldIntoEsDbStmt(c, data, _dsEs);
 	}
 	public IDatabaseWriteStmt<ICatalogTerm> createIntoDbStmt(ICatalog c, List<ICatalogTerm> data) throws DataProcessException {
-		return new CreateTermIntoDbStmt(c, data, getDatasource(), _dsEs);
+		return new CreateTermIntoDbStmt(c, data, getDataConnector(), _dsEs);
 	}
 	public IDatabaseWriteStmt<ICatalogTerm> createIntoDbStmt(ICatalog c, ICatalogTerm data) throws DataProcessException {
 		List<ICatalogTerm> list = new ArrayList<>();
@@ -86,11 +86,11 @@ public class DbInterface  extends SQLDatabaseInterface<ICatalogTerm>
 	
 	// --- load vocabulary
 	public SQLPopulateStmt<ICatalogTerm> getPopulateVocabularyFromDbStmt(Collection<ICatalogTerm> data) throws DataProcessException {
-		return new PopulateVocabularyFromDbStmt(data, getDatasource());
+		return new PopulateVocabularyFromDbStmt(data, getDataConnector());
 	}
 	// --- create or update vocabulary
 	public SQLWriteStmt<TermVocabularySet> getCreateOrUpdateVocabularyIntoDbStmt(List<TermVocabularySet> data) throws DataProcessException {
-		return new CreateOrUpdateVocabularyIntoDbStmt(data, getDatasource());
+		return new CreateOrUpdateVocabularyIntoDbStmt(data, getDataConnector());
 	}
 	public SQLWriteStmt<TermVocabularySet> getCreateOrUpdateVocabularyIntoDbStmt(TermVocabularySet data) throws DataProcessException {
 		List<TermVocabularySet> list = new ArrayList<>();

@@ -59,8 +59,8 @@ public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProc
 	public void setNickname(String nickname);
     
 	public String getPassword();
-    public void setPasswordAndEncrypt(String password);
-    public void setEncryptedPassword(String password);
+    public void setPasswordAndEncrypt(String clearPassword);
+    public void setEncryptedPassword(String passwordHash);
     
     public Integer getGuiLanguageId();
     public String getGuiLanguageShortname();

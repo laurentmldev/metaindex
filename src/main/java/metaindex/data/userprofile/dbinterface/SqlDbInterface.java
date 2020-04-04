@@ -10,7 +10,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLDatabaseInterface;
 import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.database.sql.SQLReadStreamStmt;
@@ -23,17 +23,17 @@ import java.util.List;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.userprofile.IUserProfileData;
 
-public class DbInterface  extends SQLDatabaseInterface<IUserProfileData> 
+public class SqlDbInterface  extends SQLDatabaseInterface<IUserProfileData> 
 {
 	
-	public DbInterface(SQLDataSource ds) { super(ds); }
+	public SqlDbInterface(SQLDataConnector ds) { super(ds); }
 	
 	public SQLPopulateStmt<IUserProfileData> getPopulateUserProfileFromDbStmt(List<IUserProfileData> data) throws DataProcessException {
-		return new PopulateUserProfileFromDb(data, getDatasource());
+		return new PopulateUserProfileFromDb(data, getDataConnector());
 	}
 
 	public SQLPopulateStmt<IUserProfileData> getPopulateUserProfileFromDbStmt(List<IUserProfileData> data,Boolean onlyIfContentsUpdated) throws DataProcessException {
-		return new PopulateUserProfileFromDb(data, getDatasource(),onlyIfContentsUpdated);
+		return new PopulateUserProfileFromDb(data, getDataConnector(),onlyIfContentsUpdated);
 	}
 
 	public SQLPopulateStmt<IUserProfileData> getPopulateUserProfileFromDbStmt(IUserProfileData data) throws DataProcessException {
@@ -43,7 +43,7 @@ public class DbInterface  extends SQLDatabaseInterface<IUserProfileData>
 	}
 
 	public SQLWriteStmt<IUserProfileData> getUpdateIntoDbStmt(List<IUserProfileData> data) throws DataProcessException {
-		return new UpdateUserPreferencesIntoDb(data, getDatasource());
+		return new UpdateUserPreferencesIntoDb(data, getDataConnector());
 	}
 	
 	public SQLWriteStmt<IUserProfileData> getUpdateIntoDbStmt(IUserProfileData data) throws DataProcessException {
@@ -54,7 +54,7 @@ public class DbInterface  extends SQLDatabaseInterface<IUserProfileData>
 	
 	// Access Rights
 	public SQLPopulateStmt<IUserProfileData> getPopulateAccessRightsFromDbStmt(List<IUserProfileData> data,Boolean onlyIfRequired) throws DataProcessException {
-		return new PopulateUserCatalogsAccessRights(data,getDatasource(),onlyIfRequired);
+		return new PopulateUserCatalogsAccessRights(data,getDataConnector(),onlyIfRequired);
 	}
 	public SQLPopulateStmt<IUserProfileData> getPopulateAccessRightsFromDbStmt(IUserProfileData data,Boolean onlyIfRequired) throws DataProcessException {
 		List<IUserProfileData> list = new ArrayList<IUserProfileData>();
@@ -65,12 +65,12 @@ public class DbInterface  extends SQLDatabaseInterface<IUserProfileData>
 		return getPopulateAccessRightsFromDbStmt(data,false);
 	}
 	public SQLWriteStmt<IUserProfileData> getSetUserAccessRightsIntoDbStmt(IUserProfileData data, ICatalog catalog) throws DataProcessException {
-		return new CreateOrUpdateUserCatalogsAccessRights(data,catalog,getDatasource());
+		return new CreateOrUpdateUserCatalogsAccessRights(data,catalog,getDataConnector());
 	}
 	
 	// Catalogs Customization
 	public SQLPopulateStmt<IUserProfileData> getPopulateCatalogCustomizationFromDbStmt(List<IUserProfileData> data) throws DataProcessException {
-		return new UserCatalogsCustomizationLoad(data,getDatasource());
+		return new UserCatalogsCustomizationLoad(data,getDataConnector());
 	}
 	public SQLPopulateStmt<IUserProfileData> getPopulateCatalogCustomizationFromDbStmt(IUserProfileData data) throws DataProcessException {
 		List<IUserProfileData> list = new ArrayList<IUserProfileData>();
@@ -78,7 +78,7 @@ public class DbInterface  extends SQLDatabaseInterface<IUserProfileData>
 		return getPopulateCatalogCustomizationFromDbStmt(list);
 	}
 	public SQLWriteStmt<IUserProfileData> getSetUserCatalogCustomizationIntoDbStmt(IUserProfileData data, ICatalog catalog) throws DataProcessException {
-		return new CreateOrUpdateUserCatalogsCustomization(data,catalog,getDatasource());
+		return new CreateOrUpdateUserCatalogsCustomization(data,catalog,getDataConnector());
 	}
 	
 }

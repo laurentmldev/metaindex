@@ -17,7 +17,7 @@ import java.util.List;
 
 import metaindex.data.commons.globals.guitheme.GuiTheme;
 import metaindex.data.commons.globals.guitheme.IGuiTheme;
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLReadStreamStmt;
 import toolbox.exceptions.DataProcessException;
 
@@ -27,7 +27,7 @@ class LoadFromDbStmt extends SQLReadStreamStmt<IGuiTheme>   {
 			"select guithemes.guitheme_id,guithemes.name,"
 			+"guithemes.shortname from guithemes";	
 
-	public LoadFromDbStmt(SQLDataSource ds) throws DataProcessException { 
+	public LoadFromDbStmt(SQLDataConnector ds) throws DataProcessException { 
 		super(ds);
 	}
 

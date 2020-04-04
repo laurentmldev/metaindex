@@ -12,18 +12,19 @@ See full version of LICENSE in <https://fsf.org/>
 
 import metaindex.data.commons.database.IMxDbManager;
 import metaindex.data.userprofile.IUserProfileData;
-import toolbox.database.elasticsearch.ESDataSource;
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.elasticsearch.ElasticSearchConnector;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.exceptions.DataProcessException;
 
 public class MxDbManager implements IMxDbManager {
 	
-	private SQLDataSource _sqlDatasource;
-	private ESDataSource _esDatasource;
+	private SQLDataConnector _sqlDatasource;
+	private ElasticSearchConnector _esDatasource;
 	
 	private metaindex.data.commons.globals.guitheme.dbinterface.DbInterface _guithemeInterface;
 	private metaindex.data.commons.globals.guilanguage.dbinterface.DbInterface _guilanguageInterface;
-	private metaindex.data.userprofile.dbinterface.DbInterface _userProfileInterface;
+	private metaindex.data.userprofile.dbinterface.SqlDbInterface _userProfileSqlInterface;
+	private metaindex.data.userprofile.dbinterface.ESDbInterface _userProfileESInterface;
 	private metaindex.data.catalog.dbinterface.SQLDbInterface _catalogInterface;
 	private metaindex.data.catalog.dbinterface.ESCatalogDbInterface _catalogContentsInterface;
 	private metaindex.data.catalog.dbinterface.ESDocumentsDbInterface _documentsInterface;
@@ -32,13 +33,14 @@ public class MxDbManager implements IMxDbManager {
 	private metaindex.data.perspective.dbinterface.DbInterface _perspectivesInterface;
 	private metaindex.data.catalog.dbinterface.VocabularySQLDbInterface _catalogVocInterface;
 	
-	public MxDbManager(SQLDataSource sqlDs, ESDataSource esDs) {
+	public MxDbManager(SQLDataConnector sqlDs, ElasticSearchConnector esDs) {
 		_sqlDatasource=sqlDs;
 		_esDatasource=esDs;
 		_guithemeInterface = new metaindex.data.commons.globals.guitheme.dbinterface.DbInterface(_sqlDatasource);
 		_guilanguageInterface = new metaindex.data.commons.globals.guilanguage.dbinterface.DbInterface(_sqlDatasource);
 		
-		_userProfileInterface = new metaindex.data.userprofile.dbinterface.DbInterface(_sqlDatasource);
+		_userProfileSqlInterface = new metaindex.data.userprofile.dbinterface.SqlDbInterface(_sqlDatasource);
+		_userProfileESInterface = new metaindex.data.userprofile.dbinterface.ESDbInterface(esDs);
 		
 		_catalogInterface = new metaindex.data.catalog.dbinterface.SQLDbInterface(_sqlDatasource);
 		_catalogContentsInterface = new metaindex.data.catalog.dbinterface.ESCatalogDbInterface(_esDatasource);
@@ -51,8 +53,12 @@ public class MxDbManager implements IMxDbManager {
 		
 	}
 	@Override
-	public metaindex.data.userprofile.dbinterface.DbInterface getUserProfileDbInterface() { 
-		return _userProfileInterface; 
+	public metaindex.data.userprofile.dbinterface.SqlDbInterface getUserProfileSqlDbInterface() { 
+		return _userProfileSqlInterface; 
+	}
+	@Override
+	public metaindex.data.userprofile.dbinterface.ESDbInterface getUserProfileESDbInterface() { 
+		return _userProfileESInterface; 
 	}	
 	@Override
 	public metaindex.data.commons.globals.guitheme.dbinterface.DbInterface getGuiThemeDbInterface() {
@@ -94,17 +100,17 @@ public class MxDbManager implements IMxDbManager {
 	// ----- helpers about user profile
 	public void loadFullUserData(IUserProfileData u) throws DataProcessException {
 		// load user data from DB
-		this.getUserProfileDbInterface()
+		this.getUserProfileSqlDbInterface()
 				.getPopulateUserProfileFromDbStmt(u)
 				.execute();
 		
 		// load user roles data from DB
-		this.getUserProfileDbInterface()
+		this.getUserProfileSqlDbInterface()
 				.getPopulateAccessRightsFromDbStmt(u)
 				.execute();
 		
 		// load user custos
-		this.getUserProfileDbInterface()
+		this.getUserProfileSqlDbInterface()
 				.getPopulateCatalogCustomizationFromDbStmt(u)
 				.execute();
 	}

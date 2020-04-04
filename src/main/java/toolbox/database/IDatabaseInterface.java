@@ -10,7 +10,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
-public interface IDatabaseInterface<TDataSource extends IDataSource> {
-	public TDataSource getDatasource();
+public interface IDatabaseInterface<TDataConnector extends IDataConnector> {
+	public TDataConnector getDataConnector();
 
 }

@@ -117,7 +117,7 @@ public class WsControllerCatalog extends AMxWSController {
 	    		Globals.Get().getCatalogsMgr().loadFromDb();	    		
 	    		c  = Globals.Get().getCatalogsMgr().getCatalog(requestMsg.getCatalogName());
 	    		user.setUserCatalogAccessRights(c.getId(), USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN);
-	    		result = Globals.Get().getDatabasesMgr().getUserProfileDbInterface().getSetUserAccessRightsIntoDbStmt(user, c).execute();	    		
+	    		result = Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface().getSetUserAccessRightsIntoDbStmt(user, c).execute();	    		
 	    		
 	    		if (!result) {
 	    			answer.setRejectMessage("Unable to give access rights to user");

@@ -16,7 +16,7 @@ import java.util.List;
 
 import metaindex.data.commons.globals.guilanguage.GuiLanguage;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLReadStreamStmt;
 import toolbox.exceptions.DataProcessException;
 
@@ -28,12 +28,12 @@ class LoadFromDbStmt extends SQLReadStreamStmt<IGuiLanguage>   {
 
 	private List<IGuiLanguage> _data;
 	
-	public LoadFromDbStmt(List<IGuiLanguage> data,SQLDataSource ds) throws DataProcessException { 
+	public LoadFromDbStmt(List<IGuiLanguage> data,SQLDataConnector ds) throws DataProcessException { 
 		super(ds);
 		_data=data;
 	}
 
-	public LoadFromDbStmt(SQLDataSource ds) throws DataProcessException { 
+	public LoadFromDbStmt(SQLDataConnector ds) throws DataProcessException { 
 		super(ds);
 	}
 

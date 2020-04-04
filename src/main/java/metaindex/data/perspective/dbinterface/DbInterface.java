@@ -12,7 +12,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLDatabaseInterface;
 import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.database.sql.SQLReadStreamStmt;
@@ -28,23 +28,23 @@ import metaindex.data.userprofile.IUserProfileData;
 
 public class DbInterface  extends SQLDatabaseInterface<ICatalogPerspective> 
 {
-	public DbInterface(SQLDataSource ds) { 
+	public DbInterface(SQLDataConnector ds) { 
 		super(ds);		
 	}
 
 	// ---
 	public SQLPopulateStmt<ICatalogPerspective> getLoadFromDbStmt(List<ICatalog> list) throws DataProcessException {
-		return new PopulateCatalogPerspectiveFromDbStmt(list, getDatasource());
+		return new PopulateCatalogPerspectiveFromDbStmt(list, getDataConnector());
 	}
 	public SQLPopulateStmt<ICatalogPerspective> getLoadFromDbStmt(ICatalog c) throws DataProcessException {
 		List<ICatalog> list = new ArrayList<>();
 		list.add(c);
-		return new PopulateCatalogPerspectiveFromDbStmt(list, getDatasource());
+		return new PopulateCatalogPerspectiveFromDbStmt(list, getDataConnector());
 	}
 	
 
 	public SQLWriteStmt<String> getUpdatePerspectiveIntoDbStmt(IUserProfileData activeUser,ICatalog c, List<String> perspectivesJsonData) throws DataProcessException {
-		return new CreateOrUpdatePerspectiveIntoSqlDbStmt(activeUser,c,perspectivesJsonData, getDatasource());
+		return new CreateOrUpdatePerspectiveIntoSqlDbStmt(activeUser,c,perspectivesJsonData, getDataConnector());
 	}
 	
 	public SQLWriteStmt<String> getUpdatePerspectiveIntoDbStmt(IUserProfileData activeUser,ICatalog c, String perspectiveJsonData) throws DataProcessException {
@@ -54,7 +54,7 @@ public class DbInterface  extends SQLDatabaseInterface<ICatalogPerspective>
 	}
 	
 	public SQLWriteStmt<Integer> getDeletePerspectiveFromDbStmt(IUserProfileData activeUser,ICatalog c, List<Integer> perspectivesIds) throws DataProcessException {		
-		return new DeletePerspectiveSqlDbStmt(activeUser,c,perspectivesIds,getDatasource());
+		return new DeletePerspectiveSqlDbStmt(activeUser,c,perspectivesIds,getDataConnector());
 	}
 	
 	public SQLWriteStmt<Integer> getDeletePerspectiveFromDbStmt(IUserProfileData activeUser,ICatalog c, Integer perspectiveId) throws DataProcessException {

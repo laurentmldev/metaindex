@@ -26,7 +26,7 @@ public abstract class AESSearchDocumentsRequest<TData> extends ESReadStreamStmt<
 
 	private SearchRequest _request;
 	
-	AESSearchDocumentsRequest(ESDataSource ds, String indexId, Integer fromIdx, Integer nbResults) throws DataProcessException {
+	AESSearchDocumentsRequest(ElasticSearchConnector ds, String indexId, Integer fromIdx, Integer nbResults) throws DataProcessException {
 		super(ds);		
 		_request = new SearchRequest(indexId);
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder(); 
@@ -62,7 +62,7 @@ public abstract class AESSearchDocumentsRequest<TData> extends ESReadStreamStmt<
 	@Override
 	public void execute(IStreamHandler<TData> d) throws DataProcessException {
 		try {
-			SearchResponse searchResponse = this.getDatasource().getHighLevelClient().search(_request,RequestOptions.DEFAULT);
+			SearchResponse searchResponse = this.getDataConnector().getHighLevelClient().search(_request,RequestOptions.DEFAULT);
 			d.handle(mapSearchResponse(searchResponse));	
 			
 		} catch (IOException | InterruptedException e) {

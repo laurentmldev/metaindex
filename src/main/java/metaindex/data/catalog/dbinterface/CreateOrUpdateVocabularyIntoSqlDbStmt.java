@@ -19,7 +19,7 @@ import metaindex.data.catalog.CatalogVocabularySet;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.catalog.ICatalogCustomParams;
 import metaindex.data.userprofile.IUserProfileData;
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLWriteStmt;
 import toolbox.exceptions.DataProcessException;
 
@@ -27,7 +27,7 @@ class CreateOrUpdateVocabularyIntoDbStmt extends SQLWriteStmt<CatalogVocabularyS
 
 	List<CatalogVocabularySet> _data = new ArrayList<>();
 	public CreateOrUpdateVocabularyIntoDbStmt(List<CatalogVocabularySet> catalogVocabularies, 
-										SQLDataSource ds) throws DataProcessException { 
+										SQLDataConnector ds) throws DataProcessException { 
 		super(ds);
 		_data.addAll(catalogVocabularies);		
 	}
@@ -42,7 +42,7 @@ class CreateOrUpdateVocabularyIntoDbStmt extends SQLWriteStmt<CatalogVocabularyS
 		List<PreparedStatement> result = new ArrayList<PreparedStatement>();
 		
 		try {
-			result.add(this.getDatasource().getConnection().prepareStatement(
+			result.add(this.getDataConnector().getConnection().prepareStatement(
 					"insert into catalog_vocabulary (catalog_id,guilanguage_id,catalogName,catalogComment,"
 							+"itemTraduction,itemsTraduction,"
 							+"userTraduction,usersTraduction"

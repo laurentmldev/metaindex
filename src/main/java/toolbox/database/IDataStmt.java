@@ -10,7 +10,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
-public interface IDatasourcedStmt<TDatasource extends IDataSource> {
+public interface IDataStmt<TDataConnector extends IDataConnector> {
 				
-	public TDatasource getDatasource();
+	public TDataConnector getDataConnector();
 }

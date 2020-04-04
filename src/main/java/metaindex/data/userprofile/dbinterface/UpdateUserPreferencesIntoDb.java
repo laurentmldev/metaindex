@@ -16,14 +16,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import metaindex.data.userprofile.IUserProfileData;
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLWriteStmt;
 import toolbox.exceptions.DataProcessException;
 
 class UpdateUserPreferencesIntoDb extends SQLWriteStmt<IUserProfileData>   {
 
 	List<IUserProfileData> _data = new ArrayList<>();
-	public UpdateUserPreferencesIntoDb(List<IUserProfileData> terms, SQLDataSource ds) throws DataProcessException { 
+	public UpdateUserPreferencesIntoDb(List<IUserProfileData> terms, SQLDataConnector ds) throws DataProcessException { 
 		super(ds);
 		_data.addAll(terms);
 		
@@ -39,7 +39,7 @@ class UpdateUserPreferencesIntoDb extends SQLWriteStmt<IUserProfileData>   {
 		
 		try {
 			// insert if not present, update if already present
-			result.add(this.getDatasource().getConnection().prepareStatement(
+			result.add(this.getDataConnector().getConnection().prepareStatement(
 					"update users set nickname=?, guilanguage_id=?, guitheme_id=? where email=? and enabled=1;")); 
 			
 		} catch (SQLException e) { throw new DataProcessException(e); }

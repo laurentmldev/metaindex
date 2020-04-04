@@ -11,21 +11,21 @@ See full version of LICENSE in <https://fsf.org/>
 */
 
 import toolbox.database.IDatabaseReadStreamStmt;
-import toolbox.database.IDatasourcedStmt;
+import toolbox.database.IDataStmt;
 import toolbox.exceptions.DataProcessException;
 
-public abstract class ESReadStreamStmt<TData> implements IDatabaseReadStreamStmt<TData>,IDatasourcedStmt<ESDataSource> 
+public abstract class ESReadStreamStmt<TData> implements IDatabaseReadStreamStmt<TData>,IDataStmt<ElasticSearchConnector> 
  {
 
-	private ESDataSource _datasource;
+	private ElasticSearchConnector _datasource;
 	
-	public ESReadStreamStmt(ESDataSource ds) throws DataProcessException {		
+	public ESReadStreamStmt(ElasticSearchConnector ds) throws DataProcessException {		
 		_datasource=ds;
 	}
 	
 		
 	@Override
-	public ESDataSource getDatasource() {
+	public ElasticSearchConnector getDataConnector() {
 		return _datasource;
 	}
 	

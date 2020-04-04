@@ -42,7 +42,7 @@ import metaindex.data.userprofile.IUserProfileData;
 import toolbox.database.IDbItem;
 import toolbox.database.IDbSearchResult.SORTING_ORDER;
 import toolbox.database.elasticsearch.ESBulkProcess;
-import toolbox.database.elasticsearch.ESDataSource;
+import toolbox.database.elasticsearch.ElasticSearchConnector;
 import toolbox.database.elasticsearch.ESDownloadCsvProcess;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.BasicPair;

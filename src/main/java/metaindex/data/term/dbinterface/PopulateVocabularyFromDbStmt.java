@@ -30,7 +30,7 @@ import metaindex.data.term.CatalogTerm;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.TERM_DATATYPE;
 import metaindex.data.term.TermVocabularySet;
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.database.sql.SQLReadStreamStmt;
 import toolbox.exceptions.DataProcessException;
@@ -50,7 +50,7 @@ class PopulateVocabularyFromDbStmt extends SQLPopulateStmt<ICatalogTerm>   {
 
 	private Collection<ICatalogTerm> _data;	
 	
-	public PopulateVocabularyFromDbStmt(Collection<ICatalogTerm> d, SQLDataSource ds) throws DataProcessException { 
+	public PopulateVocabularyFromDbStmt(Collection<ICatalogTerm> d, SQLDataConnector ds) throws DataProcessException { 
 		super(ds);
 		_data=d;
 		assert(d.size()>0);

@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.userprofile.UserProfileData;
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.database.sql.SQLReadStreamStmt;
 import toolbox.exceptions.DataProcessException;
@@ -43,16 +43,16 @@ class PopulateCatalogFromDbStmt extends SQLPopulateStmt<ICatalog>   {
 	List<ICatalog> _data;
 	Boolean _onlyIfTimestampChanged=false;
 	
-	public PopulateCatalogFromDbStmt(List<ICatalog> d, SQLDataSource ds) throws DataProcessException { 
+	public PopulateCatalogFromDbStmt(List<ICatalog> d, SQLDataConnector ds) throws DataProcessException { 
 		super(ds);
 		_data=d;
 	}
-	public PopulateCatalogFromDbStmt(List<ICatalog> d, SQLDataSource ds, Boolean onlyIfTimestampChanged) throws DataProcessException { 
+	public PopulateCatalogFromDbStmt(List<ICatalog> d, SQLDataConnector ds, Boolean onlyIfTimestampChanged) throws DataProcessException { 
 		super(ds);
 		_data=d;
 		_onlyIfTimestampChanged=onlyIfTimestampChanged;
 	}
-	public PopulateCatalogFromDbStmt(SQLDataSource ds) throws DataProcessException { 
+	public PopulateCatalogFromDbStmt(SQLDataConnector ds) throws DataProcessException { 
 		super(ds);
 	}
 	

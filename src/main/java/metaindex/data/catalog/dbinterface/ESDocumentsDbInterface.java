@@ -14,7 +14,7 @@ import toolbox.database.DbSearchResult;
 import toolbox.database.IDbItem;
 import toolbox.database.IDbSearchResult.SORTING_ORDER;
 import toolbox.database.elasticsearch.ESBulkProcess;
-import toolbox.database.elasticsearch.ESDataSource;
+import toolbox.database.elasticsearch.ElasticSearchConnector;
 import toolbox.database.elasticsearch.ESDatabaseInterface;
 import toolbox.database.elasticsearch.ESDownloadCsvProcess;
 import toolbox.database.elasticsearch.ESReadStreamStmt;
@@ -31,7 +31,7 @@ import metaindex.data.userprofile.IUserProfileData;
 public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem> 
 {
 	
-	public ESDocumentsDbInterface(ESDataSource ds) { 
+	public ESDocumentsDbInterface(ElasticSearchConnector ds) { 
 		super(ds); 
 	}
 	/**
@@ -50,7 +50,7 @@ public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem>
 														List<String> filter, 
 														List< IPair<String,SORTING_ORDER> > sort) 
 					throws DataProcessException {
-		return new GetItemsFromDbStmt(c,fromIdx,size,query,filter,sort,getDatasource());
+		return new GetItemsFromDbStmt(c,fromIdx,size,query,filter,sort,getDataConnector());
 	}
 	
 	public ESReadStreamStmt<DbSearchResult> getLoadDocsStreamFromDbStmt(ICatalog c, Long fromIdx, Long size,
@@ -58,7 +58,7 @@ public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem>
 			List<String> filter, 
 			List< IPair<String,SORTING_ORDER> > sort) 
 	throws DataProcessException {
-	return new GetItemsStreamFromDbStmt(c,fromIdx,size,query,filter,sort,getDatasource());
+	return new GetItemsStreamFromDbStmt(c,fromIdx,size,query,filter,sort,getDataConnector());
 	}
 	
 	// -- update document field value
@@ -66,7 +66,7 @@ public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem>
 															  String docId, String fieldName, Object fieldValue, 
 															  Date timestamp) throws DataProcessException 
 	{
-		return new UpdateFieldValueIntoDbStmt(u,c,docId,fieldName,fieldValue,timestamp,getDatasource());
+		return new UpdateFieldValueIntoDbStmt(u,c,docId,fieldName,fieldValue,timestamp,getDataConnector());
 	}
 	
 	// -- create new documents
@@ -76,7 +76,7 @@ public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem>
 												  Integer expectedNbActions,
 												  Date timestamp) throws DataProcessException 
 	{
-		return new ESBulkProcess(u,name,expectedNbActions,c,timestamp,getDatasource());
+		return new ESBulkProcess(u,name,expectedNbActions,c,timestamp,getDataConnector());
 	}
 	
 	// -- extract CSV from given search

@@ -95,7 +95,7 @@ public class UsersManager implements IUsersManager {
 		try {
 			_usersLock.acquire();
 			List<IUserProfileData> loadedUsers=new ArrayList<>();
-			Globals.Get().getDatabasesMgr().getUserProfileDbInterface().getPopulateUserProfileFromDbStmt(loadedUsers).execute();
+			Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface().getPopulateUserProfileFromDbStmt(loadedUsers).execute();
 			for (IUserProfileData u : loadedUsers) {
 				_usersByName.put(u.getName(), u);
 			}

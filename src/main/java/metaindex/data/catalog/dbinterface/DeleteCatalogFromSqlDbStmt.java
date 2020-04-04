@@ -18,7 +18,7 @@ import java.util.List;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.catalog.ICatalogCustomParams;
 import metaindex.data.userprofile.IUserProfileData;
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLWriteStmt;
 import toolbox.exceptions.DataProcessException;
 
@@ -28,7 +28,7 @@ class DeleteCatalogFromSqlDbStmt extends SQLWriteStmt<ICatalog>   {
 	List<ICatalog> _data = new ArrayList<>();
 	public DeleteCatalogFromSqlDbStmt(IUserProfileData activeUser, 
 										List<ICatalog> catalogs, 
-										SQLDataSource ds) throws DataProcessException { 
+										SQLDataConnector ds) throws DataProcessException { 
 		super(ds);
 		_activeUser=activeUser;
 		_data=catalogs;		
@@ -44,7 +44,7 @@ class DeleteCatalogFromSqlDbStmt extends SQLWriteStmt<ICatalog>   {
 		List<PreparedStatement> result = new ArrayList<PreparedStatement>();
 		
 		try {
-			result.add(this.getDatasource().getConnection().prepareStatement(
+			result.add(this.getDataConnector().getConnection().prepareStatement(
 					"delete from catalogs where catalog_id=?"));
 			
 		} catch (SQLException e) { throw new DataProcessException(e); }

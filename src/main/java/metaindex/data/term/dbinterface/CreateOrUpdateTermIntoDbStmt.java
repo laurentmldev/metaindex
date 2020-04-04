@@ -18,14 +18,14 @@ import java.util.List;
 import metaindex.data.filter.IFilter;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.term.ICatalogTerm;
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLWriteStmt;
 import toolbox.exceptions.DataProcessException;
 
 class CreateOrUpdateTermIntoDbStmt extends SQLWriteStmt<ICatalogTerm>   {
 
 	List<ICatalogTerm> _data = new ArrayList<ICatalogTerm>();
-	public CreateOrUpdateTermIntoDbStmt(List<ICatalogTerm> terms, SQLDataSource ds) throws DataProcessException { 
+	public CreateOrUpdateTermIntoDbStmt(List<ICatalogTerm> terms, SQLDataConnector ds) throws DataProcessException { 
 		super(ds);
 		_data.addAll(terms);
 		
@@ -41,7 +41,7 @@ class CreateOrUpdateTermIntoDbStmt extends SQLWriteStmt<ICatalogTerm>   {
 		
 		try {
 			// insert if not present, update if already present
-			result.add(this.getDatasource().getConnection().prepareStatement(
+			result.add(this.getDataConnector().getConnection().prepareStatement(
 					"insert into catalog_terms (catalog_id,name,datatype,enumsList,isMultiEnum) values (?,?,?,?,?) "
 						+"ON DUPLICATE KEY UPDATE datatype=?,enumsList=?,isMultiEnum=?"));
 			

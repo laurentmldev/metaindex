@@ -18,7 +18,8 @@ public interface IMxDbManager {
 	public metaindex.data.commons.globals.guitheme.dbinterface.DbInterface getGuiThemeDbInterface();
 	public metaindex.data.commons.globals.guilanguage.dbinterface.DbInterface getGuiLanguageDbInterface();
 	
-	public metaindex.data.userprofile.dbinterface.DbInterface getUserProfileDbInterface();
+	public metaindex.data.userprofile.dbinterface.SqlDbInterface getUserProfileSqlDbInterface();
+	public metaindex.data.userprofile.dbinterface.ESDbInterface getUserProfileESDbInterface();
 	
 	public metaindex.data.catalog.dbinterface.SQLDbInterface getCatalogDefDbInterface();
 	public metaindex.data.catalog.dbinterface.ESCatalogDbInterface getCatalogContentsDbInterface();

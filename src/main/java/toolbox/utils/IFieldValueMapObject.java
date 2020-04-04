@@ -1,6 +1,5 @@
 package toolbox.utils;
 
-import java.util.List;
 import java.util.Set;
 
 /*
@@ -17,4 +16,5 @@ public interface IFieldValueMapObject extends IIdentifiable<String>  {
 	Object getValue(String fieldName);
 	void setValue(String fieldName, Object value);
 	Set<String> getFieldsList();
+
 }

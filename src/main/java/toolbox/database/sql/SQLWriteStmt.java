@@ -18,18 +18,18 @@ import java.util.Iterator;
 import java.util.List;
 
 import toolbox.database.IDatabaseWriteStmt;
-import toolbox.database.IDatasourcedStmt;
+import toolbox.database.IDataStmt;
 import toolbox.exceptions.DataProcessException;
 
-public abstract class SQLWriteStmt<TData> implements IDatabaseWriteStmt<TData>,IDatasourcedStmt<SQLDataSource>
+public abstract class SQLWriteStmt<TData> implements IDatabaseWriteStmt<TData>,IDataStmt<SQLDataConnector>
  {
 
-	private SQLDataSource _datasource;
+	private SQLDataConnector _datasource;
 	
 	// one list of statements for each data to process
 	private List< List<PreparedStatement> > _preparedStatements = new ArrayList<List<PreparedStatement>>();
 	
-	public SQLWriteStmt(SQLDataSource ds) {		
+	public SQLWriteStmt(SQLDataConnector ds) {		
 		_datasource=ds; 
 	}
 	
@@ -49,7 +49,7 @@ public abstract class SQLWriteStmt<TData> implements IDatabaseWriteStmt<TData>,I
 	@Override
 	public Boolean execute() throws DataProcessException {
 		prepareAndPopulateStmts();
-		Connection con = this.getDatasource().getConnection();
+		Connection con = this.getDataConnector().getConnection();
 		try { 			
 			con.setAutoCommit(false);
 			Iterator<List<PreparedStatement>> it1 = _preparedStatements.iterator();
@@ -65,7 +65,7 @@ public abstract class SQLWriteStmt<TData> implements IDatabaseWriteStmt<TData>,I
 			con.setAutoCommit(true);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			if (getDatasource().getConnection()!=null) {
+			if (getDataConnector().getConnection()!=null) {
 				try { 
 					con.rollback();
 					con.setAutoCommit(true);
@@ -81,7 +81,7 @@ public abstract class SQLWriteStmt<TData> implements IDatabaseWriteStmt<TData>,I
 	}
 	
 	@Override
-	public SQLDataSource getDatasource() {
+	public SQLDataConnector getDataConnector() {
 		return _datasource;
 	}
 	

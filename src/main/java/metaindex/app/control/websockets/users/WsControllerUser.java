@@ -123,7 +123,7 @@ public class WsControllerUser extends AMxWSController {
     		tmpUserData.setId(user.getId());
     		tmpUserData.setUserCatalogKibanaIFrameHtml(c.getId(), requestMsg.getKibanaIFrame());
     		
-    		Boolean result = Globals.Get().getDatabasesMgr().getUserProfileDbInterface().getSetUserCatalogCustomizationIntoDbStmt(tmpUserData, c).execute();
+    		Boolean result = Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface().getSetUserCatalogCustomizationIntoDbStmt(tmpUserData, c).execute();
     		if (result==false) {
     			answer.setRejectMessage("Update operation refused, sorry.");
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/user_catalogcusto_set", answer);
@@ -169,7 +169,7 @@ public class WsControllerUser extends AMxWSController {
     		tmpUserData.setNickname(requestMsg.getNickName());
     		tmpUserData.setName(user.getName());
     		tmpUserData.setId(user.getId());
-    		Boolean result = Globals.Get().getDatabasesMgr().getUserProfileDbInterface().getUpdateIntoDbStmt(tmpUserData).execute();
+    		Boolean result = Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface().getUpdateIntoDbStmt(tmpUserData).execute();
     		
     		if (result==false) {
     			answer.setRejectMessage("Update operation refused, sorry.");

@@ -45,7 +45,7 @@ import metaindex.data.catalog.ICatalog;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
 import metaindex.data.term.ICatalogTerm.TERM_DATATYPE;
-import toolbox.database.elasticsearch.ESDataSource;
+import toolbox.database.elasticsearch.ElasticSearchConnector;
 import toolbox.database.elasticsearch.ESDocumentsRequestBuilder;
 import toolbox.database.elasticsearch.ESReadStreamStmt;
 import toolbox.database.DbSearchResult;
@@ -89,7 +89,7 @@ class GetItemsStreamFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 			String query,
 			List<String> prefilters, 
 			List< IPair<String,SORTING_ORDER> > sort, 
-			ESDataSource ds) throws DataProcessException { 
+			ElasticSearchConnector ds) throws DataProcessException { 
 		super(ds);
 		_catalog=c;
 		_fromIdx=fromIdx;
@@ -159,7 +159,7 @@ class GetItemsStreamFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 			
 			
 			// first get total count (even if over max EL search size limit
-			CountResponse countResponse = this.getDatasource()
+			CountResponse countResponse = this.getDataConnector()
 											.getHighLevelClient()
 											.count(_requestsBuilder.getCountRequest(),RequestOptions.DEFAULT);
 			
@@ -168,7 +168,7 @@ class GetItemsStreamFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 			final Scroll scroll = new Scroll(TimeValue.timeValueMinutes(1L));
 			_requestsBuilder.getSearchRequest().scroll(scroll);
 			
-			SearchResponse searchResponse = this.getDatasource()
+			SearchResponse searchResponse = this.getDataConnector()
 					.getHighLevelClient().search(_requestsBuilder.getSearchRequest(), RequestOptions.DEFAULT); 
 			
 			if (searchResponse.status()!=RestStatus.OK) { 
@@ -190,7 +190,7 @@ class GetItemsStreamFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 			    
 			    SearchScrollRequest scrollRequest = new SearchScrollRequest(scrollId); 
 			    scrollRequest.scroll(scroll);
-			    searchResponse = this.getDatasource()
+			    searchResponse = this.getDataConnector()
 						.getHighLevelClient().scroll(scrollRequest, RequestOptions.DEFAULT);
 			    scrollId = searchResponse.getScrollId();
 			    searchHits = searchResponse.getHits().getHits();
@@ -201,7 +201,7 @@ class GetItemsStreamFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 			
 			ClearScrollRequest clearScrollRequest = new ClearScrollRequest(); 
 			clearScrollRequest.addScrollId(scrollId);
-			ClearScrollResponse clearScrollResponse = this.getDatasource()
+			ClearScrollResponse clearScrollResponse = this.getDataConnector()
 					.getHighLevelClient().clearScroll(clearScrollRequest, RequestOptions.DEFAULT);
 			
 			if (!clearScrollResponse.isSucceeded()) {

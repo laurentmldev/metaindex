@@ -15,13 +15,13 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import toolbox.database.IDataSource;
+import toolbox.database.IDataConnector;
 import toolbox.exceptions.DataProcessException;
 
-public class SQLDataSource implements IDataSource {
+public class SQLDataConnector implements IDataConnector {
 	
 	DataSource _sqlDs;
-	public SQLDataSource(DataSource ds) { _sqlDs=ds; }
+	public SQLDataConnector(DataSource ds) { _sqlDs=ds; }
 	
 	public DataSource getSqlDataSource() { return _sqlDs; }
 	

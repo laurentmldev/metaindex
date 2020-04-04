@@ -17,7 +17,7 @@ import java.util.List;
 
 import metaindex.data.filter.IFilter;
 import metaindex.data.catalog.ICatalog;
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLWriteStmt;
 import toolbox.exceptions.DataProcessException;
 
@@ -25,7 +25,7 @@ class CreateFilterIntoDbStmt extends SQLWriteStmt<IFilter>   {
 
 	ICatalog _catalog;
 	List<IFilter> _data = new ArrayList<IFilter>();
-	public CreateFilterIntoDbStmt(ICatalog c,IFilter newCat, SQLDataSource ds) throws DataProcessException { 
+	public CreateFilterIntoDbStmt(ICatalog c,IFilter newCat, SQLDataConnector ds) throws DataProcessException { 
 		super(ds);
 		_catalog=c;
 		_data.add(newCat);
@@ -40,7 +40,7 @@ class CreateFilterIntoDbStmt extends SQLWriteStmt<IFilter>   {
 		List<PreparedStatement> result = new ArrayList<PreparedStatement>();
 		
 		try {
-			result.add(this.getDatasource().getConnection().prepareStatement(
+			result.add(this.getDataConnector().getConnection().prepareStatement(
 					"insert into filters (catalog_id,name,query) "
 					+"values (?,?,?)"));
 			

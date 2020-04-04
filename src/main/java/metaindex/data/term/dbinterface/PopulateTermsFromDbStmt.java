@@ -24,7 +24,7 @@ import metaindex.data.catalog.ICatalog;
 import metaindex.data.term.CatalogTerm;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.TERM_DATATYPE;
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.database.sql.SQLReadStreamStmt;
 import toolbox.exceptions.DataProcessException;
@@ -42,12 +42,12 @@ class PopulateTermsFromDbStmt extends SQLPopulateStmt<ICatalogTerm>   {
 	private List<ICatalog> _catalogs;
 	private List<ICatalogTerm> _data = new ArrayList<>();
 	
-	public PopulateTermsFromDbStmt(List<ICatalog> c, List<ICatalogTerm> d, SQLDataSource ds) throws DataProcessException { 
+	public PopulateTermsFromDbStmt(List<ICatalog> c, List<ICatalogTerm> d, SQLDataConnector ds) throws DataProcessException { 
 		super(ds);
 		_catalogs=c;
 		_data=d;
 	}
-	public PopulateTermsFromDbStmt(List<ICatalog> c, SQLDataSource ds) throws DataProcessException { 
+	public PopulateTermsFromDbStmt(List<ICatalog> c, SQLDataConnector ds) throws DataProcessException { 
 		super(ds);
 		_catalogs=c;
 		

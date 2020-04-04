@@ -18,7 +18,7 @@ import java.util.List;
 import metaindex.data.filter.Filter;
 import metaindex.data.filter.IFilter;
 import metaindex.data.catalog.ICatalog;
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.database.sql.SQLReadStreamStmt;
 import toolbox.exceptions.DataProcessException;
@@ -32,13 +32,13 @@ class PopulateFilterStmt extends SQLPopulateStmt<IFilter>   {
 	List<ICatalog> _catalogs;
 	List<IFilter> _data = new ArrayList<>();
 	
-	public PopulateFilterStmt(ICatalog c, List<IFilter> d, SQLDataSource ds) throws DataProcessException { 
+	public PopulateFilterStmt(ICatalog c, List<IFilter> d, SQLDataConnector ds) throws DataProcessException { 
 		super(ds);
 		_catalogs=new ArrayList<ICatalog>();
 		_catalogs.add(c);
 		_data=d;
 	}
-	public PopulateFilterStmt(List<ICatalog> c, SQLDataSource ds) throws DataProcessException { 
+	public PopulateFilterStmt(List<ICatalog> c, SQLDataConnector ds) throws DataProcessException { 
 		super(ds);
 		_catalogs=c;
 	}

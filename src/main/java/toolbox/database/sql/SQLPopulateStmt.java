@@ -18,17 +18,17 @@ import org.springframework.jdbc.core.RowMapper;
 
 
 import toolbox.database.IDatabasePopulateStmt;
-import toolbox.database.IDatasourcedStmt;
+import toolbox.database.IDataStmt;
 import toolbox.exceptions.DataProcessException;
 
 public abstract class SQLPopulateStmt<TData> implements IDatabasePopulateStmt, 
-													IDatasourcedStmt<SQLDataSource>, 
+													IDataStmt<SQLDataConnector>, 
 													RowMapper<TData> {
 
-	private SQLDataSource _datasource;
+	private SQLDataConnector _datasource;
 	private final JdbcTemplate jdbcTemplate;
 	
-	public SQLPopulateStmt(SQLDataSource ds) throws DataProcessException {		
+	public SQLPopulateStmt(SQLDataConnector ds) throws DataProcessException {		
 		_datasource=ds; 
 		try {
 			  jdbcTemplate = new JdbcTemplate(_datasource.getSqlDataSource());
@@ -49,7 +49,7 @@ public abstract class SQLPopulateStmt<TData> implements IDatabasePopulateStmt,
 	}
 	
 	@Override
-	public SQLDataSource getDatasource() {
+	public SQLDataConnector getDataConnector() {
 		return _datasource;
 	}
 	

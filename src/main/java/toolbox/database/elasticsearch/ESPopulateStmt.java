@@ -13,22 +13,22 @@ See full version of LICENSE in <https://fsf.org/>
 */
 
 import toolbox.database.IDatabaseReadStreamStmt;
-import toolbox.database.IDatasourcedStmt;
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.IDataStmt;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.exceptions.DataProcessException;
 
-public abstract class ESPopulateStmt<TData> implements IDatabasePopulateStmt,IDatasourcedStmt<ESDataSource> 
+public abstract class ESPopulateStmt<TData> implements IDatabasePopulateStmt,IDataStmt<ElasticSearchConnector> 
  {
 
-	private ESDataSource _datasource;
+	private ElasticSearchConnector _datasource;
 	
-	public ESPopulateStmt(ESDataSource ds) throws DataProcessException {		
+	public ESPopulateStmt(ElasticSearchConnector ds) throws DataProcessException {		
 		_datasource=ds;
 	}
 	
 		
 	@Override
-	public ESDataSource getDatasource() {
+	public ElasticSearchConnector getDataConnector() {
 		return _datasource;
 	}
 	

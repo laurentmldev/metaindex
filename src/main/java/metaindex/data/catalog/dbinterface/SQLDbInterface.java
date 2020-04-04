@@ -10,7 +10,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLDatabaseInterface;
 import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.database.sql.SQLWriteStmt;
@@ -26,20 +26,20 @@ import metaindex.data.userprofile.IUserProfileData;
 public class SQLDbInterface  extends SQLDatabaseInterface<ICatalog> 
 {
 	
-	public SQLDbInterface(SQLDataSource ds) { super(ds); }
+	public SQLDbInterface(SQLDataConnector ds) { super(ds); }
 	
 	
 	public SQLPopulateStmt<ICatalog> getPopulateFromDefDbStmt(List<ICatalog> data) throws DataProcessException {
-		return new PopulateCatalogFromDbStmt(data, getDatasource());
+		return new PopulateCatalogFromDbStmt(data, getDataConnector());
 	}
 	
 	public SQLPopulateStmt<ICatalog> getPopulateFromDefDbStmt(List<ICatalog> data, Boolean onlyIfTimestampChanged) throws DataProcessException {
-		return new PopulateCatalogFromDbStmt(data, getDatasource(),onlyIfTimestampChanged);
+		return new PopulateCatalogFromDbStmt(data, getDataConnector(),onlyIfTimestampChanged);
 	}
 	
 	// --- create catalog
 	public SQLWriteStmt<ICatalogCustomParams> getCreateIntoDefDbStmt(IUserProfileData activeUser,List<ICatalogCustomParams> data) throws DataProcessException {
-		return new CreateOrUpdateCatalogIntoSqlDbStmt(activeUser,data, getDatasource());
+		return new CreateOrUpdateCatalogIntoSqlDbStmt(activeUser,data, getDataConnector());
 	}
 	public SQLWriteStmt<ICatalogCustomParams> getCreateIntoDefDbStmt(IUserProfileData activeUser,ICatalog data) throws DataProcessException {
 		List<ICatalogCustomParams> list = new ArrayList<>();
@@ -49,7 +49,7 @@ public class SQLDbInterface  extends SQLDatabaseInterface<ICatalog>
 	
 	// --- delete catalog
 	public SQLWriteStmt<ICatalog> getDeleteFromDefDbStmt(IUserProfileData activeUser,List<ICatalog> data) throws DataProcessException {
-		return new DeleteCatalogFromSqlDbStmt(activeUser,data, getDatasource());
+		return new DeleteCatalogFromSqlDbStmt(activeUser,data, getDataConnector());
 	}
 	public SQLWriteStmt<ICatalog> getDeleteFromDefDbStmt(IUserProfileData activeUser,ICatalog data) throws DataProcessException {
 		List<ICatalog> list = new ArrayList<>();
@@ -62,7 +62,7 @@ public class SQLDbInterface  extends SQLDatabaseInterface<ICatalog>
 		for (ICatalogCustomParams c : data) {
 			if (c.getId().equals(0)) { throw new DataProcessException("While updating catalog '"+c.getName()+"' : no primary key defined."); }			
 		}
-		return new CreateOrUpdateCatalogIntoSqlDbStmt(activeUser,data, getDatasource());
+		return new CreateOrUpdateCatalogIntoSqlDbStmt(activeUser,data, getDataConnector());
 	}
 	public SQLWriteStmt<ICatalogCustomParams> getUpdateIntoDefDbStmt(IUserProfileData activeUser,ICatalogCustomParams data) throws DataProcessException {
 		List<ICatalogCustomParams> list = new ArrayList<>();

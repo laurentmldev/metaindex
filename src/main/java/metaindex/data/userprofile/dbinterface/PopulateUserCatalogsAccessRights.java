@@ -19,7 +19,7 @@ import java.util.List;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.IUserProfileData.USER_CATALOG_ACCESSRIGHTS;
 import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLPopulateStmt;
 import toolbox.database.sql.SQLReadStreamStmt;
 import toolbox.exceptions.DataProcessException;
@@ -35,7 +35,7 @@ class PopulateUserCatalogsAccessRights extends SQLPopulateStmt<IUserProfileData>
 	private List<IUserProfileData> _data;
 	private Boolean _onlyIfTimestampChanged = false;
 	
-	public PopulateUserCatalogsAccessRights(List<IUserProfileData> d, SQLDataSource ds, Boolean onlyIfTimestampChanged) throws DataProcessException { 
+	public PopulateUserCatalogsAccessRights(List<IUserProfileData> d, SQLDataConnector ds, Boolean onlyIfTimestampChanged) throws DataProcessException { 
 		super(ds);
 		_data=d;
 		_onlyIfTimestampChanged=onlyIfTimestampChanged;

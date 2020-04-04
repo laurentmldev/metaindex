@@ -17,18 +17,18 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 import toolbox.database.IDatabaseReadStreamStmt;
-import toolbox.database.IDatasourcedStmt;
+import toolbox.database.IDataStmt;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.IStreamHandler;
 
 public abstract class SQLReadStreamStmt<TData> implements IDatabaseReadStreamStmt<TData>, 
-													IDatasourcedStmt<SQLDataSource>, 
+													IDataStmt<SQLDataConnector>, 
 													RowMapper<TData> {
 
-	private SQLDataSource _datasource;
+	private SQLDataConnector _datasource;
 	private final JdbcTemplate jdbcTemplate;
 	
-	public SQLReadStreamStmt(SQLDataSource ds) throws DataProcessException {		
+	public SQLReadStreamStmt(SQLDataConnector ds) throws DataProcessException {		
 		_datasource=ds; 
 		try {
 			  jdbcTemplate = new JdbcTemplate(_datasource.getSqlDataSource());
@@ -50,7 +50,7 @@ public abstract class SQLReadStreamStmt<TData> implements IDatabaseReadStreamStm
 	}
 	
 	@Override
-	public SQLDataSource getDatasource() {
+	public SQLDataConnector getDataConnector() {
 		return _datasource;
 	}
 	

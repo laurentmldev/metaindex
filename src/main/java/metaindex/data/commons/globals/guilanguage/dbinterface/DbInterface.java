@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLDatabaseInterface;
 import toolbox.database.sql.SQLReadStreamStmt;
 import toolbox.database.sql.SQLWriteStmt;
@@ -22,12 +22,12 @@ import toolbox.exceptions.DataProcessException;
 
 public class DbInterface extends SQLDatabaseInterface<IGuiLanguage> {
 
-	public DbInterface(SQLDataSource ds) {
+	public DbInterface(SQLDataConnector ds) {
 		super(ds);
 	}
 
 	public SQLReadStreamStmt<IGuiLanguage> getLoadFromDbStmt() throws DataProcessException {
-		return new LoadFromDbStmt(getDatasource());
+		return new LoadFromDbStmt(getDataConnector());
 	}
 	
 	public SQLReadStreamStmt<IGuiLanguage> getLoadFromDbStmt(IGuiLanguage data) throws DataProcessException {
@@ -37,7 +37,7 @@ public class DbInterface extends SQLDatabaseInterface<IGuiLanguage> {
 	}
 	
 	public SQLReadStreamStmt<IGuiLanguage> getLoadFromDbStmt(List<IGuiLanguage> data) throws DataProcessException {
-		return new LoadFromDbStmt(getDatasource());
+		return new LoadFromDbStmt(getDataConnector());
 	}
 	
 }

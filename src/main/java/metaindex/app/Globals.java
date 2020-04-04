@@ -13,6 +13,8 @@ See full version of LICENSE in <https://fsf.org/>
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,10 +41,16 @@ import metaindex.app.periodic.fs.MxTmpFolderMonitor;
 import metaindex.app.periodic.statistics.MxStatisticsManager;
 import metaindex.data.catalog.CatalogsManager;
 import metaindex.data.catalog.ICatalogsManager;
+import metaindex.data.userprofile.IUserProfileData;
+import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
 import metaindex.data.userprofile.IUsersManager;
+import metaindex.data.userprofile.UserProfileData;
 import metaindex.data.userprofile.UsersManager;
-import toolbox.database.elasticsearch.ESDataSource;
-import toolbox.database.sql.SQLDataSource;
+import toolbox.database.elasticsearch.ElasticSearchConnector;
+import toolbox.database.kibana.KibanaConnector;
+import toolbox.database.kibana.KibanaConnector.KIBANA_PRIVILEGE;
+import toolbox.database.kibana.KibanaConnector.KIBANA_SPACE_FEATURE;
+import toolbox.database.sql.SQLDataConnector;
 import toolbox.exceptions.DataAccessException;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.mailing.GoogleMailSender;
@@ -107,8 +115,8 @@ public class Globals {
 	public enum APPLICATION_STATUS { STOPPED, RUNNING, FAILURE, MAINTENANCE };
 	private APPLICATION_STATUS _applicationStatus = APPLICATION_STATUS.STOPPED;	
 	
-	private SQLDataSource _sqlDs;
-	private ESDataSource _esDs;
+	private SQLDataConnector _sqlDs;
+	private ElasticSearchConnector _esDs;
 	private IGuiLanguagesManager _guiLanguagesManager = new GuiLanguagesManager();
 	private IGuiThemesManager _guiThemesManager = new GuiThemesManager();	
 	private IUsersManager _usersManager = new UsersManager();
@@ -163,7 +171,7 @@ public class Globals {
 						
 		if (_sqlDs==null) {
 			
-			_esDs = new ESDataSource(GetMxProperty("mx.elk.host"),
+			_esDs = new ElasticSearchConnector(GetMxProperty("mx.elk.host"),
 									 Integer.valueOf(GetMxProperty("mx.elk.port1")),
 									 Integer.valueOf(GetMxProperty("mx.elk.port2")),
 									 GetMxProperty("mx.elk.proto"));
@@ -171,7 +179,7 @@ public class Globals {
 			// using same SQL datasource then for users authentication
 			DataSource ds = (DataSource)ContextLoader.getCurrentWebApplicationContext().getBean(DB_DATASOURCE_SQL);
 			
-			_sqlDs = new SQLDataSource(ds);
+			_sqlDs = new SQLDataConnector(ds);
 			_dbManager = new MxDbManager(_sqlDs,_esDs);
 			try {			
 				// load all languages and themes data at init
@@ -187,6 +195,67 @@ public class Globals {
 			// starting statistics manager 
 			_mxStats.start();
 			_mxTmpFolderCleaner.start();
+			
+			
+			KibanaConnector kSrc = new KibanaConnector("localhost",5601,"http");
+			
+			// Space
+			List<KIBANA_SPACE_FEATURE> disabledFeaturesList = new ArrayList<>();
+			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.indexPatterns);
+			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.apm);
+			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.dev_tools);
+			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.infrastructure);
+			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.ml);
+			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.advancedSettings);
+			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.logs);
+			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.maps);
+			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.canvas);
+			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.graph);
+			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.monitoring);
+			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.savedObjectsManagement);
+			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.siem);
+			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.uptime);
+			
+			kSrc.createKibanaSpace(Globals.GetMxProperty("mx.elk.user"), Globals.GetMxProperty("mx.elk.passwd"), 
+					"lolospace", "Lolo Space","Space for Lolo", "#444499", "LM", "", disabledFeaturesList);
+			
+			// Role
+			List<String> indicesList = new ArrayList<String>();
+			indicesList.add("test_catalog");
+			List<String> spacesList = new ArrayList<String>();
+			spacesList.add("lolospace");
+			List<String> featuresListStr = new ArrayList<String>();
+			featuresListStr.add("dashboard");
+			featuresListStr.add("discover");
+			featuresListStr.add("visualize");
+			Boolean rst = kSrc.createKibanaRole(	Globals.GetMxProperty("mx.elk.user"),
+													Globals.GetMxProperty("mx.elk.passwd"),
+													"lolospace_RO",
+													indicesList,KIBANA_PRIVILEGE.read,
+													spacesList,
+													featuresListStr,KIBANA_PRIVILEGE.read);
+			// User
+			List<String> rolesList = new ArrayList<String>();
+			rolesList.add("lolospace_RO");
+			rolesList.add("kibana_user");
+			IUserProfileData myUser = new UserProfileData();
+			myUser.setName("laurentmlcontact-metaindex@yahoo.fr");
+			myUser.setEncryptedPassword("$2a$10$gwVIdLdHwm8wW5z0Yl1Kxunh5e5TIUdPRHD5hJRJa2iCihqV1mkTS");
+			myUser.setEnabled(true);
+			myUser.setNickname("lolo");
+			
+			rst = Globals.Get().getDatabasesMgr().getUserProfileESDbInterface().getCreateOrUpdateUserStmt(myUser, rolesList).execute();
+			
+			// Index Pattern
+			rst = kSrc.createKibanaIndexPattern(Globals.GetMxProperty("mx.elk.user"),
+												Globals.GetMxProperty("mx.elk.passwd"),
+												"lolospace",
+												"mxpattern_test_catalog", "test_catalog", "mx_updated_timestamp");
+			
+			//kSrc.createKibanaUser(Globals.GetMxProperty("mx.elk.user"), Globals.GetMxProperty("mx.elk.passwd"), 
+			//		"lolo", "Laurent ML", "$2a$10$gwVIdLdHwm8wW5z0Yl1Kxunh5e5TIUdPRHD5hJRJa2iCihqV1mkTS", "laurentmlcontact-metaindex@yahoo.fr", rolesList);
+			log.info("### created Kibana conf!");
+			
 		}
 	}
 	public IGuiLanguagesManager getGuiLanguagesMgr() { return _guiLanguagesManager; }

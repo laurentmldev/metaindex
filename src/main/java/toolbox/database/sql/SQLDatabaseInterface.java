@@ -12,14 +12,14 @@ See full version of LICENSE in <https://fsf.org/>
 
 import toolbox.database.IDatabaseInterface;
 
-public class SQLDatabaseInterface<T> implements IDatabaseInterface<SQLDataSource> {
+public class SQLDatabaseInterface<T> implements IDatabaseInterface<SQLDataConnector> {
 
-	private SQLDataSource _ds;
+	private SQLDataConnector _ds;
 
-	public SQLDatabaseInterface(SQLDataSource ds) { _ds=ds; }
+	public SQLDatabaseInterface(SQLDataConnector ds) { _ds=ds; }
 	
 	@Override
-	public SQLDataSource getDatasource() { return _ds; }
+	public SQLDataConnector getDataConnector() { return _ds; }
 
 	
 }
