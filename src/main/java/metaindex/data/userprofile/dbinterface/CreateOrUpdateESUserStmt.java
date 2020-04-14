@@ -57,17 +57,12 @@ class CreateOrUpdateESUserStmt extends ESWriteStmt<IUserProfileData>   {
 				
 				User esUser = new User(user.getName(), _roles,metadata,user.getNickname(),user.getName());
 				PutUserRequest request = PutUserRequest
-						.withPasswordHash(esUser,user.getPassword().toCharArray(), enabled, RefreshPolicy.NONE);
-						//.withPassword(esUser,"lolopwd".toCharArray(), enabled, RefreshPolicy.NONE);
+						.withPasswordHash(esUser,user.getPassword().toCharArray(), enabled, RefreshPolicy.IMMEDIATE);
 
 				PutUserResponse putUserResponse = 
 						this.getDataConnector().getHighLevelClient().security().putUser(request, RequestOptions.DEFAULT);	
 				
-				if (!putUserResponse.isCreated()) {
-					log.error(putUserResponse.toString());
-				}
-				
-				return putUserResponse.isCreated();					
+				return true;					
 			}
 		} catch (ElasticsearchStatusException e) {
 			throw new DataProcessException(e.getMessage());
@@ -79,7 +74,7 @@ class CreateOrUpdateESUserStmt extends ESWriteStmt<IUserProfileData>   {
 			e.printStackTrace();
 			throw new DataProcessException(e.getMessage());
 		}
-		return true;
+		return false;
 	}
 	
 					

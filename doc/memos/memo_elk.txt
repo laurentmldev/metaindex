@@ -67,9 +67,14 @@ curl -u <user>:<pwd> -XGET http://metaindex.fr:9200/?pretty
 
 ### KIBANA Rest API ###
 
+# get index info
  curl -u elastic:xxx -XGET 'http://localhost:5601/api/spaces/space/test_catalog'
 
+# create role
  curl -u elastic:xxx  -H 'kbn-xsrf: true ' -H 'Content-Type: application/json'  -XPUT http://localhost:5601/api/security/role/test_role -d '{ "kibana": [ { "feature" : { "dashboard": ["read"] } , "spaces" : []  } ] }'
+ 
+# create index-pattern
+curl -u elastic:xxxx  -H 'kbn-xsrf: true ' -H 'Content-Type: application/json'  -XPOST http://localhost:5601/s/lolo/api/saved_objects/index-pattern/mxpattern_lolo -d '{ "attributes": { "title" : "lolo" } } 
  
 ELK rights
 ----------

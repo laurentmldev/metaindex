@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import metaindex.data.catalog.ICatalog;
+import metaindex.data.userprofile.IUserProfileData;
 import toolbox.utils.PeriodicProcessMonitor;
 
 /*
@@ -22,11 +23,11 @@ See full version of LICENSE in <https://fsf.org/>
  * @author laurentml
  *
  */
-public class CatalogPeriodicDbReloader extends PeriodicProcessMonitor {	
+public class UserProfilePeriodicDbReloader extends PeriodicProcessMonitor {	
 	
 	private Log log = LogFactory.getLog(CatalogPeriodicDbReloader.class);
 	
-	public CatalogPeriodicDbReloader(ICatalog c) {
+	public UserProfilePeriodicDbReloader(IUserProfileData c) {
 		super(c);	
 	}
 	

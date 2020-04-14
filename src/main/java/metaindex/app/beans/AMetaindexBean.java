@@ -74,7 +74,11 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 	  			if (request.getUserPrincipal()!=null) {
 	  				String userName=request.getUserPrincipal().getName();
 	  				_userProfileData=Globals.Get().getUsersMgr().getUserByName(userName);	 
-
+	  				if (_userProfileData==null) {
+	  					log.error("Could not retrieve data for user '"+userName+"', unable to log-in properly.");
+	  					_userProfileData=null;
+	  					return;
+	  				}
 	  				if (_userProfileData.getRemoteAddress().length()==0) {
 	  					_userProfileData.setRemoteAddress(request.getRemoteAddr());	  					
 	  				}

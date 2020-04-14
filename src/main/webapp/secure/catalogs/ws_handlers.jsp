@@ -82,7 +82,7 @@
 		 footer_showAlert(ERROR, "Sorry, unable to retrieve catalogs info.");
 		 return;
 	 }
-	 
+	 console.log(msg);
 	 let curActiveCard=MxGuiCards.getActiveCard();
 	 let newCurActiveCard=null;
 	 

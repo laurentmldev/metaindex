@@ -32,6 +32,7 @@ import metaindex.app.Globals;
 import metaindex.app.control.websockets.users.WsControllerUser;
 import metaindex.app.control.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
 import metaindex.app.control.websockets.users.WsUserGuiMessageText.MESSAGE_CRITICITY;
+import metaindex.app.periodic.db.UserProfilePeriodicDbReloader;
 import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.CatalogVocabularySet;
 import metaindex.data.catalog.ICatalog;
@@ -91,7 +92,7 @@ public class UserProfileData implements IUserProfileData
 	
 	private Integer _autoRefreshPeriodSec=Catalog.AUTOREFRESH_PERIOD_SEC;
 	
-	private PeriodicProcessMonitor _dbAutoRefreshProcessing=new PeriodicProcessMonitor(this);
+	private PeriodicProcessMonitor _dbAutoRefreshProcessing=new UserProfilePeriodicDbReloader(this);
 	
 	private Boolean _enabled=false;
 	
@@ -111,6 +112,10 @@ public class UserProfileData implements IUserProfileData
 		try {
 			this.acquireLock();
 			this._isLoggedIn=true;
+			Boolean result =Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().createOrUpdateCatalogStatisticsUser(this);
+	    	if (!result) {
+	    		log.error("unable to update user details in statistics environment.");
+    		}
 			_dbAutoRefreshProcessing.start();
 			this.releaseLock();
 		} catch(InterruptedException e) {
@@ -139,17 +144,18 @@ public class UserProfileData implements IUserProfileData
 	public String getStatisticsUrl() {
 		String url=Globals.GetMxProperty("mx.kibana.protocol")+"://"
 								+Globals.GetMxProperty("mx.kibana.host");
-		
+										
 		if (Globals.GetMxProperty("mx.kibana.port").length()>0) {
 			url+=":"+Globals.GetMxProperty("mx.kibana.port");
 		}
 		
-		url+="/metaindex/kibana";
+		url+="/metaindex/kibana/s/"+this.getCurrentCatalog().getName()+"/";
 		return url; 
 	}
 	@Override
 	public String getStatisticsDiscoverUrl() { 
-		String url = getStatisticsUrl()+"#/discover"
+		String url = getStatisticsUrl()
+				+"#/visualize"
 				+Globals.GetMxProperty("mx.kibana.urlparams");
 		
 		return url;
@@ -250,9 +256,11 @@ public class UserProfileData implements IUserProfileData
 	}
 	@Override
 	public void setCurrentCatalog(Integer catalogId) {
+		
 		try {
 			this.acquireLock();
-			_selectedCatalog=Globals.Get().getCatalogsMgr().getCatalog(catalogId);		
+			if (catalogId==null) { _selectedCatalog=null; }
+			else { _selectedCatalog=Globals.Get().getCatalogsMgr().getCatalog(catalogId); }		
 			// select default filter when entering a catalog
 			this.setCurrentFilter(IFilter.ALL_ITEMS_CATALOG_ID);
 		} catch (InterruptedException e) {
@@ -385,7 +393,8 @@ public class UserProfileData implements IUserProfileData
 	}
 	@Override
 	public void setUserCatalogAccessRights(Integer catalogId, USER_CATALOG_ACCESSRIGHTS role) {
-		_catalogsAccessRights.put(catalogId, role);		
+		if (role==null) { _catalogsAccessRights.remove(catalogId); }
+		else { _catalogsAccessRights.put(catalogId, role); }		
 	}
 	
 	@Override
@@ -491,7 +500,16 @@ public class UserProfileData implements IUserProfileData
 		Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface().getPopulateAccessRightsFromDbStmt(list,onlyIfDbcontentsUpdated).execute();
 		
 		// detect if contents actually changed
-		if (this.getLastUpdate().after(prevCurDate)) { log.info(this.getDetailsStr()); }
+		if (this.getLastUpdate().after(prevCurDate)) { 
+			log.info(this.getDetailsStr());
+			// catalogs access rights might have changed
+			// so we update roles in Kibana env. if
+			
+			Boolean result =Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().createOrUpdateCatalogStatisticsUser(this);
+	    	if (!result) {
+	    		log.error("unable to update user details in statistics environment.");
+    		}
+		}
 			 
 	}
 

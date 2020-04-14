@@ -220,6 +220,14 @@ public class WsControllerTerm extends AMxWSController {
     	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_term", answer);
     	user.notifyCatalogContentsChanged(CATALOG_MODIF_TYPE.FIELDS_LIST, 1L);
     	Globals.GetStatsMgr().handleStatItem(new CreateTermMxStat(user,c,term.getName()));
+    	
+		// Refresh Kibana index-pattern so that new term is available for statistics
+    	Boolean rst = Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().refreshStatisticsIndexPattern(user, c);
+    	if (rst==false) {
+    		answer.setRejectMessage("Unable to update index-pattern in Kibana for current catalog '"+c.getName()+"'");
+    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_term.kibana"));
+    	}
+		
     }
     
     /**

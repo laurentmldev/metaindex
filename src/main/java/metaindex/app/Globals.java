@@ -115,8 +115,9 @@ public class Globals {
 	public enum APPLICATION_STATUS { STOPPED, RUNNING, FAILURE, MAINTENANCE };
 	private APPLICATION_STATUS _applicationStatus = APPLICATION_STATUS.STOPPED;	
 	
-	private SQLDataConnector _sqlDs;
-	private ElasticSearchConnector _esDs;
+	private SQLDataConnector _sqlConnector;
+	private ElasticSearchConnector _esConnector;
+	private KibanaConnector _kibanaConnector;
 	private IGuiLanguagesManager _guiLanguagesManager = new GuiLanguagesManager();
 	private IGuiThemesManager _guiThemesManager = new GuiThemesManager();	
 	private IUsersManager _usersManager = new UsersManager();
@@ -169,18 +170,23 @@ public class Globals {
 		
 		log.info(getDetailsStr());
 						
-		if (_sqlDs==null) {
+		if (_sqlConnector==null) {
 			
-			_esDs = new ElasticSearchConnector(GetMxProperty("mx.elk.host"),
+			_esConnector = new ElasticSearchConnector(GetMxProperty("mx.elk.host"),
 									 Integer.valueOf(GetMxProperty("mx.elk.port1")),
 									 Integer.valueOf(GetMxProperty("mx.elk.port2")),
-									 GetMxProperty("mx.elk.proto"));
-
+									 GetMxProperty("mx.elk.protocol"));
+			
+			_kibanaConnector = new KibanaConnector(GetMxProperty("mx.kibana.api.host"),
+												   Integer.valueOf(GetMxProperty("mx.kibana.api.port")),
+												   GetMxProperty("mx.kibana.api.protocol")
+												   );
+			
 			// using same SQL datasource then for users authentication
 			DataSource ds = (DataSource)ContextLoader.getCurrentWebApplicationContext().getBean(DB_DATASOURCE_SQL);
 			
-			_sqlDs = new SQLDataConnector(ds);
-			_dbManager = new MxDbManager(_sqlDs,_esDs);
+			_sqlConnector = new SQLDataConnector(ds);
+			_dbManager = new MxDbManager(_sqlConnector,_esConnector,_kibanaConnector);
 			try {			
 				// load all languages and themes data at init
 				_guiLanguagesManager.loadFromDb();
@@ -196,7 +202,7 @@ public class Globals {
 			_mxStats.start();
 			_mxTmpFolderCleaner.start();
 			
-			
+			/*
 			KibanaConnector kSrc = new KibanaConnector("localhost",5601,"http");
 			
 			// Space
@@ -219,6 +225,8 @@ public class Globals {
 			kSrc.createKibanaSpace(Globals.GetMxProperty("mx.elk.user"), Globals.GetMxProperty("mx.elk.passwd"), 
 					"lolospace", "Lolo Space","Space for Lolo", "#444499", "LM", "", disabledFeaturesList);
 			
+			*/
+			/*
 			// Role
 			List<String> indicesList = new ArrayList<String>();
 			indicesList.add("test_catalog");
@@ -234,9 +242,11 @@ public class Globals {
 													indicesList,KIBANA_PRIVILEGE.read,
 													spacesList,
 													featuresListStr,KIBANA_PRIVILEGE.read);
+				*/
+			/*
 			// User
 			List<String> rolesList = new ArrayList<String>();
-			rolesList.add("lolospace_RO");
+			//rolesList.add("lolospace_RO");
 			rolesList.add("kibana_user");
 			IUserProfileData myUser = new UserProfileData();
 			myUser.setName("laurentmlcontact-metaindex@yahoo.fr");
@@ -244,8 +254,9 @@ public class Globals {
 			myUser.setEnabled(true);
 			myUser.setNickname("lolo");
 			
-			rst = Globals.Get().getDatabasesMgr().getUserProfileESDbInterface().getCreateOrUpdateUserStmt(myUser, rolesList).execute();
-			
+			Boolean rst = Globals.Get().getDatabasesMgr().getUserProfileESDbInterface().getCreateOrUpdateUserStmt(myUser, rolesList).execute();
+			*/
+			/*
 			// Index Pattern
 			rst = kSrc.createKibanaIndexPattern(Globals.GetMxProperty("mx.elk.user"),
 												Globals.GetMxProperty("mx.elk.passwd"),
@@ -255,6 +266,7 @@ public class Globals {
 			//kSrc.createKibanaUser(Globals.GetMxProperty("mx.elk.user"), Globals.GetMxProperty("mx.elk.passwd"), 
 			//		"lolo", "Laurent ML", "$2a$10$gwVIdLdHwm8wW5z0Yl1Kxunh5e5TIUdPRHD5hJRJa2iCihqV1mkTS", "laurentmlcontact-metaindex@yahoo.fr", rolesList);
 			log.info("### created Kibana conf!");
+			*/
 			
 		}
 	}

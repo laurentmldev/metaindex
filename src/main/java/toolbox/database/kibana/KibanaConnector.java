@@ -20,20 +20,23 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunctions;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientException;
 
 import reactor.core.publisher.Mono;
 import toolbox.database.IDataConnector;
+import toolbox.exceptions.DataProcessException;
 
 public class KibanaConnector implements IDataConnector {
 	
 	private Log log = LogFactory.getLog(KibanaConnector.class);
 	
-	public static enum KIBANA_PRIVILEGE { read,write,all };
-	public static enum KIBANA_HTTP_METHOD { GET,POST,PUT };
+	public static enum KIBANA_PRIVILEGE { read,write,all,manage,index,view_index_metadata };
+	public static enum KIBANA_HTTP_METHOD { GET,POST,PUT,DELETE };
 	public static enum KIBANA_SPACE_FEATURE { dev_tools,advancedSettings,indexPatterns,savedObjectsManagement,graph,monitoring,ml,apm,maps,canvas,infrastructure,siem,logs,uptime }
 	
 	String _hostname;
@@ -57,11 +60,13 @@ public class KibanaConnector implements IDataConnector {
 	@Override
 	public void close() {}
 	
-	private JSONObject requestRestService(String username, String pwd,KIBANA_HTTP_METHOD method,String serviceUri, JSONObject params) {
+	private JSONObject requestRestService(String username, String pwd,
+					KIBANA_HTTP_METHOD method,String serviceUri, JSONObject params) 
+							throws DataProcessException {
 		
-		WebClient client = WebClient.builder().clientConnector(new ReactorClientHttpConnector())
-				.filter(ExchangeFilterFunctions.basicAuthentication(username, pwd))
-				  								.baseUrl(getUrl()).build()		;
+		WebClient client = WebClient.builder().clientConnector(new ReactorClientHttpConnector())				
+										.filter(ExchangeFilterFunctions.basicAuthentication(username, pwd))
+										.baseUrl(getUrl()).build();
 		
 		client.head().attribute("kbn-xsrf", "true").accept(MediaType.APPLICATION_JSON);
 		
@@ -78,7 +83,11 @@ public class KibanaConnector implements IDataConnector {
 						.body(Mono.just(params.toString()),String.class)
 						; 
 		}
-		else { 
+		else if (method==KIBANA_HTTP_METHOD.DELETE) { 
+			request=client.delete()
+						.uri(serviceUri)
+						; 
+		}else { 
 			request=client.get()
 					.uri(serviceUri)
 					;
@@ -89,10 +98,21 @@ public class KibanaConnector implements IDataConnector {
 		//request.attribute("content-type", "application/json");
 		request.accept(MediaType.APPLICATION_JSON); 
 		
-		String responseStr=request.retrieve().bodyToMono(String.class).block();	
-		if (responseStr==null) { return null; }		
-		JSONObject response = new JSONObject(responseStr.replaceAll("^\\[", "").replaceAll("\\]$", ""));		
-		return response;
+		WebClient.ResponseSpec webResponse = request.retrieve();
+		/*
+		webResponse.onStatus(httpStatus -> HttpStatus.ACCEPTED.equals(httpStatus), 
+		        response -> response.bodyToMono(String.class).map(body -> new Exception()));
+		*/
+		
+		try {
+			String responseStr=webResponse.bodyToMono(String.class).block();	
+			if (responseStr==null) { return null; }		
+			JSONObject response = new JSONObject(responseStr.replaceAll("^\\[", "").replaceAll("\\]$", ""));
+			return response;
+		}catch (WebClientException e) {
+			throw new DataProcessException("Error while performing Kibana REST command",e);
+		}
+		
 	
 	}
 	
@@ -151,20 +171,59 @@ public class KibanaConnector implements IDataConnector {
 		esData.put("indices", indices);
 		JSONObject indexData = new JSONObject();
 		indices.put(indexData);
-		
-		JSONArray indecesArray = new JSONArray();
-		for (String indexName : indicesNames) { indecesArray.put(indexName); }
-		indexData.put("names", indecesArray);
+		;
+		//---- User index access
+		JSONArray indicesArray = new JSONArray();
+		for (String indexName : indicesNames) { indicesArray.put(indexName); }
+		indexData.put("names", indicesArray);
 		
 		JSONArray indexPrivilegesArray = new JSONArray();
 		indexPrivilegesArray.put(indicesPrivilege);
+		indexPrivilegesArray.put(KIBANA_PRIVILEGE.view_index_metadata);
 		indexData.put("privileges", indexPrivilegesArray);
-				
-		JSONObject response = requestRestService(adminUser, adminPwd, method,
+		
+		/*
+		//----Kibana indices access	
+		//JSONObject kibanaIndexData = new JSONObject();
+		//indices.put(kibanaIndexData)
+		JSONArray kibanaIndicesArray = new JSONArray();
+		kibanaIndicesArray.put(".kibana*");
+		kibanaIndexData.put("names", kibanaIndicesArray);
+		
+		JSONArray kibanaIndexPrivilegesArray = new JSONArray();
+		kibanaIndexPrivilegesArray.put(KIBANA_PRIVILEGE.manage);
+		kibanaIndexPrivilegesArray.put(KIBANA_PRIVILEGE.read);
+		kibanaIndexPrivilegesArray.put(KIBANA_PRIVILEGE.index);
+		kibanaIndexPrivilegesArray.put(KIBANA_PRIVILEGE.view_index_metadata);
+		kibanaIndexData.put("privileges", kibanaIndexPrivilegesArray);
+		*/
+		
+		//----
+		try {
+			/*JSONObject response = */requestRestService(adminUser, adminPwd, method,
 													"/api/security/role/"+roleName, createRoleRequestData);
-		return false;
+			return true;
+		} catch (DataProcessException  e) {
+			log.error("Error while performing Kibana operation (via REST API) for creating or updating role '"+roleName+"'");
+			return false;
+		}
+		
 	}
-	
+	public Boolean deleteKibanaRole(String adminUser, String adminPwd,String roleName) {
+		
+		JSONObject createIndexPatternRequestData = new JSONObject();
+		
+		try {
+			/*JSONObject response = */requestRestService(adminUser, adminPwd, 
+														KIBANA_HTTP_METHOD.DELETE,"/api/security/role/"+roleName,
+														createIndexPatternRequestData);
+			return true;
+		} catch (DataProcessException  e) {
+			log.error("Error while performing Kibana operation (via REST API) for deleting role '"+roleName+"'");
+			return false;
+		}
+		
+	}
 	
 	
 	// ----------- SPACES ------------
@@ -200,44 +259,29 @@ public class KibanaConnector implements IDataConnector {
 		for (KIBANA_SPACE_FEATURE feature : disabledFeaturesStr) { disabledFeatures.put(feature.toString()); }
 		createSpaceRequestData.put("disabledFeatures", disabledFeatures);
 		
-		
-		JSONObject response = requestRestService(adminUser, adminPwd, method,
+		try {
+			JSONObject response = requestRestService(adminUser, adminPwd, method,
 													"/api/spaces/space", createSpaceRequestData);
-		return true;
+			return response!=null;
+		} catch (DataProcessException  e) {
+			log.error("Error while performing Kibana operation (via REST API) for creating or updating space '"+spaceId+"'");
+			return false;
+		}
 	}
 	
+	public Boolean deleteKibanaSpace(String adminUser, String adminPwd,String spaceId) {
 	
-	// ---------- USERS -------------
-	public Boolean createKibanaUser(String adminUser, String adminPwd,
-					String userName,String userFullName, String passwdHash, String email,List<String> rolesList) {
-		
-		return createOrUpdateKibanaUser(adminUser,adminPwd,KIBANA_HTTP_METHOD.POST,userName,userFullName,passwdHash,email,rolesList);
-		
+		JSONObject createIndexPatternRequestData = new JSONObject();
+		try {
+			/*JSONObject response = */requestRestService(adminUser, adminPwd, 
+														KIBANA_HTTP_METHOD.DELETE,"/api/spaces/space/"+spaceId,
+														createIndexPatternRequestData);
+			return true;
+		} catch (DataProcessException  e) {
+			log.error("Error while performing Kibana operation (via REST API) for deleting space '"+spaceId+"'");
+			return false;
+		}
 	}
-
-	public Boolean updateKibanaUser(String adminUser, String adminPwd,
-			String userName,String userFullName, String passwdHash, String email,List<String> rolesList) {
-
-		return createOrUpdateKibanaUser(adminUser,adminPwd,KIBANA_HTTP_METHOD.PUT,userName,userFullName,passwdHash,email,rolesList);
-	
-	}
-	private Boolean createOrUpdateKibanaUser(String adminUser, String adminPwd, KIBANA_HTTP_METHOD method,
-						String userName,String userFullName, String passwdHash, String email,List<String> rolesList) {
-		
-		JSONObject createUserRequestData = new JSONObject(); 
-		createUserRequestData.put("password_hash", passwdHash);
-		createUserRequestData.put("email", email);
-		createUserRequestData.put("full_name", userFullName);
-		
-		JSONArray roles = new JSONArray();
-		createUserRequestData.put("roles", roles);
-		for (String roleName : rolesList) { roles.put(roleName); }
-		
-		JSONObject response = requestRestService(adminUser, adminPwd, method,"/_security/user/"+userName, createUserRequestData);
-		return true;
-	}
-
-
 	// ---------- INDEX-PATTERNS -------------
 
 	public Boolean createKibanaIndexPattern(String adminUser, String adminPwd,
@@ -250,10 +294,42 @@ public class KibanaConnector implements IDataConnector {
 		attributes.put("title", indicesFilter);
 		if (timeFieldName!=null && timeFieldName.length()>0) { attributes.put("timeFieldName", timeFieldName); }
 		
-		//JSONObject response = requestRestService(adminUser, adminPwd, KIBANA_HTTP_METHOD.POST,"/api/saved_objects/index-pattern/"+indexPatternName, createIndexPatternRequestData);
-		JSONObject response = requestRestService(adminUser, adminPwd, KIBANA_HTTP_METHOD.POST,"/s/"+spaceId+"/api/saved_objects/index-pattern/"+indexPatternName, createIndexPatternRequestData);
-		return true;
+		try {
+			/*
+			JSONObject response = requestRestService(adminUser, adminPwd, 
+				KIBANA_HTTP_METHOD.POST,"/api/saved_objects/index-pattern/"+indexPatternName, createIndexPatternRequestData);
+			*/
+			JSONObject response = requestRestService(adminUser, adminPwd, 
+					KIBANA_HTTP_METHOD.POST,"/s/"+spaceId+"/api/saved_objects/index-pattern/"+indexPatternName, 
+					createIndexPatternRequestData);
+					
+			return response!=null;
+		} catch (DataProcessException  e) {
+			log.error("Error while performing Kibana operation (via REST API) for creating index-pattern '"+indexPatternName+"'");
+			return false;
+		}
 	}
-
+	public Boolean deleteKibanaIndexPattern(String adminUser, String adminPwd,
+			String spaceId,String indexPatternName) {
 	
+		JSONObject createIndexPatternRequestData = new JSONObject();
+		try {
+			/*
+			JSONObject response = requestRestService(adminUser, adminPwd, 
+					KIBANA_HTTP_METHOD.DELETE,"/api/saved_objects/index-pattern/"+indexPatternName, createIndexPatternRequestData);
+			*/
+			JSONObject response = requestRestService(adminUser, adminPwd, 
+					KIBANA_HTTP_METHOD.DELETE,"/s/"+spaceId+"/api/saved_objects/index-pattern/"+indexPatternName, 
+					createIndexPatternRequestData);
+					
+			
+			return response!=null;
+		} catch (DataProcessException  e) {
+			log.error("Error while performing Kibana operation (via REST API) for deleting index-pattern '"+indexPatternName+"'");
+			return false;
+		}
+	}
+	
+	// ---------- USERS -------------
+	// Kibana's users management lies directly on ElasticSearch users. See ES connector.
 }

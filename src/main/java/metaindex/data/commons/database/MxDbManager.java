@@ -1,5 +1,7 @@
 package metaindex.data.commons.database;
 
+import metaindex.data.catalog.dbinterface.KibanaCatalogDbInterface;
+
 /*
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -13,13 +15,15 @@ See full version of LICENSE in <https://fsf.org/>
 import metaindex.data.commons.database.IMxDbManager;
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.database.elasticsearch.ElasticSearchConnector;
+import toolbox.database.kibana.KibanaConnector;
 import toolbox.database.sql.SQLDataConnector;
 import toolbox.exceptions.DataProcessException;
 
 public class MxDbManager implements IMxDbManager {
 	
-	private SQLDataConnector _sqlDatasource;
-	private ElasticSearchConnector _esDatasource;
+	private SQLDataConnector _sqlConnector;
+	private ElasticSearchConnector _esConnector;
+	private KibanaConnector _kibanaConnector;
 	
 	private metaindex.data.commons.globals.guitheme.dbinterface.DbInterface _guithemeInterface;
 	private metaindex.data.commons.globals.guilanguage.dbinterface.DbInterface _guilanguageInterface;
@@ -28,28 +32,32 @@ public class MxDbManager implements IMxDbManager {
 	private metaindex.data.catalog.dbinterface.SQLDbInterface _catalogInterface;
 	private metaindex.data.catalog.dbinterface.ESCatalogDbInterface _catalogContentsInterface;
 	private metaindex.data.catalog.dbinterface.ESDocumentsDbInterface _documentsInterface;
+	private metaindex.data.catalog.dbinterface.KibanaCatalogDbInterface _catalogManagementInterface;
 	private metaindex.data.filter.dbinterface.DbInterface _filtersInterface; 
 	private metaindex.data.term.dbinterface.DbInterface _termsInterface;
 	private metaindex.data.perspective.dbinterface.DbInterface _perspectivesInterface;
 	private metaindex.data.catalog.dbinterface.VocabularySQLDbInterface _catalogVocInterface;
 	
-	public MxDbManager(SQLDataConnector sqlDs, ElasticSearchConnector esDs) {
-		_sqlDatasource=sqlDs;
-		_esDatasource=esDs;
-		_guithemeInterface = new metaindex.data.commons.globals.guitheme.dbinterface.DbInterface(_sqlDatasource);
-		_guilanguageInterface = new metaindex.data.commons.globals.guilanguage.dbinterface.DbInterface(_sqlDatasource);
+	public MxDbManager(SQLDataConnector sqlConnector, ElasticSearchConnector esConnector, KibanaConnector kibanaConnector) {
+		_sqlConnector=sqlConnector;
+		_esConnector=esConnector;
+		_kibanaConnector=kibanaConnector;
 		
-		_userProfileSqlInterface = new metaindex.data.userprofile.dbinterface.SqlDbInterface(_sqlDatasource);
-		_userProfileESInterface = new metaindex.data.userprofile.dbinterface.ESDbInterface(esDs);
+		_guithemeInterface = new metaindex.data.commons.globals.guitheme.dbinterface.DbInterface(_sqlConnector);
+		_guilanguageInterface = new metaindex.data.commons.globals.guilanguage.dbinterface.DbInterface(_sqlConnector);
 		
-		_catalogInterface = new metaindex.data.catalog.dbinterface.SQLDbInterface(_sqlDatasource);
-		_catalogContentsInterface = new metaindex.data.catalog.dbinterface.ESCatalogDbInterface(_esDatasource);
-		_documentsInterface = new metaindex.data.catalog.dbinterface.ESDocumentsDbInterface(_esDatasource);
-		_catalogVocInterface = new metaindex.data.catalog.dbinterface.VocabularySQLDbInterface(_sqlDatasource);
+		_userProfileSqlInterface = new metaindex.data.userprofile.dbinterface.SqlDbInterface(_sqlConnector);
+		_userProfileESInterface = new metaindex.data.userprofile.dbinterface.ESDbInterface(esConnector);
 		
-		_filtersInterface = new metaindex.data.filter.dbinterface.DbInterface(_sqlDatasource);
-		_termsInterface = new metaindex.data.term.dbinterface.DbInterface(_sqlDatasource,_esDatasource);
-		_perspectivesInterface = new metaindex.data.perspective.dbinterface.DbInterface(_sqlDatasource);
+		_catalogInterface = new metaindex.data.catalog.dbinterface.SQLDbInterface(_sqlConnector);
+		_catalogContentsInterface = new metaindex.data.catalog.dbinterface.ESCatalogDbInterface(_esConnector);
+		_documentsInterface = new metaindex.data.catalog.dbinterface.ESDocumentsDbInterface(_esConnector);
+		_catalogVocInterface = new metaindex.data.catalog.dbinterface.VocabularySQLDbInterface(_sqlConnector);
+		_catalogManagementInterface = new metaindex.data.catalog.dbinterface.KibanaCatalogDbInterface(_kibanaConnector);
+		
+		_filtersInterface = new metaindex.data.filter.dbinterface.DbInterface(_sqlConnector);
+		_termsInterface = new metaindex.data.term.dbinterface.DbInterface(_sqlConnector,_esConnector);
+		_perspectivesInterface = new metaindex.data.perspective.dbinterface.DbInterface(_sqlConnector);
 		
 	}
 	@Override
@@ -80,6 +88,11 @@ public class MxDbManager implements IMxDbManager {
 	public metaindex.data.catalog.dbinterface.ESDocumentsDbInterface getDocumentsDbInterface() {
 		return _documentsInterface;
 	}
+	@Override
+	public KibanaCatalogDbInterface getCatalogManagementDbInterface() {
+		return _catalogManagementInterface;
+	}
+	
 	@Override
 	public metaindex.data.filter.dbinterface.DbInterface getFiltersDbInterface() {
 		return _filtersInterface;
@@ -114,6 +127,6 @@ public class MxDbManager implements IMxDbManager {
 				.getPopulateCatalogCustomizationFromDbStmt(u)
 				.execute();
 	}
-	
+
 
 }

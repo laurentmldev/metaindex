@@ -130,12 +130,15 @@ public class WsControllerCatalog extends AMxWSController {
 	    	c  = Globals.Get().getCatalogsMgr().getCatalog(requestMsg.getCatalogName());
 	    	
 	    	try {
+	    		
+	    		// create index
 		    	Boolean result = Globals.Get().getDatabasesMgr().getCatalogContentsDbInterface().getCreateIndexIntoDocsDbStmt(c).execute();
 		    	if (!result) {
 		    		answer.setRejectMessage("Unable to create catalog index");
 	    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
 	    			return;
 	    		}
+		    			    	
 	    	} catch(IndexAlreadyExistException e) {
 	    		user.sendGuiWarningMessage("Reusing existing contents for catalog '"+c.getName()+"'");
 	    	}
@@ -188,7 +191,35 @@ public class WsControllerCatalog extends AMxWSController {
 			c.loadMappingFromDb();	
 			c.loadVocabulariesFromDb();
 			c.setDbIndexFound(true);	    	
-					
+			
+			// create Kibana space dedicated to this catalog
+	    	Boolean result =Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().createStatisticsSpace(user, c);
+	    	if (!result) {
+	    		answer.setRejectMessage("Unable to create catalog statistics space");
+    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
+    			return;
+    		}
+	    	user.sendGuiInfoMessage("Created Kibana space for "+c.getName());
+	    	// create index-pattern for catalog's space
+	    	result =Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().createStatisticsIndexPattern(user, c);
+	    	if (!result) {
+	    		answer.setRejectMessage("Unable to create statistics index-pattern");
+    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
+    			return;
+    		}
+	    	user.sendGuiInfoMessage("Created Kibana index-pattern for "+c.getName());
+	    	
+	    	// create RO and W roles
+	    	result =Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().createCatalogStatisticsRoles(user, c);
+	    	if (!result) {
+	    		answer.setRejectMessage("Unable to create catalog statistics roles");
+    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
+    			return;
+    		}
+	    	user.sendGuiInfoMessage("Created Kibana roles for accessing "+c.getName());
+	    	// assign W role to active user is done by the monitoring task over user contents in SQL DB
+	    	// @see UserProfileData.doPeriodicProcess() function
+	    	
 			answer.setIsSuccess(true);
 	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
 	    	user.setCurrentCatalog(c.getId());
@@ -344,8 +375,24 @@ public class WsControllerCatalog extends AMxWSController {
 	    		// else the index was not in ES, but this is not a problem for the "delete catalog" operation
 	    		// so we can silently ignore it
 	    	}
+	    		    	
+	    	// Delete catalog config from Kibana config
+	    	Boolean kResult1 = Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().deleteCatalogStatisticsRoles(user, c);
+	    	if (!kResult1) {
+	    		answer.setRejectMessage("Unable to delete statistics roles for '"+c.getName()+"'");
+    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_catalog", answer);
+    		}
+	    	Boolean kResult2 = Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().deleteStatisticsSpace(user, c);
+	    	if (!kResult2) {
+	    		answer.setRejectMessage("Unable to delete statistics spaces for '"+c.getName()+"'");
+    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_catalog", answer);
+    		}
+	    	// no need to explicitly delete index pattern, because it has defined as part of the space,
+	    	// and has been deleted by Kibana when deleting the space itself
 	    	
-	    	answer.setIsSuccess(true);    	
+	    	user.setCurrentCatalog(0);
+	    	user.setUserCatalogAccessRights(c.getId(), null);
+	    	answer.setIsSuccess(kResult1&&kResult2);    	
 	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_catalog", answer);
 	    	Globals.GetStatsMgr().handleStatItem(new DeleteCatalogMxStat(user,c));
 	    	c.releaseLock();

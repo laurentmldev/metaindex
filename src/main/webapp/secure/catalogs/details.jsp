@@ -173,7 +173,10 @@ function details_memGui() {
  MxGuiDetails.memGui=details_memGui;
  MxGuiDetails.restoreGui=details_restoreGui;
  
- MxGuiCards.extractName=function(objDescr) { return objDescr.vocabulary.name; }
+ MxGuiCards.extractName=function(objDescr) {
+	 if (objDescr["vocabulary"] != null) { return objDescr.vocabulary.name; }
+	 else { return objDescr.name; }
+ }
  </script>
  
  

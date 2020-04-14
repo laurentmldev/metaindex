@@ -8,21 +8,27 @@ Priority 1:
 deployement test scenario
 
 #6 Kibana access control to indices
-      - new catalog 
+      x new catalog 
       		. create index
       		. create space
       		. create index-pattern
       		. create RO and WR roles
-      		. assign WR role to catalog admin
-      - create user
+      		
+      x user login
       		. create user in ElasticSearch
-      - user change passwd
+      x user change passwd
       		. sync passwd in ElasticSearch
-      - user change role
+      x user change role
       		. update roles list (update role for each accessible catalogs) in Kibana
-      - user change index access-rights
+      x user change index access-rights
       		. update roles list in Kibana
-      
+      x create term
+      		. update index pattern
+      x delete catalog
+      		. delete roles and space and index-pattern
+   
+Bug user can delete space --> stop using 'kibana_user',
+   
 #8 prepare demo data, catalog/user present by default
 	
 #15 adapt GUI 
@@ -33,7 +39,11 @@ deployement test scenario
 		
 #17 language properties file in español
 
+Creation date is in UTC but interpreted as local time in Kibana GUI, 
+so when creazting a new object, it is not yet visible using default time filter options ('now' is 2h to early)  
+-> maybe play with advanced settings, setting timezone to UTC, or default search to now+2h ?
 
+when catalogs list is empty, we create a new catalog, it is not visible in web GUI
 
 Priority 2:
 -----------

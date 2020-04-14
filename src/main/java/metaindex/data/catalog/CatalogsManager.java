@@ -33,9 +33,25 @@ public class CatalogsManager implements ICatalogsManager {
 		
 	@Override
 	public ICatalog getCatalog(Integer catalogId) {
-		return _catalogsById.get(catalogId);
+		ICatalog c = _catalogsById.get(catalogId);
+		// if catalog not already loaded we load it from DB
+		if (c==null) {
+			c = new Catalog();
+			c.setId(catalogId);
+			try {
+				Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getPopulateFromDefDbStmt(c);
+				if (c.getName().length()>0 || c.isDbIndexFound()) {
+					_catalogsById.put(c.getId(),c);
+					return c;
+				} else { return null; }
+			} catch (DataProcessException e) {
+				e.printStackTrace();
+				return null;
+			}			
+		}
+		return c;
 	}
-	
+
 	@Override
 	public void loadFromDb() throws DataProcessException {
 		

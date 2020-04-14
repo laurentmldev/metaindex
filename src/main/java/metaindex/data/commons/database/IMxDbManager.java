@@ -15,6 +15,7 @@ import toolbox.exceptions.DataProcessException;
 
 public interface IMxDbManager {
 	
+	
 	public metaindex.data.commons.globals.guitheme.dbinterface.DbInterface getGuiThemeDbInterface();
 	public metaindex.data.commons.globals.guilanguage.dbinterface.DbInterface getGuiLanguageDbInterface();
 	
@@ -24,6 +25,7 @@ public interface IMxDbManager {
 	public metaindex.data.catalog.dbinterface.SQLDbInterface getCatalogDefDbInterface();
 	public metaindex.data.catalog.dbinterface.ESCatalogDbInterface getCatalogContentsDbInterface();
 	public metaindex.data.catalog.dbinterface.ESDocumentsDbInterface getDocumentsDbInterface();
+	public metaindex.data.catalog.dbinterface.KibanaCatalogDbInterface getCatalogManagementDbInterface();
 	
 	public metaindex.data.filter.dbinterface.DbInterface getFiltersDbInterface();
 	

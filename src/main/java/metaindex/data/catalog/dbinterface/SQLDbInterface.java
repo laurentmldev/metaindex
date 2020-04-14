@@ -29,10 +29,14 @@ public class SQLDbInterface  extends SQLDatabaseInterface<ICatalog>
 	public SQLDbInterface(SQLDataConnector ds) { super(ds); }
 	
 	
+	public SQLPopulateStmt<ICatalog> getPopulateFromDefDbStmt(ICatalog data) throws DataProcessException {
+		List<ICatalog> l = new ArrayList<>();
+		l.add(data);
+		return getPopulateFromDefDbStmt(l);
+	}
 	public SQLPopulateStmt<ICatalog> getPopulateFromDefDbStmt(List<ICatalog> data) throws DataProcessException {
 		return new PopulateCatalogFromDbStmt(data, getDataConnector());
 	}
-	
 	public SQLPopulateStmt<ICatalog> getPopulateFromDefDbStmt(List<ICatalog> data, Boolean onlyIfTimestampChanged) throws DataProcessException {
 		return new PopulateCatalogFromDbStmt(data, getDataConnector(),onlyIfTimestampChanged);
 	}

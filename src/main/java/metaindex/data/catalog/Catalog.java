@@ -90,6 +90,8 @@ public class Catalog implements ICatalog {
 	
 	private CatalogFtpServer _ftpServer=null;
 	
+	private String _chronologyReferenceTermName = ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP;
+	
 	public Catalog() {}
 	public Catalog(ICatalogCustomParams ref) {
 		this.setId(ref.getId());
@@ -291,6 +293,9 @@ public class Catalog implements ICatalog {
 	public void setNbDocuments(Long _nbDocuments) {
 		this._nbDocuments = _nbDocuments;
 	}
+	
+	public String getTimeFieldRawName() { return _chronologyReferenceTermName; }
+	public void setTimeFieldRawName(String t) { _chronologyReferenceTermName=t; }
 	
 	@SuppressWarnings("unchecked")
 	@Override

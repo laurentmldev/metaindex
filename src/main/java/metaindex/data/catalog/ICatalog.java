@@ -52,6 +52,11 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 	public Boolean isDbIndexFound(); 
 	public void setDbIndexFound(Boolean dbIndexFound);	
 	
+	/// get the field to be used as 'chronology reference' for statistics
+	/// if not set, default used is item's date of creation in application
+	public String getTimeFieldRawName();
+	public void setTimeFieldRawName(String t);
+	
 	// Terms
 	public Map<String,ICatalogTerm> getTerms();
 	public void clearTerms() throws DataProcessException;	
