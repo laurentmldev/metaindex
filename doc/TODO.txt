@@ -7,12 +7,14 @@ Priority 1:
 
 deployement test scenario
 
-#6 Kibana access control to indices
-      x new catalog 
-      		. create index
-      		. create space
-      		. create index-pattern
-      		. create RO and WR roles
+#27 'create new item' icon shall be star
+
+#24 once chosen manually, default perspective shall be persistent
+
+#25 when creating a new catalog, lexic panel still have contents of previously selected catalog
+
+#26 don't show catalogs for which user does not have access right at all
+
       		
       x user login
       		. create user in ElasticSearch
@@ -27,23 +29,21 @@ deployement test scenario
       x delete catalog
       		. delete roles and space and index-pattern
    
-Bug user can delete space --> stop using 'kibana_user',
    
-#8 prepare demo data, catalog/user present by default
-	
+
 #15 adapt GUI 
 	- to access rights (hide forbidden actions)	
 	x visible color for selected filters
 	x help icons 
 	- help texts
+	- hide for read-only users :
+			create new items
+			upload csv
+			save filter
+			modify filter
 		
 #17 language properties file in español
 
-Creation date is in UTC but interpreted as local time in Kibana GUI, 
-so when creazting a new object, it is not yet visible using default time filter options ('now' is 2h to early)  
--> maybe play with advanced settings, setting timezone to UTC, or default search to now+2h ?
-
-when catalogs list is empty, we create a new catalog, it is not visible in web GUI
 
 Priority 2:
 -----------
@@ -52,8 +52,8 @@ renaming a perspective actually duplicates it
 search on accentuated characters imported from UTF-16 does not seem to work
 #19 send email to users and admin when useful
 
+#23 avoid use of kibana_admin user once ELK issue 51759 us fixed
 
-#16 removing a term present in several perspectives, it removes it from the second perspective while user have clicked on the first perspective ones
 
 #14 check user inputs : ensure no special nor space characters and are not empty
 	- mapping names
@@ -65,7 +65,8 @@ search on accentuated characters imported from UTF-16 does not seem to work
 	- sign-up form
 
 - left-items submenus not visible when window width too small
-- user profile picture
+
+#28 user profile picture
 
 Backlog:
 --------
@@ -104,6 +105,22 @@ Backlog:
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+Creation date is in UTC but interpreted as local time in Kibana GUI, 
+so when creazting a new object, it is not yet visible using default time filter options ('now' is 2h to early)  
+-> maybe play with advanced settings, setting timezone to UTC, or default search to now+2h ?
+
+#16 removing a term present in several perspectives, it removes it from the second perspective while user have clicked on the first perspective ones
+
+#8 prepare demo data, catalog/user present by default
+	
+#6 Kibana access control to indices
+      x new catalog 
+      		. create index
+      		. create space
+      		. create index-pattern
+      		. create RO and WR roles
+      		
+x when catalogs list is empty, we create a new catalog, it is not visible in web GUI
 
 #22 import data as CSV
 	remove tmp files older than 10min

@@ -155,7 +155,7 @@ public class UserProfileData implements IUserProfileData
 	@Override
 	public String getStatisticsDiscoverUrl() { 
 		String url = getStatisticsUrl()
-				+"#/visualize"
+				+"#/dashboards"
 				+Globals.GetMxProperty("mx.kibana.urlparams");
 		
 		return url;

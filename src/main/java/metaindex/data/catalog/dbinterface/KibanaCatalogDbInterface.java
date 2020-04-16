@@ -147,10 +147,12 @@ public class KibanaCatalogDbInterface
 		
 		List<String> rolesList = new ArrayList<String>();
 		
-		if (activeUser.getRole()==USER_ROLE.ROLE_OBSERVER) { rolesList.add("kibana_dashboard_only_user"); }		
-		// kibana_user is actually (deprecated) synonymous of kibana_admin, which gives rights to configure the 'Kibana' app
-		// settings, like spaces etc., which is not expected, but is the best option we have for now
-		//else { rolesList.add("kibana_user"); }
+		if (activeUser.getRole()==USER_ROLE.ROLE_OBSERVER) { rolesList.add("kibana_dashboard_only_user"); }
+		// issue #23
+		// kibana_admin gives rights to configure the 'Kibana' app including deleting all spaces
+		// but is necessary for proper use of Kibana for now
+		// (see elasticsearch issue https://github.com/elastic/kibana/issues/51759)
+		else { rolesList.add("kibana_admin"); }
 
 		for (Integer catId : activeUser.getUserCatalogsIds()) {
 			ICatalog c = Globals.Get().getCatalogsMgr().getCatalog(catId);
