@@ -82,7 +82,7 @@
  <!--  Modal contents added by javascript in function "handleCatalogDetails" down there -->
         <a class="nav-link collapsed" href="#"
         	onclick="let popupForm=this.parentNode.querySelector('._modal_root_').toggleShowHide();">
-          <i class="fas fa-fw fa-copy"></i>
+          <i class="fas fa-star fa-copy"></i>
           <span><s:text name="Items.createItem"></s:text> <s:property value='currentUserProfile.catalogVocabulary.itemCap'/></span>
         </a>
        
