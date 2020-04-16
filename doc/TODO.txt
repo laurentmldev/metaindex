@@ -7,8 +7,6 @@ Priority 1:
 
 deployement test scenario
 
-#27 'create new item' icon shall be star
-
 #24 once chosen manually, default perspective shall be persistent
 
 #25 when creating a new catalog, lexic panel still have contents of previously selected catalog
@@ -105,6 +103,9 @@ Backlog:
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+
+#27 'create new item' icon shall be star
+
 Creation date is in UTC but interpreted as local time in Kibana GUI, 
 so when creazting a new object, it is not yet visible using default time filter options ('now' is 2h to early)  
 -> maybe play with advanced settings, setting timezone to UTC, or default search to now+2h ?
