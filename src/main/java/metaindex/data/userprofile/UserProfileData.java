@@ -92,7 +92,7 @@ public class UserProfileData implements IUserProfileData
 	
 	private Integer _autoRefreshPeriodSec=Catalog.AUTOREFRESH_PERIOD_SEC;
 	
-	private PeriodicProcessMonitor _dbAutoRefreshProcessing=new UserProfilePeriodicDbReloader(this);
+	private PeriodicProcessMonitor _dbAutoRefreshProcessing=null;
 	
 	private Boolean _enabled=false;
 	
@@ -116,6 +116,9 @@ public class UserProfileData implements IUserProfileData
 	    	if (!result) {
 	    		log.error("unable to update user details in statistics environment.");
     		}
+	    	
+	    	if (_dbAutoRefreshProcessing!=null) { _dbAutoRefreshProcessing.stopMonitoring(); }
+	    	_dbAutoRefreshProcessing=new UserProfilePeriodicDbReloader(this); 
 			_dbAutoRefreshProcessing.start();
 			this.releaseLock();
 		} catch(InterruptedException e) {

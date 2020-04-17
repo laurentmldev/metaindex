@@ -74,9 +74,16 @@ public class WsControllerCatalog extends AMxWSController {
     		Iterator<ICatalog> it = catalogs.iterator();
     		while (it.hasNext()) {
 	    		ICatalog curCatalog = it.next();
+	    		// request catalogId=0 == retrieve all catalogs (accessible to the user)
 	    		if (requestMsg.getCatalogId().equals(0) 
 	    				|| requestMsg.getCatalogId().equals(curCatalog.getId())) {
-	    			answeredList.add(new WsMsgCatalogDetails_answer(curCatalog,user));	  
+	    			if (user.getUserCatalogAccessRights(curCatalog.getId())!=USER_CATALOG_ACCESSRIGHTS.NONE)
+	    			{ 
+	    				answeredList.add(new WsMsgCatalogDetails_answer(curCatalog,user));	  
+	    			} else if (!requestMsg.getCatalogId().equals(0)) {
+	    				user.sendGuiErrorMessage(user.getText("globals.noAccessRights"));
+	    				return;
+	    			}
 	    		}
 			}    
     		sendListToUser(user.getName(),"/queue/catalogs",answeredList, /* Base64 compression */ true); 

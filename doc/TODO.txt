@@ -11,24 +11,6 @@ deployement test scenario
 
 #25 when creating a new catalog, lexic panel still have contents of previously selected catalog
 
-#26 don't show catalogs for which user does not have access right at all
-
-      		
-      x user login
-      		. create user in ElasticSearch
-      x user change passwd
-      		. sync passwd in ElasticSearch
-      x user change role
-      		. update roles list (update role for each accessible catalogs) in Kibana
-      x user change index access-rights
-      		. update roles list in Kibana
-      x create term
-      		. update index pattern
-      x delete catalog
-      		. delete roles and space and index-pattern
-   
-   
-
 #15 adapt GUI 
 	- to access rights (hide forbidden actions)	
 	x visible color for selected filters
@@ -104,6 +86,8 @@ Backlog:
 Done:
 -----
 
+#26 don't show catalogs for which user does not have access right at all
+
 #27 'create new item' icon shall be star
 
 Creation date is in UTC but interpreted as local time in Kibana GUI, 
@@ -120,6 +104,19 @@ so when creazting a new object, it is not yet visible using default time filter 
       		. create space
       		. create index-pattern
       		. create RO and WR roles
+      		      		
+      x user login
+      		. create user in ElasticSearch
+      x user change passwd
+      		. sync passwd in ElasticSearch
+      x user change role
+      		. update roles list (update role for each accessible catalogs) in Kibana
+      x user change index access-rights
+      		. update roles list in Kibana
+      x create term
+      		. update index pattern
+      x delete catalog
+      		. delete roles and space and index-pattern
       		
 x when catalogs list is empty, we create a new catalog, it is not visible in web GUI
 
