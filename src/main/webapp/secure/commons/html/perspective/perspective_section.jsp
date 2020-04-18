@@ -85,9 +85,9 @@ function _commons_perspective_build_section(catalogDesc,perspectiveData,tabIdx,s
 			 
 			
 			 
-			 // type
+			 // type disabled for now, only 'mozaic' type implemented
 			 let typeNode=sectionTemplate.querySelector("._type_");
-			 typeNode.style.display='block';
+			 //typeNode.style.display='block';
 			 let onSectionTypeChangeCallback=function(pk,fieldName,fieldValue,successCallback, errorCallback) { 
 				 
 				 let perspectiveDataCopy=JSON.parse(JSON.stringify(perspectiveData));

@@ -5,8 +5,6 @@ Priority 1:
 
 #20 build usage statistics : TO BE TESTED
 
-disable 'table' from perspective section rendering types (not implemented yet)
-
 deployement test scenario
 
 
@@ -84,6 +82,7 @@ Backlog:
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+disable 'table' from perspective section rendering types (not implemented yet)
 
 #25 when creating a new catalog, lexic panel still have contents of previously selected catalog
 
