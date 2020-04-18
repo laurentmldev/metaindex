@@ -15,6 +15,7 @@
  var _curCatalogDesc=null;
  var _curItemCard=null;
  var _details_DEFAULT_PERSPECTIVE_NAME="default";
+ var _details_current_default_perspective=_details_DEFAULT_PERSPECTIVE_NAME;
  var _currentPerspectiveName=null;
  var _curEditMode="readonly"; //edit|readonly
  
@@ -31,8 +32,11 @@
 	 let perspectiveSelector=detailsNode.querySelector("._perspectives_select_");
 	 let newIndex=perspectiveSelector.selectedIndex+1;
 	 if (newIndex>=perspectiveSelector.getElementsByTagName('option').length) { newIndex=0; }
+	 
 	 perspectiveSelector.value=perspectiveSelector.getElementsByTagName('option')[newIndex].value;
+	 _details_current_default_perspective=perspectiveSelector.value;
 	 perspectiveSelector.onchange();	 
+	 
 	// show alert with ne perspective name
 	MxGuiDetails.showAlert("<table><tr><td>Perspective : </td><td>"
 				+perspectiveSelector.getElementsByTagName('option')[newIndex].innerHTML
@@ -87,16 +91,14 @@
 	// perspective selector
 	let perspectiveSelector = newItemDetails.querySelector("._perspectives_select_");
 	let sortedPerspectivesNames = Object.keys(MxGuiDetails.getCurCatalogDescription().perspectives).sort();		 
-	_currentPerspectiveName=null;
-	let perspectiveDetectionField=MxGuiDetails.getCurCatalogDescription().perspectiveMatchField;
-	// if current item does not contain the perpective-detection-field, then we use default perspective	
-	if (itemCard.descr.data[perspectiveDetectionField]==null) { _currentPerspectiveName=_details_DEFAULT_PERSPECTIVE_NAME; }
 	
+	let perspectiveDetectionField=MxGuiDetails.getCurCatalogDescription().perspectiveMatchField;
+	_currentPerspectiveName=null;
 	for (pIdx in sortedPerspectivesNames) {
 		let pName=sortedPerspectivesNames[pIdx];
 		let curTestedVal=itemCard.descr.data[perspectiveDetectionField];
 		// if item matches current perspective, we use it 
-		if (_currentPerspectiveName==null && pName==curTestedVal) { 
+		if (pName==curTestedVal) { 
 			_currentPerspectiveName=pName; 
 		}
 		
@@ -111,7 +113,8 @@
 	newOption.innerHTML=_details_DEFAULT_PERSPECTIVE_NAME;
 	perspectiveSelector.appendChild(newOption);
 	
-	if (_currentPerspectiveName==null) { _currentPerspectiveName=_details_DEFAULT_PERSPECTIVE_NAME; }
+	// if current item does not contain the perpective-detection-field, then we use default perspective
+	if (_currentPerspectiveName==null) { _currentPerspectiveName=_details_current_default_perspective; }
 	
 	// id
 	let idNode = newItemDetails.querySelector("._dbid_");

@@ -5,9 +5,9 @@ Priority 1:
 
 #20 build usage statistics : TO BE TESTED
 
-deployement test scenario
+disable 'table' from perspective section rendering types (not implemented yet)
 
-#24 once chosen manually, default perspective shall be persistent
+deployement test scenario
 
 #25 when creating a new catalog, lexic panel still have contents of previously selected catalog
 
@@ -85,6 +85,7 @@ Backlog:
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+#24 once chosen manually, default perspective shall be persistent
 
 #26 don't show catalogs for which user does not have access right at all
 
