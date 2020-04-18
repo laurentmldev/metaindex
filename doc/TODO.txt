@@ -9,7 +9,6 @@ disable 'table' from perspective section rendering types (not implemented yet)
 
 deployement test scenario
 
-#25 when creating a new catalog, lexic panel still have contents of previously selected catalog
 
 #15 adapt GUI 
 	- to access rights (hide forbidden actions)	
@@ -85,6 +84,9 @@ Backlog:
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+
+#25 when creating a new catalog, lexic panel still have contents of previously selected catalog
+
 #24 once chosen manually, default perspective shall be persistent
 
 #26 don't show catalogs for which user does not have access right at all

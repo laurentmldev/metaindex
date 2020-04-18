@@ -14,13 +14,18 @@
 	 let lexicContents=document.getElementById("details_lexic").cloneNode(true);
 	 lexicContents.style.display='block';
 	 //console.log(lexicContents);
+	 
 	 lexicRootNode.appendChild(lexicContents);
 	 
 	 let navInsertSpot=lexicContents.querySelector("._nav_insertspot_");
 	 let contentsInsertSpot=lexicContents.querySelector("._contents_insertspot_");
+	 // remove existing lexic contens if any
+	 navInsertSpot.innerHTML="";
+	 contentsInsertSpot.innerHTML="";
 	 
 	 //console.log(catalogCard.descr.vocabularies);
 	 for (var vocIdx in catalogCard.descr.vocabularies) {
+		 
 		 let curCatalogVocabularyData=catalogCard.descr.vocabularies[vocIdx];
 		 let langName=curCatalogVocabularyData.guiLanguageShortName;
 		 let langTitle=curCatalogVocabularyData.guiLanguageFullName;
