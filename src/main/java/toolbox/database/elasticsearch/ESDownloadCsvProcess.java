@@ -160,7 +160,10 @@ public class ESDownloadCsvProcess extends AProcessingTask   {
 			_stoppingProcessingLock.acquire();
 			if (_csvDump!=null) { _csvDump.stop(); }
 			
-			if (this.isTerminated() && !this.isRunning()) { return; }			
+			if (this.isTerminated() && !this.isRunning()) { 
+				_stoppingProcessingLock.release();
+				return; 
+			}			
 			
 			Boolean success=(_csvDump!=null && _csvDump.isAllDataProcessed());
 			if (!success) {

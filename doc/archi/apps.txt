@@ -1,0 +1,13 @@
+
+https://metaindex.fr
+	Proxy for secure access to PMA and Kibana
+
+https://metaindex.fr:8443/metaindex/
+	Metaindex Webapp
+
+https://metaindex.fr/metaindex/pma
+	PHP MyAdmin for low-level admin
+	Modif on user and catalog details is monitored
+	
+https://metaindex.fr/metaindex/kibana
+	Kibana GUI

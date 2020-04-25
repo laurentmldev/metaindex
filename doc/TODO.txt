@@ -7,8 +7,6 @@ Priority 1:
 
 deployement test scenario
 
-download CSV link fails
-
 		
 #17 helps texts in all languages and language properties file in español 
 

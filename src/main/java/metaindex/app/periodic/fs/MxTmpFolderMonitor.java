@@ -75,11 +75,13 @@ public class MxTmpFolderMonitor implements IPeriodicProcess {
 			File tmpFolder = new File(webappsTmpFolderPath);
 			assert(tmpFolder.isDirectory());
 			for (File curFile : tmpFolder.listFiles()) {
-				Date fileTimestamp = new Date(curFile.lastModified());
-				if (now.getTime()-fileTimestamp.getTime() > TMP_FILE_TTL_SEC) {
+				
+				Long fileTimestampMs = new Date(curFile.lastModified()).getTime();
+				Long nowTimestampMs = now.getTime(); 
+				if (nowTimestampMs-fileTimestampMs > TMP_FILE_TTL_SEC*1000) {
 					Boolean rst = curFile.delete();
 					if (!rst) { log.info("Unable to remove old tmp file "+curFile.getName()); }
-					//log.info("cleaning old tmp file "+curFile.getName());
+					log.info("cleaning old tmp file "+curFile.getName());
 				}				
 			}
 		}

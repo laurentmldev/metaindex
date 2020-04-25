@@ -147,8 +147,9 @@ public class CsvDumper<T extends IFieldValueMapObject> extends AProcessingTask  
 				
 				// actually write lines in file
 				for (String line : linesToWrite) {
-					if (!line.startsWith("#")) { addProcessedNbData(1L); }
-					_outputstream.write((line+"\n").getBytes()); 
+					_outputstream.write((line+"\n").getBytes());
+					if (!line.startsWith("#")) { addProcessedNbData(1L); }		
+					log.error(" ### dumping line "+line);
 				}
 				_outputstream.flush();
 				// --------
@@ -163,8 +164,6 @@ public class CsvDumper<T extends IFieldValueMapObject> extends AProcessingTask  
 			}
 		}
 		
-		stop();
-
 	}
 
 	@Override
@@ -177,7 +176,7 @@ public class CsvDumper<T extends IFieldValueMapObject> extends AProcessingTask  
 			while (!this.isAllDataProcessed()) {
 				Thread.sleep(200);
 			}
-			_stoppingProcessingLock.acquire();
+			_stoppingProcessingLock.acquire();						
 			_outputstream.close();	
 			_stoppingProcessingLock.release();
 		} catch (InterruptedException | IOException e) {
