@@ -29,6 +29,10 @@ function header_handleCatalogDetails(catalogDescr) {
 		termTranslation=mx_helpers_getTermName(termDescr, catalogDescr)
 		MxGuiHeader.addSortingChoice(termTranslation,termName);
 	}
+  	if (mx_helpers_isCatalogWritable(MxGuiDetails.getCurCatalogDescription().userAccessRights)!=true) {
+	  	let saveCurrentSearch=document.getElementById("save_current_search_button");
+	  	saveCurrentSearch.style.display='none';
+	}
 	_curCatalogDescr=catalogDescr;
 	MxGuiHeader.showFilter();
 }

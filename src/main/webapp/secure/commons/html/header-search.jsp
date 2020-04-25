@@ -49,6 +49,7 @@
 	  let sortingNode = document.getElementById('header.filter.sortString');
 	  sortingNode.appendChild(optionNode);
   }
+  
   </script>
   
           <!-- Topbar Search -->
@@ -94,7 +95,7 @@
              
               
               <!-- save current filter expression -->
-               <div class="input-group-append dropdown no-arrow ">
+               <div id="save_current_search_button" class="input-group-append dropdown no-arrow ">
               	<!--  call to external (custom) function header_onSearchClick(searchQuery) -->
                 <a class="btn btn-secondary dropdown-toggle" id="saveFilterDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
                   <i class="far fa-star fa-sm text-grey-50"></i>

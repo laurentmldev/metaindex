@@ -6,7 +6,16 @@
 
 <s:include  value="vegagen_forms/vegagen_graphs.jsp" />
 
-
+<li id="leftbar_item_create" class="nav-item" style="display:none">
+ <!--  Modal contents added by javascript in function "handleCatalogDetails" down there -->
+        <a class="nav-link collapsed" href="#"
+        	onclick="let popupForm=this.parentNode.querySelector('._modal_root_').toggleShowHide();">
+          <i class="fas fa-star fa-copy"></i>
+          <span><s:text name="Items.createItem"></s:text> <s:property value='currentUserProfile.catalogVocabulary.itemCap'/></span>
+        </a>
+       
+		<div class="_item_form_insert_spot_" ></div>       
+ </li>
 
  <li id="leftbar_items_statistics" class="nav-item" style="display:none">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseStatistics" aria-expanded="true" aria-controls="collapseStatistics">
@@ -69,7 +78,7 @@
 
 
  
- 
+ <!-- 
 <c:url value="Files" var="filesUrl"/> 
  <li id="leftbar_goto_files" class="nav-item" style="display:none">
         <a class="nav-link collapsed" href="${filesUrl}" target="_blank" >
@@ -77,17 +86,8 @@
           <span><s:text name="global.filesView"/></span>
         </a>                
  </li>
+ -->
  
- <li id="leftbar_item_create" class="nav-item" style="display:none">
- <!--  Modal contents added by javascript in function "handleCatalogDetails" down there -->
-        <a class="nav-link collapsed" href="#"
-        	onclick="let popupForm=this.parentNode.querySelector('._modal_root_').toggleShowHide();">
-          <i class="fas fa-star fa-copy"></i>
-          <span><s:text name="Items.createItem"></s:text> <s:property value='currentUserProfile.catalogVocabulary.itemCap'/></span>
-        </a>
-       
-		<div class="_item_form_insert_spot_" ></div>       
- </li>
  
  <li id="leftbar_items_csv_upload" class="nav-item" style="display:none">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCsv" aria-expanded="true" aria-controls="collapseCsv">
@@ -98,7 +98,7 @@
           <div class="mx-collapse py-2 collapse-inner rounded pt-4" style="overflow:auto">
           
           <!-- Custom CSV FileDownload button -->
-          <label 
+             <label id="csv_download_label"
 	 		  	class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button" 
 	 		  	onclick="MxGuiLeftBar.showDownloadCsvPrevisu();" >
 	 		  	<i class="fas fa-download fa-sm text-white" style="margin-right:1em"></i><s:text name="Items.downloadItems.asCsv"></s:text>
@@ -109,27 +109,25 @@
 		          </span>
 	 		  </label>
 	 		  
-	 		  <div id="csv_contents_previsu_body_download" style="display:none">
+	 		 <div id="csv_contents_previsu_body_download" style="display:none">
 	 		  	 
- 	 		  	<s:text name="Items.currentSearch" /> : <span id="MxGui.left.csvdownload.nbMatchDocs"></span>  <s:property value='currentUserProfile.catalogVocabulary.itemsCap'/>
- 		  			
- 		  		 
+ 	 		  	<s:text name="Items.currentSearch" /> : <span id="MxGui.left.csvdownload.nbMatchDocs"></span>  <s:property value='currentUserProfile.catalogVocabulary.itemsCap'/> 		  			 		  		 
  		  		 <hr/>
  		  		 <table style="margin-top:1rem;margin-left:2rem;" class="_csv_columns_tbl_">
  		  		 	<tr><th style="padding-right:1rem;">
  		  		 		<input class="_global_checkbox_" type="checkbox" /></th><th><s:text name="Items.downloadItems.csvSelectedCols" /></th> 
  		  		 	</tr>
  		  		 </table>
-				</div>
-				<div id="csv_contents_previsu_download_footer" style="display:none">
+			  </div>
+			  <div id="csv_contents_previsu_download_footer" style="display:none">
 	 		  		 <label class="_downloadBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button"  >
 	 		  				<i class="fas fa-download fa-sm text-white" style="margin-right:1em"></i><s:text name="Items.downloadItems.generate"></s:text>
 	 		  		</label>
-				</div>
+			  </div>
 	 		 
 	 		                           			 
 			  <!-- Custom CSV FileUpload button -->
-	 		  <label for="fileUpload" 
+	 		  <label for="fileUpload"  id="csv_upload_label" 
 	 		  	class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button"  >
 	 		  	<i class="fas fa-upload fa-sm text-white" style="margin-right:1em"></i><s:text name="Items.uploadItems.fromCsv"></s:text>
 	 		  	 <span title="S.O.S" 
@@ -177,7 +175,7 @@
         <div id="collapseTwoBis" class="collapse _list_" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
         	<div class="mx-collapse py-2 collapse-inner rounded">
           		<h6 class="collapse-header"><s:property value='currentUserProfile.catalogVocabulary.filtersCap'/></h6>
-          		<div id="leftbar_filters_list_insertSpot" class="mx_collapse py-2 collapse-inner rounded" style=""></div>                        
+          		<div id="leftbar_filters_list_insertSpot" class=" mx_collapse py-2 collapse-inner rounded" style=""></div>                        
           	</div>          
         </div>
  </li>
@@ -223,24 +221,39 @@
 function onclickCatalogName(event) { redirectToPage("${mxUrl}/metaindex/Catalogs"); }
 MxGuiLeftBar.setTitle("<s:property value='currentUserProfile.catalogVocabulary.name'/>",onclickCatalogName);
 
-// Operations
-var statisticsOp = document.getElementById("leftbar_items_statistics").cloneNode(true);
-statisticsOp.style.display="block";
-MxGuiLeftBar.addOperation(statisticsOp);
+var createItemOp=null;
 
-var createItemOp = document.getElementById("leftbar_item_create").cloneNode(true);
-createItemOp.style.display="block";
-MxGuiLeftBar.addOperation(createItemOp);
-
-var uploadItemsOp = document.getElementById("leftbar_items_csv_upload").cloneNode(true);
-uploadItemsOp.style.display="block";
-MxGuiLeftBar.addOperation(uploadItemsOp);
-
-// Filters
-var filtersOp = document.getElementById("leftbar_filters_list").cloneNode(true);
-filtersOp.style.display="block";
-MxGuiLeftBar.addOperation(filtersOp);
-
+// call when catalog data has been received, so that we can know which
+// menu shall be displayed or not depending on access rights
+function _update_menus_list() {
+	
+	MxGuiLeftBar.clearOperations();
+	
+	// Operations
+	if (mx_helpers_isCatalogWritable(MxGuiDetails.getCurCatalogDescription().userAccessRights)==true) {
+		createItemOp = document.getElementById("leftbar_item_create").cloneNode(true);
+		createItemOp.style.display="block";
+		MxGuiLeftBar.addOperation(createItemOp);
+	}
+	
+	if (mx_helpers_isCatalogWritable(MxGuiDetails.getCurCatalogDescription().userAccessRights)!=true) {
+		csvUpload=document.getElementById("csv_upload_label");
+		csvUpload.parentNode.removeChild(csvUpload);		
+	}	
+	var uploadItemsOp = document.getElementById("leftbar_items_csv_upload").cloneNode(true);
+	uploadItemsOp.style.display="block";
+	
+	MxGuiLeftBar.addOperation(uploadItemsOp);
+	
+	var statisticsOp = document.getElementById("leftbar_items_statistics").cloneNode(true);
+	statisticsOp.style.display="block";
+	MxGuiLeftBar.addOperation(statisticsOp);
+	
+	// Filters
+	var filtersOp = document.getElementById("leftbar_filters_list").cloneNode(true);
+	filtersOp.style.display="block";
+	MxGuiLeftBar.addOperation(filtersOp);
+}
 function left_buildNewFilter(descr) {
 	
 	let newFilterNode=document.getElementById("leftbar_filter_template").cloneNode(true);	
@@ -321,64 +334,66 @@ function _left_build_newitem_form_field_desc(termId,fieldName,termDesc,catalogDe
 }
 
 MxGuiLeftBar.handleCatalogDetails=function(catalogDescr) {
-	
+	_update_menus_list();
 	let filtersInsertSpot=MxGuiLeftBar.getFiltersInsertSpot();
 	clearNodeChildren(filtersInsertSpot);
-
 	
-// generate "create new item" form
-	let createNodeFormInsertSpot=createItemOp.querySelector("._item_form_insert_spot_");
-	let fieldsList=[];
 	
-	// add an input form for each term of the catalog
-	let sortedTermsNames = Object.keys(catalogDescr.terms).sort();
-	for (var i=0;i<sortedTermsNames.length;i++) {
-		let curFieldName=sortedTermsNames[i];
-		let curFieldTermDescCopy=JSON.parse(JSON.stringify(catalogDescr.terms[curFieldName]));
-		// if field is actually not a fieldName but a custom separator, we ignore it
-		if (curFieldName[0]=='"') { continue; }		
-		curFieldTermDescCopy.addedInForm=true;		
-		let curFieldFormDef =_left_build_newitem_form_field_desc(curFieldName/*id*/,curFieldName/*user text*/,curFieldTermDescCopy,catalogDescr)
+	// generate "create new item" form
+	if (mx_helpers_isCatalogWritable(MxGuiDetails.getCurCatalogDescription().userAccessRights)) {
 		
-		fieldsList.push(curFieldFormDef);		
-	}
-	// set as 'important' fields used to build the cards title or thumbnail
-	// so that in the form they are cleared after each creation
-	let fieldsInCatalogCardsTitleArray=catalogDescr.itemNameFields;
-	if (fieldsInCatalogCardsTitleArray==null) { fieldsInCatalogCardsTitleArray=[]; }
-	let cardThumbnailField=catalogDescr.itemThumbnailUrlField;
-	for (var i=0;i<fieldsInCatalogCardsTitleArray.length;i++) {
-		let curFieldName=fieldsInCatalogCardsTitleArray[i];
-		for (var j=0;j<fieldsList.length;j++) {
-			let curFormFieldName=fieldsList[j].termId;
-			if (fieldsList[j].termId==curFieldName || fieldsList[j].termId==cardThumbnailField) { 
-				fieldsList[j].important=true; 
+		let createNodeFormInsertSpot=createItemOp.querySelector("._item_form_insert_spot_");
+		let fieldsList=[];
+		
+		// add an input form for each term of the catalog
+		let sortedTermsNames = Object.keys(catalogDescr.terms).sort();
+		for (var i=0;i<sortedTermsNames.length;i++) {
+			let curFieldName=sortedTermsNames[i];
+			let curFieldTermDescCopy=JSON.parse(JSON.stringify(catalogDescr.terms[curFieldName]));
+			// if field is actually not a fieldName but a custom separator, we ignore it
+			if (curFieldName[0]=='"') { continue; }		
+			curFieldTermDescCopy.addedInForm=true;		
+			let curFieldFormDef =_left_build_newitem_form_field_desc(curFieldName/*id*/,curFieldName/*user text*/,curFieldTermDescCopy,catalogDescr)
+			
+			fieldsList.push(curFieldFormDef);		
+		}
+		// set as 'important' fields used to build the cards title or thumbnail
+		// so that in the form they are cleared after each creation
+		let fieldsInCatalogCardsTitleArray=catalogDescr.itemNameFields;
+		if (fieldsInCatalogCardsTitleArray==null) { fieldsInCatalogCardsTitleArray=[]; }
+		let cardThumbnailField=catalogDescr.itemThumbnailUrlField;
+		for (var i=0;i<fieldsInCatalogCardsTitleArray.length;i++) {
+			let curFieldName=fieldsInCatalogCardsTitleArray[i];
+			for (var j=0;j<fieldsList.length;j++) {
+				let curFormFieldName=fieldsList[j].termId;
+				if (fieldsList[j].termId==curFieldName || fieldsList[j].termId==cardThumbnailField) { 
+					fieldsList[j].important=true; 
+				}
 			}
 		}
-	}
-	
-	let onValidFormCallback=function(itemFields) {
-		let fieldsMap={};
-		for (var fieldFormId in itemFields) {
-			// cleaning the id to retrieve the termId
-			let termId=fieldFormId.replace("form_newitem_","");
-			fieldsMap[termId]=itemFields[fieldFormId];
+		
+		let onValidFormCallback=function(itemFields) {
+			let fieldsMap={};
+			for (var fieldFormId in itemFields) {
+				// cleaning the id to retrieve the termId
+				let termId=fieldFormId.replace("form_newitem_","");
+				fieldsMap[termId]=itemFields[fieldFormId];
+			}
+			
+			let onCreationSuccessCallback=function() {
+				//console.log("item created!");
+			}
+			let onCreationFailureCallback=function(errorMsg) {
+				//console.log("item could not be created : "+errorMsg);
+			}
+			ws_handlers_createItem(catalogDescr,fieldsMap,onCreationSuccessCallback,onCreationFailureCallback);		
 		}
 		
-		let onCreationSuccessCallback=function() {
-			//console.log("item created!");
-		}
-		let onCreationFailureCallback=function(errorMsg) {
-			//console.log("item could not be created : "+errorMsg);
-		}
-		ws_handlers_createItem(catalogDescr,fieldsMap,onCreationSuccessCallback,onCreationFailureCallback);		
+		// create item modal
+		let popupForm=MxGuiPopups.newMultiInputsPopup("<s:text name="Items.createItem"></s:text> <s:property value='currentUserProfile.catalogVocabulary.itemCap'/>",
+														fieldsList,onValidFormCallback);
+		createNodeFormInsertSpot.appendChild(popupForm);
 	}
-	
-	// create item modal
-	let popupForm=MxGuiPopups.newMultiInputsPopup("<s:text name="Items.createItem"></s:text> <s:property value='currentUserProfile.catalogVocabulary.itemCap'/>",
-													fieldsList,onValidFormCallback);
-	createNodeFormInsertSpot.appendChild(popupForm);
-
 	
 // generate "Vega Relation graph" form
 	let relationsGraphFormPopupInsertSpot = document.getElementById("relations_graph_form_insertspot");
@@ -390,6 +405,17 @@ MxGuiLeftBar.handleCatalogDetails=function(catalogDescr) {
 	aggrRelationsGraphFormPopupInsertSpot.appendChild(createAggregatedRelationsGraphForm);
 	
 // add filters list
+	if (mx_helpers_isCatalogWritable(MxGuiDetails.getCurCatalogDescription().userAccessRights)!=true) {
+		let filterNodeTemplate=document.getElementById("leftbar_filter_template");
+		let filterDeleteButton = filterNodeTemplate.querySelector('._button_delete_');
+		filterDeleteButton.style.display='none';
+		let filterQueryInput = filterNodeTemplate.querySelector('._query_input_');
+		filterQueryInput.disabled=true;
+		let filterQueryUpdate = filterNodeTemplate.querySelector('._button_update_');
+		filterQueryUpdate.style.display='none';		
+	}
+	// not applied because after insertion (and clone) in the left menu
+	// TODO
 	for (i=0;i< catalogDescr.filters.length;i++) {
 		let curFilterDescr=catalogDescr.filters[i];
 		let newFilterNode = left_buildNewFilter(curFilterDescr);

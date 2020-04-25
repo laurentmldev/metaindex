@@ -98,7 +98,10 @@
     	var insertSpot = document.getElementById("leftbar.operations.insertspot");
     	insertSpot.append(operationNode);
     }
-    
+    function leftbar_clearOperations() {
+    	var insertSpot = document.getElementById("leftbar.operations.insertspot");
+    	clearNodeChildren(insertSpot);
+    }
     function leftbar_setTitle(str,onClickFunction) {
     	var leftbarTitleNode = document.getElementById("leftbar.title");
         leftbarTitleNode.innerHTML=capWords(str);     
@@ -111,6 +114,7 @@
     // Public interface
     MxGuiLeftBar={};
     MxGuiLeftBar.addOperation=leftbar_addOperation;
+    MxGuiLeftBar.clearOperations=leftbar_clearOperations;
     MxGuiLeftBar.setTitle=leftbar_setTitle;
     MxGuiLeftBar.setProgressBar=leftbar_setProgressBar;
     

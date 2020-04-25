@@ -7,19 +7,10 @@ Priority 1:
 
 deployement test scenario
 
+download CSV link fails
 
-#15 adapt GUI 
-	- to access rights (hide forbidden actions)	
-	x visible color for selected filters
-	x help icons 
-	- help texts
-	- hide for read-only users :
-			create new items
-			upload csv
-			save filter
-			modify filter
 		
-#17 language properties file in español
+#17 helps texts in all languages and language properties file in español 
 
 
 Priority 2:
@@ -82,6 +73,17 @@ Backlog:
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+
+#15 adapt GUI to access rights
+	w to access rights (hide forbidden actions)	
+	x visible color for selected filters
+	x help icons 
+	x hide for read-only users :
+			create new items
+			upload csv
+			save filter
+			modify filter
+			
 disable 'table' from perspective section rendering types (not implemented yet)
 
 #25 when creating a new catalog, lexic panel still have contents of previously selected catalog
