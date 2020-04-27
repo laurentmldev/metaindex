@@ -143,7 +143,7 @@ function ws_handlers_requestItemsSearch(query,selectedFiltersNames,sortByFieldNa
 		 }
 	 }
 	
-	 retrieveItemsError=function(msg) { footer_showAlert(ERROR, msg.rejectMessage); }
+	 retrieveItemsError=function(msg) { footer_showAlert(ERROR, msg); }
 	 MxApi.requestCatalogItems({"fromIdx":_fromIdx,
 		 						"size":_size,
 		 						"query":query,

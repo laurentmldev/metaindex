@@ -154,6 +154,7 @@
 	  
   if (kibanaFrame!=null) { MxGuiDetailsRightBar.addContents(kibanaFrame); }
   
+  
   </script>
  
 </body>

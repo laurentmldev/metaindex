@@ -1040,6 +1040,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		if (requestObj==null) { return; }
 		if (parsedMsg.isSuccess==true) { requestObj.successCallback(parsedMsg); }
 		else {
+			console.log(parsedMsg);
 			let errorMsg=parsedMsg.rejectMessage;
 			// ensure error message is not empty
 			// (otherwise can lead to some mis behaviour in user app (ex: x-editable) )

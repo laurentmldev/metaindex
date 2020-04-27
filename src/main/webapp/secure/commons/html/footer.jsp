@@ -33,12 +33,12 @@
 <script>
 
 var alertNb=0;
-INFO_GUI_MESSAGES_TIMETOLIVE_MS = 2000;
-ERROR_GUI_MESSAGES_TIMETOLIVE_MS = 10000;
-INFO="INFO";
-WARNING="WARNING";
-ERROR="ERROR";
-SUCCESS="SUCCESS";
+var INFO_GUI_MESSAGES_TIMETOLIVE_MS = 2000;
+var ERROR_GUI_MESSAGES_TIMETOLIVE_MS = 10000;
+var INFO="INFO";
+var WARNING="WARNING";
+var ERROR="ERROR";
+var SUCCESS="SUCCESS";
 // level : SUCCESS|ERROR|WARNING|INFO
 function footer_showAlert(level, msg, details, timeToLiveMs) {
 	alertNb++;
@@ -48,10 +48,13 @@ function footer_showAlert(level, msg, details, timeToLiveMs) {
 		if (level==ERROR || level==WARNING) { timeToLiveMs = ERROR_GUI_MESSAGES_TIMETOLIVE_MS; }
 		else { timeToLiveMs = INFO_GUI_MESSAGES_TIMETOLIVE_MS; }
 	}
-	var guiMessagesInsertSpot = document.getElementById("gui_messages_insertspot");
-	var newMsgNode=document.getElementById("_mx_gui_alert_").cloneNode(true);
-	 
-	if (level==ERROR) { newMsgNode.classList.add("alert-danger"); }
+	let guiMessagesInsertSpot = document.getElementById("gui_messages_insertspot");
+	let newMsgNode=document.getElementById("_mx_gui_alert_").cloneNode(true);
+	newMsgNode.id="";
+	
+	if (level==ERROR) { 
+		newMsgNode.classList.add("alert-danger"); 
+	}
 	else if (level==SUCCESS) { newMsgNode.classList.add("alert-success"); }
 	else if (level==WARNING) { newMsgNode.classList.add("alert-warning"); }
 	else if (level==INFO) { newMsgNode.classList.add("alert-info"); }
@@ -61,19 +64,19 @@ function footer_showAlert(level, msg, details, timeToLiveMs) {
 	}
 	
 	newMsgNode.style.display='block';
-	var txtNode = newMsgNode.querySelector("._text_");
+	let txtNode = newMsgNode.querySelector("._text_");
 	txtNode.innerHTML=msg;
 	txtNode.setAttribute("data-target","#MxGui_alert_"+alertNb+"_details");
 	
 	if (details.length>0) {
-		var detailsButtonNode = newMsgNode.querySelector("._details_button_");
+		let detailsButtonNode = newMsgNode.querySelector("._details_button_");
 		detailsButtonNode.setAttribute("data-target","#MxGui_alert_"+alertNb+"_details");
 		detailsButtonNode.style.display='block';
 		
-		var detailsNode = newMsgNode.querySelector("._details_");
+		let detailsNode = newMsgNode.querySelector("._details_");
 		detailsNode.id="MxGui_alert_"+alertNb+"_details";
 		detailsNode.innerHTML+="<ul>";
-		for (var i=0;i<details.length;i++) {
+		for (let i=0;i<details.length;i++) {
 			let curStr=details[i];
 			detailsNode.innerHTML+="<li>"+curStr+"</li>";			
 		}		
