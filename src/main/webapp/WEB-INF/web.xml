@@ -142,6 +142,10 @@
    <location>/public/commons/errors/ProcessError.jsp</location>
  </error-page>
  <error-page>
+   <error-code>503</error-code>
+   <location>/public/commons/errors/ProcessError503.jsp</location>
+ </error-page>
+ <error-page>
    <exception-type>java.lang.Throwable</exception-type>
    <location>/public/commons/errors/ProcessError.jsp</location>
  </error-page>
