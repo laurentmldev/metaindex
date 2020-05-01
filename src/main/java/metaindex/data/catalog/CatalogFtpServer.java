@@ -214,7 +214,11 @@ public class CatalogFtpServer {
                 
         // set (and create if needed) local-system folder storing ftp files
         File directory = new File(_catalog.getLocalFsFilesPath());
-        if (! directory.exists()){ directory.mkdir(); }
+        if (! directory.exists()){ 
+        	log.error("Userdata folder does not exist, unable to allow FTP connection : "+_catalog.getLocalFsFilesPath());
+        	newUser.setEnabled(false);
+        	return;
+        }
         newUser.setHomeDirectory(_catalog.getLocalFsFilesPath());
                 
         List<Authority> authorities = new ArrayList<Authority>();
