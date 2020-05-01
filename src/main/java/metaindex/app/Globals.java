@@ -328,6 +328,8 @@ public class Globals {
 				+"- mx.protocol="+Globals.GetMxProperty("mx.protocol")+"\n"
 				+"- mx.port="+Globals.GetMxProperty("mx.port")+"\n"
 				+"- mx.appname="+Globals.GetMxProperty("mx.appname")+"\n"
+				+"- mx.userdata.path="+Globals.GetMxProperty("mx.userdata.path")+"\n"
+				
 				+"- mx.ftp.port.range_low="+Globals.GetMxProperty("mx.ftp.port.range_low")+"\n"
 				+"- mx.ftp.port.range_high="+Globals.GetMxProperty("mx.ftp.port.range_high")+"\n"
 				+"- mx.ftp.passive.range_low="+Globals.GetMxProperty("mx.ftp.passive.range_low")+"\n"
