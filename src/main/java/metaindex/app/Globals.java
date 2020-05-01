@@ -63,6 +63,7 @@ public class Globals {
 	private static final String MX_PROPERTIES_FILE = "metaindex.properties";
 	public static final Integer AUTOREFRESH_PERIOD_SEC=5;
 	private static final String MX_EMAIL_SUBJECT_PREFIX= "[MetaindeX]";
+	public static final String LOCAL_USERDATA_PATH_SUFFIX="/metaindex/userdata/";
 	
 	Properties _mx_config = new Properties();
 	static Map<String, String> env = System.getenv();
@@ -72,6 +73,7 @@ public class Globals {
 	
 	private static IStatisticsManager _mxStats= new MxStatisticsManager();
 	private static MxTmpFolderMonitor _mxTmpFolderCleaner= new MxTmpFolderMonitor();
+	private static String _contextPath="";
 	
 	/**
 	 * Prop value from config files.
@@ -147,7 +149,15 @@ public class Globals {
 			throw new DataProcessException("Unable to send email '"+subject+"' to '"+recipientEmail+"' : "+e.getMessage(),e);
 		}
 	}
-	public String getWebappsFsPath() { return System.getProperty("catalina.base")+"/webapps"; }
+	public void setWebappsFsPath(String contextPath) { 
+		_contextPath=contextPath; 
+	}
+	public String getWebappsFsPath() { 
+		return _contextPath;
+	}
+	public String getUserdataFsPath() { 
+		return _contextPath+LOCAL_USERDATA_PATH_SUFFIX;
+	}
 	public String getWebappsTmpFsPath() {
 		String path=getWebappsFsPath()+"/mxtmp/";		
 		File directory = new File(path);

@@ -4,7 +4,7 @@
 "http://struts.apache.org/dtds/struts-2.1.dtd">  
 <struts>  
 	<constant name="struts.devMode" value="true" />
-	<constant name="struts.action.excludePattern" value="/wsmx.*,/public/commons/.*,/logoutprocess,/loginprocess" /> 
+	<constant name="struts.action.excludePattern" value="/wsmx.*,/public/commons/.*,/logoutprocess,/loginprocess,/userdata/.*" /> 
  	<constant name="struts.multipart.maxSize" value="2000000" />
       
 	<package name="metaindex" extends="struts-default">  
@@ -17,8 +17,11 @@
  
 <global-exception-mappings>
  <exception-mapping exception="org.apache.struts.register.exceptions.SecurityBreachException" result="BeanProcess_AUTHERROR" />
- <exception-mapping exception="org.springframework.jdbc" result="BeanProcess_DBERROR" /> 
- <exception-mapping exception="java.lang.Exception" result="BeanProcess_ERROR" />  
+ <exception-mapping exception="org.springframework.jdbc" result="BeanProcess_DBERROR" />
+ <exception-mapping exception="java.io.IOException" result="BeanProcess_AUTHERROR" /> 
+ <exception-mapping exception="java.lang.Exception" result="BeanProcess_ERROR" />
+ 
+   
 </global-exception-mappings>
 
 		
@@ -46,6 +49,10 @@
 		<action name="Files" class="metaindex.app.beans.BeanProfile">
 			<result name="BeanProcess_SUCCESS" >/secure/files/main.jsp</result>  			
 		</action> 
+		
+		<action name="Error" class="metaindex.app.beans.BeanProfile">
+						
+		</action>
 		
 	</package>  
 </struts>      

@@ -7,10 +7,11 @@ Priority 1:
 
 deployement test scenario
 
-disable 'spanish language'.
-		
-#17 helps texts in all languages and language properties file in español 
 
+		
+#17 helps texts in all languages and disable 'spanish language'. 
+
+#30 secure access to catalog's files
 
 Priority 2:
 -----------

@@ -21,7 +21,8 @@ using classpath local versions for spring XSD, otherwise it does not work offlin
 	<intercept-url pattern="/CreateProfileProcess" access="permitAll" />	
 	<intercept-url pattern="/public/**" access="permitAll" />
 	<intercept-url pattern="/wsmx/**" access="hasRole('USER') or hasRole('ADMIN') or hasRole('OBSERVER')" />	
-	<intercept-url pattern="/secure/**" access="hasRole('USER') or hasRole('ADMIN') or hasRole('OBSERVER')" />	
+	<intercept-url pattern="/secure/**" access="hasRole('USER') or hasRole('ADMIN') or hasRole('OBSERVER')" />
+	<intercept-url pattern="/userdata/**" access="hasRole('USER') or hasRole('ADMIN') or hasRole('OBSERVER')" />	
 	
 	
 	<form-login login-page='/loginform?secure' 

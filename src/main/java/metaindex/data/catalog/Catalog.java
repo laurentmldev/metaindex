@@ -13,6 +13,7 @@ See full version of LICENSE in <https://fsf.org/>
 */
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -43,6 +44,7 @@ public class Catalog implements ICatalog {
 	public static final Integer AUTOREFRESH_PERIOD_SEC=5;
 	public static final Long DEFAULT_QUOTA_NBDOCS = 200L;
 	public static final Integer DEFAULT_QUOTA_DISCSPACEBYTES = 0;
+	
 	private Log log = LogFactory.getLog(Catalog.class);
 	
 	private PeriodicProcessMonitor _dbAutoRefreshProcessing=new CatalogPeriodicDbReloader(this);
@@ -114,6 +116,12 @@ public class Catalog implements ICatalog {
 	}
 	@Override 
 	public void startServices() throws DataProcessException {
+		
+		// create link to actual user files location
+		// this link allows easier access control without having to
+		// manage a separate servlet
+		createLocalStorageIfMissing();	        
+		
 		_ftpServer=new CatalogFtpServer(this);
 		try { _ftpServer.start(); }
 		catch (FtpException e) { 
@@ -142,13 +150,14 @@ public class Catalog implements ICatalog {
 		if (_ftpServer==null) { return -1; }
 		return _ftpServer.getPort();
 	}
+	
 	@Override
 	public String getLocalFsFilesPath() {
-		return Globals.Get().getWebappsFsPath()+"/data/"+this.getName();
+		return Globals.Get().getUserdataFsPath()+this.getName();
 	}
 	@Override
 	public String getFilesBaseUrl() {
-		return Globals.Get().getAppBaseUrl()+"/data/"+this.getName()+"/";
+		return Globals.Get().getAppBaseUrl()+Globals.LOCAL_USERDATA_PATH_SUFFIX+this.getName()+"/".replaceAll("//", "/");
 	}
 	
 	@Override
@@ -365,8 +374,8 @@ public class Catalog implements ICatalog {
 	}
 	@Override
 	public String getItemsUrlPrefix() {
-		if (_urlPrefix.length()==0) { return getFilesBaseUrl(); }
-		return _urlPrefix;
+		if (_urlPrefix.length()==0) { return getFilesBaseUrl().replaceAll("/$", ""); }
+		return _urlPrefix.replaceAll("/$", "");
 	}
 	@Override
 	public void setItemsUrlPrefix(String urlPrefix) {
@@ -597,14 +606,36 @@ public class Catalog implements ICatalog {
 	public Boolean checkQuotasNbDocsOk() {
 		return this.getNbDocuments()<this.getQuotaNbDocs();		
 	}
+	private void createLocalStorageIfMissing() throws DataProcessException {
+		try {
+			String userdataRealPath=Globals.GetMxProperty("mx.userdata.path")+"/"+this.getName();
+			File storageDirectory = new File(userdataRealPath);		
+	        if (! storageDirectory.exists()){ 
+	        	if (!storageDirectory.mkdirs()) {
+	        		throw new DataProcessException("Unable to create storage folder for catalog "+getName());
+	        	}
+	        }
+	        
+	        File userDataRootPath=new File(Globals.Get().getUserdataFsPath());
+	        if (! userDataRootPath.exists()){ 
+	        	if (!userDataRootPath.mkdirs()) {
+	        		throw new DataProcessException("Unable to create storage web-folder root");
+	        	}
+	        }
+	        
+	        String linkPath = this.getLocalFsFilesPath();
+	        File linkDirectory = new File(linkPath);
+	        if (! linkDirectory.exists()){ 	        	
+					Files.createSymbolicLink(linkDirectory.toPath(), storageDirectory.toPath());				
+	        }
+		} catch (IOException e) {
+			throw new DataProcessException("Unable to create or access storage folders/links for catalog "+getName()+ " : "+e.getMessage());
+		}
+	}
 	@Override
 	public Long getDiscSpaceUseBytes() {
 		try {
-			// set (and create if needed) local-system folder storing ftp files
-	        File directory = new File(this.getLocalFsFilesPath());
-	        if (! directory.exists()){ directory.mkdir(); }
-	        
-			Long usedDiskSpace = FileSystemUtils.getTotalSizeBytes(this.getLocalFsFilesPath());
+			Long usedDiskSpace = FileSystemUtils.getTotalSizeBytes(this.getLocalFsFilesPath()+"/");
 			return usedDiskSpace;
 		} catch (IOException e) {
 			log.error("Unable to retrieve used disc usage for catalog '"+this.getName()+"' at "+this.getLocalFsFilesPath()+" : "+e.getMessage());

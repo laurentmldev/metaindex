@@ -41,11 +41,9 @@
 
           <!-- Process Error Text -->
           <div class="text-center" style="padding-top:20vh">
-            <div class="error mx-auto" data-text="ERROR">ERROR</div>
-            <p class="lead text-gray-800 mb-5">Woops something wrong happened or maybe you don't have access to such contents, sorry!</p>
-            <p class="text-gray-600 mb-0" style="padding-bottom:5rem">If you think this is a serious problem, 
-            							please try to understand how to reproduce it <br/>and explain it to your system administrator, 
-            							so that he can investigate and fix this issue.</p>
+            <div class="error mx-auto" data-text="ERROR-404">ERROR-404</div>
+            <p class="lead text-gray-800 mb-5">We really tried to look hard for it, but no way we could find this page, sorry!</p>
+            <p class="text-gray-600 mb-0" style="padding-bottom:5rem">Please contact your system administrator.</p>
             <a  href="/metaindex/Catalogs">&larr; Go Back to Life</a>
           </div>
 

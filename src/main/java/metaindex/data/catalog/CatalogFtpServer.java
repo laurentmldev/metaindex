@@ -211,7 +211,7 @@ public class CatalogFtpServer {
 		BaseUser newUser = new BaseUser();
         newUser.setName(p.getName());
         newUser.setPassword(p.getPassword());
-        
+                
         // set (and create if needed) local-system folder storing ftp files
         File directory = new File(_catalog.getLocalFsFilesPath());
         if (! directory.exists()){ directory.mkdir(); }

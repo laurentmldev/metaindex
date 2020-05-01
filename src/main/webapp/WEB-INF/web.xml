@@ -44,6 +44,13 @@
     <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
 </filter>
 
+ 
+<!-- For user access-rights control over catalog's files  -->
+<filter>
+     <filter-name>catalogDataAccessControlFilter</filter-name>
+     <filter-class>metaindex.app.filters.CatalogDataAccessControlFilter</filter-class>
+</filter>
+
 <filter-mapping>
        <filter-name>UTF8EncodingFilter</filter-name>
        <url-pattern>/*</url-pattern>
@@ -56,7 +63,10 @@
     <filter-name>springSecurityFilterChain</filter-name>
     <url-pattern>/*</url-pattern>
 </filter-mapping>
-  
+ <filter-mapping>
+    <filter-name>catalogDataAccessControlFilter</filter-name>
+    <url-pattern>/userdata/*</url-pattern>
+</filter-mapping> 
 
   <filter>
     <filter-name>struts2</filter-name>
@@ -102,7 +112,7 @@
 
     <session-config>
         <session-timeout>
-            10
+            30
         </session-timeout>
     </session-config>
     
@@ -115,5 +125,25 @@
         <param-value>327680</param-value>
    </context-param>
   
+ <error-page>
+   <error-code>400</error-code>
+   <location>/public/commons/errors/ProcessError400.jsp</location>
+ </error-page>
+ <error-page>
+   <error-code>404</error-code>
+   <location>/public/commons/errors/ProcessError404.jsp</location>
+ </error-page>
+ <error-page>
+   <error-code>403</error-code>
+   <location>/public/commons/errors/ProcessErrorAuth.jsp</location>
+ </error-page>
+ <error-page>
+   <error-code>500</error-code>
+   <location>/public/commons/errors/ProcessError.jsp</location>
+ </error-page>
+ <error-page>
+   <exception-type>java.lang.Throwable</exception-type>
+   <location>/public/commons/errors/ProcessError.jsp</location>
+ </error-page>
   
 </web-app>
