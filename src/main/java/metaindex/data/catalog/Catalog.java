@@ -625,7 +625,9 @@ public class Catalog implements ICatalog {
 	        
 	        String linkPath = this.getLocalFsFilesPath();
 	        File linkDirectory = new File(linkPath);
-	        if (! linkDirectory.exists()){ 	        	
+	        if (! linkDirectory.exists()){ 	  
+	        		// /!\ this needs tomcat context configured to follow symlinks
+	        		// which is not the case by default
 					Files.createSymbolicLink(linkDirectory.toPath(), storageDirectory.toPath());				
 	        }
 		} catch (IOException e) {
