@@ -56,7 +56,8 @@
     var PROGRESS_FINISHED_DISAPPEAR_DELAY_SEC=2;
     
     var operationsTitleNode = document.getElementById("leftbar.operations.title");
-    operationsTitleNode.innerHTML= "<s:text name="leftbar.operations"></s:text>";
+    //operationsTitleNode.innerHTML= "<s:text name="leftbar.operations"></s:text>";
+    operationsTitleNode.style.display='none';
     
     function leftbar_setProgressBar(processId, pourcentage, text, isActive) {
     	
