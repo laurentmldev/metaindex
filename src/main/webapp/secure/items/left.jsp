@@ -28,7 +28,13 @@
 			        <a class="collapsed" href="<s:property value='currentUserProfile.statisticsDiscoverUrl'/>" target="_blank" >
 			          <i class="fas fa-sm fa-square-root-alt text-white"></i>
 			          <span><s:text name="global.kibana"/></span>
-			        </a>                      		
+			        </a>  
+			        
+			        <span title="S.O.S" 
+		                	onclick="event.stopPropagation();event.preventDefault();
+		                			MxGuiHeader.showInfoModal('<s:text name="help.items.kibana.title" />','<s:text name="help.items.kibana.body" />')">
+		                   <i class="mx-help-icon far fa-question-circle" style="color:white"></i>    
+		          </span>                    		
 			  </label>
 			  
 						   
@@ -38,6 +44,12 @@
 			          <i class="fas fa-fw fa-chart-bar text-white"></i>
 			          <span><s:text name="global.kibanaPanel"/></span>			                           		
 			    </a>  
+			    
+			    <span title="S.O.S" 
+		                	onclick="event.stopPropagation();event.preventDefault();
+		                			MxGuiHeader.showInfoModal('<s:text name="help.items.kibana_panel.title" />','<s:text name="help.items.kibana_panel.body" />')">
+		                   <i class="mx-help-icon far fa-question-circle" style="color:white"></i>    
+		          </span>
 			 </label>
 			 
 			  <label  class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button" >

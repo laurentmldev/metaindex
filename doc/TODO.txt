@@ -38,6 +38,7 @@ search on accentuated characters imported from UTF-16 does not seem to work
 
 Backlog:
 --------
+- use field alias to rename fields and make lexic translation available
 - websocket connection lost when 'save as...' window open ?
 - detect when same user logged from 2 different hosts : TO BE TESTED
 - when entering edit mode, shall stay in current tab
