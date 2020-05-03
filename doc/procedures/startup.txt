@@ -1,0 +1,10 @@
+
+Startup Procedure
+-----------------
+From Server console
+- docker-compose up mxproxy
+- wait
+- docker-compose up mxwebapp
+
+From Firefox
+- go to https://metaindex.fr:8443/metaindex/

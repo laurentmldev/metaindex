@@ -154,22 +154,22 @@
 	<dependency>
 		<groupId>io.vertx</groupId>
 		<artifactId>vertx-core</artifactId>
-		<version>3.6.3</version>
+		<version>3.9.0</version>
 	</dependency>
 	<dependency>
 		<groupId>io.vertx</groupId>
 		<artifactId>vertx-unit</artifactId>
-		<version>3.6.3</version>
+		<version>3.9.0</version>
 	</dependency>
 	<dependency>
 		<groupId>io.vertx</groupId>
 		<artifactId>vertx-web</artifactId>
-		<version>3.6.3</version>
+		<version>3.9.0</version>
 	</dependency>
 	<dependency>
 		<groupId>io.vertx</groupId>
 		<artifactId>vertx-web-templ-jade</artifactId>
-		<version>3.6.3</version>
+		<version>3.9.0</version>
 	</dependency>
 	<dependency>
 		<groupId>io.reactivex.rxjava2</groupId>
@@ -222,11 +222,6 @@
 		<version>1.6.2</version>
 	</dependency>
 	<dependency>
-		<groupId>org.projectreactor</groupId>
-		<artifactId>reactor-spring</artifactId>
-		<version>1.0.1.RELEASE</version>
-	</dependency>
-	<dependency>
 		<groupId>org.springframework</groupId>
 		<artifactId>spring-webflux</artifactId>
 		<version>5.2.5.RELEASE</version>
@@ -234,7 +229,12 @@
 	<dependency>
 		<groupId>io.projectreactor.netty</groupId>
 		<artifactId>reactor-netty</artifactId>
-		<version>0.9.6.RELEASE</version>
+		<version>0.9.7.RELEASE</version>
+	</dependency>
+	<dependency>
+		<groupId>org.projectreactor</groupId>
+		<artifactId>reactor-spring</artifactId>
+		<version>1.0.1.RELEASE</version>
 	</dependency>
   </dependencies>
   <build>

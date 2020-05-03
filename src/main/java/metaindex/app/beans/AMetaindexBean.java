@@ -118,12 +118,10 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
   				} 
 	  		} 
 	  		else { log.error("Using found test user to perform operation "+this.getClass().getName()); }
-	  		
-	  		// for proper language traduction for this user
-			//_userProfileData.setTextProvider(this.getTextProvider());
+
 			
 			// refresh data of its own account from DB
-			if (!getMxStatus().equals("MAINTENANCE") && getCurrentUserProfile().isLoggedIn()) {
+			if (getCurrentUserProfile()!=null && !getMxStatus().equals("MAINTENANCE") && getCurrentUserProfile().isLoggedIn()) {
 				// load all user data from DB
 				Globals.Get().getDatabasesMgr().loadFullUserData(getCurrentUserProfile());				
 				
@@ -138,7 +136,7 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 				}
 			}			
 			
-		} catch (Exception e) {
+		} catch (Throwable e) {
   			Globals.Get().setApplicationStatus(APPLICATION_STATUS.FAILURE);
   			log.error("Unable to load application data : "+e.getMessage());
   			e.printStackTrace();

@@ -53,7 +53,7 @@ public class KibanaConnector implements IDataConnector {
 	}
 	
 	public String getUrl() {
-		return _protocol+"://"+_hostname+":"+_port+"/";
+		return _protocol+"://"+_hostname+":"+_port;
 	}
 	
 	
@@ -64,53 +64,63 @@ public class KibanaConnector implements IDataConnector {
 					KIBANA_HTTP_METHOD method,String serviceUri, JSONObject params) 
 							throws DataProcessException {
 		
-		WebClient client = WebClient.builder().clientConnector(new ReactorClientHttpConnector())				
-										.filter(ExchangeFilterFunctions.basicAuthentication(username, pwd))
-										.baseUrl(getUrl()).build();
 		
-		client.head().attribute("kbn-xsrf", "true").accept(MediaType.APPLICATION_JSON);
-		
-		WebClient.RequestHeadersSpec<?>	request = null;
-		if (method==KIBANA_HTTP_METHOD.POST) { 
-				request=client.post()
+		try {
+			if (!serviceUri.startsWith("/") ) { serviceUri="/"+serviceUri; }			
+			
+			WebClient client = WebClient.builder().clientConnector(new ReactorClientHttpConnector())				
+											.filter(ExchangeFilterFunctions.basicAuthentication(username, pwd))
+											.baseUrl(getUrl()).build();
+			
+			client.head().attribute("kbn-xsrf", "true").accept(MediaType.APPLICATION_JSON);
+			
+			WebClient.RequestHeadersSpec<?>	request = null;
+			if (method==KIBANA_HTTP_METHOD.POST) { 
+					request=client.post()
+								.uri(serviceUri)
+								.body(Mono.just(params.toString()),String.class)
+								; 
+			}
+			else if (method==KIBANA_HTTP_METHOD.PUT) { 
+				request=client.put()
 							.uri(serviceUri)
 							.body(Mono.just(params.toString()),String.class)
 							; 
-		}
-		else if (method==KIBANA_HTTP_METHOD.PUT) { 
-			request=client.put()
+			}
+			else if (method==KIBANA_HTTP_METHOD.DELETE) { 
+				request=client.delete()
+							.uri(serviceUri)
+							; 
+			}else { 
+				request=client.get()
 						.uri(serviceUri)
-						.body(Mono.just(params.toString()),String.class)
-						; 
-		}
-		else if (method==KIBANA_HTTP_METHOD.DELETE) { 
-			request=client.delete()
-						.uri(serviceUri)
-						; 
-		}else { 
-			request=client.get()
-					.uri(serviceUri)
-					;
-		}
-		request.header(HttpHeaders.ACCEPT_ENCODING, "*");
-		request.header(HttpHeaders.CONTENT_TYPE, "application/json");
-		request.header("kbn-xsrf", "true");
-		//request.attribute("content-type", "application/json");
-		request.accept(MediaType.APPLICATION_JSON); 
-		
-		WebClient.ResponseSpec webResponse = request.retrieve();
-		/*
-		webResponse.onStatus(httpStatus -> HttpStatus.ACCEPTED.equals(httpStatus), 
-		        response -> response.bodyToMono(String.class).map(body -> new Exception()));
-		*/
-		
-		try {
+						;
+			}
+			request.header(HttpHeaders.ACCEPT_ENCODING, "*");
+			request.header(HttpHeaders.CONTENT_TYPE, "application/json");
+			request.header("kbn-xsrf", "true");
+			//request.attribute("content-type", "application/json");
+			request.accept(MediaType.APPLICATION_JSON); 
+			
+			//log.info("Kibana REST Request : "+method+" "+getUrl()+serviceUri+" params="+params);
+			WebClient.ResponseSpec webResponse = request.retrieve();
+			/*
+			webResponse.onStatus(httpStatus -> HttpStatus.ACCEPTED.equals(httpStatus), 
+			        response -> response.bodyToMono(String.class).map(body -> new Exception()));
+			*/
+
 			String responseStr=webResponse.bodyToMono(String.class).block();	
 			if (responseStr==null) { return null; }		
 			JSONObject response = new JSONObject(responseStr.replaceAll("^\\[", "").replaceAll("\\]$", ""));
 			return response;
-		}catch (WebClientException e) {
-			throw new DataProcessException("Error while performing Kibana REST command",e);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			throw new DataProcessException("Error while performing Kibana REST command : "+e.getMessage(),e);
+		}
+		catch (Throwable e) {
+			e.printStackTrace();
+			throw new DataProcessException("Error while performing Kibana REST command : "+e.getMessage());
 		}
 		
 	

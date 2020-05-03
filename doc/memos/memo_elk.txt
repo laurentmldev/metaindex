@@ -68,13 +68,15 @@ curl -u <user>:<pwd> -XGET http://metaindex.fr:9200/?pretty
 ### KIBANA Rest API ###
 
 # get index info
- curl -u elastic:xxx -XGET 'http://localhost:5601/api/spaces/space/test_catalog'
+ curl -u elastic:xxxx -XGET 'http://localhost:5601/api/spaces/space/test_catalog'
 
+# create space
+curl -u elastic:xxxx  -H 'kbn-xsrf: true ' -H 'Content-Type: application/json'  -XPOST http://mxkibana:5601/api/spaces/space  -d '{"disabledFeatures":["indexPatterns","apm","dev_tools","infrastructure","ml","advancedSettings","logs","maps","canvas","graph","monitoring","savedObjectsManagement","siem","uptime"],"color":"#444499","initials":"ye","imageUrl":"","name":"Statistics for yeyeye","description":"Perform statistics over contents of catalog yeyeye","id":"yeyeye2"}'
 # create role
- curl -u elastic:xxx  -H 'kbn-xsrf: true ' -H 'Content-Type: application/json'  -XPUT http://localhost:5601/api/security/role/test_role -d '{ "kibana": [ { "feature" : { "dashboard": ["read"] } , "spaces" : []  } ] }'
+ curl -u elastic:xxxx  -H 'kbn-xsrf: true ' -H 'Content-Type: application/json'  -XPUT http://localhost:5601/api/security/role/test_role -d '{ "kibana": [ { "feature" : { "dashboard": ["read"] } , "spaces" : []  } ] }'
  
 # create index-pattern
-curl -u elastic:xxxx  -H 'kbn-xsrf: true ' -H 'Content-Type: application/json'  -XPOST http://localhost:5601/s/lolo/api/saved_objects/index-pattern/mxpattern_lolo -d '{ "attributes": { "title" : "lolo" } } 
+curl -u elastic:xxxx  -H 'kbn-xsrf: true ' -H 'Content-Type: application/json'  -XPOST http://localhost:5601/s/lolo/api/saved_objects/index-pattern/mxpattern_lolo -d '{ "attributes": { "title" : "lolo" } }' 
  
 ELK rights
 ----------

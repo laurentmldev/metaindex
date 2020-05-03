@@ -29,3 +29,35 @@ $ docker volume inspect <volum name>
 
 # copy file from docker container to host
 docker cp <containerId>:/file/path/within/container /host/path/target
+
+
+### Docker tcpdump
+# from https://rmoff.net/2019/11/29/using-tcpdump-with-docker/
+
+# build container
+docker build -t tcpdump - <<EOF 
+FROM ubuntu 
+RUN apt-get update && apt-get install -y tcpdump 
+CMD tcpdump -i eth0 
+EOF
+
+So that’s built me a local image with tcpdump on:
+
+$ docker images
+REPOSITORY   TAG      IMAGE ID      CREATED             SIZE
+tcpdump      latest   eebe12b8051f  31 minutes ago      98.3MB
+
+I’m interested in the communication between these two containers:
+
+$ docker ps
+CONTAINER ID        IMAGE                                          COMMAND                   CREATED             STATUS                  PORTS                              NAMES
+20a7bb264c82        confluentinc/ksqldb-server:0.6.0               "/usr/bin/docker/run"     17 hours ago        Up 42 minutes           0.0.0.0:8088->8088/tcp             ksqldb-server
+df2be147f1ef        confluentinc/cp-kafka-connect:5.4.0-beta1      "bash -c 'echo \"Inst…"   17 hours ago        Up 17 hours (healthy)   0.0.0.0:8083->8083/tcp, 9092/tcp   kafka-connect-01
+
+Using Docker’s ability to run a container that attaches to the network of another with the --network=container:<container_name> option we can now run tcpdump "piggybacked" on my container of interest:
+
+docker run --tty --net=container:ksqldb-server tcpdump
+docker run --tty --net=container:ksqldb-server tcpdump tcpdump -N -A 'port 8083'
+
+
+

@@ -210,73 +210,8 @@ public class Globals {
 			
 			// starting statistics manager 
 			_mxStats.start();
+			// starting tmp-files cleaner
 			_mxTmpFolderCleaner.start();
-			
-			/*
-			KibanaConnector kSrc = new KibanaConnector("localhost",5601,"http");
-			
-			// Space
-			List<KIBANA_SPACE_FEATURE> disabledFeaturesList = new ArrayList<>();
-			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.indexPatterns);
-			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.apm);
-			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.dev_tools);
-			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.infrastructure);
-			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.ml);
-			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.advancedSettings);
-			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.logs);
-			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.maps);
-			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.canvas);
-			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.graph);
-			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.monitoring);
-			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.savedObjectsManagement);
-			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.siem);
-			disabledFeaturesList.add(KIBANA_SPACE_FEATURE.uptime);
-			
-			kSrc.createKibanaSpace(Globals.GetMxProperty("mx.elk.user"), Globals.GetMxProperty("mx.elk.passwd"), 
-					"lolospace", "Lolo Space","Space for Lolo", "#444499", "LM", "", disabledFeaturesList);
-			
-			*/
-			/*
-			// Role
-			List<String> indicesList = new ArrayList<String>();
-			indicesList.add("test_catalog");
-			List<String> spacesList = new ArrayList<String>();
-			spacesList.add("lolospace");
-			List<String> featuresListStr = new ArrayList<String>();
-			featuresListStr.add("dashboard");
-			featuresListStr.add("discover");
-			featuresListStr.add("visualize");
-			Boolean rst = kSrc.createKibanaRole(	Globals.GetMxProperty("mx.elk.user"),
-													Globals.GetMxProperty("mx.elk.passwd"),
-													"lolospace_RO",
-													indicesList,KIBANA_PRIVILEGE.read,
-													spacesList,
-													featuresListStr,KIBANA_PRIVILEGE.read);
-				*/
-			/*
-			// User
-			List<String> rolesList = new ArrayList<String>();
-			//rolesList.add("lolospace_RO");
-			rolesList.add("kibana_user");
-			IUserProfileData myUser = new UserProfileData();
-			myUser.setName("laurentmlcontact-metaindex@yahoo.fr");
-			myUser.setEncryptedPassword("$2a$10$gwVIdLdHwm8wW5z0Yl1Kxunh5e5TIUdPRHD5hJRJa2iCihqV1mkTS");
-			myUser.setEnabled(true);
-			myUser.setNickname("lolo");
-			
-			Boolean rst = Globals.Get().getDatabasesMgr().getUserProfileESDbInterface().getCreateOrUpdateUserStmt(myUser, rolesList).execute();
-			*/
-			/*
-			// Index Pattern
-			rst = kSrc.createKibanaIndexPattern(Globals.GetMxProperty("mx.elk.user"),
-												Globals.GetMxProperty("mx.elk.passwd"),
-												"lolospace",
-												"mxpattern_test_catalog", "test_catalog", "mx_updated_timestamp");
-			
-			//kSrc.createKibanaUser(Globals.GetMxProperty("mx.elk.user"), Globals.GetMxProperty("mx.elk.passwd"), 
-			//		"lolo", "Laurent ML", "$2a$10$gwVIdLdHwm8wW5z0Yl1Kxunh5e5TIUdPRHD5hJRJa2iCihqV1mkTS", "laurentmlcontact-metaindex@yahoo.fr", rolesList);
-			log.info("### created Kibana conf!");
-			*/
 			
 		}
 	}
@@ -334,23 +269,26 @@ public class Globals {
 				+"- mx.ftp.port.range_high="+Globals.GetMxProperty("mx.ftp.port.range_high")+"\n"
 				+"- mx.ftp.passive.range_low="+Globals.GetMxProperty("mx.ftp.passive.range_low")+"\n"
 				+"- mx.ftp.passive.range_high="+Globals.GetMxProperty("mx.ftp.passive.range_high")+"\n"	
-				+"- ------------------------ KIBANA ------------------------"+"\n"
+				+"- ------------------------ KIBANA USER ACCESS ------------------------"+"\n"
 				+"- mx.kibana.host="+Globals.GetMxProperty("mx.kibana.host")+"\n"
 				+"- mx.kibana.protocol="+Globals.GetMxProperty("mx.kibana.protocol")+"\n"
 				+"- mx.kibana.port="+Globals.GetMxProperty("mx.kibana.port")+"\n"
 				+"- mx.kibana.urlparams="+Globals.GetMxProperty("mx.kibana.urlparams")+"\n"
-				+"- ------------------------ MySQL ------------------------"+"\n"
-				+"- mx.sql.host="+Globals.GetMxProperty("mx.sql.host")+"\n"
-				+"- mx.sql.port="+Globals.GetMxProperty("mx.sql.port")+"\n"
-				+"- mx.sql.dbname="+Globals.GetMxProperty("mx.sql.dbname")+"\n"
-				+"- mx.sql.user="+Globals.GetMxProperty("mx.sql.user")+"\n"
-				+"- ------------------------ ElastisSearch ------------------------"+"\n"
+				+"- ------------------------ KIBANA REST API ------------------------"+"\n"
+				+"- mx.kibana.api.hos="+Globals.GetMxProperty("mx.kibana.api.host")+"\n"
+				+"- mx.kibana.api.protocol="+Globals.GetMxProperty("mx.kibana.api.protocol")+"\n"
+				+"- mx.kibana.api.port="+Globals.GetMxProperty("mx.kibana.api.port")+"\n"				
+				+"- ------------------------ ElastisSearch REST API ------------------------"+"\n"
 				+"- mx.elk.host="+Globals.GetMxProperty("mx.elk.host")+"\n"
 				+"- mx.elk.protocol="+Globals.GetMxProperty("mx.elk.protocol")+"\n"
 				+"- mx.elk.port1="+Globals.GetMxProperty("mx.elk.port1")+"\n"
 				+"- mx.elk.port2="+Globals.GetMxProperty("mx.elk.port2")+"\n"
-				+"- -----------------------------Misc----------------------------"+"\n"
-				+"- FTP Repository : "+getWebappsFsPath()+"/data"
+				+"- ------------------------ MySQL API ------------------------"+"\n"
+				+"- mx.sql.host="+Globals.GetMxProperty("mx.sql.host")+"\n"
+				+"- mx.sql.port="+Globals.GetMxProperty("mx.sql.port")+"\n"
+				+"- mx.sql.dbname="+Globals.GetMxProperty("mx.sql.dbname")+"\n"
+				+"- mx.sql.user="+Globals.GetMxProperty("mx.sql.user")+"\n"
+				
 			;
 	}
 
