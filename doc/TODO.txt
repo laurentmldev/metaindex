@@ -5,13 +5,12 @@ Priority 1:
 
 #20 build usage statistics : TO BE TESTED
 
-deployement test scenario
-
 FTP server port increments all when creating a new catalog
-		
-#17 helps texts in all languages
 
-#30 secure access to catalog's files
+#31 define and prepare deployement tests
+	- send test email statistics
+
+
 
 Priority 2:
 -----------
@@ -38,7 +37,7 @@ search on accentuated characters imported from UTF-16 does not seem to work
 
 Backlog:
 --------
-- use field alias to rename fields and make lexic translation available
+- use field alias to rename fields and make lexic translation available in Kibana and searxh queries
 - websocket connection lost when 'save as...' window open ?
 - detect when same user logged from 2 different hosts : TO BE TESTED
 - when entering edit mode, shall stay in current tab
@@ -53,7 +52,7 @@ Backlog:
 - unable to create a new field right after creating new catalog
 - when enumeration list of a term has only one element, edit mod does not detectit as enum  (dropdown) but as text (text input)
 - import from Excel file
-- GUI of search bar + XS version
+- GUI of search bar in XS version
 - onclick image field : redirect to new page
 - extra-mapping : field value prefix/suffix ? (like currencies)
 - implement items list 'table' mode
@@ -69,11 +68,13 @@ Backlog:
 - implement section 'table' mode
 - check neo4j pour toile de connection
 - check gephy pour visualisation de graphs
-- appliation need a full restart when settingstatus back to ACTIVE
+- bug : application need a full restart when setting status back to ACTIVE
 	otherwise when reloading context after changing properties file:
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+#17 helps texts in french and english
+#30 secure access to catalog's files
 
 #15 adapt GUI to access rights
 	w to access rights (hide forbidden actions)	
