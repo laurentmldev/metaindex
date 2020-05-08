@@ -2,9 +2,10 @@
 Startup Procedure
 -----------------
 From Server console
-- docker-compose up -d mxproxy
-- wait
-- docker-compose up -d mxwebapp
+- docker-compose up 
+- wait for Kibana GREEN status message
+mxkibana    | {"type":"log","@timestamp":"2020-05-04T21:54:39Z","tags":["info","http","server","Kibana"],"pid":7,"message":"http server running at http://0:5601"}
 
 From Firefox
 - go to https://metaindex.fr:8443/metaindex/
+- go to https://metaindex.fr/metaindex/pma/

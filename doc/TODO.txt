@@ -3,17 +3,39 @@
 Priority 1:
 -----------
 
-#20 build usage statistics : TO BE TESTED
+#20 test usage statistics emails
 
 FTP server port increments all when creating a new catalog
+
 
 #31 define and prepare deployement tests
 	- send test email statistics
 
+Fields: multi shall be visible only if enum is not empty
+
+when updating WAR file, userdata contents is deleted
+
+unable to access local files with main user session : seems to create a second user session, invalidating the first
+one when logging with the second one?
+	test updated max-sessions number set to 2
+
+when delete catalog failed because of Kibana, page is not refreshed while it should be
+
+when creating a second new perpective, unable to create a new field, have to reload page
+
+filter references in edit mode : stop propagation
+
+when switch in/out edit mode : shall stay in current tab
+
+browse FTP via firefox ask for a password at every folder move
+ 
 
 
 Priority 2:
 -----------
+
+FTP server with fewer debug messages
+FTP server "quota exceeded" message when upload refused
 
 renaming a perspective actually duplicates it
 search on accentuated characters imported from UTF-16 does not seem to work
@@ -73,6 +95,9 @@ Backlog:
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+waiting message when creating a catalog
+Fix double'//' in URL prefix
+
 #17 helps texts in french and english
 #30 secure access to catalog's files
 

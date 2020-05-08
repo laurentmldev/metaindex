@@ -23,7 +23,7 @@
  	<mvc:resources mapping="/media/**" location="/media/" />
  	<mvc:resources mapping="/public/**" location="/public/" />
  	<mvc:resources mapping="/style/**" location="/style/" /> 	
- 	<mvc:resources mapping="/userdata/**" location="/userdata/" />
+ 	<mvc:resources mapping="/userdata/**" location="file:/etc/metaindex/userdata/" />
  	
 	<!-- bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 	  <property name="location" value="metaindex.properties"/>

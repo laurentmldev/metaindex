@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:web="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" id="WebApp_9" version="2.4">
-  <display-name>MetaIndex Application</display-name>
+  <display-name>MetaindeX Application</display-name>
+  
+   <listener>
+    <listener-class>metaindex.app.listeners.MetaindexContextListener</listener-class>
+   </listener>
+   
 <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>
@@ -45,7 +50,7 @@
 </filter>
 
  
-<!-- For user access-rights control over catalog's files  -->
+<!-- For user access-rights control over catalog's userdata  -->
 <filter>
      <filter-name>catalogDataAccessControlFilter</filter-name>
      <filter-class>metaindex.app.filters.CatalogDataAccessControlFilter</filter-class>

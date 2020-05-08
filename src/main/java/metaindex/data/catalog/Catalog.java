@@ -116,12 +116,7 @@ public class Catalog implements ICatalog {
 	}
 	@Override 
 	public void startServices() throws DataProcessException {
-		
-		// create link to actual user files location
-		// this link allows easier access control without having to
-		// manage a separate servlet
-		createLocalStorageIfMissing();	        
-		
+		        	
 		_ftpServer=new CatalogFtpServer(this);
 		try { _ftpServer.start(); }
 		catch (FtpException e) { 
@@ -157,7 +152,7 @@ public class Catalog implements ICatalog {
 	}
 	@Override
 	public String getFilesBaseUrl() {
-		return Globals.Get().getAppBaseUrl()+Globals.LOCAL_USERDATA_PATH_SUFFIX+this.getName()+"/".replaceAll("//", "/");
+		return Globals.Get().getAppBaseUrl()+(Globals.LOCAL_USERDATA_PATH_SUFFIX+this.getName()+"/").replaceAll("^/", "");
 	}
 	
 	@Override
@@ -606,34 +601,7 @@ public class Catalog implements ICatalog {
 	public Boolean checkQuotasNbDocsOk() {
 		return this.getNbDocuments()<this.getQuotaNbDocs();		
 	}
-	private void createLocalStorageIfMissing() throws DataProcessException {
-		try {
-			String userdataRealPath=Globals.GetMxProperty("mx.userdata.path")+"/"+this.getName();
-			File storageDirectory = new File(userdataRealPath);		
-	        if (! storageDirectory.exists()){ 
-	        	if (!storageDirectory.mkdirs()) {
-	        		throw new DataProcessException("Unable to create storage folder for catalog "+getName());
-	        	}
-	        }
-	        
-	        File userDataRootPath=new File(Globals.Get().getUserdataFsPath());
-	        if (! userDataRootPath.exists()){ 
-	        	if (!userDataRootPath.mkdirs()) {
-	        		throw new DataProcessException("Unable to create storage web-folder root");
-	        	}
-	        }
-	        
-	        String linkPath = this.getLocalFsFilesPath();
-	        File linkDirectory = new File(linkPath);
-	        if (! linkDirectory.exists()){ 	  
-	        		// /!\ this needs tomcat context configured to follow symlinks
-	        		// which is not the case by default
-					Files.createSymbolicLink(linkDirectory.toPath(), storageDirectory.toPath());				
-	        }
-		} catch (IOException e) {
-			throw new DataProcessException("Unable to create or access storage folders/links for catalog "+getName()+ " : "+e.getMessage());
-		}
-	}
+
 	@Override
 	public Long getDiscSpaceUseBytes() {
 		try {

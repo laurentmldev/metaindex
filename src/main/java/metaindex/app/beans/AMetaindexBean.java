@@ -63,9 +63,6 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 		try { 
 			
 			if (Globals.Get().getApplicationStatus()==APPLICATION_STATUS.STOPPED) {
-					ServletContext context = ServletActionContext.getServletContext();
-					Globals.Get().setWebappsFsPath(context.getRealPath("/").replaceAll("[^/]+/$", ""));
-					
 					Globals.Get().init();
 					Globals.Get().setApplicationStatus(APPLICATION_STATUS.RUNNING);								
 			}

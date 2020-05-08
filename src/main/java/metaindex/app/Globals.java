@@ -178,9 +178,8 @@ public class Globals {
 	 */
 	public void init() throws DataProcessException {
 		
-		log.info(getDetailsStr());
-						
 		if (_sqlConnector==null) {
+			log.info("MetaindeX connections init start ... ");
 			
 			_esConnector = new ElasticSearchConnector(GetMxProperty("mx.elk.host"),
 									 Integer.valueOf(GetMxProperty("mx.elk.port1")),
@@ -213,7 +212,10 @@ public class Globals {
 			// starting tmp-files cleaner
 			_mxTmpFolderCleaner.start();
 			
+			log.info("MetaindeX connections init done");
 		}
+		
+		
 	}
 	public IGuiLanguagesManager getGuiLanguagesMgr() { return _guiLanguagesManager; }
 	public IGuiThemesManager getGuiThemesMgr() { return _guiThemesManager; }

@@ -105,11 +105,11 @@
 				 		+"Following characters are refused '"+catalogName.replace(/[_a-z0-9]/g,'')+"', please try again!");
 		 return;
 	 }
-		 
+	 footer_showAlert(INFO,"<s:text name="global.pleasewait"/>");
 	 MxApi.requestCreateCatalog(catalogName);
  }
  function details_enterCatalog() {
-	 footer_showAlert(INFO, "Entering catalog ...");
+	 footer_showAlert(INFO, "<s:text name="Catalogs.enteringCatalog"/>");
 	 redirectToPage("${mxUrl}/metaindex/Items");
  }
  

@@ -33,9 +33,10 @@ using classpath local versions for spring XSD, otherwise it does not work offlin
 	<logout invalidate-session="true" logout-url="/logoutprocess"  logout-success-url="/loginform?logout" />
 	<access-denied-handler error-page="/public/commons/errors/403.html" />	
 	
-	<session-management invalid-session-url="/loginform?expired">
-		<concurrency-control max-sessions="1" />
+	<session-management invalid-session-url="/loginform?expired" session-authentication-error-url="/loginform?expired">
+		<concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
 	</session-management>
+	
 </http>
 
   <authentication-manager>  
