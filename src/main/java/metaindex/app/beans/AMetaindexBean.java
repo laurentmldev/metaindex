@@ -45,10 +45,7 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 		BeanProcess_ConstraintERROR
 	};									
 	
-	protected static final String USERPROFILE_SESSION_ATT="user_profile";
 	protected static final String CURRENT_COMMUNITY_SESSION_ATT="current_catalog";
-	protected static final String CURRENT_DOCUMENT_SESSION_ATT="current_document_id";
-	protected static final String CURRENT_CATALOG_SESSION_ATT="current_filter";
 	protected static final String GUITHEME_SESSION_ATT="current_guitheme";
 
 	private static final long serialVersionUID = 1084021485104376111L;

@@ -299,6 +299,8 @@ public class CatalogFtpServer {
 		_serverFactory.addListener( "default", mxListener );
 		
 		PropertiesUserManagerFactory userManagerFactory = new PropertiesUserManagerFactory();
+		// tmp props file created on the fly, does not exist in the project initial conf
+		// storing local data
 	    userManagerFactory.setFile(new File("ftpusers.properties"));
 		userManagerFactory.setPasswordEncryptor(new PasswordEncryptor() {
 

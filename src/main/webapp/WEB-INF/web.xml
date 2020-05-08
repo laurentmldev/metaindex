@@ -135,6 +135,10 @@
    <location>/public/commons/errors/ProcessError400.jsp</location>
  </error-page>
  <error-page>
+   <error-code>401</error-code>
+   <location>/public/commons/errors/ProcessError401.jsp</location>
+ </error-page>
+ <error-page>
    <error-code>404</error-code>
    <location>/public/commons/errors/ProcessError404.jsp</location>
  </error-page>

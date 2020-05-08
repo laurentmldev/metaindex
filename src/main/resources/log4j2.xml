@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn">
     <Properties>
-        <Property name="basePath">/var/log</Property>
+        <Property name="basePath">#{systemEnvironment['mx.logs.path']}</Property>
         <Property name="DispatcherServlet#enableLoggingRequestDetails">true</Property>
         
     </Properties>

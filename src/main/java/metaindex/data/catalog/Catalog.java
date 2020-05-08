@@ -117,6 +117,12 @@ public class Catalog implements ICatalog {
 	@Override 
 	public void startServices() throws DataProcessException {
 		        	
+		File userdataFs = new File(getLocalFsFilesPath());
+		if (!userdataFs.exists()) {
+			if (!userdataFs.mkdirs()) {
+				log.error("unable to create local userdata folder : "+getLocalFsFilesPath());
+			}
+		}
 		_ftpServer=new CatalogFtpServer(this);
 		try { _ftpServer.start(); }
 		catch (FtpException e) { 
@@ -148,11 +154,11 @@ public class Catalog implements ICatalog {
 	
 	@Override
 	public String getLocalFsFilesPath() {
-		return Globals.Get().getUserdataFsPath()+this.getName();
+		return Globals.Get().getUserdataFsPath()+"/"+this.getName();
 	}
 	@Override
 	public String getFilesBaseUrl() {
-		return Globals.Get().getAppBaseUrl()+(Globals.LOCAL_USERDATA_PATH_SUFFIX+this.getName()+"/").replaceAll("^/", "");
+		return Globals.Get().getAppBaseUrl()+(Globals.LOCAL_USERDATA_PATH_SUFFIX+this.getName()+"/");//.replaceAll("^/", "");
 	}
 	
 	@Override
@@ -369,8 +375,8 @@ public class Catalog implements ICatalog {
 	}
 	@Override
 	public String getItemsUrlPrefix() {
-		if (_urlPrefix.length()==0) { return getFilesBaseUrl().replaceAll("/$", ""); }
-		return _urlPrefix.replaceAll("/$", "");
+		if (_urlPrefix.length()==0) { return getFilesBaseUrl(); }//.replaceAll("/$", ""); }
+		return _urlPrefix;//.replaceAll("/$", "");
 	}
 	@Override
 	public void setItemsUrlPrefix(String urlPrefix) {

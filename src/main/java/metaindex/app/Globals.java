@@ -156,7 +156,7 @@ public class Globals {
 		return _contextPath;
 	}
 	public String getUserdataFsPath() { 
-		return _contextPath+LOCAL_USERDATA_PATH_SUFFIX;
+		return GetMxProperty("mx.userdata.path");
 	}
 	public String getWebappsTmpFsPath() {
 		String path=getWebappsFsPath()+"/mxtmp/";		
@@ -266,7 +266,8 @@ public class Globals {
 				+"- mx.port="+Globals.GetMxProperty("mx.port")+"\n"
 				+"- mx.appname="+Globals.GetMxProperty("mx.appname")+"\n"
 				+"- mx.userdata.path="+Globals.GetMxProperty("mx.userdata.path")+"\n"
-				
+				+"- mx.logs.path="+Globals.GetMxProperty("mx.logs.path")+"\n"
+				+"- ------------------------ FTP CONF ------------------------"+"\n"
 				+"- mx.ftp.port.range_low="+Globals.GetMxProperty("mx.ftp.port.range_low")+"\n"
 				+"- mx.ftp.port.range_high="+Globals.GetMxProperty("mx.ftp.port.range_high")+"\n"
 				+"- mx.ftp.passive.range_low="+Globals.GetMxProperty("mx.ftp.passive.range_low")+"\n"

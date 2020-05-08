@@ -32,12 +32,8 @@ import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.IUserProfileData.USER_CATALOG_ACCESSRIGHTS;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-/**
- * Manages authorization to the system.
- *
- * @author Michael Klaene
- */
 public class CatalogDataAccessControlFilter implements Filter  {
    
 	private Log log = LogFactory.getLog(AMetaindexBean.class);
@@ -49,19 +45,29 @@ public class CatalogDataAccessControlFilter implements Filter  {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
 		
 		HttpSession session = ((HttpServletRequest)request).getSession(false);
-		if (session==null) { throw new IOException("No access right for this URI."); }
+		if (session==null) { 
+			((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "No access right for this URI");
+			return;
+		}
 		String sessionId=session.getId();
 		
 		IUserProfileData user=Globals.Get().getUsersMgr().getUserByHttpSessionId(sessionId);	 
-		if (user==null) { throw new IOException("No access right for this URI, user unknown."); }
+		if (user==null) { 			
+			((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "No access right for this URI, rejected user.");
+			return;
+		}
 				
 		String URI = ((HttpServletRequest)request).getRequestURI();
 		String catalogName = extractCatalogNameFromUri(URI);
 		
 		ICatalog c = Globals.Get().getCatalogsMgr().getCatalog(catalogName);
-		if (c==null) { throw new IOException("No access right for this URI, no such contents."); }
+		if (c==null) {
+			((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "No access right for this URI, no such catalog.");
+			return;
+		}
 		if (user.getUserCatalogAccessRights(c.getId())==USER_CATALOG_ACCESSRIGHTS.NONE) {
-			throw new IOException("Insufficient access rights for this URI.");
+			((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "No access right for this URI, no such contents.");
+			return;
 		}
 		 		
 		chain.doFilter(request,response);
