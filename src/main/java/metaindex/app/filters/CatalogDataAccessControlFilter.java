@@ -39,7 +39,7 @@ public class CatalogDataAccessControlFilter implements Filter  {
 	private Log log = LogFactory.getLog(AMetaindexBean.class);
 	
 	private String extractCatalogNameFromUri(String uri) {		
-		String catalogName=uri.replace(Globals.LOCAL_USERDATA_PATH_SUFFIX, "").replaceAll("/.*", "");
+		String catalogName=uri.replace(Globals.LOCAL_USERDATA_PATH_SUFFIX+"/", "").replaceAll("/.*", "");
 		return catalogName;
 	}
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {

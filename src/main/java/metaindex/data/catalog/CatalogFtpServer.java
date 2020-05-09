@@ -254,6 +254,9 @@ public class CatalogFtpServer {
 	}
  	public CatalogFtpServer(ICatalog c) {
 
+ 		java.util.logging.Logger jul = java.util.logging.Logger.getLogger("org.apache.ftpserver.listener.nio.FtpLoggingFilter");
+	    jul.setLevel(java.util.logging.Level.SEVERE);
+	    
  		// try to find a port available for FTP server of this catalog
  		Integer ftpPortRangeLow = new Integer(Globals.GetMxProperty("mx.ftp.port.range_low"));
  		Integer ftpPortRangeHigh = new Integer(Globals.GetMxProperty("mx.ftp.port.range_high")); 		
@@ -322,6 +325,7 @@ public class CatalogFtpServer {
 		
 		_serverFactory.setFtplets(Collections.singletonMap("MxFtplet", new MxFtplet()));
 		_server= _serverFactory.createServer();
+		
 		
 	}
 }

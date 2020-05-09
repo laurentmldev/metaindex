@@ -158,7 +158,7 @@ public class Catalog implements ICatalog {
 	}
 	@Override
 	public String getFilesBaseUrl() {
-		return Globals.Get().getAppBaseUrl()+(Globals.LOCAL_USERDATA_PATH_SUFFIX+this.getName()+"/");//.replaceAll("^/", "");
+		return Globals.Get().getAppBaseUrl()+(Globals.LOCAL_USERDATA_PATH_SUFFIX+"/"+this.getName());
 	}
 	
 	@Override
@@ -168,8 +168,6 @@ public class Catalog implements ICatalog {
 	public void enter(IUserProfileData p) throws DataProcessException {
 		try {
 			_loggedUsersLock.acquire();		
-			Globals.Get().getWebappsFsPath();
-			Globals.Get().getAppBaseUrl();
 			if (_ftpServer!=null) { _ftpServer.setUser(p, true); }
 			if (!_loggedUsersIds.containsKey(p.getId()) ) {
 				_loggedUsersIds.put(p.getId(),p);
@@ -375,7 +373,7 @@ public class Catalog implements ICatalog {
 	}
 	@Override
 	public String getItemsUrlPrefix() {
-		if (_urlPrefix.length()==0) { return getFilesBaseUrl(); }//.replaceAll("/$", ""); }
+		if (_urlPrefix.length()==0) { return getFilesBaseUrl(); }//.replaceAll("/$", "").replaceAll("/", ""); }
 		return _urlPrefix;//.replaceAll("/$", "");
 	}
 	@Override

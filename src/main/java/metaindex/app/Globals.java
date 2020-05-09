@@ -63,7 +63,7 @@ public class Globals {
 	private static final String MX_PROPERTIES_FILE = "metaindex.properties";
 	public static final Integer AUTOREFRESH_PERIOD_SEC=5;
 	private static final String MX_EMAIL_SUBJECT_PREFIX= "[MetaindeX]";
-	public static final String LOCAL_USERDATA_PATH_SUFFIX="/metaindex/userdata/";
+	public static final String LOCAL_USERDATA_PATH_SUFFIX="/metaindex/userdata";
 	
 	Properties _mx_config = new Properties();
 	static Map<String, String> env = System.getenv();
@@ -167,8 +167,8 @@ public class Globals {
 	
 	public String getAppBaseUrl() {
 		return Globals.GetMxProperty("mx.protocol")+"://"
-				+Globals.GetMxProperty("mx.host")+":"+Globals.GetMxProperty("mx.port")
-				+"/";		
+				+Globals.GetMxProperty("mx.host")+":"+Globals.GetMxProperty("mx.port");
+					
 	}
 	public String getWebappsTmpUrl() { return getAppBaseUrl()+"/mxtmp/"; }
 	
@@ -259,14 +259,13 @@ public class Globals {
 
 	public String getDetailsStr() {
 
-		return   "\n	###### MetaindeX v"+Globals.GetMxProperty("mx.version")+" ######"+"\n"
+		return   "\n	###### MetaindeX v"+Globals.GetMxProperty("mx.version")+"  ######"+"\n"
 				+"- mx.status="+Globals.GetMxProperty("mx.status")+"\n\n"
 				+"- mx.host="+Globals.GetMxProperty("mx.host")+"\n"
 				+"- mx.protocol="+Globals.GetMxProperty("mx.protocol")+"\n"
 				+"- mx.port="+Globals.GetMxProperty("mx.port")+"\n"
 				+"- mx.appname="+Globals.GetMxProperty("mx.appname")+"\n"
 				+"- mx.userdata.path="+Globals.GetMxProperty("mx.userdata.path")+"\n"
-				+"- mx.logs.path="+Globals.GetMxProperty("mx.logs.path")+"\n"
 				+"- ------------------------ FTP CONF ------------------------"+"\n"
 				+"- mx.ftp.port.range_low="+Globals.GetMxProperty("mx.ftp.port.range_low")+"\n"
 				+"- mx.ftp.port.range_high="+Globals.GetMxProperty("mx.ftp.port.range_high")+"\n"
@@ -291,6 +290,9 @@ public class Globals {
 				+"- mx.sql.port="+Globals.GetMxProperty("mx.sql.port")+"\n"
 				+"- mx.sql.dbname="+Globals.GetMxProperty("mx.sql.dbname")+"\n"
 				+"- mx.sql.user="+Globals.GetMxProperty("mx.sql.user")+"\n"
+				+"- ------------------------ Statistics ------------------------"+"\n"
+				+"- mx.statistics.update_period_sec="+Globals.GetMxProperty("mx.statistics.update_period_sec")+"\n"
+				
 				
 			;
 	}

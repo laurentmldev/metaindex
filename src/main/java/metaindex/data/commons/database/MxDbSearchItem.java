@@ -141,7 +141,7 @@ public class MxDbSearchItem implements IDbItem {
 			Object curFieldVal = _data.get(_thumbnailUrlField);
 			if (curFieldVal!=null) { _thumbnailUrlVal=curFieldVal.toString(); }					
 		}
-		if (!_thumbnailUrlVal.startsWith("http")) { return _urlPrefix+_thumbnailUrlVal; }
+		if (!_thumbnailUrlVal.startsWith("http")) { return _urlPrefix+"/"+_thumbnailUrlVal; }
 		
 		return _thumbnailUrlVal;
 	}

@@ -237,7 +237,26 @@
 		<version>1.0.1.RELEASE</version>
 	</dependency>
   </dependencies>
+    	<properties>
+    		<!-- 
+    			we need here to wrap build timestamp in a property
+    			otherwise MAVEN won't replace it in properties files.
+    			https://issues.apache.org/jira/browse/MRESOURCES-99 
+    		 -->
+		   <buildtimestamp>${maven.build.timestamp}</buildtimestamp>
+		   <maven.build.timestamp.format>yyyyMMdd.HHmmss</maven.build.timestamp.format>
+		</properties>
+    
   <build>
     <finalName>metaindex-core</finalName>
+
+    <resources>
+	    <resource>
+	    	<!--  replace MAVEN variables like version dans build timestamp -->
+		    <directory>${basedir}/src/main/resources</directory>
+		    <filtering>true</filtering>
+		</resource>
+	</resources>
   </build>
+  <description>Adaptive Cataloguing and Statistics Application</description>
 </project>

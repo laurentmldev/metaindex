@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn">
+<Configuration status="info">
     <Properties>
-        <Property name="basePath">#{systemEnvironment['mx.logs.path']}</Property>
+        <!--Property name="basePath">{sys:mx.logs.path}</Property-->
+        <!--Property name="basePath">${catalina.home}/logslogs</Property-->
+        
         <Property name="DispatcherServlet#enableLoggingRequestDetails">true</Property>
         
     </Properties>
  
     <Appenders>
-        <RollingFile name="metaindex-file-logger" fileName="${basePath}/metaindex-server.log" filePattern="${basePath}/metaindex-server-%d{yyyy-MM-dd}.log">
+        <RollingFile name="metaindex-file-logger" fileName="${sys:catalina.home}/logs/metaindex-server.log" filePattern="${sys:catalina.home}/logs/metaindex-server-%d{yyyy-MM-dd}.log">
             <PatternLayout>
                 <pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</pattern>
             </PatternLayout>
@@ -20,19 +22,28 @@
             <PatternLayout   pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n" />
         </Console>
     </Appenders>
-    <Loggers>    	
+    <Loggers>    
+    	<Logger name="org.apache.ftpserver.listener.nio.FtpLoggingFilter" level="error" additivity="false">
+        	<appender-ref ref="metaindex-file-logger" /> 
+        </Logger>	
         <Logger name="org.springframework.context" level="info" additivity="false">
-        	<appender-ref ref="console" /> 
+        	<appender-ref ref="metaindex-file-logger" /> 
         </Logger>
         <Logger name="org.springframework.web" level="info" additivity="false">
-        	<appender-ref ref="console" /> 
+        	<appender-ref ref="metaindex-file-logger" /> 
         </Logger>
-        <Logger name="org.springframework.messaging" level="info" additivity="true">
-        	<appender-ref ref="console" /> 
-        </Logger> 
-        <Root level="info" additivity="false">
+        <Logger name="org.springframework.messaging" level="info" additivity="false">
+        	<appender-ref ref="metaindex-file-logger" /> 
+        </Logger>
+         
+        <Logger  name="metaindex.app.listeners.MetaindexContextListener" level="info" additivity="false" >
             <appender-ref ref="console" />
             <appender-ref ref="metaindex-file-logger" level="info" />
-        </Root>
+        </Logger>
+        
+         <Root level="info" additivity="false">
+            <!--appender-ref ref="console" /-->
+            <appender-ref ref="metaindex-file-logger" level="info" />
+         </Root>
     </Loggers>
 </Configuration>
