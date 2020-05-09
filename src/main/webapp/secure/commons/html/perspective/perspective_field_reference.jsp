@@ -256,8 +256,17 @@ function _commons_perspective_buildRefsDocsEditableList(itemId,docIdsListStr,ter
 		 // fastsearch
 		 let searchinput = docsListFieldset.querySelector("._fastsearch_");
 		 searchinput.style.display="block";
+		 searchinput.onkeypress=function(event) {
+			 //event.preventDefault();
+			 event.stopPropagation();			 			 
+		 }
+		 searchinput.onkeydown=function(event) {
+			 //event.preventDefault();
+			 event.stopPropagation();			 			 
+		 }
 		 searchinput.oninput=function(event) {
-			 event.stopPropagation();
+			 event.preventDefault();
+			 event.stopPropagation();			 
 			 refsDocsTable.refresh(searchinput.value); 
 		 }
 		 	 

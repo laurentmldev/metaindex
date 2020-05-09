@@ -24,7 +24,7 @@ when switch in/out edit mode : shall stay in current tab
 when creating a second new perpective, unable to create a new field, have to reload page
 
 when delete catalog failed because of Kibana, page is not refreshed while it should be
-
+when deleting a catalog, delete also associated userdata
 
 
 Terms and Conditions presentation and acceptation on first login
@@ -88,6 +88,7 @@ Backlog:
 Done:
 -----
 waiting message when creating a catalog
+filter references in edit mode : stop propagation
 #20 test usage statistics emails
 #17 helps texts in french and english
 #30 secure access to catalog's files
