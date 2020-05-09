@@ -113,6 +113,8 @@ public class CatalogFtpServer {
 							(
 									arg1.getCommand().equals("OPTS")
 									|| arg1.getCommand().equals("FEAT")
+									|| arg1.getCommand().equals("PASV")
+									|| arg1.getCommand().equals("MDTM")
 									|| arg1.getCommand().equals("PBSZ")
 									|| arg1.getCommand().equals("PROT")
 									|| arg1.getCommand().equals("TYPE")

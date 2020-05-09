@@ -3,37 +3,29 @@
 Priority 1:
 -----------
 
-#20 test usage statistics emails
 
-FTP server port increments all when creating a new catalog
-	stop FTP servers when app is destroyed
+
+FTP server 
+	- port increments all when creating a new catalog
+	- stop FTP servers when app is destroyed
+	- FTP server with fewer debug messages
+	- FTP server "quota exceeded" message when upload refused or add dummy file "ATTENTION_QUOTA_EXCEEDED.txt" in userdata folder
 
 #31 define and prepare deployement tests
-	- send test email statistics
-
-Fields: multi shall be visible only if enum is not empty
-
-when updating WAR file, userdata contents is deleted
-
-
-
-when delete catalog failed because of Kibana, page is not refreshed while it should be
-
-when creating a second new perpective, unable to create a new field, have to reload page
 
 filter references in edit mode : stop propagation
-
-when switch in/out edit mode : shall stay in current tab
-
-browse FTP via firefox ask for a password at every folder move
- 
 
 
 Priority 2:
 -----------
 
-FTP server with fewer debug messages
-FTP server "quota exceeded" message when upload refused
+Fields: multi shall be visible only if enum is not empty
+when switch in/out edit mode : shall stay in current tab
+when creating a second new perpective, unable to create a new field, have to reload page
+
+when delete catalog failed because of Kibana, page is not refreshed while it should be
+
+
 
 Terms and Conditions presentation and acceptation on first login
  
@@ -41,7 +33,7 @@ renaming a perspective actually duplicates it
 search on accentuated characters imported from UTF-16 does not seem to work
 #19 send email to users and admin when useful
 
-#23 avoid use of kibana_admin user once ELK issue 51759 us fixed
+#23 avoid use of kibana_user user once ELK issue 51759 us fixed
 
 
 #14 check user inputs : ensure no special nor space characters and are not empty
@@ -96,7 +88,7 @@ Backlog:
 Done:
 -----
 waiting message when creating a catalog
-	
+#20 test usage statistics emails
 #17 helps texts in french and english
 #30 secure access to catalog's files
 	Fix double'//' in URL prefix
