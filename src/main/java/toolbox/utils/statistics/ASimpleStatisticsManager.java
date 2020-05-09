@@ -89,5 +89,16 @@ public abstract class ASimpleStatisticsManager implements IStatisticsManager {
 				
 		return statsStr;
 	}
+	
+	public String getDetailsHtml() {
+		String statsStr="<table>";
+		statsStr+="<tr><th>Name</th><th>Nb Detections</th></tr>";
+		// For each stat name, show number and last date		
+		for (String statName : _inMemoryStats.keySet()) {
+			statsStr+="<tr><td>"+statName+"</td><td>"+_inMemoryStats.get(statName).size()+"</td></tr>";
+		}
+		statsStr+="</table>";
+		return statsStr;
+	}
 
 }

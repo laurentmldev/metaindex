@@ -1,15 +1,24 @@
 package toolbox.utils.mailing;
 
 import com.sun.mail.smtp.SMTPTransport;
+
+import metaindex.app.periodic.statistics.MxStatisticsManager;
+
 import java.security.Security;
 import java.util.Date;
 import java.util.Properties;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *
@@ -17,6 +26,8 @@ import javax.mail.internet.MimeMessage;
  */
 public class GoogleMailSender implements IEmailSender {
    
+	private Log log = LogFactory.getLog(GoogleMailSender.class);
+	
     /**
      * Send email using GMail SMTP server.
      *
@@ -29,7 +40,7 @@ public class GoogleMailSender implements IEmailSender {
      * @throws MessagingException if the connection is dead or not in the connected state or if the message is not a MimeMessage
      */
     public void send(final String username, final String password, String recipientEmail, String title, String message) throws AddressException, MessagingException {
-        send(username, password, recipientEmail, "", title, message);
+        sendHtml(username, password, recipientEmail, "", title, message);
     }
 
     /**
@@ -40,12 +51,13 @@ public class GoogleMailSender implements IEmailSender {
      * @param recipientEmail TO recipient
      * @param ccEmail CC recipient. Can be empty if there is no CC recipient
      * @param title title of the message
-     * @param message message to be sent
+     * @param htmlMessage message to be sent
      * @throws AddressException if the email address parse failed
      * @throws MessagingException if the connection is dead or not in the connected state or if the message is not a MimeMessage
      */
-    public void send(final String username, final String password, String recipientEmail, String ccEmail, String title, String message) throws AddressException, MessagingException {
-        Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+    public void sendHtml(final String username, final String password, String recipientEmail, String ccEmail, String title, String htmlMessage) throws AddressException, MessagingException {
+        
+    	Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
         final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
 
         // Get a Properties object
@@ -81,13 +93,27 @@ public class GoogleMailSender implements IEmailSender {
         }
 
         msg.setSubject(title);
-        msg.setText(message, "utf-8");
-        msg.setSentDate(new Date());
+        Multipart multipart = new MimeMultipart( "alternative" );
+/*
+        MimeBodyPart textPart = new MimeBodyPart();
+        String textMessage=htmlMessage.replaceAll("<br/>","\n");
+        textPart.setText(textMessage, "utf-8" );
+*/
+        MimeBodyPart htmlPart = new MimeBodyPart();
+        htmlPart.setContent( htmlMessage, "text/html; charset=utf-8" );
+        htmlPart.setHeader("Content-Type", "text/html");
 
+  //      multipart.addBodyPart( textPart );
+        multipart.addBodyPart( htmlPart );
+        msg.setContent( multipart );
+        
+        msg.setSentDate(new Date());
+        msg.saveChanges();
         SMTPTransport t = (SMTPTransport)session.getTransport("smtps");
 
         t.connect("smtp.gmail.com", username, password);
         t.sendMessage(msg, msg.getAllRecipients());      
         t.close();
+        
     }
 }

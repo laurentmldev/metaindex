@@ -20,6 +20,6 @@ public class DeleteCatalogMxStat extends ACatalogMxStatisticItem {
 	}
 	@Override
 	public String getName() {
-		return "catalog.create-catalog";
+		return "catalog.delete-catalog";
 	}	
 }

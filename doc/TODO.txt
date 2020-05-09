@@ -6,7 +6,7 @@ Priority 1:
 #20 test usage statistics emails
 
 FTP server port increments all when creating a new catalog
-
+	stop FTP servers when app is destroyed
 
 #31 define and prepare deployement tests
 	- send test email statistics
@@ -15,9 +15,7 @@ Fields: multi shall be visible only if enum is not empty
 
 when updating WAR file, userdata contents is deleted
 
-unable to access local files with main user session : seems to create a second user session, invalidating the first
-one when logging with the second one?
-	test updated max-sessions number set to 2
+
 
 when delete catalog failed because of Kibana, page is not refreshed while it should be
 
@@ -37,6 +35,8 @@ Priority 2:
 FTP server with fewer debug messages
 FTP server "quota exceeded" message when upload refused
 
+Terms and Conditions presentation and acceptation on first login
+ 
 renaming a perspective actually duplicates it
 search on accentuated characters imported from UTF-16 does not seem to work
 #19 send email to users and admin when useful
@@ -96,10 +96,11 @@ Backlog:
 Done:
 -----
 waiting message when creating a catalog
-Fix double'//' in URL prefix
-
+	
 #17 helps texts in french and english
 #30 secure access to catalog's files
+	Fix double'//' in URL prefix
+	unable to access local files with main user session : seems to create a second user session, invalidating the first one when logging with the second one?		
 
 #15 adapt GUI to access rights
 	w to access rights (hide forbidden actions)	

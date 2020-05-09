@@ -39,6 +39,7 @@ public class MxStatisticsManager extends ASimpleStatisticsManager {
 	/// Meaningless in this context of usage
 	public Integer getId() { return 0; }
 	
+
 	@Override
 	/**
 	 * Send email to server admin with current statistics
@@ -47,10 +48,15 @@ public class MxStatisticsManager extends ASimpleStatisticsManager {
 		
 		log.info(this.getDetailsStr());
 		try {
-			String msgBodyHtml="<br/><h3>MetaindeX Statistics Report - "+new Date()+"</h3><br/><br/>"
-				+this.getDetailsStr().replaceAll("\n", "<br/>");
+			String msgBodyHtml="<center>"
+					+"<h3>MetaindeX Statistics Report - "+this.getLastUpdate()+"</h3><br/><br/>"
+					+"<hr>"
+					+this.getDetailsHtml()
+					+"<hr>"
+					+"</center>"
+					;
 			Globals.Get().sendEmail(Globals.GetMxProperty("mx.mailer.admin_recipient"), 
-								"Server Statistics for "+Globals.GetMxProperty("mx.host"), 
+								"Server Statistics from "+Globals.GetMxProperty("mx.host"), 
 								msgBodyHtml);
 		} catch (Exception e) {
 			log.error("Unable to send statistics email : "+e.getMessage());
