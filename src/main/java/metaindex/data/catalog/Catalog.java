@@ -34,6 +34,7 @@ import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
 import metaindex.data.term.TermVocabularySet;
 import metaindex.data.userprofile.IUserProfileData;
+import metaindex.data.userprofile.UserProfileData;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.PeriodicProcessMonitor;
 import toolbox.utils.FileSystemUtils;
@@ -123,7 +124,7 @@ public class Catalog implements ICatalog {
 				log.error("unable to create local userdata folder : "+getLocalFsFilesPath());
 			}
 		}
-		_ftpServer=new CatalogFtpServer(this);
+		if (_ftpServer==null) { _ftpServer=new CatalogFtpServer(this); }
 		try { _ftpServer.start(); }
 		catch (FtpException e) { 
 			throw new DataProcessException
@@ -131,6 +132,23 @@ public class Catalog implements ICatalog {
 		}
 		_dbAutoRefreshProcessing.start();
 	}
+	@Override 
+	public void stopServices() throws DataProcessException {
+		    
+		IUserProfileData tmpAdminUserData = new UserProfileData();
+		tmpAdminUserData.setName("admin-service");
+		tmpAdminUserData.setNickname("admin-service");
+		kickOutAllUsers(tmpAdminUserData);
+		
+		try { _ftpServer.stop(); }
+		catch (FtpException e) { 
+			throw new DataProcessException
+				("Unable to stop FTP server for catalog "+this.getName()+" : "+e.getMessage(),e); 
+		}
+		_dbAutoRefreshProcessing.stopMonitoring();
+		
+	}
+	
 	@Override
 	public Integer getId() { return _id; }
 	@Override

@@ -44,6 +44,9 @@ public abstract class ASimpleStatisticsManager implements IStatisticsManager {
 	public void start() {
 		_periodicFlushMonitor.start();		
 	}
+	public void stop() {
+		_periodicFlushMonitor.stopMonitoring();		
+	}
 	public void handleStatItem(IStatisticItem s) throws DataProcessException {
 		try {
 			this.acquireLock();		

@@ -66,7 +66,9 @@ public class CatalogsManager implements ICatalogsManager {
 			// do it one by one rather than grouped, so that we can load as many valid catalogs as we can
 			// and identify easily which ones failed
 			try {
-				_catalogsById.put(c.getId(),c);
+				// reuse exiting catalog instance if alreay loaded
+				if (!_catalogsById.containsKey(c.getId())) { _catalogsById.put(c.getId(),c); }
+				else { c=_catalogsById.get(c.getId()); }
 				c.loadStatsFromDb();
 				c.loadMappingFromDb();
 				c.setDbIndexFound(true);

@@ -15,10 +15,16 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import metaindex.data.userprofile.UserProfileData;
 import toolbox.database.IDataConnector;
 import toolbox.exceptions.DataProcessException;
 
 public class SQLDataConnector implements IDataConnector {
+	
+	private Log log = LogFactory.getLog(SQLDataConnector.class);
 	
 	DataSource _sqlDs;
 	public SQLDataConnector(DataSource ds) { _sqlDs=ds; }
@@ -36,7 +42,11 @@ public class SQLDataConnector implements IDataConnector {
 
 	@Override
 	public void close() {
-		// nothing to do explicitly		
+		try {
+			getConnection().close();
+		} catch (SQLException e) {
+			log.error("unable to close SQL datasource : "+e.getMessage());
+		}
 	}
 	
 }

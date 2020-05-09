@@ -46,6 +46,10 @@ public class MxTmpFolderMonitor implements IPeriodicProcess {
 			log.info("Starting tmp-files cleaner over '"+Globals.Get().getWebappsTmpFsPath()+"' (Tmp Files TTL = "+TMP_FILE_TTL_SEC+"s)");
 			_periodicCleanMonitor.start();				
 		}
+		public void stop() {
+			log.info("Stopping tmp-files cleaner over '"+Globals.Get().getWebappsTmpFsPath()+"'");
+			_periodicCleanMonitor.stopMonitoring();				
+		}
 		@Override
 		public String getName() {
 			return "MX Temp Folder Cleaner";

@@ -23,4 +23,5 @@ public interface IStatisticsManager extends IPeriodicProcess {
 	List<IStatisticItem> getStatItemsByName(String statName);
 	Set<String> getStatItemsNames();
 	void start();
+	void stop();
 }

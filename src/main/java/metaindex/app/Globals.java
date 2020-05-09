@@ -217,6 +217,21 @@ public class Globals {
 		
 		
 	}
+	
+	public void stop() throws DataProcessException {
+		
+		
+			log.info("MetaindeX connections closing ... ");
+			
+			_esConnector.close();
+			_kibanaConnector.close();
+			_sqlConnector.close();
+			_mxStats.stop();
+			_mxTmpFolderCleaner.stop();
+			
+			log.info("MetaindeX connections closed");
+		
+	}
 	public IGuiLanguagesManager getGuiLanguagesMgr() { return _guiLanguagesManager; }
 	public IGuiThemesManager getGuiThemesMgr() { return _guiThemesManager; }
 	public IUsersManager getUsersMgr() { return _usersManager; }

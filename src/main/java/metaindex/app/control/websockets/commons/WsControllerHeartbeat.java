@@ -1,5 +1,7 @@
 package metaindex.app.control.websockets.commons;
 
+import javax.annotation.PreDestroy;
+
 /*
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -47,6 +49,15 @@ public class WsControllerHeartbeat extends AMxWSController implements IRunnable 
 		// automatically start when instanciated by Spring framework (autowired)
 		_thread.start();
 	}		
+	
+	@PreDestroy
+    public void preDestroy() {
+		_shouldBeRun=false;
+		try { 
+			_thread.join();
+		}
+		catch (Throwable t) { log.error("Unable to stop Heartbeat thread."); }
+    }
 		
     @SendTo( "/queue/heartbeat")
     public void sendHearbeat() throws Exception {

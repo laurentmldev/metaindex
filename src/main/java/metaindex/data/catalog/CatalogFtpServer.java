@@ -206,7 +206,7 @@ public class CatalogFtpServer {
 	
 	private FtpServerFactory _serverFactory=null;
 	private FtpServer _server=null;
-		
+	private Boolean _isStarted = false;
 	
 	public void setUser(IUserProfileData p,Boolean enabled) {
 		
@@ -240,14 +240,19 @@ public class CatalogFtpServer {
 	}
 		
 	public void start() throws FtpException  {
+		// possibly need semaphore if more intensive start/stop cycles
+		if (_isStarted) { return; }
+		_isStarted=true;
 		if (_server==null) { return; }
 		if (_server.isSuspended()) { _server.resume(); return;}		
+		
 		_server.start();
 		log.info("FTP server for catalog '"+_catalog.getName()+"' accessible at port '"+getPort()+"'");		
 	}
 	public void stop() throws FtpException  {
 		if (_server==null) { return; }
-		_server.suspend(); 
+		_server.stop();
+		_isStarted=false;
 	}	
 			
 	public Integer getPort() {

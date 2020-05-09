@@ -11,9 +11,7 @@ FTP server
 	- FTP server with fewer debug messages
 	- FTP server "quota exceeded" message when upload refused or add dummy file "ATTENTION_QUOTA_EXCEEDED.txt" in userdata folder
 
-#31 define and prepare deployement tests
-
-filter references in edit mode : stop propagation
+#31 define and prepare deployment tests
 
 
 Priority 2:

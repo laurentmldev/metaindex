@@ -106,5 +106,19 @@ public class UsersManager implements IUsersManager {
 			throw new DataProcessException(e); 
 		}
 	}
+
+	@Override
+	public List<IUserProfileData> getUsersList() throws DataProcessException {
+		try {
+			_usersLock.acquire();
+			List<IUserProfileData> users=new ArrayList<>(_usersByName.values());
+			_usersLock.release();
+			return users;
+		} catch (Exception e) {
+			log.error("Unable to load contents of UserProfileData from DB "+e.getMessage());
+			_usersLock.release();
+			throw new DataProcessException(e); 
+		}
+	}
 	
 }

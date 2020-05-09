@@ -1,5 +1,7 @@
 package metaindex.data.userprofile;
 
+import java.util.List;
+
 /*
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -18,6 +20,7 @@ public interface IUsersManager extends ILoadableFromDb {
 	IUserProfileData getUserByHttpSessionId(String userSessionId);	
 	IUserProfileData getUserById(Integer userId);
 	IUserProfileData getUserByName(String name);
+	List<IUserProfileData> getUsersList() throws DataProcessException;
 	void registerUser(IUserProfileData u) throws DataProcessException;
 	
 }
