@@ -7,13 +7,15 @@ Priority 1:
 
 
 #31 define and prepare deployment tests for v2.0.0
-green earth : 
-	- hover color is not visible
-	- filter title not visible
+
 
 
 Priority 2:
 -----------
+
+green earth : 
+	- hover color is not visible
+	- filter title not visible
 
 quotas check when uploading csv : refused while lines could be just update of existing items 
 
