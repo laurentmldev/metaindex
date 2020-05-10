@@ -5,22 +5,22 @@ Priority 1:
 
 
 
-FTP server 
-	- port increments all when creating a new catalog
-	- stop FTP servers when app is destroyed
-	- FTP server with fewer debug messages
-	- FTP server "quota exceeded" message when upload refused or add dummy file "ATTENTION_QUOTA_EXCEEDED.txt" in userdata folder
 
-#31 define and prepare deployment tests
+#31 define and prepare deployment tests for v2.0.0
 
 
 Priority 2:
 -----------
 
+FTP server 
+	- stop FTP servers when app is destroyed
+	- FTP server with fewer debug messages
+	- FTP server "quota exceeded" message when upload refused or add dummy file "ATTENTION_QUOTA_EXCEEDED.txt" in userdata folder
+
 Fields: multi shall be visible only if enum is not empty
 when switch in/out edit mode : shall stay in current tab
 when creating a second new perpective, unable to create a new field, have to reload page
-
+Ref. fields multi yes/no is not functional (always yes even if flag is 'no')
 when delete catalog failed because of Kibana, page is not refreshed while it should be
 when deleting a catalog, delete also associated userdata
 
@@ -85,6 +85,7 @@ Backlog:
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+FTP server port increments all when creating a new catalog
 waiting message when creating a catalog
 filter references in edit mode : stop propagation
 #20 test usage statistics emails
