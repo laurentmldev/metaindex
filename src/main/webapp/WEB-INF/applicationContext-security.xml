@@ -20,9 +20,16 @@ using classpath local versions for spring XSD, otherwise it does not work offlin
 	<intercept-url pattern="/createProfile*" access="permitAll" />
 	<intercept-url pattern="/CreateProfileProcess" access="permitAll" />	
 	<intercept-url pattern="/public/**" access="permitAll" />
+	<!-- 
+		access restriction is already done via custom filter
+		do not set hasRole(xxx) to userdata path, otherwise a new session (with passwd) 
+		will be required by spring to access it.
+		Possible configuration to customize better ...
+	 -->
+	<intercept-url pattern="/userdata/**" access="permitAll" />	
 	<intercept-url pattern="/wsmx/**" access="hasRole('USER') or hasRole('ADMIN') or hasRole('OBSERVER')" />	
 	<intercept-url pattern="/secure/**" access="hasRole('USER') or hasRole('ADMIN') or hasRole('OBSERVER')" />
-	<intercept-url pattern="/userdata/**" access="hasRole('USER') or hasRole('ADMIN') or hasRole('OBSERVER')" />	
+	
 	
 	
 	<form-login login-page='/loginform?secure' 
