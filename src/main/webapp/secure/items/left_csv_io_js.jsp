@@ -162,6 +162,7 @@ MxGuiLeftBar.showCsvPrevisu=function(fileHandle) {
 	previsuNodeFooter.style.display='block';
 	let uploadBtn=previsuNodeFooter.querySelector('._uploadBtn_');
 	uploadBtn.onclick=function() {
+		footer_showAlert(INFO,"<s:text name="global.pleasewait"/>",null,5000);
 		let selectedCsvColsDef = _getSelectedCsvColumnsDef(csvColsTable);
 		ws_handlers_requestUploadCsvFile(fileHandle,selectedCsvColsDef); 
 	}

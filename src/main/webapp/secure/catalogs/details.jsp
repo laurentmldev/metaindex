@@ -105,7 +105,7 @@
 				 		+"Following characters are refused '"+catalogName.replace(/[_a-z0-9]/g,'')+"', please try again!");
 		 return;
 	 }
-	 footer_showAlert(INFO,"<s:text name="global.pleasewait"/>");
+	 footer_showAlert(INFO,"<s:text name="global.pleasewait"/>",null,5000);
 	 MxApi.requestCreateCatalog(catalogName);
  }
  function details_enterCatalog() {
