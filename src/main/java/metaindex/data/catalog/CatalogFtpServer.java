@@ -36,6 +36,7 @@ import metaindex.data.userprofile.IUserProfileData.USER_CATALOG_ACCESSRIGHTS;
 
 import org.apache.ftpserver.FtpServerFactory;
 import org.apache.ftpserver.ftplet.Authority;
+import org.apache.ftpserver.ftplet.DefaultFtpReply;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.ftplet.FtpReply;
 import org.apache.ftpserver.ftplet.FtpRequest;
@@ -51,47 +52,51 @@ import org.apache.ftpserver.usermanager.PropertiesUserManagerFactory;
 public class CatalogFtpServer {
 	
 	private class MxFtplet extends DefaultFtplet {
-		
 
 		@Override
-		public FtpletResult afterCommand(FtpSession arg0, FtpRequest arg1, FtpReply arg2)
+		public FtpletResult afterCommand(FtpSession session, FtpRequest request, FtpReply reply)
 				throws FtpException, IOException {
 			
 			// for operation uploading data, check quotas
-			if (arg1.getCommand().equals("APPE")
-					|| arg1.getCommand().equals("MKD")
-					|| arg1.getCommand().equals("STOR")
-					|| arg1.getCommand().equals("STOU")
-					|| arg1.getCommand().equals("XMKD")
+			if (request.getCommand().equals("APPE")
+					|| request.getCommand().equals("MKD")
+					|| request.getCommand().equals("STOR")
+					|| request.getCommand().equals("STOU")
+					|| request.getCommand().equals("XMKD")
 			   ) {
 				
 				// quota exceeded, operation forbiden
 				if (!_catalog.checkQuotasDisckSpaceOk()) {
-					return FtpletResult.DISCONNECT;
+
+					session.write(new DefaultFtpReply(552, 
+							"Disk quota exceeded for catalog '"+_catalog.getName()+"'"));
+					return FtpletResult.SKIP;
 				}
 			}
 			
 			return FtpletResult.DEFAULT;
 		}
+	
 
 		@Override
-		public FtpletResult beforeCommand(FtpSession arg0, FtpRequest arg1) throws FtpException, IOException {
+		public FtpletResult beforeCommand(FtpSession session, FtpRequest request) throws FtpException, IOException {
 			
 			//log.error("#### Ftplet beforeCommand from '"+arg0.getUser()+"' : '"+arg1.getCommand()+"' / '"+arg1.getArgument()+"'");
 			
 			try { 
 				
 				// allowed anonymous commands
-				if (arg0.getUser()==null && (
-						   arg1.getCommand().equals("AUTH")
-						|| arg1.getCommand().equals("USER")
-						|| arg1.getCommand().equals("PASS")
+				if (session.getUser()==null && (
+						   request.getCommand().equals("AUTH")
+						|| request.getCommand().equals("USER")
+						|| request.getCommand().equals("PASS")
 					)) {
+					
 					return FtpletResult.DEFAULT;
 				}
 				else {
-					String name = arg0.getUser().getName();
-					IUserProfileData user = Globals.Get().getUsersMgr().getUserByName(arg0.getUser().getName());
+					String name = session.getUser().getName();
+					IUserProfileData user = Globals.Get().getUsersMgr().getUserByName(session.getUser().getName());
 					if (user==null
 							|| !user.isLoggedIn()
 							|| user.getUserCatalogAccessRights(_catalog.getId())==USER_CATALOG_ACCESSRIGHTS.NONE
@@ -111,30 +116,30 @@ public class CatalogFtpServer {
 								|| user.getUserCatalogAccessRights(_catalog.getId())==USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN)
 							&&
 							(
-									arg1.getCommand().equals("OPTS")
-									|| arg1.getCommand().equals("FEAT")
-									|| arg1.getCommand().equals("PASV")
-									|| arg1.getCommand().equals("MDTM")
-									|| arg1.getCommand().equals("PBSZ")
-									|| arg1.getCommand().equals("PROT")
-									|| arg1.getCommand().equals("TYPE")
-									|| arg1.getCommand().equals("EPSV")
-									|| arg1.getCommand().equals("CWD")
-									|| arg1.getCommand().equals("LIST")
-									|| arg1.getCommand().equals("CWD")
-									|| arg1.getCommand().equals("MLSD")
-									|| arg1.getCommand().equals("MLST")
-									|| arg1.getCommand().equals("NLST")
-									|| arg1.getCommand().equals("NOOP")
-									|| arg1.getCommand().equals("PWD")
-									|| arg1.getCommand().equals("QUIT")
-									|| arg1.getCommand().equals("REIN")
-									|| arg1.getCommand().equals("SIZE")
-									|| arg1.getCommand().equals("STAT")
-									|| arg1.getCommand().equals("SYST")
-									|| arg1.getCommand().equals("XPWD")
-									|| arg1.getCommand().equals("MLST")	
-									|| arg1.getCommand().equals("REST")
+									request.getCommand().equals("OPTS")
+									|| request.getCommand().equals("FEAT")
+									|| request.getCommand().equals("PASV")
+									|| request.getCommand().equals("MDTM")
+									|| request.getCommand().equals("PBSZ")
+									|| request.getCommand().equals("PROT")
+									|| request.getCommand().equals("TYPE")
+									|| request.getCommand().equals("EPSV")
+									|| request.getCommand().equals("CWD")
+									|| request.getCommand().equals("LIST")
+									|| request.getCommand().equals("CWD")
+									|| request.getCommand().equals("MLSD")
+									|| request.getCommand().equals("MLST")
+									|| request.getCommand().equals("NLST")
+									|| request.getCommand().equals("NOOP")
+									|| request.getCommand().equals("PWD")
+									|| request.getCommand().equals("QUIT")
+									|| request.getCommand().equals("REIN")
+									|| request.getCommand().equals("SIZE")
+									|| request.getCommand().equals("STAT")
+									|| request.getCommand().equals("SYST")
+									|| request.getCommand().equals("XPWD")
+									|| request.getCommand().equals("MLST")	
+									|| request.getCommand().equals("REST")
 							)) {
 						return FtpletResult.DEFAULT;
 					}
@@ -144,32 +149,36 @@ public class CatalogFtpServer {
 								|| user.getUserCatalogAccessRights(_catalog.getId())==USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN) 
 							&&
 							(
-									arg1.getCommand().equals("APPE")
-									|| arg1.getCommand().equals("CDUP")
-									|| arg1.getCommand().equals("MKD")
-									|| arg1.getCommand().equals("RETR")
-									|| arg1.getCommand().equals("RNFR")
-									|| arg1.getCommand().equals("RNTO")
-									|| arg1.getCommand().equals("STOR")
-									|| arg1.getCommand().equals("STOU")
-									|| arg1.getCommand().equals("XCUP")
-									|| arg1.getCommand().equals("XMKD")
+									request.getCommand().equals("APPE")
+									|| request.getCommand().equals("CDUP")
+									|| request.getCommand().equals("MKD")
+									|| request.getCommand().equals("RETR")
+									|| request.getCommand().equals("RNFR")
+									|| request.getCommand().equals("RNTO")
+									|| request.getCommand().equals("STOR")
+									|| request.getCommand().equals("STOU")
+									|| request.getCommand().equals("XCUP")
+									|| request.getCommand().equals("XMKD")
 									
 									
 																									
 							)) {
 						
 						// for operation uploading data, check quotas
-						if (arg1.getCommand().equals("APPE")
-								|| arg1.getCommand().equals("MKD")
-								|| arg1.getCommand().equals("STOR")
-								|| arg1.getCommand().equals("STOU")
-								|| arg1.getCommand().equals("XMKD")
+						if (request.getCommand().equals("APPE")
+								|| request.getCommand().equals("MKD")
+								|| request.getCommand().equals("STOR")
+								|| request.getCommand().equals("STOU")
+								|| request.getCommand().equals("XMKD")
 						   ) {
 							
 							// quota exceeded, operation forbiden
 							if (!_catalog.checkQuotasDisckSpaceOk()) {
-								return FtpletResult.DISCONNECT;
+								session.write(new DefaultFtpReply(552, 
+										"Quota exceeded for catalog '"+_catalog.getName()+"',"
+																		+" please delete some files or ask your system administrator"
+																		+" to increase quota allocated to catalog."));
+								return FtpletResult.SKIP;
 							}
 						}
 						
@@ -180,9 +189,9 @@ public class CatalogFtpServer {
 					if (	(user.getUserCatalogAccessRights(_catalog.getId())==USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN) 
 							&&
 							(
-									arg1.getCommand().equals("DELE")
-									|| arg1.getCommand().equals("RMD")
-									|| arg1.getCommand().equals("XRMD")																																		
+									request.getCommand().equals("DELE")
+									|| request.getCommand().equals("RMD")
+									|| request.getCommand().equals("XRMD")																																		
 							)) {
 						
 						
