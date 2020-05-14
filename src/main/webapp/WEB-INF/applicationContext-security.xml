@@ -34,13 +34,13 @@ using classpath local versions for spring XSD, otherwise it does not work offlin
 	
 	<form-login login-page='/loginform?secure' 
 				default-target-url='/Catalogs'
-				always-use-default-target='true'
+				always-use-default-target='false'
 				authentication-failure-url="/loginform?error"
 				login-processing-url="/loginprocess" />
 	<logout invalidate-session="true" logout-url="/logoutprocess"  logout-success-url="/loginform?logout" />
-	<access-denied-handler error-page="/public/commons/errors/403.html" />	
+	<access-denied-handler error-page="/public/commons/errors/ProcessError401.jsp" />	
 	
-	<session-management invalid-session-url="/loginform?expired" session-authentication-error-url="/loginform?expired">
+	<session-management invalid-session-url="/welcome" session-authentication-error-url="/loginform?expired">
 		<concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
 	</session-management>
 	

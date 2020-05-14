@@ -15,7 +15,7 @@
   <meta name="author" content="">
 
   
-  <title>MetaindeX - Welcome</title>
+  <title>MetaindeX</title>
   <link rel="icon" type="image/svg" href="public/commons/media/img/favicon.png">
   
   <!-- Custom fonts for this template-->
@@ -39,11 +39,11 @@
 
 <body class="bg-gradient-primary" style="background-color:#fff;background-image:none;" >
 
-	 <nav class="navbar navbar-expand navbar-light bg-white topbar static-top " style="margin:0;padding:0;margin-top:1rem;">
-	 	<div class="app-title mx-copyright" style="text-align:left;width:25vw; border:1px solid grey;padding-left:1rem;padding-top:0.5rem;padding-bottom:0.5rem;"  ><s:text name="globals.copyright"/></div>
-	 	<div style="width:60vw"></div>	 	
-	 	<a href="/demo"  class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" style="background:green;border-color:white;margin-left:3rem;">Try Live Demo Now!</a>
-	 	<!-- a href="loginform"  class="btn btn-sm btn-info mx_welcome_btn scale nav-item no-arrow " style="background:#aaa" >Sign Up</a-->
+	 <nav class="navbar navbar-expand navbar-light bg-white topbar static-top " style="margin:0;padding:0;margin-top:2rem;">
+	 	<div style="width:80vw"></div>	 	
+	 	<a href="mailto:laurentmlcontact-metaindex@yahoo.fr?subject=Join Metaindex&body=Hi, I'd like to become a MetaindeX Beta-User! Could create an account for me and explain a bit more how to use it ? Thanks! :)"  
+	 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" style="background:green;border-color:white;margin-left:3rem;"
+	 		>Join us! <br/>Become a <span style="white-space:nowrap;">Beta-User!</span></a>
 	 	<a href="loginform"  class="btn btn-sm btn-info mx_welcome_btn scale nav-item no-arrow " style="background:#777" >Sign In</a>
 	 			
 	 </nav>
@@ -81,13 +81,19 @@
 					      				onmouseover="clearDetails();this.querySelector('._details_').style.display='block';" >
 					      		<span class="mx_welcome_card_li_contents">
 					      			 Customize visualization 
-					      			<span class="_details_ mx_welcome_card_details" style="display:none;">Set what and how to display the fields for each type of your documents</span>
+					      			<span class="_details_ mx_welcome_card_details" style="display:none;">Decide what and how to display your data</span>
 					      		</span>
 					      	</li>
 					      	<li class="fa-li fa fa-check scale-color-blue"
 					      			onmouseover="clearDetails();this.querySelector('._details_').style.display='block';" >
-					      			<span class="mx_welcome_card_li_contents">Import contents CSV file
-					      				<span class="_details_ mx_welcome_card_details" style="display:none;">Import data from standard CSV file</span>
+					      			<span class="mx_welcome_card_li_contents">Download contents and work off-line
+					      				<span class="_details_ mx_welcome_card_details" style="display:none;">Retrieve data as standard CSV, store, share and update at will</span>
+					      			</span>
+					      	</li>
+					      	<li class="fa-li fa fa-check scale-color-blue"
+					      			onmouseover="clearDetails();this.querySelector('._details_').style.display='block';" >
+					      			<span class="mx_welcome_card_li_contents">Upload contents
+					      				<span class="_details_ mx_welcome_card_details" style="display:none;">Synchronize your work or third-party DB using advanced CSV injection utility</span>
 					      			</span>
 					      	</li>
 					      	<li class="fa-li fa fa-check scale-color-blue"
@@ -98,8 +104,8 @@
 					    	</li>
 					      	<li class="fa-li fa fa-check scale-color-blue"
 					      			onmouseover="clearDetails();this.querySelector('._details_').style.display='block';" >
-					      			<span class="mx_welcome_card_li_contents">Link data items with each other
-					      				<span class="_details_ mx_welcome_card_details" style="display:none;">Reference documents from each other to build a connection tree</span>
+					      			<span class="mx_welcome_card_li_contents">Create Links
+					      				<span class="_details_ mx_welcome_card_details" style="display:none;">Reference documents from each other to build connections</span>
 					      			</span>
 					      	</li>					      	
 					      </ul>
@@ -124,7 +130,7 @@
 					      		</span>
 					      	</li>
 					      	<li class="fa-li fa fa-check scale-color-blue" onmouseover="clearDetails();this.querySelector('._details_').style.display='block';">
-					      		<span class="mx_welcome_card_li_contents">Multi-language (French,English,Spanish, more to come ...)
+					      		<span class="mx_welcome_card_li_contents">Multi-languages customization (English,French, more to come ...)
 					      			<span class="_details_ mx_welcome_card_details" style="display:none;" >Define lexic for a user interface adapted to your specific domain</span>
 					      		</span>
 				      		</li>	
@@ -151,12 +157,12 @@
 				      <div id="explore.body" class="mx_welcome_card_body" >
 					      <ul class="mx_welcome_card_ul fa-ul">
 					      	<li class="fa-li fa fa-check scale-color-blue" onmouseover="clearDetails();this.querySelector('._details_').style.display='block';">
-					      			<span class="mx_welcome_card_li_contents" >Powerful <a class="mx_welcome_card_body_link" href="http://lucene.org">Lucene</a> Search Queries
-					      				<span class="_details_ mx_welcome_card_details" style="display:none;" >Rich semantical query language</span>	
+					      			<span class="mx_welcome_card_li_contents" >Rich semantical query language
+					      				<span class="_details_ mx_welcome_card_details" style="display:none;" >Experience powerful <a class="mx_welcome_card_body_link" href="http://lucene.org">Lucene</a> Search Queries</span>	
 					      			</span></li>
 					      	<li class="fa-li fa fa-check scale-color-blue" onmouseover="clearDetails();this.querySelector('._details_').style.display='block';">
-					      			<span class="mx_welcome_card_li_contents">Lightning-fast search with world-famous <a class="mx_welcome_card_body_link" href="http://elk.org">Elastic-Search</a> engine
-					      				<span class="_details_ mx_welcome_card_details" style="display:none;" >Efficient and fast search engine</span>
+					      			<span class="mx_welcome_card_li_contents">Efficient and fast search engine
+					      				<span class="_details_ mx_welcome_card_details" style="display:none;" >Lightning-fast search with world-famous <a class="mx_welcome_card_body_link" href="http://elk.org">Elastic-Search</a> engine</span>
 					      			</span>
 					      	</li>
 					      	<li class="fa-li fa fa-check scale-color-blue" onmouseover="clearDetails();this.querySelector('._details_').style.display='block';">
@@ -178,18 +184,18 @@
 				      <div id="compute.body" class="mx_welcome_card_body" >
 					      <ul class="mx_welcome_card_ul fa-ul">
 				      			<li class="fa-li fa fa-check scale-color-blue" onmouseover="clearDetails();this.querySelector('._details_').style.display='block';">
-				      				<span class="mx_welcome_card_li_contents">Statistics graphs with world-famous <a class="mx_welcome_card_body_link" href="http://elk.org">Kibana</a>
-				      					<span class="_details_ mx_welcome_card_details" style="display:none;" >Generate meaningful statistic graphs in few clics</span>
+				      				<span class="mx_welcome_card_li_contents">Generate great statistic charts in few clicks
+				      					<span class="_details_ mx_welcome_card_details" style="display:none;" >Full integration with world-famous <a class="mx_welcome_card_body_link" href="http://elk.org">Kibana</a> for generation of statistics charts</span>
 				      				</span>
 				      			</li>
 				      			<li class="fa-li fa fa-check scale-color-blue" onmouseover="clearDetails();this.querySelector('._details_').style.display='block';">
 				      				<span class="mx_welcome_card_li_contents">Connection graphs with auto-generated VEGA graphs
-				      					<span class="_details_ mx_welcome_card_details" style="display:none;" >Control great power of VEGA-graph with dedicated pre-defined templates</span>
+				      					<span class="_details_ mx_welcome_card_details" style="display:none;" >Control great power of VEGA-graph with dedicated pre-defined templates (beta)</span>
 				      				</span>
 				      			</li>
 				      			<li class="fa-li fa fa-check scale-color-blue" onmouseover="clearDetails();this.querySelector('._details_').style.display='block';">
-				      				<span class="mx_welcome_card_li_contents">Integrated Kibana panels into your main visualization
-				      					<span class="_details_ mx_welcome_card_details" style="display:none;" >Access to updated statistic panels from with the application</span>
+				      				<span class="mx_welcome_card_li_contents">Integrate charts into your workspace
+				      					<span class="_details_ mx_welcome_card_details" style="display:none;" >Access to updated dynamic statistic charts from main application</span>
 				      				</span>
 				      			</li> 
 				      		</ul>
@@ -204,11 +210,19 @@
 				
 				   
 	  </div>
+	  	
 	  </center></div>
 	  
 	</div>
 
-
+ <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+          <div class="mx-copyright text-center my-auto">
+            <span><s:text name="globals.copyright"/> - MetaindeX v<s:property value="mxVersion"/></span>
+          </div>
+        </div>
+  </footer>
+	 
   <!-- Bootstrap core JavaScript-->
   <script src="${mxurl}public/commons/deps/jquery/jquery.min.js"></script>
   <script src="${mxurl}public/commons/deps/bootstrap/js/bootstrap.bundle.min.js"></script>
