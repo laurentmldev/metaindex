@@ -109,8 +109,7 @@
 	 //dumpStructure(msg);
 	 
 	 if (msg.msgType=="PROGRESS") { 
-		 //console.log("("+msg.processingId+") "+msg.text+" : "+msg.pourcentage+"%");
-		 MxGuiLeftBar.setProgressBar(msg.processingId,msg.pourcentage,msg.text, msg.active);
+		 MxGuiLeftBar.setProgressBar(msg.processingId,msg.pourcentage,msg.text, msg.processingActive);
 	 }
 	 else if (msg.msgType=="TEXT") {
 		 footer_showAlert(msg.level, msg.text, msg.details); }

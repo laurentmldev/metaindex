@@ -71,22 +71,6 @@ public class WsControllerItemsFileUpload extends AMxWSController {
     		csvParser.setCsvSeparator(requestMsg.getSeparator());
     		List<IPair<String,PARSING_FIELD_TYPE>> csvParsingType = new ArrayList<IPair<String,PARSING_FIELD_TYPE>>();    		
     		
-    		// check quota won't be exceeded after uploading the file
-    		if (user.getCurrentCatalog().getNbDocuments()+requestMsg.getTotalNbEntries()
-    												>user.getCurrentCatalog().getQuotaNbDocs()) {
-    			String msgStr = user.getText("Items.serverside.uploadItems.tooManyItemsForQuota");
-    			WsMsgFileUpload_answer msg = new WsMsgFileUpload_answer(
-						procTask.getId(),requestMsg.getClientFileId());
-				msg.setIsSuccess(false);
-				msg.setRejectMessage(msgStr);
-				
-				this.messageSender.convertAndSendToUser(
-	    				headerAccessor.getUser().getName(),
-	    				"/queue/upload_items_csv_response", 
-	    				msg);
-				
-				return;
-    		}
     		List<String> fieldsNotFound=new ArrayList<String>();
     		WsControllerTerm termsController = new WsControllerTerm(this.messageSender);
     		
@@ -194,6 +178,7 @@ public class WsControllerItemsFileUpload extends AMxWSController {
 		{
 			log.error("Unable to process upload_filter_file_request from '"+headerAccessor.getUser().getName()+"' : "+e);
 			e.printStackTrace();
+			
 		}   
     }
     

@@ -12,8 +12,7 @@ v2.0.1:
 
 #47 uploading test CSV with new fields (reference) : sometimes stopping at 2/3 items ... TBC
 
-#34 FTP server "quota exceeded" message when upload refused and such errors handling
-		- delete uploaded file if quota just exceeded because of it
+#34 FTP server : delete uploaded file if quota just exceeded because of it
 		
 #46 FTP logging shall be possible even if user not logged-in MX app
 

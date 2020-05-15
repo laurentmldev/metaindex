@@ -165,6 +165,8 @@ MxGuiLeftBar.showCsvPrevisu=function(fileHandle) {
 		footer_showAlert(INFO,"<s:text name="global.pleasewait"/>",null,5000);
 		let selectedCsvColsDef = _getSelectedCsvColumnsDef(csvColsTable);
 		ws_handlers_requestUploadCsvFile(fileHandle,selectedCsvColsDef); 
+		MxGuiHeader.hideInfoModal();
+		
 	}
 	
 	// show
@@ -242,6 +244,7 @@ MxGuiLeftBar.showDownloadCsvPrevisu=function() {
 		let sortString = MxGuiHeader.getCurrentSearchSortString();
 		let reversedOrder = MxGuiHeader.getCurrentSearchReversedOrder();
 		ws_handlers_requestDownloadCsvFile(selectedTermNames,query,selectedFiltersNames,sortString,reversedOrder); 
+		
 	}
 	
 	

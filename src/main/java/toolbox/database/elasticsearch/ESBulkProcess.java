@@ -50,6 +50,7 @@ public class ESBulkProcess extends AProcessingTask   {
 	private Semaphore _stoppingProcessingLock = new Semaphore(1,true);
 	
 	private Date _timestamp=new Date(0);
+	private Boolean _interruptFlag=false;
 	
 	private class MxESBulkListener implements BulkProcessor.Listener {
 		Integer _bulkItemIndex=0;
@@ -109,6 +110,7 @@ public class ESBulkProcess extends AProcessingTask   {
 	private ICatalog _catalog; 
 	private BulkProcessor.Builder _builder; 
 	private BulkProcessor _processor;
+	private IUserProfileData _activeUser;
 	
 	// optional parser to be used to decode user string when relevant
 	private ACsvParser<IDbItem> _parser=null;	
@@ -128,6 +130,7 @@ public class ESBulkProcess extends AProcessingTask   {
 		_timestamp=timestamp;
 		this.setTargetNbData(new Long(expectedNbActions));
 		this.addObserver(u);
+		_activeUser=u;
 		BulkProcessor.Listener listener = new MxESBulkListener(this);
 		
 		_builder = BulkProcessor.builder(
@@ -183,6 +186,12 @@ public class ESBulkProcess extends AProcessingTask   {
 		if (!isRunning()) {
 			throw new DataProcessException("Processing not ready, unable to post data before");
 		}
+		if (_catalog.getNbDocuments()+d.size()>_catalog.getQuotaNbDocs()) {
+			_activeUser.sendGuiErrorMessage(_activeUser.getText("Items.serverside.uploadItems.tooManyItemsForQuota"));
+			this.stop();
+			throw new DataProcessException("Processing leading to quota overpass, aborted");
+		}
+		
 		for (IDbItem itemToIndex : d) {	
 			IndexRequest request = new IndexRequest().source(itemToIndex.getData());
 			_processor.add(request);
@@ -233,12 +242,13 @@ public class ESBulkProcess extends AProcessingTask   {
 	@Override
 	public void run()  { 
 		
+		log.error(Thread.currentThread().getId()+" #### run : running");
 		getActiveUser().sendGuiProgressMessage(
     			getId(),
     			getActiveUser().getText("Items.serverside.bulkprocess.progress", getName()),
     			AProcessingTask.pourcentage(getProcessedNbData(),getTargetNbData()));
 		
-		while (!this.isAllDataProcessed()) {
+		while (!this.isAllDataProcessed() && !_interruptFlag) {
 			try { 
 				// wait for having received all data to be processed 
 				Thread.sleep(200);
@@ -246,11 +256,14 @@ public class ESBulkProcess extends AProcessingTask   {
 				e.printStackTrace(); 
 			}
 		}
-		
+
 		stop();
 
 	}
 
+	@Override
+	public Boolean isTerminated() { return _interruptFlag==true || super.isTerminated(); }	
+	
 	@Override
 	/**
 	 * Blocking, wait for currently posted data is finished to be processed
@@ -259,7 +272,10 @@ public class ESBulkProcess extends AProcessingTask   {
 		
 		try {
 			_stoppingProcessingLock.acquire();
-			if (this.isTerminated() && !this.isRunning()) { return; }
+			if (this.isTerminated() && !this.isRunning()) {
+				_stoppingProcessingLock.release();
+				return; 
+			}			
 			Boolean success = _processor.awaitClose(30L, TimeUnit.SECONDS);			
 			_processor.close();
 			ESWriteStmt.waitUntilEsIndexRefreshed(_catalog.getName(),_datasource);
@@ -271,15 +287,25 @@ public class ESBulkProcess extends AProcessingTask   {
 				getActiveUser().sendGuiErrorMessage(getActiveUser().getText("Items.serverside.bulkprocess.failed", getName()));
 			} else {
 				// notify active user that its processing finished
-				getActiveUser().sendGuiSuccessMessage(getActiveUser().getText("Items.serverside.bulkprocess.success", 
-																				getName(),
-																				this.getProcessedNbData().toString()));								
+				if (!this.isTerminated()) {
+					getActiveUser().sendGuiErrorMessage(getActiveUser().getText("Items.serverside.bulkprocess.failedAfterNItems", 
+							getName(),
+							this.getProcessedNbData().toString(),
+							this.getTargetNbData().toString()));
+				} else {
+					getActiveUser().sendGuiSuccessMessage(getActiveUser().getText("Items.serverside.bulkprocess.success", 
+							getName(),
+							this.getProcessedNbData().toString()));
+				}
+												
 			}
 			
 			// notify all users that some contents changed
-			getActiveUser().notifyCatalogContentsChanged(CATALOG_MODIF_TYPE.DOCS_LIST, this.getProcessedNbData());			
-			joinRunnerThread();
+			getActiveUser().notifyCatalogContentsChanged(CATALOG_MODIF_TYPE.DOCS_LIST, this.getProcessedNbData());	
+			_interruptFlag=true;
 			_stoppingProcessingLock.release();
+			joinRunnerThread();
+
 		} catch (InterruptedException | DataProcessException e) {
 			e.printStackTrace();
 			_processor.close();
