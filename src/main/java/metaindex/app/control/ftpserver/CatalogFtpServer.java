@@ -1,4 +1,4 @@
-package metaindex.data.catalog;
+package metaindex.app.control.ftpserver;
 
 /*
 GNU GENERAL PUBLIC LICENSE
@@ -70,6 +70,10 @@ public class CatalogFtpServer {
 
 					session.write(new DefaultFtpReply(552, 
 							"Disk quota exceeded for catalog '"+_catalog.getName()+"'"));
+					
+					
+					// TODO if operation was file upload, delete the file which is too big for
+					// remaining quota
 					return FtpletResult.SKIP;
 				}
 			}
@@ -103,7 +107,8 @@ public class CatalogFtpServer {
 							// no ftp access for Read-Only users
 							|| user.getUserCatalogAccessRights(_catalog.getId())==USER_CATALOG_ACCESSRIGHTS.CATALOG_READ) {
 						
-						log.error("Unauthorized FTP user '"+name+"' within catalog '"+_catalog.getName()+"', kicked-out.");
+						session.write(new DefaultFtpReply(550, 
+								"Unauthorized user '"+name+"' for catalog '"+_catalog.getName()+"'"));
 						return FtpletResult.DISCONNECT;
 					}
 					/*
@@ -203,8 +208,8 @@ public class CatalogFtpServer {
 				e.printStackTrace();
 				
 			}
-			
-			return FtpletResult.DISCONNECT;			
+			session.write(new DefaultFtpReply(502, "Operation not implemented"));
+			return FtpletResult.SKIP;			
 		}
 
 	}

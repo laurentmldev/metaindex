@@ -27,6 +27,7 @@ import org.apache.ftpserver.ftplet.FtpException;
 
 import metaindex.data.filter.IFilter;
 import metaindex.app.Globals;
+import metaindex.app.control.ftpserver.CatalogFtpServer;
 import metaindex.app.periodic.db.CatalogPeriodicDbReloader;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.perspective.ICatalogPerspective;
