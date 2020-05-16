@@ -8,10 +8,8 @@ v2.0.1:
 	- hover color is not visible
 	- filter title not visible
 
-
-#47 uploading test CSV with new fields (reference) : sometimes stopping at 2/3 items ... reproducible?
 		
-#46 FTP logging shall be possible even if user not logged-in MX app
+
 
 #36 when switch in/out edit mode : shall stay in current tab
 
@@ -20,6 +18,9 @@ v2.0.1:
 #38 Ref. fields multi yes/no is not functional (always yes even if flag is 'no')
 
 #42 renaming a perspective actually duplicates it
+
+#47 uploading test CSV with new fields (reference) : sometimes stopping at 2/3 items ... reproducible?
+
 
 v2.1.0:
 -----------
@@ -89,6 +90,7 @@ Backlog:
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+#46 FTP logging shall be possible even if user not logged-in MX app
 #34 FTP server : delete uploaded file if quota just exceeded because of it
 #33 quotas check when uploading csv : refused while lines could be just update of existing items 
 #44 finalize welcome page
