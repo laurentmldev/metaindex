@@ -11,8 +11,6 @@ v2.0.1:
 		
 
 
-#36 when switch in/out edit mode : shall stay in current tab
-
 #37 when creating a second new perpective, unable to create a new field, have to reload page
 
 #38 Ref. fields multi yes/no is not functional (always yes even if flag is 'no')
@@ -90,6 +88,7 @@ Backlog:
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+#36 when switch in/out edit mode : shall stay in current tab
 #46 FTP logging shall be possible even if user not logged-in MX app
 #34 FTP server : delete uploaded file if quota just exceeded because of it
 #33 quotas check when uploading csv : refused while lines could be just update of existing items 

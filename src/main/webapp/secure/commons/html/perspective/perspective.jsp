@@ -141,7 +141,7 @@ var _curPerspectiveId=0;
 	 		let curTabDef=perspectiveData.tabs[tabidx];
 	 		// some refresh to be improved, don't know why
 	 		// pb occures when deleting a tab, closing catalog and opening it again
-	 		if (curTabDef==null) { continue; }
+	 		if (curTabDef==null) { continue; }	 		
 	 		let tabNode = _commons_perspective_build_tab(catalogDesc,perspectiveData,tabidx,tabsContainerNode,editMode,itemId,fieldsValueMap,editSuccessCallback);
 	 		if (MxGuiPerspective.getCurrentTabIndex()==tabidx) {
 	 			tabNodeToActivate=tabNode;
@@ -159,6 +159,7 @@ var _curPerspectiveId=0;
 	 	// append to perspectives node
 		insertSpot.appendChild(perspectiveNode);
 	 	
+		tabNodeToActivate.click();
 	 	return perspectiveNode;
 	 	
  }
