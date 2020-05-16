@@ -159,7 +159,8 @@ var _curPerspectiveId=0;
 	 	// append to perspectives node
 		insertSpot.appendChild(perspectiveNode);
 	 	
-		tabNodeToActivate.click();
+		if (tabNodeToActivate!=null) { tabNodeToActivate.click(); }
+		
 	 	return perspectiveNode;
 	 	
  }
