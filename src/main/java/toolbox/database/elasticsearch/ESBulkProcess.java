@@ -242,7 +242,6 @@ public class ESBulkProcess extends AProcessingTask   {
 	@Override
 	public void run()  { 
 		
-		log.error(Thread.currentThread().getId()+" #### run : running");
 		getActiveUser().sendGuiProgressMessage(
     			getId(),
     			getActiveUser().getText("Items.serverside.bulkprocess.progress", getName()),

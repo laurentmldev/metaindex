@@ -23,6 +23,7 @@ import org.apache.ftpserver.DataConnectionConfiguration;
 import org.apache.ftpserver.DataConnectionConfigurationFactory;
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.ftplet.DefaultFtplet;
+import org.apache.ftpserver.ftplet.FileSystemView;
 import org.apache.ftpserver.ftplet.FtpletContext;
 import org.apache.ftpserver.ftplet.FtpletResult;
 import org.apache.ftpserver.usermanager.impl.BaseUser;
@@ -38,6 +39,7 @@ import org.apache.ftpserver.FtpServerFactory;
 import org.apache.ftpserver.ftplet.Authority;
 import org.apache.ftpserver.ftplet.DefaultFtpReply;
 import org.apache.ftpserver.ftplet.FtpException;
+import org.apache.ftpserver.ftplet.FtpFile;
 import org.apache.ftpserver.ftplet.FtpReply;
 import org.apache.ftpserver.ftplet.FtpRequest;
 import org.apache.ftpserver.ftplet.FtpSession;
@@ -52,11 +54,13 @@ import org.apache.ftpserver.usermanager.PropertiesUserManagerFactory;
 public class CatalogFtpServer {
 	
 	private class MxFtplet extends DefaultFtplet {
-
+		
+	
 		@Override
 		public FtpletResult afterCommand(FtpSession session, FtpRequest request, FtpReply reply)
 				throws FtpException, IOException {
 			
+		
 			// for operation uploading data, check quotas
 			if (request.getCommand().equals("APPE")
 					|| request.getCommand().equals("MKD")
@@ -65,20 +69,27 @@ public class CatalogFtpServer {
 					|| request.getCommand().equals("XMKD")
 			   ) {
 				
-				// quota exceeded, operation forbiden
+				// quota exceeded, operation canceled (and file deleted)
 				if (!_catalog.checkQuotasDisckSpaceOk()) {
 
-					session.write(new DefaultFtpReply(552, 
+					session.write(new DefaultFtpReply(FtpReply.REPLY_552_REQUESTED_FILE_ACTION_ABORTED_EXCEEDED_STORAGE, 
 							"Disk quota exceeded for catalog '"+_catalog.getName()+"'"));
 					
-					
-					// TODO if operation was file upload, delete the file which is too big for
-					// remaining quota
-					return FtpletResult.SKIP;
+					FileSystemView fsview = session.getFileSystemView();
+					FtpFile cwd = fsview.getWorkingDirectory();
+					String absoluteFsFilePath=_catalog.getLocalFsFilesPath()+cwd.getAbsolutePath()+"/"+request.getArgument();
+					File userdataFile = new File(absoluteFsFilePath);
+					if (userdataFile.exists()) {
+						if (!userdataFile.delete()) {
+							log.error("unable to delete local userdata content : "+absoluteFsFilePath);
+						}
+					}
+
+					return FtpletResult.DISCONNECT;
 				}
 			}
 			
-			return FtpletResult.DEFAULT;
+			return super.afterCommand(session,request,reply);
 		}
 	
 
@@ -96,7 +107,7 @@ public class CatalogFtpServer {
 						|| request.getCommand().equals("PASS")
 					)) {
 					
-					return FtpletResult.DEFAULT;
+					return super.beforeCommand(session,request);
 				}
 				else {
 					String name = session.getUser().getName();
@@ -107,7 +118,7 @@ public class CatalogFtpServer {
 							// no ftp access for Read-Only users
 							|| user.getUserCatalogAccessRights(_catalog.getId())==USER_CATALOG_ACCESSRIGHTS.CATALOG_READ) {
 						
-						session.write(new DefaultFtpReply(550, 
+						session.write(new DefaultFtpReply(FtpReply.REPLY_550_REQUESTED_ACTION_NOT_TAKEN, 
 								"Unauthorized user '"+name+"' for catalog '"+_catalog.getName()+"'"));
 						return FtpletResult.DISCONNECT;
 					}
@@ -146,7 +157,7 @@ public class CatalogFtpServer {
 									|| request.getCommand().equals("MLST")	
 									|| request.getCommand().equals("REST")
 							)) {
-						return FtpletResult.DEFAULT;
+						return super.beforeCommand(session,request);
 					}
 					
 					// Edit operations
@@ -179,7 +190,7 @@ public class CatalogFtpServer {
 							
 							// quota exceeded, operation forbiden
 							if (!_catalog.checkQuotasDisckSpaceOk()) {
-								session.write(new DefaultFtpReply(552, 
+								session.write(new DefaultFtpReply(FtpReply.REPLY_552_REQUESTED_FILE_ACTION_ABORTED_EXCEEDED_STORAGE, 
 										"Quota exceeded for catalog '"+_catalog.getName()+"',"
 																		+" please delete some files or ask your system administrator"
 																		+" to increase quota allocated to catalog."));
@@ -187,7 +198,7 @@ public class CatalogFtpServer {
 							}
 						}
 						
-						return FtpletResult.DEFAULT;
+						return super.beforeCommand(session,request);
 					}
 					
 					// Admin operations
@@ -200,7 +211,7 @@ public class CatalogFtpServer {
 							)) {
 						
 						
-						return FtpletResult.DEFAULT;
+						return super.beforeCommand(session,request);
 					}
 					
 				}
@@ -208,7 +219,7 @@ public class CatalogFtpServer {
 				e.printStackTrace();
 				
 			}
-			session.write(new DefaultFtpReply(502, "Operation not implemented"));
+			session.write(new DefaultFtpReply(FtpReply.REPLY_550_REQUESTED_ACTION_NOT_TAKEN, "Operation not implemented"));
 			return FtpletResult.SKIP;			
 		}
 
@@ -244,6 +255,7 @@ public class CatalogFtpServer {
         		newUser.setEnabled(enabled);
     	} else {
     		newUser.setEnabled(false);
+    		
     	}
         newUser.setAuthorities(authorities);
         //Save the user to the user list on the file-system
@@ -251,6 +263,7 @@ public class CatalogFtpServer {
         	log.debug("Activated user "+p.getName());
         	_serverFactory.getUserManager().save(newUser); 
         } catch (FtpException e) { e.printStackTrace(); }
+                
 	}
 		
 	public void start() throws FtpException  {
@@ -308,7 +321,7 @@ public class CatalogFtpServer {
 						+ftpPortRangeLow+"-"+ftpPortRangeHigh);
 			return;
 		}
-		
+
 		listenersFactory.setPort(catalogFtpPort);
 		listenersFactory.setIdleTimeout(FTPSERVER_TIMEOUT_SEC);
 		dataConnectionsFactory.setPassivePorts(ftpPassivePortRangeLow+"-"+ftpPassivePortRangeHigh);
@@ -342,7 +355,7 @@ public class CatalogFtpServer {
         });
 		
 		UserManager um = userManagerFactory.createUserManager();
-		_serverFactory.setUserManager(um);
+		_serverFactory.setUserManager(um);		
 		
 		_serverFactory.setFtplets(Collections.singletonMap("MxFtplet", new MxFtplet()));
 		_server= _serverFactory.createServer();
