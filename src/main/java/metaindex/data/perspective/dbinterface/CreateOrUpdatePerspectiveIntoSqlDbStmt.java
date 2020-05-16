@@ -55,7 +55,7 @@ public class CreateOrUpdatePerspectiveIntoSqlDbStmt extends SQLWriteStmt<String>
 		
 		try {
 			result.add(this.getDataConnector().getConnection().prepareStatement(
-					"insert into catalog_perspectives (catalog_id,name,perspective_json_string) values (?,?,?)"
+					"insert into catalog_perspectives (catalog_id,catalog_perspective_id,name,perspective_json_string) values (?,?,?,?) "
 					+"ON DUPLICATE KEY UPDATE name=?, perspective_json_string=?"));
 			
 		} catch (SQLException e) { throw new DataProcessException(e); }
@@ -71,10 +71,11 @@ public class CreateOrUpdatePerspectiveIntoSqlDbStmt extends SQLWriteStmt<String>
 			JSONObject json = new JSONObject(dataObject);
 
 			stmt.setInt(1, _catalog.getId());
-			stmt.setString(2,  json.getString("name"));
-			stmt.setString(3, dataObject);
-			stmt.setString(4,  json.getString("name"));
-			stmt.setString(5, dataObject);
+			stmt.setInt(2, json.getInt("id"));
+			stmt.setString(3,  json.getString("name"));
+			stmt.setString(4, dataObject);
+			stmt.setString(5,  json.getString("name"));
+			stmt.setString(6, dataObject);
 						
 			stmt.addBatch();
 		} catch (Exception e) { 

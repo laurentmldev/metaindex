@@ -795,7 +795,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		myself.requestCatalogPerspectiveUpdateCallbacks.push(dataObj);
 		if (myself._callback_UpdatedPerspective_debug==true) {
 			console.log("MxAPI Requesting Update of Perspective "+dataObj.perspectiveId+" [Perspectives]");
-		}
+		}		
 		
 		// copy data so that we don't modify user's array
 		jsonCopy=JSON.parse(JSON.stringify(dataObj.perspectiveJsonDef));

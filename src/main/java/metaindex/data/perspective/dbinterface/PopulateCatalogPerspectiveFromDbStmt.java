@@ -92,6 +92,7 @@ public class PopulateCatalogPerspectiveFromDbStmt extends SQLPopulateStmt<ICatal
 		try { 
 			JSONObject json = new JSONObject(d.getDefinition());
 			d.populateFromJson(json); 
+			json.put("id", d.getId());
 		} 
 		catch (Exception e) {
 			throw new SQLException("While loading perspective '"+d.getName()+"', could not parse json definition : "+e.getMessage());
