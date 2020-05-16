@@ -6,7 +6,8 @@
  
 <!--------------- REFERENCE -------------->
 <!--
-REFERENCE field is based on classic 'Text' ElasticSearch field type.
+REFERENCE field is based on classic 'Text' ElasticSearch field type,
+where contents is a coma-separated list of documents IDs.
 It intends to replace 'RELATION' field because less restrictive.
 The referencing resolution is performed by the application, but 
 then several references can be defined within documents.  
@@ -196,10 +197,11 @@ function _commons_perspective_buildRefsDocsEditableList(itemId,docIdsListStr,ter
 		let refsDocsTable=docsListFieldset.querySelector("._refsdocs_table_");
 		refsDocsTable.refresh=function(searchTxt) {
 			clearNodeChildren(refsDocsTable);
+			let checkBoxesById=[];
 			for (var idx=0;idx<itemsAnswerMsg.items.length;idx++) {
 				 let item=itemsAnswerMsg.items[idx];
-				 
-				 // do not link to itself
+				 /*
+				// do not link to itself
 				 //if (item.id==itemId) { continue; }
 				 
 				 // keep only entries matching current 'fast' search
@@ -242,6 +244,72 @@ function _commons_perspective_buildRefsDocsEditableList(itemId,docIdsListStr,ter
 						 newRow.style.background="";
 					}
 					 onChangeCallBack(newValue,onSuccessCallback);
+				 }	
+				 */
+				 
+				 // do not link to itself
+				 if (item.id==itemId) { continue; }
+				 
+				 // keep only entries matching current 'fast' search
+				 if (searchTxt!=null && searchTxt.length>0) { 
+					let nameMatch=item.name.toLowerCase().match(stripStr(searchTxt).toLowerCase());
+					let idMatch=item.id==stripStr(searchTxt);
+					if (nameMatch==null && !idMatch) { continue; }
+				 }
+									 
+				 // add a new row for the new document do be listed
+				 let newRow=document.getElementById("_perspective_field_reference_refsdocs_fieldset_template_raw_container_").querySelector("._raw_").cloneNode(true);
+				 newRow.style.display="table-row";
+				 
+				 // selector checkbox
+				 let selector=newRow.querySelector("._selector_");
+				 selector.style.display="block";
+				 let checkbox=selector.querySelector("._selector_checkbox_");
+				 
+				 let multiSelectAllowed=mx_helpers_isDatatypeMultiEnumOk(termDesc.datatype) && termDesc.isMultiEnum==true;
+				 
+				 if (multiSelectAllowed==true){ checkbox=selector.querySelector("._selector_checkbox_"); } 
+				 else { checkbox=selector.querySelector("._selector_radio_"); }
+				 
+				 checkbox.style.display='block';
+				 checkBoxesById[item.id]=checkbox;
+			     if (refDocsListEnabledByIdMap[item.id]==true) {					 
+					 checkbox.checked=true;
+				 } 	
+			     checkbox.onclick=function(event) {
+			    	 event.stopPropagation();
+			    	 let newValue="";
+			    	 if (multiSelectAllowed) {
+			    		 if (checkbox.checked) { refDocsListEnabledByIdMap[item.id]=true; }
+						 else { refDocsListEnabledByIdMap[item.id]=false; } 
+						 						 
+						 for (var curItemId in refDocsListEnabledByIdMap) {
+							 if (refDocsListEnabledByIdMap[curItemId]==true) {
+								 if (newValue.length>0) { newValue+=","; }
+								 newValue+=curItemId;
+							 }
+						 }
+			    	 } else {
+			    		for (var curItemId in refDocsListEnabledByIdMap) {
+			    			 if (curItemId.length==0) { continue; }
+			    			 checkBoxesById[curItemId].checked=false;
+			    			 refDocsListEnabledByIdMap[curItemId]=false;			    		
+						}
+			    		checkBoxesById[item.id].checked=true;
+			    		refDocsListEnabledByIdMap[item.id]=true;						 
+						newValue=item.id;
+			    		
+			    	 }
+			    				    	
+					 newRow.classList.remove("editable-bg-transition");
+					 newRow.style.background="yellow";
+
+					let onSuccessCallback=function(fieldname,newvalue) {
+						 newRow.classList.add("editable-bg-transition");
+						 newRow.style.background="";
+					}
+
+					onChangeCallBack(newValue,onSuccessCallback);
 				 }	
 				 
 				 // contents
@@ -374,7 +442,11 @@ function _commons_perspective_buildEditableReferenceTerm(catalogDesc,tabIdx,sect
 <table id="_perspective_field_reference_refsdocs_fieldset_template_raw_container_" style="display:none" >
 	<tr class="editable-bg-transition _raw_" >
   		<td style="padding:0;font-size:0.6rem" class="_refdoc_col_"></td>
-  		<td class="_selector_" style="display:none;width:2rem;padding:0;margin:0;"><input class="_selector_checkbox_" type="checkbox" ></td>
+  		<td class="_selector_" style="display:none;width:2rem;padding:0;margin:0;">
+  			<input  style="display:none"  class="_selector_checkbox_" type="checkbox" >
+  			<input style="display:none" class="_selector_radio_" type="radio">
+  		</td>
+  		
   	</tr>
 </table>
 
