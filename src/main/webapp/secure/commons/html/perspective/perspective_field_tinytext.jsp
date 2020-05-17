@@ -43,7 +43,7 @@
 
 
 
-<div style="display:none;" class="mx-perspective-field card mb-4" id="_commons_perspectives_field_readonly_template_tinytext"  >
+<div style="display:none;" class="mx-perspective-field" id="_commons_perspectives_field_readonly_template_tinytext"  >
 	<table style="height:100%;width:100%"><tr>
 		<td class="mx-perspective-field-title"><span class="_title_"></span></td>
 		<td class="_value_"></td>

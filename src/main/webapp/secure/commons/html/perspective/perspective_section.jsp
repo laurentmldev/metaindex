@@ -282,12 +282,13 @@ function _commons_perspective_build_section(catalogDesc,perspectiveData,tabIdx,s
 				<h6 class="_title_" style="margin:1rem;"></h6>
 			</td>
 			<td><span class="_type_ mx-perspective-section-option" style="display:none"></span></td>
+			<!-- section alignement not functional -->
 			<td><span class="_align_ mx-perspective-section-option" style="display:none"></span></td>		    
 		  </tr></table>
 		  
 	  </legend>
 	  
-	  <div class="_body_ card-deck" ></div>
+	  <div class="_body_ mx-details-container" ></div>
 	</fieldset>
 	  
 	</div>

@@ -86,21 +86,7 @@
         </div>
  </li>
  
- 
 
-
- 
- <!-- 
-<c:url value="Files" var="filesUrl"/> 
- <li id="leftbar_goto_files" class="nav-item" style="display:none">
-        <a class="nav-link collapsed" href="${filesUrl}" target="_blank" >
-          <i class="fas fa-fw fa-chart-bar"></i>
-          <span><s:text name="global.filesView"/></span>
-        </a>                
- </li>
- -->
- 
- 
  <li id="leftbar_items_csv_upload" class="nav-item" style="display:none">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCsv" aria-expanded="true" aria-controls="collapseCsv">
           <i class="fas fa-fw fa-file-upload"></i>

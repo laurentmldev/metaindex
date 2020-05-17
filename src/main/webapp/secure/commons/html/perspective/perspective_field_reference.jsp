@@ -415,7 +415,7 @@ function _commons_perspective_buildEditableReferenceTerm(catalogDesc,tabIdx,sect
 
 </script>
 
-<div style="display:none;" class="mx-perspective-field card mb-4" id="_commons_perspectives_field_template_reference"  >
+<div style="display:none;" class="mx-perspective-field" id="_commons_perspectives_field_template_reference"  >
 	<table style="height:100%;width:100%">
 	 <tr>
 		<td class="mx-perspective-field-title"><span class="_title_"></span></td>
@@ -423,7 +423,7 @@ function _commons_perspective_buildEditableReferenceTerm(catalogDesc,tabIdx,sect
 	</tr></table>               
 </div>
 
-<fieldset id="_perspective_field_reference_refsdocs_fieldset_template_"  class="form-control-group card  modals-form-control" 
+<fieldset id="_perspective_field_reference_refsdocs_fieldset_template_"  class="form-control-group modals-form-control" 
 			style="display:none;max-height:8rem;overflow:auto;">
    <legend class="mx-perspective-field-legend">
    		<table>
@@ -441,11 +441,12 @@ function _commons_perspective_buildEditableReferenceTerm(catalogDesc,tabIdx,sect
 </fieldset>
 <table id="_perspective_field_reference_refsdocs_fieldset_template_raw_container_" style="display:none" >
 	<tr class="editable-bg-transition _raw_" >
-  		<td style="padding:0;font-size:0.6rem" class="_refdoc_col_"></td>
   		<td class="_selector_" style="display:none;width:2rem;padding:0;margin:0;">
   			<input  style="display:none"  class="_selector_checkbox_" type="checkbox" >
   			<input style="display:none" class="_selector_radio_" type="radio">
   		</td>
+  		<td style="padding:0;font-size:0.6rem" class="_refdoc_col_"></td>
+  		
   		
   	</tr>
 </table>

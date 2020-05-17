@@ -35,6 +35,15 @@ input[type="file"] {
 	
 }
 
+.mx-details-container {
+  display: grid;
+  grid-gap: 15px; 
+  overflow: hidden;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+/*   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr) 150px); */
+  /*  grid-template-columns: 1fr 1fr 0fr; */
+  grid-auto-flow: dense;
+}
 .mx-details-card {
 	background:none;
 }
@@ -65,9 +74,11 @@ a.anchor_top {
 .mx-perspective-field {	
 	background:inherit;
 	border:none;
+	width:max-content;
+	/*
 	max-width:50vw !important;
 	min-width:100px !important;
-	
+	*/
 	/*	
 	justify-content:center !important;
 	display:flex !important;
@@ -81,6 +92,7 @@ a.anchor_top {
 
 .mx_perspective-field-customizable_card {
 	max-width:150px !important;
+	border:1px dotted grey;
 }
 
 .mx-search-input {

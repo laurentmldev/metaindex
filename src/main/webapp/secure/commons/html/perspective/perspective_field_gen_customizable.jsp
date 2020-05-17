@@ -139,7 +139,7 @@
  
 </script>
 
-<div style="display:none;" class="mx_perspective-field-customizable_card card mb-4 _customizable_field_root_" 
+<div style="display:none;" class="mx_perspective-field-customizable_card _customizable_field_root_" 
 	 id="_commons_perspectives_field_customizable_template_"  >
 	
 	  <div class="d-flex flex-row-reverse mx-perspective-card-header"   >	  

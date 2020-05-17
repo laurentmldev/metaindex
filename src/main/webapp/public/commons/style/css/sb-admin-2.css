@@ -4892,7 +4892,7 @@ input[type="button"].btn-block {
   -ms-flex-direction: column;
   flex-direction: column;
   min-width: 0;
-  word-wrap: break-word;
+  word-wrap: anywhere;
   background-color: #fff;
   background-clip: border-box;
   border: 1px solid #e3e6f0;
@@ -5006,6 +5006,7 @@ input[type="button"].btn-block {
 }
 
 .card-deck {
+	
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -5013,10 +5014,13 @@ input[type="button"].btn-block {
   -webkit-box-direction: normal;
   -ms-flex-direction: column;
   flex-direction: column;
+  
 }
 
 .card-deck .card {
+	
   margin-bottom: 0.75rem;
+  
 }
 
 

@@ -51,7 +51,7 @@
 </script>
 
 
- <div style="display:none;" class="mx-perspective-field card mb-4" id="_commons_perspectives_field_readonly_template_link_url"  >
+ <div style="display:none;" class="mx-perspective-field" id="_commons_perspectives_field_readonly_template_link_url"  >
  	<table style="height:100%;width:100%" ><tr>
  		<td class="mx-perspective-field-title"><span class="_title_"></span>: </td>
  		<td><a target="_blank" class="_value_ mx-perspective-field-link mx-perspective-field-text-size-normal" href="" ></a></td>

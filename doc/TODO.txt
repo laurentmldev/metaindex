@@ -8,7 +8,7 @@ v2.0.1:
 	- hover color is not visible
 	- filter title not visible
 
-	
+
 
 #47 uploading test CSV with new fields (reference) : sometimes stopping at 2/3 items ... reproducible?
 
@@ -81,6 +81,7 @@ Backlog:
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+#48 fields are overlapping when too big
 #38 Ref. fields multi yes/no is not functional (always yes even if flag is 'no')
 #36 when switch in/out edit mode : shall stay in current tab
 	#37 when creating a second new perpective, unable to create a new field, have to reload page

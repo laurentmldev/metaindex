@@ -339,14 +339,14 @@ function _commons_perspective_buildEditableRelationTerm(catalogDesc, itemId, ter
 
 </script>
 
-<div style="display:none;" class="mx-perspective-field card mb-4" id="_commons_perspectives_field_readonly_template_relation"  >
+<div style="display:none;" class="mx-perspective-field" id="_commons_perspectives_field_readonly_template_relation"  >
 	<table style="height:100%;width:100%"><tr>
 		<td class="mx-perspective-field-title"><span class="_title_"></span></td>
 		<td class="_value_"></td>
 	</tr></table>               
 </div>
 
-<fieldset id="_perspective_field_relation_children_list_popup_template_"  class="form-control-group card  modals-form-control" 
+<fieldset id="_perspective_field_relation_children_list_popup_template_"  class="form-control-group modals-form-control" 
 			style="display:none;max-height:5rem;overflow:auto;">
    <legend class="mx-perspective-field-legend _legend_"></legend>
    

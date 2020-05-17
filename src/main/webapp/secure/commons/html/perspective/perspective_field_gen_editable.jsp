@@ -101,7 +101,7 @@
 </script>
 
 
-<div style="display:none;" class="mx-perspective-field card mb-4" id="_commons_perspectives_field_editable_template_" >              
+<div style="display:none;" class="mx-perspective-field" id="_commons_perspectives_field_editable_template_" >              
 </div>
 
 
