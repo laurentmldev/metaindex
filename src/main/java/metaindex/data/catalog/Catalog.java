@@ -49,7 +49,7 @@ public class Catalog implements ICatalog {
 	
 	private Log log = LogFactory.getLog(Catalog.class);
 	
-	private PeriodicProcessMonitor _dbAutoRefreshProcessing=new CatalogPeriodicDbReloader(this);
+	private PeriodicProcessMonitor _dbAutoRefreshProcessing=null;
 	private Semaphore _catalogLock = new Semaphore(1,true);
 	public void acquireLock() throws InterruptedException { _catalogLock.acquire(); }
 	public void releaseLock() { _catalogLock.release(); }
@@ -69,6 +69,7 @@ public class Catalog implements ICatalog {
 	private String _itemThumbnailUrlField="";
 	private String _urlPrefix="";
 	private String _perspectiveMatchField="";
+	private Integer _ftpPort=0;
 
 	
 	// Quota data
@@ -111,10 +112,30 @@ public class Catalog implements ICatalog {
 		return "'"+this.getName()+"' :"
 				+"\n\t- id: "+this.getId()
 				+"\n\t- creator_id: "+this.getCreatorId()
+				+"\n\t- ftpPort: "+this.getFtpPort()				
 				+"\n\t- quotaNbDocs: "+this.getQuotaNbDocs()
 				+"\n\t- quotaFtpDiscSpaceBytes: "+this.getQuotaFtpDiscSpaceBytes()+" Bytes"
 				+"\n\t- Nb Logged users:\t"+this.getNbLoggedUsers();
+		
 
+	}
+	
+	private void startFtpServer() throws DataProcessException {
+		if (_ftpServer==null) { _ftpServer=new CatalogFtpServer(this); }
+		try { _ftpServer.start(); }
+		catch (FtpException e) { 
+			throw new DataProcessException
+				("Unable to start FTP server for catalog "+this.getName()+" : "+e.getMessage(),e); 
+		}
+	}
+	private void stopFtpServer() throws DataProcessException {
+		if (_ftpServer==null) { return; }
+		try { _ftpServer.stop(); }
+		catch (FtpException e) { 
+			throw new DataProcessException
+				("Unable to stop FTP server for catalog "+this.getName()+" : "+e.getMessage(),e); 
+		}
+		_ftpServer=null;
 	}
 	@Override 
 	public void startServices() throws DataProcessException {
@@ -125,12 +146,8 @@ public class Catalog implements ICatalog {
 				log.error("unable to create local userdata folder : "+getLocalFsFilesPath());
 			}
 		}
-		if (_ftpServer==null) { _ftpServer=new CatalogFtpServer(this); }
-		try { _ftpServer.start(); }
-		catch (FtpException e) { 
-			throw new DataProcessException
-				("Unable to start FTP server for catalog "+this.getName()+" : "+e.getMessage(),e); 
-		}
+		startFtpServer();
+		_dbAutoRefreshProcessing=new CatalogPeriodicDbReloader(this);
 		_dbAutoRefreshProcessing.start();
 	}
 	@Override 
@@ -140,13 +157,10 @@ public class Catalog implements ICatalog {
 		tmpAdminUserData.setName("admin-service");
 		tmpAdminUserData.setNickname("admin-service");
 		kickOutAllUsers(tmpAdminUserData);
+		stopFtpServer();
 		
-		try { _ftpServer.stop(); }
-		catch (FtpException e) { 
-			throw new DataProcessException
-				("Unable to stop FTP server for catalog "+this.getName()+" : "+e.getMessage(),e); 
-		}
 		_dbAutoRefreshProcessing.stopMonitoring();
+		_dbAutoRefreshProcessing=null;
 		
 	}
 	
@@ -165,10 +179,13 @@ public class Catalog implements ICatalog {
 	@Override
 	public void setCreatorId(Integer creatorId) { _creatorId=creatorId; }
 	
-	@Override 
-	public Integer getFtpPort(IUserProfileData user) {
-		if (_ftpServer==null) { return -1; }
-		return _ftpServer.getPort();
+	@Override 	
+	public Integer getFtpPort() {
+		return _ftpPort;
+	}
+	@Override
+	public void setFtpPort(Integer port) {
+		_ftpPort=port;
 	}
 	
 	@Override
@@ -663,6 +680,17 @@ public class Catalog implements ICatalog {
 		// detect if contents actually changed
 		if (this.getLastUpdate().after(prevCurDate)) { log.info(this.getDetailsStr()); }
 		
+		try {
+			//this.acquireLock();
+			if (_ftpServer!=null && !this.getFtpPort().equals(_ftpServer.getPort())) {
+				stopFtpServer();
+				startFtpServer();
+			}			
+		} catch (Throwable t) {
+			log.error("Unable to restart FTP server for catalog "+getName()+" : "+t.getMessage());
+			t.printStackTrace();
+		}
+		//this.releaseLock();
 	}
 	@Override 
 	public Boolean shallBeProcessed(Date testedUpdateDate) { 

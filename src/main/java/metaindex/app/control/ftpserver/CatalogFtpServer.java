@@ -16,6 +16,7 @@ import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -61,6 +62,7 @@ public class CatalogFtpServer {
 	private FtpServerFactory _serverFactory=null;
 	private FtpServer _server=null;
 	private Boolean _isStarted = false;
+	private Semaphore _serverLock = new Semaphore(1,true);
 	
 	public void setUser(IUserProfileData p,Boolean enabled) {
 		
@@ -68,7 +70,7 @@ public class CatalogFtpServer {
         newUser.setName(p.getName());
         newUser.setPassword(p.getPassword());
                 
-        // set (and create if needed) local-system folder storing ftp files
+        // set (and create if needed) local-system folder storing userdata files
         File directory = new File(_catalog.getLocalFsFilesPath());
         if (! directory.exists()){ 
         	log.error("Userdata folder does not exist, unable to allow FTP connection : "+_catalog.getLocalFsFilesPath());
@@ -96,19 +98,48 @@ public class CatalogFtpServer {
 	}
 		
 	public void start() throws FtpException  {
-		// possibly need semaphore if more intensive start/stop cycles
-		if (_isStarted) { return; }
-		_isStarted=true;
-		if (_server==null) { return; }
-		if (_server.isSuspended()) { _server.resume(); return;}		
+		try {
+			_serverLock.acquire();
+			// possibly need semaphore if more intensive start/stop cycles
+			if (_isStarted) { return; }
+			_isStarted=true;
+			if (_server==null) { return; }
+			if (_server.isSuspended()) { _server.resume(); return;}		
+			
+			_server.start();
+			log.info("FTP server for catalog '"+_catalog.getName()+"' accessible at port '"+getPort()+"'");
+			_serverLock.release();
+		} catch (InterruptedException e) {
+			_server=null;
+			_serverLock.release();
+		}
 		
-		_server.start();
-		log.info("FTP server for catalog '"+_catalog.getName()+"' accessible at port '"+getPort()+"'");		
 	}
 	public void stop() throws FtpException  {
-		if (_server==null) { return; }
-		_server.stop();
-		_isStarted=false;
+		try {
+			_serverLock.acquire();
+			
+			if (_server==null) { return; }
+			try { _server.stop(); } 
+			catch (UnsupportedOperationException e) {
+				// this throws an UnsupportedOperationException
+				// don't know yet why. Possibly mis-use
+				// of FtpServer/Ftplet life cycle
+				//
+				// Possible Memory leak here
+				log.warn("ignored exception while stoping FTP server");
+			}			
+			catch (Throwable t) {
+				log.error("Unable to stop FTP server : "+t.getMessage());
+				t.printStackTrace();
+			}
+			_server=null;
+			_isStarted=false;
+			_serverLock.release();
+		} catch (InterruptedException e) {
+			_server=null;
+			_serverLock.release();
+		}
 	}	
 			
 	public Integer getPort() {
@@ -127,30 +158,29 @@ public class CatalogFtpServer {
  		String ftpPassivePortRangeLow = Globals.GetMxProperty("mx.ftp.passive.range_low");
  		String ftpPassivePortRangeHigh = Globals.GetMxProperty("mx.ftp.passive.range_high"); 		
  		
- 		Integer catalogFtpPort = ftpPortRangeLow; 		
- 		Boolean isPortValid=false;
+ 		Integer catalogFtpPort = c.getFtpPort(); 		
  		
-		while (!isPortValid && catalogFtpPort<=ftpPortRangeHigh) {			
-			try {
- 				ServerSocket s = new ServerSocket(catalogFtpPort);
- 				isPortValid=true;
- 				s.close();
- 				break;
- 			} catch (IOException e) { isPortValid=false; } 		
-			catalogFtpPort++;
-			
-		} 				
+ 		if (catalogFtpPort<ftpPortRangeLow || catalogFtpPort>ftpPortRangeHigh) {
+ 			log.error("FTP port '"+catalogFtpPort+"' for catalog "+c.getName()
+ 				+" is out of range "+ftpPortRangeLow+"-"+ftpPortRangeHigh
+ 				+", unable to start FTP userdata access.");
+ 			return;
+ 		}
+		// ensure socket is available
+		try {
+			ServerSocket s = new ServerSocket(catalogFtpPort);
+			s.close(); 		
+		} catch (IOException e) {
+			log.error("FTP port '"+catalogFtpPort+"' for catalog "+c.getName()
+				+" could not be opened, unable to start FTP userdata access : "+e.getMessage());
+			return; 
+		} 		
 		
 		_catalog=c;
 		_serverFactory = new FtpServerFactory();
 		ListenerFactory listenersFactory = new ListenerFactory();
 		DataConnectionConfigurationFactory dataConnectionsFactory = new DataConnectionConfigurationFactory();
-		if (!isPortValid) {
-			log.error("No available FTP port could be retrieved for FTP server of catalog "+c.getName()+" within range "
-						+ftpPortRangeLow+"-"+ftpPortRangeHigh);
-			return;
-		}
-
+		
 		listenersFactory.setPort(catalogFtpPort);
 		listenersFactory.setIdleTimeout(FTPSERVER_TIMEOUT_SEC);
 		dataConnectionsFactory.setPassivePorts(ftpPassivePortRangeLow+"-"+ftpPassivePortRangeHigh);
@@ -165,7 +195,7 @@ public class CatalogFtpServer {
 		_serverFactory.addListener( "default", mxListener );
 		
 		PropertiesUserManagerFactory userManagerFactory = new PropertiesUserManagerFactory();
-		// tmp props file created on the fly, does not exist in the project initial conf
+		// props file created on the fly, does not exist in the project initial conf
 		// storing local data
 	    userManagerFactory.setFile(new File("ftpusers.properties"));
 		userManagerFactory.setPasswordEncryptor(new PasswordEncryptor() {

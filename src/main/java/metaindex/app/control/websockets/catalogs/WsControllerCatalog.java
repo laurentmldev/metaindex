@@ -7,14 +7,14 @@ Version 3, 29 June 2007
 Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
 
 See full version of LICENSE in <https://fsf.org/>
-
 */
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,24 +31,23 @@ import metaindex.app.control.websockets.users.WsControllerUser.CATALOG_MODIF_TYP
 import metaindex.app.periodic.statistics.catalog.CreateCatalogMxStat;
 import metaindex.app.periodic.statistics.catalog.DeleteCatalogMxStat;
 import metaindex.app.periodic.statistics.catalog.SetCustoCatalogMxStat;
-import metaindex.app.periodic.statistics.catalog.SetUserCustoCatalogMxStat;
 import metaindex.app.periodic.statistics.catalog.UpdateLexicCatalogMxStat;
 import metaindex.app.periodic.statistics.user.ErrorOccuredMxStat;
 import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.CatalogVocabularySet;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.catalog.dbinterface.CreateIndexIntoEsDbStmt.IndexAlreadyExistException;
-import metaindex.data.term.CatalogTerm;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.IUserProfileData.USER_CATALOG_ACCESSRIGHTS;
-import toolbox.exceptions.DataProcessException;
 import toolbox.utils.StrTools;
 
 @Controller
 public class WsControllerCatalog extends AMxWSController {
 	
 	private Log log = LogFactory.getLog(WsControllerCatalog.class);
+	
+	private static Semaphore _GlobalCreateCatalogLock = new Semaphore(1,true);
 	
 	@Autowired
 	public WsControllerCatalog(SimpMessageSendingOperations messageSender) {
@@ -96,6 +95,22 @@ public class WsControllerCatalog extends AMxWSController {
     	}
     }
     
+    private Integer findAvailableFtpPort(Integer portRangeStart,Integer portRangeEnd) {
+    	
+    	Integer curPort=portRangeStart;
+    	while (curPort<=portRangeEnd) {
+            try {
+                    ServerSocket s = new ServerSocket(curPort);
+                    s.close();
+                    return curPort;
+            } catch (IOException e) {
+            	curPort++;
+            }            
+    	}
+    	
+    	return null;
+    }
+    
     @MessageMapping("/create_catalog")
     @SubscribeMapping ( "/user/queue/created_catalog")
     public void handleCreateCatalogRequest(SimpMessageHeaderAccessor headerAccessor, 
@@ -113,8 +128,25 @@ public class WsControllerCatalog extends AMxWSController {
     	try {    		
     		ICatalog c  = Globals.Get().getCatalogsMgr().getCatalog(requestMsg.getCatalogName());
 	    	if (c==null) {
+	    		
+	    		// need to ensure that a unique request for a free port will be done at a time
+                // for the whole server
+                _GlobalCreateCatalogLock.acquire();
+                
 	    		c=new Catalog();
 	    		c.setName(requestMsg.getCatalogName());
+	    		
+	    		Integer ftpPortRangeLow = new Integer(Globals.GetMxProperty("mx.ftp.port.range_low"));
+                Integer ftpPortRangeHigh = new Integer(Globals.GetMxProperty("mx.ftp.port.range_high"));
+                
+                Integer availablePort = findAvailableFtpPort(ftpPortRangeLow,ftpPortRangeHigh);
+                if (availablePort==null) {
+                	answer.setRejectMessage("Unable to create catalog definition, no available port for userdata access");
+	    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
+	    			return;
+                }
+                c.setFtpPort(availablePort);
+                
 	    		Boolean result = Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getCreateIntoDefDbStmt(user,c).execute();
 	    		if (!result) {
 	    			answer.setRejectMessage("Unable to create catalog definition into SQL db");
@@ -131,6 +163,10 @@ public class WsControllerCatalog extends AMxWSController {
 	    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
 	    		}
 	    		
+	    		// during loading of catalog from Db, services are started including FTP server
+	    		// so the port is taken and we can release the lock
+	    		_GlobalCreateCatalogLock.release();
+	            					    		
 	    	} else {
 	    		user.sendGuiWarningMessage("Reusing existing definition for catalog '"+c.getName()+"'");
 	    	}
@@ -197,7 +233,7 @@ public class WsControllerCatalog extends AMxWSController {
 			c.loadStatsFromDb();	    	
 			c.loadMappingFromDb();	
 			c.loadVocabulariesFromDb();
-			c.setDbIndexFound(true);	    	
+			c.setDbIndexFound(true);
 			
 			// create Kibana space dedicated to this catalog
 	    	Boolean result =Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().createStatisticsSpace(user, c);
@@ -287,6 +323,8 @@ public class WsControllerCatalog extends AMxWSController {
     	WsMsgCustomizeCatalog_answer answer = new WsMsgCustomizeCatalog_answer(requestMsg);
     	IUserProfileData user = getUserProfile(headerAccessor);	
     	ICatalog c = user.getCurrentCatalog();
+    	// FTP port is not available for user custo for now... maybe later
+    	requestMsg.setFtpPort(c.getFtpPort());
     	
     	if (c==null || !c.getId().equals(requestMsg.getId())) {
     		// return failure notif (default status of answer is 'failed')
@@ -352,6 +390,8 @@ public class WsControllerCatalog extends AMxWSController {
     	try {   
     		c.acquireLock();
 	    	
+    		c.stopServices();
+    		
     		// Delete SQL definition
 	    	Boolean result = Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getDeleteFromDefDbStmt(user, c).execute();
 	    	if (!result) {

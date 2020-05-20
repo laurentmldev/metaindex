@@ -59,7 +59,7 @@ public class MxFtplet extends DefaultFtplet {
 	public MxFtplet(ICatalog c) {
 		_catalog=c;
 	}
-	
+    
 	@Override
 	public FtpletResult afterCommand(FtpSession session, FtpRequest request, FtpReply reply)
 			throws FtpException, IOException {

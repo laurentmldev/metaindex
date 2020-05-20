@@ -71,7 +71,7 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 		this.setIsDbIndexFound(c.isDbIndexFound());
 		this.setVocabularies(c.getVocabularies());
 		this.setVocabulary(c.getVocabulary(u.getGuiLanguageId()));
-		this.setFtpPort(c.getFtpPort(u));
+		this.setFtpPort(c.getFtpPort());
 		this.setUserAccessRights(u.getUserCatalogAccessRights(c.getId()));
 		this.setUserAccessRightsStr(u.getText("Profile.userAccessRights."+this.getUserAccessRights().toString()));
 		this.setQuotaNbDocs(c.getQuotaNbDocs());

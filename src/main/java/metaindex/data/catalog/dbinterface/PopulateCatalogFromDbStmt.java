@@ -37,7 +37,7 @@ class PopulateCatalogFromDbStmt extends SQLPopulateStmt<ICatalog>   {
 			"select catalogs.catalog_id,catalogs.shortname, "
 			+"catalogs.creator_id,catalogs.thumbnailUrl, "							
 			+"catalogs.itemNameFields,catalogs.itemThumbnailUrlField,catalogs.urlPrefix,catalogs.perspectiveMatchField, "
-			+"catalogs.quotaNbDocs,catalogs.quotaFtpDiscSpaceBytes,catalogs.lastUpdate "
+			+"catalogs.quotaNbDocs,catalogs.quotaFtpDiscSpaceBytes,catalogs.ftpPort,catalogs.lastUpdate "
 			+"from catalogs";
 	
 	List<ICatalog> _data;
@@ -89,7 +89,8 @@ class PopulateCatalogFromDbStmt extends SQLPopulateStmt<ICatalog>   {
 		d.setPerspectiveMatchField(rs.getString(8));
 		d.setQuotaNbDocs(rs.getLong(9));
 		d.setQuotaFtpDiscSpaceBytes(rs.getInt(10));
-		d.setLastUpdate(rs.getTimestamp(11));
+		d.setFtpPort(rs.getInt(11));
+		d.setLastUpdate(rs.getTimestamp(12));
 		return d;
 	}
 

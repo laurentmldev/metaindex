@@ -26,6 +26,7 @@ public class WsMsgCustomizeCatalog_request implements ICatalogCustomParams {
 	private String _perspectiveMatchField;
 	private List<String> _itemNameFields=new ArrayList<>();
 	private String _itemThumbnailUrlField;
+	private Integer _ftpPort=0;
 	
 	public WsMsgCustomizeCatalog_request() {
 	
@@ -107,6 +108,15 @@ public class WsMsgCustomizeCatalog_request implements ICatalogCustomParams {
 	@Override
 	public void setPerspectiveMatchField(String fieldName) {
 		_perspectiveMatchField=fieldName;		
+	}
+
+	@Override
+	// not available for customization in current version
+	public Integer getFtpPort() {
+		return null;
+	}
+	public void setFtpPort(Integer p) {
+		_ftpPort=p;
 	}
 
 }

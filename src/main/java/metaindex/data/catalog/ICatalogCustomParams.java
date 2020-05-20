@@ -50,4 +50,5 @@ public interface ICatalogCustomParams extends IIdentifiable<Integer> {
 	public String getPerspectiveMatchField();
 	public void setPerspectiveMatchField(String fieldName);	
 			
+	public Integer getFtpPort();
 }

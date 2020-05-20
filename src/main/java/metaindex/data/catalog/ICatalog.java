@@ -84,8 +84,9 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 	
 	// Files access
 	public String getLocalFsFilesPath();
-	public Integer getFtpPort(IUserProfileData user);
-	public String getFilesBaseUrl();	
+	public String getFilesBaseUrl();
+	public void setFtpPort(Integer port);
+	
 	
 	// Perspectives
 	public Map<String,ICatalogPerspective> getPerspectives();	

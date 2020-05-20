@@ -45,10 +45,10 @@ class CreateOrUpdateCatalogIntoSqlDbStmt extends SQLWriteStmt<ICatalogCustomPara
 		try {
 			result.add(this.getDataConnector().getConnection().prepareStatement(
 					"insert into catalogs (shortname,creator_id,thumbnailUrl,itemNameFields,"
-							+"itemThumbnailUrlField,urlPrefix,perspectiveMatchField)"
-							+" values (?,?,?,?,?,?,?)"
+							+"itemThumbnailUrlField,urlPrefix,perspectiveMatchField,ftpPort)"
+							+" values (?,?,?,?,?,?,?,?)"
 					+"ON DUPLICATE KEY UPDATE "
-							+"thumbnailUrl=?,itemNameFields=?,itemThumbnailUrlField=?,urlPrefix=?,perspectiveMatchField=?"));
+							+"thumbnailUrl=?,itemNameFields=?,itemThumbnailUrlField=?,urlPrefix=?,perspectiveMatchField=?,ftpPort=?"));
 			
 		} catch (SQLException e) { throw new DataProcessException(e); }
 		
@@ -71,12 +71,14 @@ class CreateOrUpdateCatalogIntoSqlDbStmt extends SQLWriteStmt<ICatalogCustomPara
 			stmt.setString(5, dataObject.getItemThumbnailUrlField());
 			stmt.setString(6, dataObject.getItemsUrlPrefix());
 			stmt.setString(7, dataObject.getPerspectiveMatchField());
+			stmt.setInt(8, dataObject.getFtpPort());
 			
-			stmt.setString(8, dataObject.getThumbnailUrl());
-			stmt.setString(9, itemNameFields);
-			stmt.setString(10, dataObject.getItemThumbnailUrlField());
-			stmt.setString(11, dataObject.getItemsUrlPrefix());
-			stmt.setString(12, dataObject.getPerspectiveMatchField());			
+			stmt.setString(9, dataObject.getThumbnailUrl());
+			stmt.setString(10, itemNameFields);
+			stmt.setString(11, dataObject.getItemThumbnailUrlField());
+			stmt.setString(12, dataObject.getItemsUrlPrefix());
+			stmt.setString(13, dataObject.getPerspectiveMatchField());	
+			stmt.setInt(14, dataObject.getFtpPort());
 			stmt.addBatch();
 		} catch (SQLException e) { throw new DataProcessException(e); }		
 	}
