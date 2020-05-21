@@ -38,6 +38,7 @@ public abstract class ACsvParser<TTo> implements IFieldsListParser<String,TTo> {
 	
 	private static final String MX_SEP_ESCAPE_STR="__MX_ESCAPED_SEPARATOR__";
 	private String _csvSeparator=";";
+	private String _commentsMarker="#";
 	private String _stringIdentifier="\"";
 	private Integer _nbLinesParsed=0;
 	private List<IPair<String,PARSING_FIELD_TYPE> > _csvColumnsTypes = new ArrayList<>();
@@ -76,7 +77,8 @@ public abstract class ACsvParser<TTo> implements IFieldsListParser<String,TTo> {
 		List<TTo> result = new ArrayList<TTo>();
 		for (String str : listStr) {
 			_nbLinesParsed++;
-			if (_nbLinesParsed==1) { continue; } // ignore heading line which contains columns names
+			// ignore comments and empty lines
+			if (str.startsWith(_commentsMarker) || str.length()==0) { continue; } 
 			try { 
 				TTo parsed = parse(str);
 				if (parsed!=null) { result.add(parsed); }
