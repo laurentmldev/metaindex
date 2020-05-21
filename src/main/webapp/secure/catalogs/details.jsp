@@ -185,7 +185,9 @@ function details_memGui() {
  	
  	<table><tr>
  		<td>
- 			<h2 class="_title_" ></h2></td>
+ 			<h2 style='font-size:1.5rem'><s:text name="Catalogs.configurationPanel" /></h2>
+ 			<h2 class="_title_" style="font-weight:bold"></h2>
+ 		</td>
  		<td style="padding-left:1rem;padding-right:1rem;">
  			<span class="_nbdocs_"  ></span> <span class="_nbdocs_name_"></span>
  		</td>
@@ -208,7 +210,7 @@ function details_memGui() {
  		<td class="dropdown no-arrow mx-1" style="padding-left:1em;">
               <a class="dropdown-toggle" href="#" id="actionsDropdown" 
               	role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-cog fa-fw" style="font-size:1rem;"></i>
+                <i class="fas fa-list fa-fw" style="font-size:1rem;"></i>
                 
               </a>
               <!-- Dropdown - Actions -->

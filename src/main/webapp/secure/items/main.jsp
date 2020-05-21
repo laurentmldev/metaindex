@@ -153,7 +153,12 @@
   MxGuiDetailsRightBar.addContents(iframePopup);
 	  
   if (kibanaFrame!=null) { MxGuiDetailsRightBar.addContents(kibanaFrame); }
-  
+  else {
+	  let noIframeMsg = document.createElement("div");
+	  noIframeMsg.style="margin-top:2rem;padding:2rem;text-align:center;font-size:0.8rem"
+	  noIframeMsg.innerHTML="<s:text name="Items.noKibanaIframe" />";
+	  MxGuiDetailsRightBar.addContents(noIframeMsg);
+  }
   
   </script>
  

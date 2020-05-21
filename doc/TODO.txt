@@ -3,8 +3,7 @@
 v2.0.1:
 -------
 
-create new element : if no field defined, add a message
-statistics panel : if no iframe defined, add a message
+log to Kibana, adding a term in MX, and try to get it in Kibana
 
 v2.1.0:
 -----------
@@ -80,6 +79,10 @@ Done:
 -----
 
 v2.0.1
+
+#51 fill-in text for empty places
+	create new element : if no field defined, add a message
+	statistics panel : if no iframe defined, add a message
 #50 dead-lock when creating a catalog after CSV upload of catalog delete?
 #47 uploading test CSV with new fields (reference) : sometimes stopping at 2/3 items
 #32 green earth : 

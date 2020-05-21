@@ -3,24 +3,23 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%> 
 
 <!-- Left Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
+
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+		
       <!-- Sidebar - Brand -->
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="Catalogs">
-        <div class="sidebar-brand-icon rotate-n-15">
-          <!--i class="fas fa-laugh-wink"></i-->
-        </div>
-        <div class="sidebar-brand-text mx-3">MetaIndex</div>
+              
+        <div id="leftbar.uptitle" class="sidebar-brand-text mx-3" style="padding-bottom:0;">MetaindeX</div>
       </a>
 
-      <!-- Divider -->
-      <hr class="sidebar-divider my-0">
+     
 
       <!-- Nav Item - Dashboard -->
       <li class="nav-item active">
         <a class="nav-link"  id="leftbar.title-container" href="#">
-          <i class="fas fa-fw fa-home"></i>
-          <span id="leftbar.title" ></span></a>
+          <i class="counter-text fas fa-fw fa-cog " style="color:#ccc"></i>
+          <span id="leftbar.title" class="counter-text" ></span></a>
       </li>
 
       <!-- Divider -->
@@ -42,6 +41,7 @@
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
       </div>
 
+	<div class="sidebar-brand-text counter-text app-title " style="text-align:center;width:100%;color:#ccc;font-size:0.8rem;padding:0;margin:0">MetaindeX</div>
     </ul>
     <!-- End of Sidebar -->
     
@@ -50,6 +50,7 @@
 	  	<span class="_text_" style="font-size:0.8em;padding-left:0.2em;"></span>
 	  </div>
 	 </div> 
+	 
 	 
     <script>
     
@@ -112,11 +113,16 @@
         	if (onClickFunction!=null) { onClickFunction() };
         }
     }
+    function leftbar_setUpTitle(str,onClickFunction) {
+    	var leftbarUpTitleNode = document.getElementById("leftbar.uptitle");
+    	leftbarUpTitleNode.innerHTML=capWords(str);             
+    }
     // Public interface
     MxGuiLeftBar={};
     MxGuiLeftBar.addOperation=leftbar_addOperation;
     MxGuiLeftBar.clearOperations=leftbar_clearOperations;
     MxGuiLeftBar.setTitle=leftbar_setTitle;
+    MxGuiLeftBar.setUpTitle=leftbar_setUpTitle;
     MxGuiLeftBar.setProgressBar=leftbar_setProgressBar;
     
     </script>

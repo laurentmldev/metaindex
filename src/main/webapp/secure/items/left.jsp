@@ -217,8 +217,9 @@
 
 // Title
 function onclickCatalogName(event) { redirectToPage("${mxUrl}/metaindex/Catalogs"); }
-MxGuiLeftBar.setTitle("<s:property value='currentUserProfile.catalogVocabulary.name'/>",onclickCatalogName);
-
+MxGuiLeftBar.setUpTitle("<s:property value='currentUserProfile.catalogVocabulary.name'/> ",onclickCatalogName);
+MxGuiLeftBar.setTitle("<s:text name="Catalogs.configurationPanel" /> ",onclickCatalogName);
+ 
 var createItemOp=null;
 
 // call when catalog data has been received, so that we can know which
@@ -341,6 +342,8 @@ MxGuiLeftBar.handleCatalogDetails=function(catalogDescr) {
 	if (mx_helpers_isCatalogWritable(MxGuiDetails.getCurCatalogDescription().userAccessRights)) {
 		
 		let createNodeFormInsertSpot=createItemOp.querySelector("._item_form_insert_spot_");
+
+	
 		let fieldsList=[];
 		
 		// add an input form for each term of the catalog
@@ -387,10 +390,15 @@ MxGuiLeftBar.handleCatalogDetails=function(catalogDescr) {
 			ws_handlers_createItem(catalogDescr,fieldsMap,onCreationSuccessCallback,onCreationFailureCallback);		
 		}
 		
+		let popupTitle="<s:text name="Items.createItem"></s:text> <s:property value='currentUserProfile.catalogVocabulary.itemCap'/>";
+		if (fieldsList.length==0) {
+			popupTitle+="<br/><span class='alert-warning' ><s:text name="Items.createItem.nofields"></s:text></span>"
+		}
 		// create item modal
-		let popupForm=MxGuiPopups.newMultiInputsPopup("<s:text name="Items.createItem"></s:text> <s:property value='currentUserProfile.catalogVocabulary.itemCap'/>",
+		let popupForm=MxGuiPopups.newMultiInputsPopup(popupTitle,
 														fieldsList,onValidFormCallback);
 		createNodeFormInsertSpot.appendChild(popupForm);
+		
 	}
 	
 // generate "Vega Relation graph" form

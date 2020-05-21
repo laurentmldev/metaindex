@@ -71,16 +71,17 @@
            		<!--span class="scale-color-white">M</span><span class="app-title2 scale-color-white" >etainde</span><span class="scale-color-white">X</span-->
            	
             		<div class="app-title" style="padding:0;margin:0;font-size:1.6vw;text-shadow:none">
-            			Opensource Data Cataloger             			
+            			Opensource Data Cataloger           			
 	 				</div>
 	 							            			
             </div>
 
-			<div class="" style="padding:0;margin:0;font-size:1.3vw;">
-            			If you are researcher on history, history of art, social studies, archeology, 
-            			or any field implying work on complex corpus of data,         				
-							
-				<b style="color:green">MetaindeX will save you time and get you more from your data.</b>              			
+			<div class="" style="padding:0;margin:0;font-size:1.3vw;text-align:center;">            				
+				<b style="color:green">Save time and get more from your data.</b>       
+				<div style="font-size:1rem">
+				Especially suited for researchers on history, history of art, social studies, archeology, 
+            			or any field implying work on heavy data corpus.
+				</div>       			
 	 		</div>
 	
 	  

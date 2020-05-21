@@ -7,7 +7,7 @@
  
  <c:if test="${mxRole == 'ROLE_ADMIN' }">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-          <i class="fas fa-fw fa-cube"></i>
+          <i class="fas fa-fw fa-star"></i>
           <span><s:text name="Catalogs.createCatalog"></s:text></span>
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
