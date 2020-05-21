@@ -158,20 +158,11 @@ height:40px;
 .show {display:block;} 
 
 .mx_welcome_card_title {
-	font-size:2vw;
+	font-size:4vw;
+	color:#619cd1;
+	font-weight:bold;
 }
 
-.mx_welcome_card {
-	background:#def;
-	border-color:#cde;
-	background-image: linear-gradient(180deg, #def 40%, #cde 100%);	
-	max-width:50vw;
-	min-width:150px;
-	box-shadow: 0.2rem 0.2rem 0.4rem 0.1rem #ccc;
-}
-.mx_welcome_card:hover {
-	  	
-}
 .mx_welcome_card_body {
 	font-size:0.9rem;
 	/*
@@ -220,22 +211,24 @@ height:40px;
 	word-wrap:normal;
 	width:100%;
 	margin-bottom:0.5rem;
+	margin-top:1rem;
 }
 .mx_welcome_card_li_contents {
 	font-family: sans-serif;
 	font-weight:normal;
 	margin-left:0.3rem;
+	font-size:1.8rem;
 }
 .mx_welcome_card_details {
 	font-family: sans-serif;
 	font-weight:normal;
-	margin-left:0.3rem;
+	margin-left:2rem;
 	text-shadow:none;
 	color:grey;
 	background:#eee;
 	border-radius:2px;
 	padding:0.5rem;
-	margin-top:0.5rem;
+	font-size:1rem;
 }
 
 .mx_welcome_card_ul li:before {
@@ -269,7 +262,7 @@ height:40px;
 	
 }
 
-.scale,.scale-color-white,.scale-color-blue,.scale-bgcolor-white,.mx-help-icon {	
+.scale,.scale-color-white,.scale-color-blue,.scale-color-green,.scale-bgcolor-white,.mx-help-icon {	
 	transition: all 0.3s ease-in-out;
 }
 .scale:hover {	
@@ -279,7 +272,12 @@ height:40px;
 	color:white;
 }
 .scale-color-blue:hover {	
-	color:#2f86d2;	
+	color:#619cd1;	
+	text-shadow:1px 2px 3px #999;
+	cursor:default;	
+}
+.scale-color-green:hover {	
+	color:green;	
 	text-shadow:2px 3px 6px #666;
 	cursor:default;	
 }

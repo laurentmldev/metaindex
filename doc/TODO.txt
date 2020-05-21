@@ -3,7 +3,6 @@
 v2.0.1:
 -------
 
-#49 Catalog FTP port shall be definitive (stored in DB)
 
 #32 green earth : 
 	- hover color is not visible
@@ -21,11 +20,15 @@ FTP server with
 	- fewer debug messages 
 	- banner welcome message
 
+NFS access : swith to JLAN remote files
+	https://stackoverflow.com/questions/26631989/how-to-setup-alfresco-jlan-file-server-as-a-standalone-java-package
+	 
+
 #35 Fields: multi shall be visible only if enum is not empty
 
 
 #39 when delete catalog failed because of Kibana, page is not refreshed while it should be
-#40 when deleting a catalog, delete also associated userdata?
+#40 when deleting a catalog, delete also associated userdata or archive it?
 
 
 #41 Terms and Conditions presentation and acceptation on first login
@@ -80,6 +83,9 @@ Backlog:
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+
+v2.0.1
+#49 Catalog FTP port shall be definitive (stored in DB)
 #48 fields are overlapping when too big
 #38 Ref. fields multi yes/no is not functional (always yes even if flag is 'no')
 #36 when switch in/out edit mode : shall stay in current tab
@@ -89,6 +95,7 @@ Done:
 #33 quotas check when uploading csv : refused while lines could be just update of existing items 
 #44 finalize welcome page
 
+v2.0.0
 #14 check user inputs : ensure no special nor space characters and are not empty
 	- mapping names
 	- perspectives names (and sections and types)
