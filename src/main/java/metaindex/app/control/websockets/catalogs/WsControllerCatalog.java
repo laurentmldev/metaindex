@@ -340,7 +340,7 @@ public class WsControllerCatalog extends AMxWSController {
     	}
     	try {   
     		c.acquireLock();
-	    	requestMsg.setName(c.getName());
+	    	requestMsg.setName(c.getName());	    	
 	    	Boolean result = Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getUpdateIntoDefDbStmt(user, requestMsg).execute();
 	    	if (!result) {
 	    		answer.setRejectMessage("Unable to update catalog custom parameters");

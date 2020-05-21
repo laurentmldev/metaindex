@@ -158,7 +158,7 @@ height:40px;
 .show {display:block;} 
 
 .mx_welcome_card_title {
-	font-size:4vw;
+	font-size:3vw;
 	color:#619cd1;
 	font-weight:bold;
 }
@@ -206,6 +206,10 @@ height:40px;
 	/*transform: rotate(-3deg);*/
 }
 
+.mx_welcome_screenshot {
+	max-width:40vw;
+	height:auto;
+}
 .mx_welcome_card_ul li {
 	text-align:left;
 	word-wrap:normal;

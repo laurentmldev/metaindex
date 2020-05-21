@@ -17,6 +17,7 @@
 
   
   <title>MetaindeX</title>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <link rel="icon" type="image/svg" href="public/commons/media/img/favicon.png">
   
   <!-- Custom fonts for this template-->
@@ -27,12 +28,34 @@
   <s:include value="/public/commons/style/style_global.jsp" />  							 
 
 	
+	<script>
+	
+	var slideIndex = 0;
+	carousel();
+
+	function carousel() {
+	  var i;
+	  var x = document.getElementsByClassName("mx_welcome_screenshot");
+	  for (i = 0; i < x.length; i++) {
+	    x[i].style.display = "none";	    
+	  }
+	  slideIndex++;
+	  if (slideIndex > x.length) {slideIndex = 1}
+	  x[slideIndex-1].style.display = "block";
+	  setTimeout(carousel, 3500); // Change image every 2 seconds
+	}
+	
+	</script>
 </head>
 
-<body class="bg-gradient-primary" style="background-color:#fff;background-image:none;" >
+<body class="bg-gradient-primary" style="background-color:#fff;background-image:none;"
+	onload="carousel();" >
 
-	 <nav class="navbar navbar-expand navbar-light bg-white topbar static-top " style="margin:0;padding:0;margin-top:1rem;">
-	 	<div style="width:90vw"></div>	 		 	
+	 <nav class="navbar navbar-expand navbar-light bg-white topbar static-top " style="margin:0;padding:0;margin-top:2rem;">
+	 	<div style="width:80vw"></div>	 	
+	 	<a href="mailto:laurentmlcontact-metaindex@yahoo.fr?subject=Join Metaindex&body=Hi, I'd like to become a MetaindeX Beta-User! Could create an account for me and explain a bit more how to use it ? Thanks! :)"  
+	 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" style="background:green;border-color:white;margin-left:3rem;text-shadow:none"
+	 		>Join us! <br/>Become a <span style="white-space:nowrap;">Beta-User!</span></a>	 	
 	 	<a href="loginform"  class="btn btn-sm btn-info mx_welcome_btn scale nav-item no-arrow " style="background:#777" >Sign In</a>
 	 			
 	 </nav>
@@ -42,19 +65,37 @@
     
     <div class="row justify-content-center"  >
      	 
-           	<div class="app-title" style="padding:0;margin:0;width:100%;margin-bottom:2rem;">
+           	<div class="app-title" style="padding:0;margin:0;width:100%;margin-bottom:1rem;">
            	
-           		<img src="public/commons/media/img/mx-title.png" style="max-width:50vw;height: auto;" />
+           		<img src="public/commons/media/img/mx-title.png" style="max-width:40vw;height: auto;" />
            		<!--span class="scale-color-white">M</span><span class="app-title2 scale-color-white" >etainde</span><span class="scale-color-white">X</span-->
            	
-            		<div class="app-title" style="padding:0;margin:0;font-size:2vw;text-shadow:none">
-            			The OpenSource Data Cataloger             			
+            		<div class="app-title" style="padding:0;margin:0;font-size:1.6vw;text-shadow:none">
+            			Opensource Data Cataloger             			
 	 				</div>
-	 				<a href="mailto:laurentmlcontact-metaindex@yahoo.fr?subject=Join Metaindex&body=Hi, I'd like to become a MetaindeX Beta-User! Could create an account for me and explain a bit more how to use it ? Thanks! :)"  
-	 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" style="background:green;border-color:white;margin-left:3rem;text-shadow:none"
-	 		>Join us! <br/>Become a <span style="white-space:nowrap;">Beta-User!</span></a>			            			
+	 							            			
             </div>
-        
+
+			<div class="" style="padding:0;margin:0;font-size:1.3vw;">
+            			If you are researcher on :
+            				<ul>
+            					<li>history</li>
+            					<li>history of art</li>
+            					<li>social studies</li>
+            					<li>archeology</li>            					
+            					<li>... or any field implying work on complex corpus of data</li>
+            				</ul>
+							
+							<b style="color:green">MetaindeX will save you time and get you more from your data.</b>              			
+	 		</div>
+	
+	  
+	</div>
+        	<div style="margin-top:2rem;">   <center>     	
+	        	<img class="mx_welcome_screenshot w3-animate-opacity" src="public/commons/media/img/screenshots/stats.png">	        	
+	        	<img class="mx_welcome_screenshot w3-animate-opacity" src="public/commons/media/img/screenshots/editmode2.png">
+	        	<img class="mx_welcome_screenshot w3-animate-opacity" src="public/commons/media/img/screenshots/cards1.png">				
+        	</center></div>
 
         <div style="padding-left:6rem;padding-right:6rem;" ><center>
         
@@ -107,6 +148,49 @@
 				    </div>
 				  </div>								 
 			  </div>
+			    <div >			  	
+			  	 <div class="card mb-3 scale-bgcolor-white"  style="border:none">
+				    <div class="card-body " >
+				      <p class="card-text mx_welcome_card_title text-center scale-color-blue">Explore and Discover</p>
+				      <div id="explore.body" class="mx_welcome_card_body" >
+					      <ul class="mx_welcome_card_ul fa-ul">
+					        <li class="fa-li fa fa-check scale-color-blue" >
+					      			<span class="mx_welcome_card_li_contents" >Build Powerful Search Queries<br/>
+					      				<span class="_details_ mx_welcome_card_details"  >Experience powerful <a class="mx_welcome_card_body_link" href="http://lucene.org">Lucene</a> Search Queries, and make very efficient and precise search queries</span>	
+					      			</span>
+					      	</li>
+					      	<li class="fa-li fa fa-check scale-color-blue" >
+			      				<span class="mx_welcome_card_li_contents">Generate great statistic charts in few clicks<br/>
+			      					<span class="_details_ mx_welcome_card_details"  >Full integration with world-famous <a class="mx_welcome_card_body_link" href="http://elk.org">Kibana</a> for generation of statistics charts</span>
+			      				</span>
+			      			</li>			      			
+					      	<li class="fa-li fa fa-check scale-color-blue" >
+					      			<span class="mx_welcome_card_li_contents">Amazingly fast search engine<br/>
+					      				<span class="_details_ mx_welcome_card_details"  >Lightning-fast search with world-famous <a class="mx_welcome_card_body_link" href="http://elk.org">Elastic-Search</a> engine</span>
+					      			</span>
+					      	</li>
+					      	<li class="fa-li fa fa-check scale-color-blue" >
+					      			<span class="mx_welcome_card_li_contents">Save and combine queries<br/>
+					      				<span class="_details_ mx_welcome_card_details"  >Keep track of useful queries to be reused or combined</span>
+					      			</span>
+					      	</li>
+
+			      			<li class="fa-li fa fa-check scale-color-blue" >
+			      				<span class="mx_welcome_card_li_contents">Integrate charts into your workspace<br/>
+			      					<span class="_details_ mx_welcome_card_details"  >Access to updated dynamic statistic charts from main application</span>
+			      				</span>
+			      			</li>
+			      			<li class="fa-li fa fa-check scale-color-blue" >
+			      				<span class="mx_welcome_card_li_contents">Connection graphs with auto-generated VEGA graphs (beta)<br/>
+			      					<span class="_details_ mx_welcome_card_details"  >Control great power of VEGA-graph with dedicated pre-defined templates</span>
+			      				</span>
+			      			</li> 
+			      		</ul>
+				      </div>
+				    </div>
+				  </div>
+			  </div>
+  
 			  <div >  
    				<div class="card mb-3 scale-bgcolor-white"  style="border:none">    					
 				    <div class="card-body ">
@@ -144,59 +228,10 @@
 				    </div>
 				  </div>								 
 			  </div>
-			  <div >			  	
-			  	 <div class="card mb-3 scale-bgcolor-white"  style="border:none">
-				    <div class="card-body " >
-				      <p class="card-text mx_welcome_card_title text-center scale-color-blue">Explore and Discover</p>
-				      <div id="explore.body" class="mx_welcome_card_body" >
-					      <ul class="mx_welcome_card_ul fa-ul">
-					        <li class="fa-li fa fa-check scale-color-blue" >
-			      				<span class="mx_welcome_card_li_contents">Generate great statistic charts in few clicks<br/>
-			      					<span class="_details_ mx_welcome_card_details"  >Full integration with world-famous <a class="mx_welcome_card_body_link" href="http://elk.org">Kibana</a> for generation of statistics charts</span>
-			      				</span>
-			      			</li>			      			
-					      	<li class="fa-li fa fa-check scale-color-blue" >
-					      			<span class="mx_welcome_card_li_contents" >Rich semantical query language<br/>
-					      				<span class="_details_ mx_welcome_card_details"  >Experience powerful <a class="mx_welcome_card_body_link" href="http://lucene.org">Lucene</a> Search Queries, and make very efficient and precise search queries</span>	
-					      			</span></li>
-					      	<li class="fa-li fa fa-check scale-color-blue" >
-					      			<span class="mx_welcome_card_li_contents">Amazingly fast search engine<br/>
-					      				<span class="_details_ mx_welcome_card_details"  >Lightning-fast search with world-famous <a class="mx_welcome_card_body_link" href="http://elk.org">Elastic-Search</a> engine</span>
-					      			</span>
-					      	</li>
-					      	<li class="fa-li fa fa-check scale-color-blue" >
-					      			<span class="mx_welcome_card_li_contents">Save and combine queries<br/>
-					      				<span class="_details_ mx_welcome_card_details"  >Keep track of useful queries to be reused or combined</span>
-					      			</span>
-					      	</li>
-
-			      			<li class="fa-li fa fa-check scale-color-blue" >
-			      				<span class="mx_welcome_card_li_contents">Integrate charts into your workspace<br/>
-			      					<span class="_details_ mx_welcome_card_details"  >Access to updated dynamic statistic charts from main application</span>
-			      				</span>
-			      			</li>
-			      			<li class="fa-li fa fa-check scale-color-blue" >
-			      				<span class="mx_welcome_card_li_contents">Connection graphs with auto-generated VEGA graphs (beta)<br/>
-			      					<span class="_details_ mx_welcome_card_details"  >Control great power of VEGA-graph with dedicated pre-defined templates</span>
-			      				</span>
-			      			</li> 
-			      		</ul>
-				      </div>
-				    </div>
-				  </div>
-			  </div>
-  
-		
-        
-         				 
-				
-				   
+			   
 	  </div>
 	  	
 	  </center></div>
-	  
-	</div>
-
  <footer class="sticky-footer bg-white">
         <div class="container my-auto">
           <div class="mx-copyright text-center my-auto">

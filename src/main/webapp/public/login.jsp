@@ -42,7 +42,7 @@ onkeypress="if (event.which==13||event.keycode==13) {
           <div class="card-body p-0">
             <!-- Nested Row within Card Body -->
             <div class="row">
-            	<div class="app-title" >M<span class="app-title2">etainde</span>X</div>
+            	<div class="app-title" ><img src="public/commons/media/img/mx-title.png" style="max-width:100%;height: auto;" /></div>
             </div>
             
             <div class="row">

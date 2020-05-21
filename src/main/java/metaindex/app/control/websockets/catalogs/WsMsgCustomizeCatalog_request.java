@@ -111,9 +111,8 @@ public class WsMsgCustomizeCatalog_request implements ICatalogCustomParams {
 	}
 
 	@Override
-	// not available for customization in current version
 	public Integer getFtpPort() {
-		return null;
+		return _ftpPort;
 	}
 	public void setFtpPort(Integer p) {
 		_ftpPort=p;
