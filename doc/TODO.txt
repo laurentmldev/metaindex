@@ -3,8 +3,8 @@
 v2.0.1:
 -------
 
-#47 uploading test CSV with new fields (reference) : sometimes stopping at 2/3 items ... reproducible?
-
+create new element : if no field defined, add a message
+statistics panel : if no iframe defined, add a message
 
 v2.1.0:
 -----------
@@ -80,6 +80,8 @@ Done:
 -----
 
 v2.0.1
+#50 dead-lock when creating a catalog after CSV upload of catalog delete?
+#47 uploading test CSV with new fields (reference) : sometimes stopping at 2/3 items
 #32 green earth : 
 	- hover color is not visible
 	- filter title not visible

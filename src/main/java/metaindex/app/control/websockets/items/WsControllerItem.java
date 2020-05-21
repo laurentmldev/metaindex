@@ -218,6 +218,7 @@ public class WsControllerItem extends AMxWSController {
     			answer.setRejectMessage(user.getText("Items.serverside.uploadItems.unknownFields",c.getName(),requestMsg.getFieldName()));
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/field_value", answer);
     			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_field_value.unknown_field"));
+    			c.releaseLock();
     			return;
     		}
     		

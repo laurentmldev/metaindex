@@ -78,6 +78,10 @@
 			 }
 		 } else { /*ws_handlers_refreshItemsGui();*/ }
 	 }
+ 	else if (msg.modifType==MxApi.CATALOG_MODIF_TYPE.FIELDS_LIST) {
+ 		// nothing special to do
+ 		return;
+ 	}
 	 else { console.log("ERROR: unknown catalog modif type '"+msg.modifType+"'"); }
 	
 	 

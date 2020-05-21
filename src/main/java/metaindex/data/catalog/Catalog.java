@@ -51,8 +51,12 @@ public class Catalog implements ICatalog {
 	
 	private PeriodicProcessMonitor _dbAutoRefreshProcessing=null;
 	private Semaphore _catalogLock = new Semaphore(1,true);
-	public void acquireLock() throws InterruptedException { _catalogLock.acquire(); }
-	public void releaseLock() { _catalogLock.release(); }
+	public void acquireLock() throws InterruptedException {
+		_catalogLock.acquire(); 
+	}
+	public void releaseLock() {
+		_catalogLock.release(); 
+	}
 	
 	private Integer _autoRefreshPeriodSec=AUTOREFRESH_PERIOD_SEC;
 	private Date _lastUpdate=new Date(0);
@@ -681,16 +685,17 @@ public class Catalog implements ICatalog {
 		if (this.getLastUpdate().after(prevCurDate)) { log.info(this.getDetailsStr()); }
 		
 		try {
-			//this.acquireLock();
+			this.acquireLock();
 			if (_ftpServer!=null && !this.getFtpPort().equals(_ftpServer.getPort())) {
 				stopFtpServer();
 				startFtpServer();
-			}			
+			}
 		} catch (Throwable t) {
 			log.error("Unable to restart FTP server for catalog "+getName()+" : "+t.getMessage());
 			t.printStackTrace();
+			
 		}
-		//this.releaseLock();
+		this.releaseLock();
 	}
 	@Override 
 	public Boolean shallBeProcessed(Date testedUpdateDate) { 

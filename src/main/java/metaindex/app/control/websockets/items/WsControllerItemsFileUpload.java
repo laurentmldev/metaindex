@@ -138,7 +138,6 @@ public class WsControllerItemsFileUpload extends AMxWSController {
     		}
     		
     		// if some fields in CSV file could not be found in catalog, reject the request
-    		// Maybe better to automatically add them ? ...
     		if (fieldsNotFound.size()>0) {
     			WsMsgFileUpload_answer msg = new WsMsgFileUpload_answer(
 						procTask.getId(),requestMsg.getClientFileId());
@@ -228,9 +227,9 @@ public class WsControllerItemsFileUpload extends AMxWSController {
     		// ensure previous data is finished to be processed before starting next one
     		// (preserve order of data sent)
     		procTask.lock();
-    		List<IDbItem> parsedItemsToIndex = csvParser.parseAll(requestMsg.getCsvLines());    		
+    		List<IDbItem> parsedItemsToIndex = csvParser.parseAll(requestMsg.getCsvLines());  
     		procTask.postDataToIndexOrUpdate(parsedItemsToIndex);
-    		procTask.unlock();
+    		procTask.unlock();    		
 
 	    } catch (ParseException e) 
 		{

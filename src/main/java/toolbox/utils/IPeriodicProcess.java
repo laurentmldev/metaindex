@@ -20,7 +20,7 @@ See full version of LICENSE in <https://fsf.org/>
  * @author laurentml
  *
  */
-public interface IPeriodicProcess extends IIdentifiable<Integer>,ILockable {	
+public interface IPeriodicProcess extends IIdentifiable<Integer> {	
 	
 	public Date getLastUpdate();
 	public Boolean shallBeProcessed(Date testedUpdateDate);

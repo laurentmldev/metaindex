@@ -55,16 +55,13 @@ public class PeriodicProcessMonitor extends Thread implements IRunnable {
 				Thread.sleep(_objToProcess.getPeriodicProcessPeriodSec()*1000);
 				
 				if (prePeriodicProcessTest()) {
-					_objToProcess.acquireLock();
 					_objToProcess.doPeriodicProcess();
-					_objToProcess.releaseLock();
 				}
 				
 			} catch (InterruptedException|DataProcessException  e) {
 				log.error("While performing cyclic update check on "+_objToProcess.getId()+ ": "+e.getMessage());
 				e.printStackTrace();
 				_continueRunning=false;
-				_objToProcess.releaseLock();
 			}
 		}
 	}

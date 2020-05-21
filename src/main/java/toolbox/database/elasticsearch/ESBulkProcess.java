@@ -165,6 +165,7 @@ public class ESBulkProcess extends AProcessingTask   {
 	}
 
 	public void postDataToIndexOrUpdate(List<IDbItem> d) throws DataProcessException {
+		//log.error("### posting "+d.size()+" items");
 		if (!isRunning()) {
 			throw new DataProcessException("Processing not ready, unable to post data before");
 		}
@@ -177,6 +178,7 @@ public class ESBulkProcess extends AProcessingTask   {
 			else { itemsToIndex.add(curItem); }
 			
 		}
+		
 		postDataToIndex(itemsToIndex);
 		postDataToUpdate(itemsToUpdate);
 	}
@@ -275,10 +277,9 @@ public class ESBulkProcess extends AProcessingTask   {
 				_stoppingProcessingLock.release();
 				return; 
 			}			
-			Boolean success = _processor.awaitClose(30L, TimeUnit.SECONDS);			
+			Boolean success = _processor.awaitClose(30L, TimeUnit.SECONDS);
 			_processor.close();
 			ESWriteStmt.waitUntilEsIndexRefreshed(_catalog.getName(),_datasource);
-			
 			getActiveUser().getCurrentCatalog().loadStatsFromDb();
 			
 			if (!success) {
@@ -311,7 +312,6 @@ public class ESBulkProcess extends AProcessingTask   {
 			_stoppingProcessingLock.release();
 			
 		}
-		
 		getActiveUser().sendGuiProgressMessage(
     			getId(),
     			getActiveUser().getText("Items.serverside.bulkprocess.progress", getName()),

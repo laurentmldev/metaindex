@@ -101,10 +101,20 @@ public class CatalogFtpServer {
 		try {
 			_serverLock.acquire();
 			// possibly need semaphore if more intensive start/stop cycles
-			if (_isStarted) { return; }
+			if (_isStarted) {
+				_serverLock.release();
+				return; 
+			}
 			_isStarted=true;
-			if (_server==null) { return; }
-			if (_server.isSuspended()) { _server.resume(); return;}		
+			if (_server==null) {
+				_serverLock.release();
+				return; 
+			}
+			if (_server.isSuspended()) {
+				_server.resume(); 
+				_serverLock.release();
+				return;
+			}		
 			
 			_server.start();
 			log.info("FTP server for catalog '"+_catalog.getName()+"' accessible at port '"+getPort()+"'");

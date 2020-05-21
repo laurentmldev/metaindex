@@ -32,13 +32,12 @@ public class SessionLogoutListener  extends HttpSessionEventPublisher {
 		  
 		  if (user != null) {
 			  try {
-				  user.acquireLock();
 				  user.logOut(); 				  
 			  }
-			  catch (InterruptedException|DataProcessException  e) {
+			  catch (DataProcessException e) {
 				  log.error("Error while performing uer logOut operations : "+e);
 			  }
-			  user.releaseLock();
+			  
 		  }
 		   
 	      super.sessionDestroyed(event);

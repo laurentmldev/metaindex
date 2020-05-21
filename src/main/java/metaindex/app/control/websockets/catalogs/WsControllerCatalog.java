@@ -276,6 +276,7 @@ public class WsControllerCatalog extends AMxWSController {
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);    
     		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_catalog"));
     		e.printStackTrace();
+    		_GlobalCreateCatalogLock.release();
     	}
     }
     
@@ -345,6 +346,7 @@ public class WsControllerCatalog extends AMxWSController {
 	    	if (!result) {
 	    		answer.setRejectMessage("Unable to update catalog custom parameters");
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_customized", answer);
+    			c.releaseLock();
     			return;
     		}
 	    	c.loadCustomParamsFromdb();
@@ -359,6 +361,7 @@ public class WsControllerCatalog extends AMxWSController {
 	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_customized", answer);
 	    	Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.customize_catalog"));
     		e.printStackTrace();
+    		c.releaseLock();
     	}
     	
     }
@@ -398,6 +401,7 @@ public class WsControllerCatalog extends AMxWSController {
 	    		answer.setRejectMessage("Unable to delete catalog definition");
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_catalog", answer);
     			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.delete_catalog.delete_sql_def"));
+    			c.releaseLock();
     			return;
     		}
 	    	Globals.Get().getCatalogsMgr().removeCatalog(c.getId());

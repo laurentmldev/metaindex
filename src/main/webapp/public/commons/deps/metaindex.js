@@ -631,6 +631,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	    		
 	    		if (curLineNb % MX_WS_UPLOAD_FILE_MAX_LINES==0 || curLineNb==CSVrows.length-1) {
 	    			//console.log("sending "+curLinesWsBuffer.length+" lines : "+curLinesWsBuffer);
+	    			//console.log(curLinesWsBuffer);
 	    			
 	    			let jsonData = { 
 	    				 "csvLines" : curLinesWsBuffer,

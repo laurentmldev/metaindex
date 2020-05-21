@@ -77,16 +77,10 @@
             </div>
 
 			<div class="" style="padding:0;margin:0;font-size:1.3vw;">
-            			If you are researcher on :
-            				<ul>
-            					<li>history</li>
-            					<li>history of art</li>
-            					<li>social studies</li>
-            					<li>archeology</li>            					
-            					<li>... or any field implying work on complex corpus of data</li>
-            				</ul>
+            			If you are researcher on history, history of art, social studies, archeology, 
+            			or any field implying work on complex corpus of data,         				
 							
-							<b style="color:green">MetaindeX will save you time and get you more from your data.</b>              			
+				<b style="color:green">MetaindeX will save you time and get you more from your data.</b>              			
 	 		</div>
 	
 	  

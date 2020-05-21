@@ -64,6 +64,7 @@ public class WsControllerPerspective extends AMxWSController {
 	    	if (!result) {
 	    		answer.setRejectMessage("Unable to update perspective");
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/perspective_updated", answer);
+    			c.releaseLock();
     			return;
     		}
 	    	c.loadPerspectivesFromdb();
@@ -112,6 +113,7 @@ public class WsControllerPerspective extends AMxWSController {
 	    	if (!result) {
 	    		answer.setRejectMessage("Unable to delete perspective");
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/perspective_deleted", answer);
+    			c.releaseLock();
     			return;
     		}
 	    	c.loadPerspectivesFromdb();

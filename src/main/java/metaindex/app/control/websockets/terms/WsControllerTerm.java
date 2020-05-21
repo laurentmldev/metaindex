@@ -211,12 +211,16 @@ public class WsControllerTerm extends AMxWSController {
     	}
     	
     	// refresh terms list in catalog
-    	c.acquireLock();
-    	c.clearTerms();
-    	c.loadMappingFromDb();
-    	c.loadTermsFromDb();
-    	c.releaseLock();
-    	  
+    	try {
+	    	c.acquireLock();
+	    	c.clearTerms();
+	    	c.loadMappingFromDb();
+	    	c.loadTermsFromDb();
+	    	c.releaseLock();
+    	} catch (Throwable t) {
+    		c.releaseLock();
+    		throw t;
+    	}
     	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_term", answer);
     	user.notifyCatalogContentsChanged(CATALOG_MODIF_TYPE.FIELDS_LIST, 1L);
     	Globals.GetStatsMgr().handleStatItem(new CreateTermMxStat(user,c,term.getName()));
