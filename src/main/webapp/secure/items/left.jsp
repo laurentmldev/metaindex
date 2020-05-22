@@ -9,7 +9,7 @@
 <li id="leftbar_item_create" class="nav-item" style="display:none">
  <!--  Modal contents added by javascript in function "handleCatalogDetails" down there -->
         <a class="nav-link collapsed" href="#"
-        	onclick="let popupForm=this.parentNode.querySelector('._modal_root_').toggleShowHide();">
+        	onclick="this.parentNode.querySelector('._modal_root_').toggleShowHide();">
           <i class="fas fa-star fa-copy"></i>
           <span><s:text name="Items.createItem"></s:text> <s:property value='currentUserProfile.catalogVocabulary.itemCap'/></span>
         </a>
@@ -54,7 +54,7 @@
 			 
 			  <label  class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button" >
 				 <a href="#" class="collapsed" 
-			           	  onclick="let popupForm=document.getElementById('relations_graph_form_insertspot').querySelector('._modal_root_').toggleShowHide();">
+			           	  onclick="document.getElementById('relations_graph_form_insertspot').querySelector('._modal_root_').toggleShowHide();">
 			          <i class="fas fa-fw fa-project-diagram text-white"></i>
 			          <span><s:text name="Items.graphsGenerator"/></span>			                           		
 			    </a>  
@@ -68,7 +68,7 @@
 			 
 			 <label  class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button" >
 				 <a href="#" class="collapsed" 
-			           	  onclick="let popupForm=document.getElementById('aggr_relations_graph_form_insertspot').querySelector('._modal_root_').toggleShowHide();">
+			           	  onclick="document.getElementById('aggr_relations_graph_form_insertspot').querySelector('._modal_root_').toggleShowHide();">
 			          <i class="fas fa-fw fa-project-diagram text-white"></i>
 			          <span><s:text name="Items.groupGraphsGenerator"/></span>			                           		
 			    </a>  
@@ -333,10 +333,11 @@ function _left_build_newitem_form_field_desc(termId,fieldName,termDesc,catalogDe
 }
 
 MxGuiLeftBar.handleCatalogDetails=function(catalogDescr) {
+	
+	
 	_update_menus_list();
 	let filtersInsertSpot=MxGuiLeftBar.getFiltersInsertSpot();
 	clearNodeChildren(filtersInsertSpot);
-	
 	
 	// generate "create new item" form
 	if (mx_helpers_isCatalogWritable(MxGuiDetails.getCurCatalogDescription().userAccessRights)) {

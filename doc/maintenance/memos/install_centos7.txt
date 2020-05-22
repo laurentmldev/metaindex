@@ -14,11 +14,29 @@ log as mxadminname
 mkdir -p mx-maintenance/deliveries
 
 
-# Configure VM mem alloc for ElasticSearch
+# Sys config for ELK
 # ----------------------------------------
 
+# Configure VM mem alloc for ElasticSearch
 vi /etc/sysctl.conf
 > vm.max_map_count=262144
+ 
+# max opened files
+vi /etc/security/limits.conf
+> nproc 4096
+> <user>  -  nofile  65535
+
+# disable swap
+# sudo swapoff -a, or
+vi /etc/fstab
+> comment lines with swap
+
+
+# set HEAP size to about 50% of available ram
+vi /etc/default/elasticsearch
+> ES_HEAP_SIZE=2g
+> MAX_LOCKED_MEMORY=unlimited
+> MAX_OPEN_FILES=131070
 # and then reboot
 
 
@@ -68,6 +86,7 @@ sudo vi /etc/firewalld/services/phpmyadmin.xml
 firewall-cmd --permanent --add-service='phpmyadmin'
 
 firewall-cmd --reload
+
 
 Docker install 
 --------------

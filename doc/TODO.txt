@@ -7,6 +7,8 @@ v2.0.1:
 v2.1.0:
 -----------
 
+progress bar when creating new fields from CSV, and try to make it faster
+
 
 FTP server with 
 	- explicit message when uploading file too big for quota

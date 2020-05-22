@@ -62,7 +62,13 @@
  	if (msg.modifType==MxApi.CATALOG_MODIF_TYPE.DOCS_LIST) {
 		 if (msg.userNickname!="<s:property value='currentUserProfile.nickname'/>") {
 			 footer_showAlert(INFO, msg.userNickname+" changed "+msg.nbImpactedDocss+" item(s)");
-		 } else { ws_handlers_refreshItemsGui(); }
+		 } else {
+			 // refresh the items list only, not the full GUI
+			 // otherwise when creating a new item the popup 
+			 // disappear for each new item which is not convenient to the user
+			 //ws_handlers_refreshItemsGui();
+			 ws_handlers_requestItemsSearch(MxGuiHeader.getCurrentSearchQuery()); 
+		 }
 	 }
  	
  	 else if (msg.modifType==MxApi.CATALOG_MODIF_TYPE.FIELD_VALUE) {

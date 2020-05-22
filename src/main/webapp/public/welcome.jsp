@@ -52,7 +52,7 @@
 	onload="carousel();" >
 
 	 <nav class="navbar navbar-expand navbar-light bg-white topbar static-top " style="margin:0;padding:0;margin-top:2rem;">
-	 	<div style="width:80vw"></div>	 	
+	 	<div style="width:70vw"></div>	 	
 	 	<a href="mailto:laurentmlcontact-metaindex@yahoo.fr?subject=Join Metaindex&body=Hi, I'd like to become a MetaindeX Beta-User! Could create an account for me and explain a bit more how to use it ? Thanks! :)"  
 	 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" style="background:green;border-color:white;margin-left:3rem;text-shadow:none"
 	 		>Join us! <br/>Become a <span style="white-space:nowrap;">Beta-User!</span></a>	 	

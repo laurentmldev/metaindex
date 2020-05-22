@@ -149,7 +149,7 @@ public class CsvDumper<T extends IFieldValueMapObject> extends AProcessingTask  
 				for (String line : linesToWrite) {
 					_outputstream.write((line+"\n").getBytes());
 					if (!line.startsWith("#")) { addProcessedNbData(1L); }		
-					log.error(" ### dumping line "+line);
+					//log.error(" ### dumping line "+line);
 				}
 				_outputstream.flush();
 				// --------
