@@ -32,6 +32,7 @@ public class SessionLogoutListener  extends HttpSessionEventPublisher {
 		  
 		  if (user != null) {
 			  try {
+				  user.sendGuiErrorMessage(user.getText("session.expired"));
 				  user.logOut(); 				  
 			  }
 			  catch (DataProcessException e) {

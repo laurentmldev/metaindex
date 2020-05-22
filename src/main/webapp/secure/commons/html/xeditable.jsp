@@ -356,7 +356,7 @@ function xeditable_create_boolean_field(
  <div id="MxGui._templates_.xeditable_field.text" style="display:none" >
  	<!-- _name_ node shall be direct child of root node -->
  	<span class="_name_ mx-perspective-field-title" style="display:none;" ></span> 	 
- 	<a href="#" class="_value_ editable editable-click" 
+ 	<a href="#" class="_value_ editable editable-click mx-editable " 
  			 data-type="text" data-placement="right" data-title="<s:text name='global.enter_value'/>" 
  			style="padding:0.2rem;" ></a>
  </div>
@@ -365,14 +365,14 @@ function xeditable_create_boolean_field(
  <div id="MxGui._templates_.xeditable_field.dropdown" style="display:none" >
  	<!-- _name_ node shall be direct child of root node -->
  	<span class="_name_ mx-perspective-field-title" style="display:none;" ></span>	 
- 	<a href="#" class="_value_ editable editable-click" style="padding:0.2rem;" ></a>
+ 	<a href="#" class="_value_ editable editable-click mx-editable " style="padding:0.2rem;" ></a>
  </div>
 
  <div id="MxGui._templates_.xeditable_field.dyndropdown" style="display:none" class="mx-dropdown"
  	onkeypress="event.stopPropagation();" onkeydown="event.stopPropagation();">
   <span class="_name_ mx-perspective-field-title" style="display:none;" ></span>
   <button onclick="this.parentNode.querySelector('._options_').classList.toggle('show');" 
-  		class="editable editable-click editable-open mx_dyndropdown_btn _current_value_"  ></button>
+  		class="editable editable-click editable-open mx-editable mx_dyndropdown_btn _current_value_"  ></button>
   <div  class="mx_dyndropdown_content _options_">
     <input type="text" class="mx_dyndropdown_searchinput _search_input_" placeholder="Search..."  onkeyup="filterDynamicDropdownFunction(parentNode.parentNode)">  
   </div>

@@ -17,8 +17,10 @@
 input[type="file"] {
     display: none;
 }
-
-
+.mx-editable {
+	/* necessary to keep bottom border visible */
+	display:inline-block;
+}
 
 .mx-current-item-area-closed {
 	max-height:0;

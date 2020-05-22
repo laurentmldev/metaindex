@@ -3,7 +3,6 @@
 v2.0.1:
 -------
 
-log to Kibana, adding a term in MX, and try to get it in Kibana
 
 v2.1.0:
 -----------

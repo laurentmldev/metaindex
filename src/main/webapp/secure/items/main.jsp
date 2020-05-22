@@ -114,7 +114,10 @@
     </a>
   </div>
   <div id="kibana_frame_cont" style="display:none" >
-  	<s:property value="currentUserProfile.currentCatalogKibanaIFrameHtml" escapeHtml="false" />
+  	<!--
+  		if Kibana is dead page might take some time to load.
+  	 -->
+  	 <s:property value="currentUserProfile.currentCatalogKibanaIFrameHtml" escapeHtml="false" />
   </div>
   <script>
  

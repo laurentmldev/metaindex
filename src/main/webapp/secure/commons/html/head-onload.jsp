@@ -9,14 +9,14 @@
   }
  
   window.onload=function(){
-  
+	  
 	websocketsStartup();
 	
 	$(document).ready(function() {
 	  //toggle `popup` / `inline` mode
 	  $.fn.editable.defaults.mode = 'popup';	
 	 });
-	
+		
  }
     
 </script>
