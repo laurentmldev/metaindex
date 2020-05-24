@@ -26,7 +26,7 @@ vi /etc/security/limits.conf
 > nproc 4096
 > <user>  -  nofile  65535
 
-# disable swap
+# disable swap : don't do it, it might make mysql (and other) DB unstable ?? 
 # sudo swapoff -a, or
 vi /etc/fstab
 > comment lines with swap
@@ -71,21 +71,67 @@ sudo service sshd restart
 # update firewall
 # ---------------
 
-sudo vi /usr/lib/firewalld/services/ssh.xml
+###
+$ sudo vi /usr/lib/firewalld/services/ssh.xml
 > <port protocol="tcp" port="22"/>
 > <port protocol="tcp" port="2233"/>
 
-sudo vi /etc/firewalld/services/phpmyadmin.xml
+###
+$ sudo vi /etc/firewalld/services/phpmyadmin.xml
 <?xml version="1.0" encoding="utf-8"?>
 <service>
   <short>PHP MyAdmin</short>
   <description>Amdinistration of MySQL database for MetaindeX server</description>
   <port protocol="tcp" port="80"/>
 </service>
+$ firewall-cmd --permanent --add-service='phpmyadmin'
 
-firewall-cmd --permanent --add-service='phpmyadmin'
+###
+$ sudo vi /etc/firewalld/services/mxwebappftp.xml
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>MX WebApp FTP</short>
+  <description>FTP access to MetaindeX userdata</description>
+  <port protocol="tcp" port="25000-25200"/>
+</service>
+$ firewall-cmd --permanent --add-service='mxwebappftp'
 
-firewall-cmd --reload
+###
+$ sudo vi /etc/firewalld/services/mxwebappftp-passive.xml
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>MX WebApp FTP Passive</short>
+  <description>FTP Passive-Mode access to MetaindeX userdata</description>
+  <port protocol="tcp" port="45000-45200"/>
+</service>
+$ firewall-cmd --permanent --add-service='mxwebappftp-passive'
+
+$ firewall-cmd --permanent --zone=public --change-interface=eth0
+$ firewall-cmd --permanent --zone=public --list-all
+public (active)
+  target: default
+  icmp-block-inversion: no
+  interfaces: eth0
+  sources: 
+  services: dhcpv6-client mxwebappftp phpmyadmin ssh
+  ports: 
+  protocols: 
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules: 
+  
+$ firewall-cmd --info-service=mxwebappftp
+  
+$ firewall-cmd --reload
+
+Other install
+-------------
+
+# for htpasswd to generate Bcrypt passwords
+sudo yum install httpd-tools
+htpasswd -bnBC 10 "" password | tr -d ':\n'
 
 
 Docker install 

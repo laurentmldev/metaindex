@@ -6,3 +6,9 @@
  
  mv metaindex.pkcs12 metaindex.keystore.RSA.pkcs12.dev
  sudo cp metaindex.keystore.RSA.pkcs12.dev /etc/metaindex/keystore/metaindex.keystore.RSA.pkcs12 
+ 
+ 
+ 
+ ## generate a hash
+ https://www.javainuse.com/onlineBcrypt
+ 

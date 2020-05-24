@@ -2,10 +2,10 @@
 Startup Procedure
 -----------------
 From Server console
-- docker-compose up -d mxproxy
+- docker-compose up -d 
 - docker logs -f mxkibana
 - wait for Kibana to be ready
-- docker-compose up -d mxwebapp
+
 
 system checks
 -------------

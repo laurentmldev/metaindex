@@ -61,3 +61,11 @@ docker run --tty --net=container:ksqldb-server tcpdump tcpdump -N -A 'port 8083'
 
 
 
+## find real path of docker volumes
+
+$ ls /var/lib/docker/volumes/<volume-name>/_data/ 
+
+$ docker volume ls
+
+
+

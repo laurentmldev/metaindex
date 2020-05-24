@@ -150,6 +150,9 @@ public class Catalog implements ICatalog {
 				log.error("unable to create local userdata folder : "+getLocalFsFilesPath());
 			}
 		}
+		else {
+			log.info("created local userdata folder : "+getLocalFsFilesPath());
+		}
 		startFtpServer();
 		_dbAutoRefreshProcessing=new CatalogPeriodicDbReloader(this);
 		_dbAutoRefreshProcessing.start();

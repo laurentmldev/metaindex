@@ -1,13 +1,51 @@
 
 
-v2.0.1:
+v2.0.2:
 -------
 
+terms and conditions and Cookies
+
+#54 file dropzone when creating element
+
+#57 plus gros bouton pour entrer dans un catalogue
+#56 hover texte sur l'étoile près de la barre de recherche
+#55 welcome tour
+
+#58 increase DB size of field quotaFtpDiscSpaceBytes (int 64)
+#59 auto mx start at server reboot and ensure userdata is resilient to server reboot ???
+#60 can import with one CSV more than max allowed data ...
+#61 click on image shall go to another tab (target _blank)
+
+#62 when adding new item, message to others is 'xx changed undefined items'
+
+#64 type longtext (rich?) pour étude du language / analyse de corpus
+
+#63 progress bar when creating new fields from CSV, and try to make it faster
+
+#35 Fields: multi shall be visible only if enum is not empty
+
+#39 when delete catalog failed because of Kibana, page is not refreshed while it should be
+
+#41 Terms and Conditions presentation and acceptation on first login
+ 
+#19 send email to users and admin when useful
 
 v2.1.0:
------------
+-------
+#23 avoid use of kibana_user user once ELK issue 51759 us fixed
+#10 websocket connection refused after session timeout and re-login
 
-progress bar when creating new fields from CSV, and try to make it faster
+#53 real certificates instead of self-signed
+#28 user profile picture
+#40 when deleting a catalog, delete also associated userdata or archive it?
+#43 search on accentuated characters imported from UTF-16 does not seem to work
+#45 when logging out from Mx, log-out Kibana session too
+
+
+welcome page :
+	- sciences sociales et humaines
+	- détermination thématique d'un corpus
+	- analyse de contenu
 
 
 FTP server with 
@@ -19,28 +57,12 @@ NFS access : swith to JLAN remote files
 	https://stackoverflow.com/questions/26631989/how-to-setup-alfresco-jlan-file-server-as-a-standalone-java-package
 	 
 
-#35 Fields: multi shall be visible only if enum is not empty
-
-
-#39 when delete catalog failed because of Kibana, page is not refreshed while it should be
-#40 when deleting a catalog, delete also associated userdata or archive it?
-
-
-#41 Terms and Conditions presentation and acceptation on first login
- 
-
-#43 search on accentuated characters imported from UTF-16 does not seem to work
-#19 send email to users and admin when useful
-
-#23 avoid use of kibana_user user once ELK issue 51759 us fixed
-
-
-#28 user profile picture
-
-#45 when logging out from Mx, log-out Kibana session too
 
 Backlog:
 --------
+- construite un graph schéma conceptuel
+	Un schéma conceptuel (ou carte conceptuelle) est une représentation structurée d'un ensemble de concepts reliés sémantiquement. Les concepts sont liés par des lignes fléchées auxquelles sont accolés un mot ou deux décrivant leur relation : « mène à », « prévient que », « favorise », etc.
+- intégration ouitl d'analyse lexicographique TXM 
 - left-items submenus not visible when window width too small
 - use field alias to rename fields and make lexic translation available in Kibana and searxh queries
 - websocket connection lost when 'save as...' window open ?
