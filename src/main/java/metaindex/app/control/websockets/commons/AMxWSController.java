@@ -39,7 +39,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import metaindex.app.Globals;
 import metaindex.app.Globals.APPLICATION_STATUS;
-import metaindex.app.control.websockets.catalogs.WsControllerCatalog;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.IUserProfileData.USER_CATALOG_ACCESSRIGHTS;

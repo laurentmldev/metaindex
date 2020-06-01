@@ -14,10 +14,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import toolbox.patterns.observer.*;
+import toolbox.utils.filetools.FileBinOutstream;
 import metaindex.data.userprofile.IUserProfileData;
 
 public abstract class AProcessingTask implements IProcessingTask {
+	
+	private Log log = LogFactory.getLog(AProcessingTask.class);
 	
 	public static Float pourcentage(Long current, Long target) {
 		if (target.equals(0L)) { return 0F; }
@@ -33,6 +39,7 @@ public abstract class AProcessingTask implements IProcessingTask {
 		@Override
 		public void run() {
 			_processingToBeRun.run();
+			//log.error("### id="+this.getId()+" - run");
 		}
 	}
 	
@@ -49,7 +56,7 @@ public abstract class AProcessingTask implements IProcessingTask {
 	
 	private List<IObserver<IProcessingTask> > _observers = new ArrayList<IObserver<IProcessingTask> >();
 	
-	private String _processingId="";
+	private String _processingType="";
 	
 	private Long _targetNbData=0L;	
 	private Long _receivedNbData=0L;
@@ -78,10 +85,10 @@ public abstract class AProcessingTask implements IProcessingTask {
 	public void removeObserver(IObserver<IProcessingTask> oldObserver) { _observers.remove(oldObserver); }
 
 	@Override
-	public String getProcessingType() { return _processingId; }
+	public String getProcessingType() { return _processingType; }
 	
 	@Override
-	public void setProcessingType(String processingId) { this._processingId=processingId; }
+	public void setProcessingType(String processingId) { this._processingType=processingId; }
 	
 	@Override
 	public String getName() {

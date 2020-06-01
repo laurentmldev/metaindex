@@ -228,6 +228,16 @@ function ws_handlers_deleteAllItems() {
 									MxGuiLeftBar.getSelectedFiltersNames()); 
 }
 
+function ws_handlers_uploadFiles(catalogDescr,filesToUpload,successCallback,errorCallback) {
+	
+	MxApi.requestUploadFiles({
+		'catalogId':catalogDescr.id,
+		'filesToUpload':filesToUpload,
+		'successCallback':successCallback,
+		'errorCallback':errorCallback
+	});
+	
+}
 
 function ws_handlers_createItem(catalogDescr,fieldsMap,successCallback,errorCallback) {
 	

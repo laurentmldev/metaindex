@@ -26,6 +26,7 @@ import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
 import metaindex.app.Globals;
+import metaindex.app.control.websockets.catalogs.messages.*;
 import metaindex.app.control.websockets.commons.AMxWSController;
 import metaindex.app.control.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
 import metaindex.app.periodic.statistics.catalog.CreateCatalogMxStat;

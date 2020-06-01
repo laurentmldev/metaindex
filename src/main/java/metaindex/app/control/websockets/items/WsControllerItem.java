@@ -31,6 +31,7 @@ import metaindex.data.filter.IFilter;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.TERM_DATATYPE;
 import metaindex.app.Globals;
+import metaindex.app.control.websockets.items.messages.*;
 import metaindex.app.control.websockets.commons.AMxWSController;
 import metaindex.app.control.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
 import metaindex.app.periodic.statistics.items.CreateItemMxStat;
@@ -198,7 +199,18 @@ public class WsControllerItem extends AMxWSController {
     	IUserProfileData user = getUserProfile(headerAccessor);	
 		ICatalog c = user.getCurrentCatalog();		
     	WsMsgUpdateFieldValue_answer answer = new WsMsgUpdateFieldValue_answer(requestMsg);
-
+    	
+    	if (c==null) {
+    		answer.setRejectMessage(user.getText("Items.server.noCatalogCurrentlySelected"));
+    			    	
+    		this.messageSender.convertAndSendToUser(
+    				headerAccessor.getUser().getName(),
+    				"/queue/field_value", 
+    				answer);
+    		
+    		return;
+    	}
+    	
     	if (!this.userHasWriteAccess(user,c)) { 
     		answer.setRejectMessage(user.getText("globals.noAccessRights"));
 			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/field_value", answer);

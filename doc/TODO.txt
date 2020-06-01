@@ -5,7 +5,10 @@ v2.0.2:
 
 terms and conditions and Cookies
 
-#54 file dropzone when creating element
+rename ASC/DESC with CROISS/DECR in frenc
+
+editing fields when translation is used results in an error (using translation instead of term id somewhere...?)
+createItem form : placeholder text color is too bright, not visible
 
 #57 plus gros bouton pour entrer dans un catalogue
 #56 hover texte sur l'étoile près de la barre de recherche
@@ -29,6 +32,9 @@ terms and conditions and Cookies
 #41 Terms and Conditions presentation and acceptation on first login
  
 #19 send email to users and admin when useful
+
+statistics create items with CSV is not traced
+statistics : count CSV download
 
 v2.1.0:
 -------
@@ -100,6 +106,10 @@ Backlog:
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+
+v2.0.2
+
+#54 file dropzone when creating element
 
 v2.0.1
 

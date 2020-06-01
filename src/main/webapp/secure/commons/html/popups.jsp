@@ -150,17 +150,22 @@
 // fieldsList: [ { id:"xxx",type:"text",title:"xxx",defaultValue:"xxx", important:'false',disabled:'false' },
 //				 { id:"xxx",type:"dropdown",defaultValue:"xxx", values:[{text:'xxx',value:'xxx'}], important:'true',disabled:'true' }]
 // 				 { id:"xxx",type:"dropdown",defaultValue:"xxx", values:['val1','val2'], important:'true',disabled:'false' }]
-// 				 { id:"xxx",type:"multiselect",values:['val1','val2'], important:'true' }]
+// 				 { id:"xxx",type:"multiselect",values:['val1','val2'], important:'true' }
+//				 { id:"xxx",type:"file-url",title:"xxx",defaultValue:"xxx", important:'false',disabled:'false' },
+//				]
 //
 // onValidCallback(choices)
 // 	choice[id]="xxx"
 
-function _commons_popups_createFieldInput(curFieldDescr,resultFields) {
+function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFiles) {
 	
-	let newFormInput=null;
+	let newFormInput=null;	
 	
-	if (curFieldDescr.type=="text") {
-		newFormInput=document.getElementById("_commons_popups_formtext_input_template_").cloneNode(true);
+	// for file-url, behaviour is specialized down there for drag and drop,
+	// but basic behaviour is a normal text field
+	if (curFieldDescr.type=="text" || curFieldDescr.type=="file-url") {
+		if (curFieldDescr.type=="file-url") { newFormInput=document.getElementById("_commons_popups_formfileurl_input_template_").cloneNode(true); }
+		else { newFormInput=document.getElementById("_commons_popups_formtext_input_template_").cloneNode(true); }
 		newFormInput.id=curFieldDescr.id;
 		newFormInput.style.display="block";
 		newFormInput.title=curFieldDescr.title;		
@@ -195,6 +200,7 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields) {
 		}
 		
 	}
+	
 	else if (curFieldDescr.type=="dropdown") {
 		newFormInput=document.getElementById("_commons_popups_formdropdown_input_template_").cloneNode(true);
 		newFormInput.id=curFieldDescr.id;
@@ -314,6 +320,102 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields) {
 		return null;
 	}
 	
+
+	// configure drag-n-drop behaviour for files URLs
+	if  (curFieldDescr.type=="file-url" && curFieldDescr.disabled!='true') {
+		// input file dropzone
+		
+		
+		let newFormInputFile=newFormInput.querySelector('._form_input_');
+		let filesListNode = newFormInput.querySelector("._files_list_");
+		let newFormInputText=newFormInput.querySelector('._form_input_');
+		newFormInputFile.classList.remove("border-0");
+		newFormInputFile.style="width:90%;border:1px dashed grey;"
+		
+		newFormInputFile.clearContents=function(force) {			
+			// always clean the files-to-upload table
+			// once uploaded, we won't do it twice
+			resultFiles[curFieldDescr.id]=null;
+			filesListNode.innerHTML="";
+			
+			if (!force && (
+					curFieldDescr.disabled=='true'
+					|| newFormInput.getAttribute("locked")=='true')
+				) { return; }
+			
+			newFormInputText.value='';
+			resultFields[curFieldDescr.id]="";
+			
+		}
+		let handlerDragEnterFunc=function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			newFormInputFile.classList.add("form-text-input-active");
+		}
+		let handlerDragOverFunc=function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			newFormInputFile.classList.add("form-text-input-active");
+		}
+		let handlerDragLeaveFunc=function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			newFormInputFile.classList.remove("form-text-input-active");
+		}
+		let handlerDragDropFunc=function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			newFormInputFile.classList.remove("form-text-input-active");
+			let dt = e.dataTransfer;
+			let files = dt.files;
+			newFormInputFile.value="";
+			
+			let header="<tr><th>File to Upload</th><th>Size</th><th>Preview</th></tr>";
+			filesListNode.innerHTML=header;
+			for (var i = 0;i<files.length;i++)
+			{
+				if (i>0) { newFormInputFile.value+=","; }
+				let file=files[i];
+				newFormInputFile.value+=file.name;		
+				let newTr=document.createElement("tr");
+				
+				let name=document.createElement("td");
+				name.innerHTML=file.name;
+				newTr.appendChild(name);
+				
+				let size=document.createElement("td");
+				size.innerHTML=file.size/1000000.0+"Mo";
+				newTr.appendChild(size);
+				
+				// create a preview if it's an image
+				let preview=document.createElement("td");
+				preview.innerHTML="";				
+				if ( file.type.match(/image/)) {
+					let reader = new FileReader()
+					reader.readAsDataURL(file)
+					reader.onloadend = function() {
+						let img = document.createElement('img')
+						img.style="max-width:80px;height:auto";
+						img.src = reader.result;
+						preview.appendChild(img);
+					}
+				}				
+				newTr.appendChild(preview);
+				
+				filesListNode.appendChild(newTr);
+
+			}
+			resultFields[curFieldDescr.id]=this.value;
+			resultFiles[curFieldDescr.id]=files;
+			filesListNode.style.display="block";			
+		}
+		newFormInputFile.addEventListener('dragenter', handlerDragEnterFunc, false)
+		newFormInputFile.addEventListener('dragleave', handlerDragLeaveFunc, false)
+		newFormInputFile.addEventListener('dragover', handlerDragOverFunc, false)
+  		newFormInputFile.addEventListener('drop', handlerDragDropFunc, false)
+	}
+	
+	
 	let locker = newFormInput.querySelector("._locked_");
 	if (curFieldDescr.disabled=='true') { locker.style.display='none'; }
 	else {
@@ -359,6 +461,7 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields) {
 	 let newPopup = document.getElementById("_commons_popups_multi_input_template_").cloneNode(true);
 	 
 	 let resultFields={};
+	 let resultFiles=[];
 	 
 	 newPopup.id="";	 
 	 newPopup.show=function() { newPopup.style.display='block'; }
@@ -392,12 +495,11 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields) {
 		let curFieldDescr=fieldsList[idx];		
 		if (curFieldDescr.important==null) { curFieldDescr.important="true"; }
 		if (curFieldDescr.important==true || curFieldDescr.important=="true") {
-			let newFormInput=_commons_popups_createFieldInput(curFieldDescr,resultFields);		
+			let newFormInput=_commons_popups_createFieldInput(curFieldDescr,resultFields,resultFiles);		
 			importantFieldsContainer.appendChild(newFormInput);
 			if (curFieldDescr.defaultValue!=null && curFieldDescr.defaultValue!="") {
 				resultFields[curFieldDescr.id]=curFieldDescr.defaultValue;
-			}
-
+			}			
 		}
 	 }
 	 fieldsInsertSpot.appendChild(document.createElement("hr"));
@@ -414,7 +516,7 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields) {
 		let curFieldDescr=fieldsList[idx];
 		if (curFieldDescr.type!="text") { continue; }
 		if (curFieldDescr.important=="false") {
-			let newFormInput=_commons_popups_createFieldInput(curFieldDescr,resultFields);		
+			let newFormInput=_commons_popups_createFieldInput(curFieldDescr,resultFields,resultFiles);		
 			secondaryFieldsContainer.appendChild(newFormInput);
 			if (curFieldDescr.defaultValue!=null && curFieldDescr.defaultValue!="") {
 				resultFields[curFieldDescr.id]=curFieldDescr.defaultValue;
@@ -427,7 +529,7 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields) {
 		let curFieldDescr=fieldsList[idx];
 		if (curFieldDescr.type!="dropdown") { continue; }
 		if (curFieldDescr.important=="false") {
-			let newFormInput=_commons_popups_createFieldInput(curFieldDescr,resultFields);		
+			let newFormInput=_commons_popups_createFieldInput(curFieldDescr,resultFields,resultFiles);		
 			secondaryFieldsContainer.appendChild(newFormInput);
 			if (curFieldDescr.defaultValue!=null && curFieldDescr.defaultValue!="") {
 				resultFields[curFieldDescr.id]=curFieldDescr.defaultValue;
@@ -440,7 +542,7 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields) {
 		let curFieldDescr=fieldsList[idx];
 		if (curFieldDescr.type!="multiselect") { continue; }
 		if (curFieldDescr.important=="false") {
-			let newFormInput=_commons_popups_createFieldInput(curFieldDescr,resultFields);		
+			let newFormInput=_commons_popups_createFieldInput(curFieldDescr,resultFields,resultFiles);		
 			secondaryFieldsContainer.appendChild(newFormInput);
 			if (curFieldDescr.defaultValue!=null && curFieldDescr.defaultValue!="") {
 				resultFields[curFieldDescr.id]=curFieldDescr.defaultValue;
@@ -448,10 +550,23 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields) {
 		}
 	 }
 	 
+	// files refs	
+	 for (var idx=0;idx<fieldsList.length;idx++) {
+		let curFieldDescr=fieldsList[idx];
+		if (curFieldDescr.type!="file-url") { continue; }
+		if (curFieldDescr.important=="false") {
+			let newFormInput=_commons_popups_createFieldInput(curFieldDescr,resultFields,resultFiles);		
+			secondaryFieldsContainer.appendChild(newFormInput);
+			if (curFieldDescr.defaultValue!=null && curFieldDescr.defaultValue!="") {
+				resultFields[curFieldDescr.id]=curFieldDescr.defaultValue;
+			}
+		}
+	 }
+	
 	 // ok button
 	 let okButton=newPopup.querySelector("._button_ok_");
 	 okButton.onclick=function(event) { 
-		 onValidCallback(resultFields);
+		 onValidCallback(resultFields,resultFiles);
 		 newPopup.clearContents();
 	 }
 	
@@ -512,6 +627,24 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields) {
     </div>
   </div>
   
+   
+  <fieldset id="_commons_popups_formfileurl_input_template_"  class="form-control-group card  modals-form-control" style="display:none;">
+   <legend style="width:auto;margin:0;padding:0;" class="form-control-group-legend ">
+   						<span class="_legend_" style="margin-left:0.5rem;margin-right:0.5rem;" ></span>
+   						<i class="fas fa-fw fa-lock-open _locked_" style="margin-right:0.5rem;" 
+   						title="<s:text name="globals.lockerExplain" />" ></i>
+   	</legend>
+   	<input  type="text" style="width:90%;border:2px dashed grey;"
+   			class="_form_input_  card  modals-form-control bg-light small " 
+   			placeholder="Drop file here or click to select one"
+   			/>
+	<table class=" table table-striped" style="font-size:0.8rem;" >
+		<tbody class="_files_list_" style="display:none"></tbody>
+	</table>
+   		
+   </fieldset>
+   
+   
   <fieldset id="_commons_popups_formtext_input_template_"  class="form-control-group card  modals-form-control" style="display:none;">
    <legend style="width:auto;margin:0;padding:0;" class="form-control-group-legend ">
    						<span class="_legend_" style="margin-left:0.5rem;margin-right:0.5rem;" ></span>

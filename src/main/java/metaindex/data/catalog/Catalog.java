@@ -38,7 +38,7 @@ import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.UserProfileData;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.PeriodicProcessMonitor;
-import toolbox.utils.FileSystemUtils;
+import toolbox.utils.filetools.FileSystemUtils;
 
 public class Catalog implements ICatalog {
 

@@ -20,6 +20,7 @@ import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
 import metaindex.app.Globals;
+import metaindex.app.control.websockets.perspectives.messages.*;
 import metaindex.app.control.websockets.commons.AMxWSController;
 import metaindex.app.periodic.statistics.catalog.DeletePerspectiveCatalogMxStat;
 import metaindex.app.periodic.statistics.catalog.UpdatePerspectiveCatalogMxStat;

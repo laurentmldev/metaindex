@@ -22,6 +22,8 @@ function stripStr(str) { return str.replace(/^\s*/,"").replace(/\s*$/,""); }
 
 // shouldn't be too big otherwise risk of WS deconnexion because max. size limit reached.
 var MX_WS_UPLOAD_FILE_MAX_LINES = 500;
+var MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE = 10000;
+var MX_WS_UPLOAD_FILE_SEND_PERIOD_MS = 5;
 
 if (!window.WebSocket) { alert('ERROR: WebSockets are not supported in this browser. This feature is required to run Metaindex Javascript API'); }
 
@@ -30,10 +32,6 @@ if (window.Prototype) {
 	delete Array.prototype.toJSON;
 }
 
-
-
-// store handles to files being uploaded
-var mx_files_to_be_uploaded=[];
 
 // Object MetaindexJSAPI
 function MetaindexJSAPI(url, connectionParamsHashTbl) 
@@ -153,12 +151,22 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	myself._callback_CustomizeCatalog=null;	
 	myself._callback_CustomizeCatalog_debug=false;
 	
-			
+	// Upload Files
+	myself._callback_UploadFiles=null;	
+	myself._callback_UploadFiles_debug=false;
+
+	// uncompress GZIP and Base64 encoded data
 	function uncompressBase64(base64data) {
-		// uncompress GZIP and Base64 encoded data
+
 		let bytesGzip = window.atob(base64data);
 		let deflatedData = pako.ungzip(bytesGzip,{ to: 'string' }); 			
 		return deflatedData;
+	}
+	// compress GZIP and Base64 encode data
+	function compressBase64(rawdata) {		
+		let bytesGzip = pako.gzip(rawdata,{ to: 'string' }); 			
+		let base64data = window.atob(bytesGzip);
+		return base64data;
 	}
 	
 	// public method connect
@@ -215,6 +223,8 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			myself._stompClient.subscribe('/user/queue/upload_items_csv_response',myself._handleUploadItemsFromCsvAnswer);
 			myself._stompClient.subscribe('/user/queue/download_items_csv_response',myself._handleDownloadItemsCsvAnswer);
 			myself._stompClient.subscribe('/user/queue/created_item',myself._handleCreatedItemResponseMsg);
+			myself._stompClient.subscribe('/user/queue/upload_userdata_files_response',myself._handleUploadFilesAnswer);
+			myself._stompClient.subscribe('/user/queue/upload_userdata_file_contents_progress',myself._handleUploadFilesContentsAnswer);
 			
 			
 			// fields
@@ -363,7 +373,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		}
 		
 		let requestId=parsedMsg.requestId;
-		requestObj=myself.requestUserPreferencesCallbacks[requestId];
+		let requestObj=myself.requestUserPreferencesCallbacks[requestId];
 		//console.log("received customization requestId="+requestId+" -> "+requestObj);
 		if (requestObj==null) { return; }
 		if (parsedMsg.isSuccess==true) { requestObj.successCallback(); }
@@ -415,7 +425,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		}
 		
 		let requestId=parsedMsg.requestId;
-		requestObj=myself.requestUserCatalogCustoCallbacks[requestId];
+		let requestObj=myself.requestUserCatalogCustoCallbacks[requestId];
 		//console.log("received customization requestId="+requestId+" -> "+requestObj);
 		if (requestObj==null) { return; }
 		if (parsedMsg.isSuccess==true) { requestObj.successCallback(); }
@@ -507,7 +517,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		}
 
 		let requestId=parsedMsg.requestId;
-		requestObj=myself.requestCsvDownloasCallbacks[requestId];
+		let requestObj=myself.requestCsvDownloasCallbacks[requestId];
 		//console.log("received customization requestId="+requestId+" -> "+requestObj);
 		if (requestObj==null) { return; }
 		if (parsedMsg.isSuccess==true) { requestObj.successCallback(parsedMsg); }
@@ -522,9 +532,12 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	}
 	
 	
-	//------- Upload Items file --------	
+	//------- Upload Items from CSV file --------	
 	
-	
+	// store handles to files being uploaded
+	// pb: not robust of performing several CSV upload at a time ...
+	var mx_csv_files_to_be_uploaded=[];
+
 	
 	this.subscribeToCsvUpload=function(callback_func,debug) {
 		debug=debug||false;
@@ -535,7 +548,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	this.requestUploadItemsFromCsv = function(fileHandle,chosenFieldsMapping) {
 	 	
 		let jsonData = {};
-		jsonData.clientFileId=mx_files_to_be_uploaded.length;		
+		jsonData.clientFileId=mx_csv_files_to_be_uploaded.length;		
 		let nbItemsToBeCreated=0;
 		
 		// instantiate a new FileReader object to count total amount of items 
@@ -586,7 +599,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	    	myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/upload_items_csv_request", {},JSON.stringify(jsonData));		
 	 		
 	    	jsonData.fileHandle=fileHandle;
-	    	mx_files_to_be_uploaded[jsonData.clientFileId]=jsonData;
+	    	mx_csv_files_to_be_uploaded[jsonData.clientFileId]=jsonData;
 	    }
 	    
 	    // load the file into an array buffer
@@ -608,9 +621,9 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	    let reader = new FileReader();
 	    let fileIndex=parsedMsg.clientFileId;
 	    //console.log("file index = "+fileIndex);
-	    let fileHandle=mx_files_to_be_uploaded[fileIndex].fileHandle;
+	    let fileHandle=mx_csv_files_to_be_uploaded[fileIndex].fileHandle;
 	    //console.log("fileHandle="+fileHandle);
-	    //dumpStructure(mx_files_to_be_uploaded);
+	    //dumpStructure(mx_csv_files_to_be_uploaded);
 	    let serverProcessingTaskId=parsedMsg.processingTaskId;
 	    
 	    if (fileHandle==null) { return; }
@@ -749,7 +762,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			}
 			
 			let requestId=parsedMsg.requestId;
-			requestObj=myself.requestCatalogPerspectiveDeleteCallbacks[requestId];
+			let requestObj=myself.requestCatalogPerspectiveDeleteCallbacks[requestId];
 			//console.log("received customization requestId="+requestId+" -> "+requestObj);
 			if (requestObj==null) { return; }
 			if (parsedMsg.isSuccess==true) { requestObj.successCallback(); }
@@ -822,7 +835,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		}
 		
 		let requestId=parsedMsg.requestId;
-		requestObj=myself.requestCatalogPerspectiveUpdateCallbacks[requestId];
+		let requestObj=myself.requestCatalogPerspectiveUpdateCallbacks[requestId];
 		//console.log("received customization requestId="+requestId+" -> "+requestObj);
 		if (requestObj==null) { return; }
 		if (parsedMsg.isSuccess==true) { requestObj.successCallback(); }
@@ -879,7 +892,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			}
 			
 			let requestId=parsedMsg.requestId;
-			requestObj=myself.requestCatalogCustomParamsUpdateCallbacks[requestId];
+			let requestObj=myself.requestCatalogCustomParamsUpdateCallbacks[requestId];
 			console.log("received customization requestId="+requestId+" -> "+requestObj);
 			if (requestObj==null) { return; }
 			if (parsedMsg.isSuccess==true) { requestObj.successCallback(); }
@@ -947,7 +960,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		this._handleDeletedCatalogMsg= function(deleteCatalogResponseMsg) {
 			var parsedMsg = JSON.parse(deleteCatalogResponseMsg.body);
 			let requestId=parsedMsg.requestId;
-			requestObj=myself.requestDeleteCatalogCallbacks[requestId];
+			let requestObj=myself.requestDeleteCatalogCallbacks[requestId];
 			if (requestObj==null) { return; }
 			if (parsedMsg.isSuccess==true) { requestObj.successCallback(); }
 			else {
@@ -1037,7 +1050,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		var parsedMsg = JSON.parse(inflatedMsg);
 		
 		let requestId=parsedMsg.requestId;
-		requestObj=myself.requestCatalogItemsCallbacks[requestId];
+		let requestObj=myself.requestCatalogItemsCallbacks[requestId];
 		if (requestObj==null) { return; }
 		if (parsedMsg.isSuccess==true) { requestObj.successCallback(parsedMsg); }
 		else {
@@ -1092,7 +1105,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	this._handleUpdateFieldResponseMsg= function(updateFieldResponseMsg) {
 		var parsedMsg = JSON.parse(updateFieldResponseMsg.body);
 		let requestId=parsedMsg.requestId;
-		requestObj=myself.requestFieldValueUpdateCallbacks[requestId];
+		let requestObj=myself.requestFieldValueUpdateCallbacks[requestId];
 		if (requestObj==null) { return; }
 		if (parsedMsg.isSuccess==true) { requestObj.successCallback(parsedMsg.fieldName,
 																	parsedMsg.fieldValue); }
@@ -1147,7 +1160,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		let requestId=parsedMsg.requestId;
 		
 		//console.log("handling request term-update answer "+requestId);
-		requestObj=myself.requestTermUpdateCallbacks[requestId];
+		let requestObj=myself.requestTermUpdateCallbacks[requestId];
 		if (requestObj==null) { return; }
 		if (parsedMsg.isSuccess==true) { requestObj.successCallback(); }
 		else {
@@ -1256,7 +1269,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		let requestId=parsedMsg.requestId;
 		
 		//console.log("handling request create-filter answer "+requestId);
-		requestObj=myself.requestCreateFilterCallbacks[requestId];
+		let requestObj=myself.requestCreateFilterCallbacks[requestId];
 		if (requestObj==null) { return; }
 		if (parsedMsg.isSuccess==true) { requestObj.successCallback(); }
 		else {
@@ -1374,7 +1387,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			let requestId=parsedMsg.requestId;
 			
 			//console.log("handling request create item answer "+requestId+" : "+parsedMsg);
-			requestObj=myself.requestCreateItemCallbacks[requestId];
+			let requestObj=myself.requestCreateItemCallbacks[requestId];
 			if (requestObj==null) { return; }
 			if (parsedMsg.isSuccess==true) { requestObj.successCallback(); }
 			else {
@@ -1455,7 +1468,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			let requestId=parsedMsg.requestId;
 			
 			//console.log("handling request create item answer "+requestId+" : "+parsedMsg);
-			requestObj=myself.requestSetCatalogLexicEntryCallbacks[requestId];
+			let requestObj=myself.requestSetCatalogLexicEntryCallbacks[requestId];
 			if (requestObj==null) { return; }
 			if (parsedMsg.isSuccess==true) { requestObj.successCallback(); }
 			else {
@@ -1504,7 +1517,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 				let requestId=parsedMsg.requestId;
 				
 				//console.log("handling request create item answer "+requestId+" : "+parsedMsg);
-				requestObj=myself.requestSetTermLexicEntryCallbacks[requestId];
+				let requestObj=myself.requestSetTermLexicEntryCallbacks[requestId];
 				if (requestObj==null) { return; }
 				if (parsedMsg.isSuccess==true) { requestObj.successCallback(); }
 				else {
@@ -1516,9 +1529,138 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 				}		
 			}
 				
+			
+//------- Upload Files --------
+			
+	// contains error/success callback functions of each field update request
+	this.requestUploadFilesCallbacks=[];
+			
+	// dataObj {
+	//	 catalogId
+	//   filesDescriptions { 
+	//   successCallback (func)
+	//   errorCallback (func)(msg)
+	// }
+	this.requestUploadFiles= function(dataObj) {
+		
+		var curRequestId=myself.requestUploadFilesCallbacks.length;
+		myself.requestUploadFilesCallbacks.push(dataObj);
+		
+		let fileDescriptions=[];
+		
+		// send request to prepare upload, server will check
+		// quotas are ok
+		for (let pos=0;pos<dataObj.filesToUpload.length;pos++) {	
+			fileObj=dataObj.filesToUpload[pos];
+			let fileDesc={ name : fileObj.name,byteSize : fileObj.size, id:fileDescriptions.length};
+			fileObj.id=fileDescriptions.length;
+			fileDescriptions.push(fileDesc);			
+		}
+		
+		var jsonStr = JSON.stringify({ 	"requestId" : curRequestId,
+										"catalogId" : dataObj.catalogId,			
+										"fileDescriptions" : fileDescriptions											
+										});
+		
+		
+		//console.log("requesting files upload "+curRequestId);
+		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/upload_userdata_files", {}, jsonStr);
+		
+	}
+	
 	
 		
+	// each field update request is given with a callback to be executed
+	// in case of success or failure.
+	this._handleUploadFilesAnswer= function(upoloadFilesAnswerMsg) {
+		var parsedMsg = JSON.parse(upoloadFilesAnswerMsg.body);
+		let requestId=parsedMsg.requestId;
 		
+		//console.log("handling upload files answer "+requestId+" : "+parsedMsg);
+		let requestObj=myself.requestUploadFilesCallbacks[requestId];
+		requestObj.processingTaskId=parsedMsg.processingTaskId;
+		//console.log(requestObj);
+		if (requestObj==null) { return; }
+		if (parsedMsg.isSuccess!=true) {
+			let errorMsg=parsedMsg.rejectMessage;
+			// ensure error message is not empty
+			// (otherwise can lead to some misbehaviour in user app (ex: x-editable) )
+			if (errorMsg==undefined) { errorMsg="uploading files refused by server, sorry." }
+			requestObj.errorCallback(errorMsg);
+			return;
+		}		
 		
+		// if OK start uploading contents of user-files, they will be stored
+		// in catalog userdata space (also accessible via FTP
+		// upload each file one by one
+	    for (let pos=0;pos<requestObj.filesToUpload.length;pos++) {	 
+	    	let fileObj=requestObj.filesToUpload[pos];
+		    let reader = new FileReader();
+		    reader.onloadend = function (evt) 
+		    { 
+		    	/*
+		    	if (evt.target.readyState == FileReader.DONE) {
+		            alert(String(reader.result[0]));
+		        }
+		        */
+		        let buffer = reader.result;
+				let rawdata = new Uint8Array(buffer);			
+				
+				let sendRawData = function(startRawdataPos,curSequenceNumber) {
+					//console.log("sendRawData("+curSequenceNumber+"):["+startRawdataPos+"]");
+					let sendingBuffer=[];
+					let curRawdataPos=startRawdataPos;
+					//strDataContents = compressBase64(view);
+					while ((curRawdataPos==startRawdataPos || curRawdataPos%MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE!=0)
+								&& curRawdataPos<rawdata.length) {
+						sendingBuffer.push(rawdata[curRawdataPos]);
+						curRawdataPos++;
+					}
+						
+				    jsonData={ clientFileId : fileObj.id, processingTaskId:requestObj.processingTaskId, rawContents: sendingBuffer, sequenceNumber:curSequenceNumber };
+			    	//console.log('### Sending file upload contents request : '+JSON.stringify(jsonData));
+			    	//console.log("	### Sending file upload contents request  "+curSequenceNumber+" : -> ["+(curRawdataPos-1)+"]");
+			    	myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/upload_userdata_file_contents", {},JSON.stringify(jsonData));
+					
+					if (curRawdataPos<rawdata.length && requestObj.abort!=true) {
+						let timer = setInterval(function() {
+							clearInterval(timer);
+							//console.log("	### planning next send in 1s from seq="+(curSequenceNumber+1)+"["+curRawdataPos+"]");
+							sendRawData(curRawdataPos,curSequenceNumber+1); 
+						}, MX_WS_UPLOAD_FILE_SEND_PERIOD_MS);
+					}
+					
+				}
+				let timer = setInterval(function() { 
+					clearInterval(timer);
+					sendRawData(0,1); }, MX_WS_UPLOAD_FILE_SEND_PERIOD_MS);
+							
+		    }	
+	    	reader.readAsArrayBuffer(fileObj);			
+		}
+	    
+		//requestObj.successCallback();
+		 
+		 
+	}
+
+	this._handleUploadFilesContentsAnswer= function(uploadFilesContentsAnswerMsg) {
+		var parsedMsg = JSON.parse(uploadFilesContentsAnswerMsg.body);
+		let requestId=parsedMsg.requestId;
+		
+		//console.log("handling upload files contents answer "+requestId+" : "+parsedMsg);
+		if (requestObj==null) { return; }
+		if (parsedMsg.isSuccess!=true) {
+			let errorMsg=parsedMsg.rejectMessage;
+			// ensure error message is not empty
+			// (otherwise can lead to some misbehaviour in user app (ex: x-editable) )
+			if (errorMsg==undefined) { errorMsg="uploading files contents refused by server, sorry." }
+			requestObj.errorCallback(errorMsg);
+			// will stop running upload process
+			requestObj.abort=true;
+			return;
+		}		
+		
+	}
 }
 

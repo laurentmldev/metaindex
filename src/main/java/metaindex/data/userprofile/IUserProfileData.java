@@ -14,14 +14,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import com.opensymphony.xwork2.ActionSupport;
-import com.opensymphony.xwork2.TextProvider;
 
 import metaindex.data.filter.IFilter;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.commons.globals.guitheme.IGuiTheme;
 import metaindex.app.control.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
-import metaindex.app.control.websockets.users.WsUserGuiMessageText.MESSAGE_CRITICITY;
 import metaindex.data.catalog.CatalogVocabularySet;
 import metaindex.data.catalog.ICatalog;
 import toolbox.exceptions.DataProcessException;

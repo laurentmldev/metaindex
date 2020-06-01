@@ -7,7 +7,7 @@
 <s:include  value="vegagen_forms/vegagen_graphs.jsp" />
 
 <li id="leftbar_item_create" class="nav-item" style="display:none">
- <!--  Modal contents added by javascript in function "handleCatalogDetails" down there -->
+ <!--  Modal contents added by javascript in function "_builCreateNewItemForm" down there -->
         <a class="nav-link collapsed" href="#"
         	onclick="this.parentNode.querySelector('._modal_root_').toggleShowHide();">
           <i class="fas fa-star fa-copy"></i>
@@ -313,10 +313,17 @@ function _left_build_newitem_form_field_desc(termId,fieldName,termDesc,catalogDe
 						title:mx_helpers_getTermName(termDesc, catalogDesc)
 						 };
 	
-	if (mx_helpers_isDatatypeMultiEnumOk(termDesc.datatype) && termDesc.enumsList!="" && termDesc.isMultiEnum==true) {
+	if (termDesc.datatype=="LINK_URL" || termDesc.datatype=="IMAGE_URL") {
+		fieldFormDef.type="file-url";
+		fieldFormDef.defaultValue="";
+		fieldFormDef.values=termDesc.enumsList;
+		fieldFormDef.values.unshift(" ");
+		
+	} 
+	else if (mx_helpers_isDatatypeMultiEnumOk(termDesc.datatype) && termDesc.enumsList!="" && termDesc.isMultiEnum==true) {
 		fieldFormDef.type="multiselect";
 		fieldFormDef.defaultValue="";
-		fieldFormDef.values=termDesc.enumsList;		
+		fieldFormDef.values=termDesc.enumsList;
 	}
 	else if (mx_helpers_isDatatypeEnumOk(termDesc.datatype) && termDesc.enumsList!="") {
 		fieldFormDef.type="dropdown";
@@ -324,12 +331,81 @@ function _left_build_newitem_form_field_desc(termId,fieldName,termDesc,catalogDe
 		fieldFormDef.values=termDesc.enumsList;
 		fieldFormDef.values.unshift(" ");
 		
-	} else {
+	}
+	else {
 		fieldFormDef.type="text";		
 		fieldFormDef.defaultValue="";
 	}
 	return fieldFormDef;
 	
+}
+
+function _builCreateNewItemForm(catalogDescr) {
+	
+	let fieldsList=[];
+	
+	// add an input form for each term of the catalog
+	let sortedTermsNames = Object.keys(catalogDescr.terms).sort();
+	for (var i=0;i<sortedTermsNames.length;i++) {
+		let curFieldName=sortedTermsNames[i];
+		let curFieldTermDescCopy=JSON.parse(JSON.stringify(catalogDescr.terms[curFieldName]));
+		// if field is actually not a fieldName but a custom separator, we ignore it
+		if (curFieldName[0]=='"') { continue; }		
+		curFieldTermDescCopy.addedInForm=true;		
+		let curFieldFormDef =_left_build_newitem_form_field_desc(curFieldName/*id*/,curFieldName/*user text*/,curFieldTermDescCopy,catalogDescr)
+		
+		fieldsList.push(curFieldFormDef);		
+	}
+	// set as 'important' fields used to build the cards title or thumbnail
+	// so that in the form they are cleared after each creation
+	let fieldsInCatalogCardsTitleArray=catalogDescr.itemNameFields;
+	if (fieldsInCatalogCardsTitleArray==null) { fieldsInCatalogCardsTitleArray=[]; }
+	let cardThumbnailField=catalogDescr.itemThumbnailUrlField;
+	for (var i=0;i<fieldsInCatalogCardsTitleArray.length;i++) {
+		let curFieldName=fieldsInCatalogCardsTitleArray[i];
+		for (var j=0;j<fieldsList.length;j++) {
+			let curFormFieldName=fieldsList[j].termId;
+			if (fieldsList[j].termId==curFieldName || fieldsList[j].termId==cardThumbnailField) { 
+				fieldsList[j].important=true; 
+			}
+		}
+	}
+	
+	let onValidFormCallback=function(itemFields,itemFilesToUpload) {
+		
+		let fieldsMap={};
+		let filesList=[];
+		for (var fieldFormId in itemFields) {
+			// cleaning the id to retrieve the termId
+			let termId=fieldFormId.replace("form_newitem_","");
+			fieldsMap[termId]=itemFields[fieldFormId];
+			
+			// if some files have been listed for upload, we prepare the list
+			if (itemFilesToUpload[fieldFormId]!=null) {
+				for (var i=0;i<itemFilesToUpload[fieldFormId].length;i++) {
+					filesList.push(itemFilesToUpload[fieldFormId][i]);	
+				}
+			}
+		}		
+		
+		let onCreationSuccessCallback=function() {
+			//console.log("item created!");
+		}
+		let onCreationFailureCallback=function(errorMsg) {
+			footer_showAlert(ERROR, errorMsg);
+		}
+		ws_handlers_uploadFiles(catalogDescr,filesList,onCreationSuccessCallback,onCreationFailureCallback);
+		ws_handlers_createItem(catalogDescr,fieldsMap,onCreationSuccessCallback,onCreationFailureCallback);		
+	}
+	
+	let popupTitle="<s:text name="Items.createItem"></s:text> <s:property value='currentUserProfile.catalogVocabulary.itemCap'/>";
+	if (fieldsList.length==0) {
+		popupTitle+="<br/><span class='alert-warning' ><s:text name="Items.createItem.nofields"></s:text></span>"
+	}
+	// create item modal
+	let createItemForm=MxGuiPopups.newMultiInputsPopup(popupTitle,
+													fieldsList,onValidFormCallback);
+	return createItemForm;
 }
 
 MxGuiLeftBar.handleCatalogDetails=function(catalogDescr) {
@@ -340,65 +416,10 @@ MxGuiLeftBar.handleCatalogDetails=function(catalogDescr) {
 	clearNodeChildren(filtersInsertSpot);
 	
 	// generate "create new item" form
-	if (mx_helpers_isCatalogWritable(MxGuiDetails.getCurCatalogDescription().userAccessRights)) {
-		
-		let createNodeFormInsertSpot=createItemOp.querySelector("._item_form_insert_spot_");
-
-	
-		let fieldsList=[];
-		
-		// add an input form for each term of the catalog
-		let sortedTermsNames = Object.keys(catalogDescr.terms).sort();
-		for (var i=0;i<sortedTermsNames.length;i++) {
-			let curFieldName=sortedTermsNames[i];
-			let curFieldTermDescCopy=JSON.parse(JSON.stringify(catalogDescr.terms[curFieldName]));
-			// if field is actually not a fieldName but a custom separator, we ignore it
-			if (curFieldName[0]=='"') { continue; }		
-			curFieldTermDescCopy.addedInForm=true;		
-			let curFieldFormDef =_left_build_newitem_form_field_desc(curFieldName/*id*/,curFieldName/*user text*/,curFieldTermDescCopy,catalogDescr)
-			
-			fieldsList.push(curFieldFormDef);		
-		}
-		// set as 'important' fields used to build the cards title or thumbnail
-		// so that in the form they are cleared after each creation
-		let fieldsInCatalogCardsTitleArray=catalogDescr.itemNameFields;
-		if (fieldsInCatalogCardsTitleArray==null) { fieldsInCatalogCardsTitleArray=[]; }
-		let cardThumbnailField=catalogDescr.itemThumbnailUrlField;
-		for (var i=0;i<fieldsInCatalogCardsTitleArray.length;i++) {
-			let curFieldName=fieldsInCatalogCardsTitleArray[i];
-			for (var j=0;j<fieldsList.length;j++) {
-				let curFormFieldName=fieldsList[j].termId;
-				if (fieldsList[j].termId==curFieldName || fieldsList[j].termId==cardThumbnailField) { 
-					fieldsList[j].important=true; 
-				}
-			}
-		}
-		
-		let onValidFormCallback=function(itemFields) {
-			let fieldsMap={};
-			for (var fieldFormId in itemFields) {
-				// cleaning the id to retrieve the termId
-				let termId=fieldFormId.replace("form_newitem_","");
-				fieldsMap[termId]=itemFields[fieldFormId];
-			}
-			
-			let onCreationSuccessCallback=function() {
-				//console.log("item created!");
-			}
-			let onCreationFailureCallback=function(errorMsg) {
-				//console.log("item could not be created : "+errorMsg);
-			}
-			ws_handlers_createItem(catalogDescr,fieldsMap,onCreationSuccessCallback,onCreationFailureCallback);		
-		}
-		
-		let popupTitle="<s:text name="Items.createItem"></s:text> <s:property value='currentUserProfile.catalogVocabulary.itemCap'/>";
-		if (fieldsList.length==0) {
-			popupTitle+="<br/><span class='alert-warning' ><s:text name="Items.createItem.nofields"></s:text></span>"
-		}
-		// create item modal
-		let popupForm=MxGuiPopups.newMultiInputsPopup(popupTitle,
-														fieldsList,onValidFormCallback);
-		createNodeFormInsertSpot.appendChild(popupForm);
+	if (mx_helpers_isCatalogWritable(MxGuiDetails.getCurCatalogDescription().userAccessRights)) {		
+		let createNodeFormInsertSpot=createItemOp.querySelector("._item_form_insert_spot_");	
+		let createItemForm=_builCreateNewItemForm(catalogDescr);
+		createNodeFormInsertSpot.appendChild(createItemForm);
 		
 	}
 	

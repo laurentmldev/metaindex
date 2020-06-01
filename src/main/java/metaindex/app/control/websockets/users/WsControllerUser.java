@@ -23,11 +23,10 @@ import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
 import metaindex.app.Globals;
-import metaindex.app.control.websockets.catalogs.WsMsgCatalogContentsChanged_answer;
+import metaindex.app.control.websockets.users.messages.*;
+import metaindex.app.control.websockets.users.messages.WsUserGuiMessageText.MESSAGE_CRITICITY;
+import metaindex.app.control.websockets.catalogs.messages.WsMsgCatalogContentsChanged_answer;
 import metaindex.app.control.websockets.commons.AMxWSController;
-import metaindex.app.control.websockets.users.WsMsgRegisterUser_answer;
-import metaindex.app.control.websockets.users.WsMsgRegisterUser_request;
-import metaindex.app.control.websockets.users.WsUserGuiMessageText.MESSAGE_CRITICITY;
 import metaindex.app.periodic.statistics.catalog.SetUserCustoCatalogMxStat;
 import metaindex.app.periodic.statistics.user.ErrorOccuredMxStat;
 import metaindex.app.periodic.statistics.user.LoginUserMxStat;

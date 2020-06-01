@@ -31,7 +31,7 @@ import metaindex.data.commons.globals.guitheme.IGuiTheme;
 import metaindex.app.Globals;
 import metaindex.app.control.websockets.users.WsControllerUser;
 import metaindex.app.control.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
-import metaindex.app.control.websockets.users.WsUserGuiMessageText.MESSAGE_CRITICITY;
+import metaindex.app.control.websockets.users.messages.WsUserGuiMessageText.MESSAGE_CRITICITY;
 import metaindex.app.periodic.db.UserProfilePeriodicDbReloader;
 import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.CatalogVocabularySet;
@@ -320,7 +320,7 @@ public class UserProfileData implements IUserProfileData
 	}
 	@Override
 	public void addProcessingTask(IProcessingTask processingTask) {
-		_runningProcessingTasks.put(processingTask.getId(), processingTask);		
+		_runningProcessingTasks.put(processingTask.getId(), processingTask);			
 	}	
 	@Override
 	public void removeProccessingTask(Integer processingTaskId) {

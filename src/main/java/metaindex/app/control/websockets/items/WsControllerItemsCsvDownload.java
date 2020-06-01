@@ -14,9 +14,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,34 +28,21 @@ import org.springframework.stereotype.Controller;
 
 import metaindex.data.filter.IFilter;
 import metaindex.app.Globals;
+import metaindex.app.control.websockets.items.messages.*;
 import metaindex.app.control.websockets.commons.AMxWSController;
-import metaindex.app.control.websockets.terms.WsControllerTerm;
-import metaindex.app.control.websockets.terms.WsMsgCreateTerm_request;
-import metaindex.data.catalog.ICatalog;
-import metaindex.data.catalog.UserItemCsvParser;
-import metaindex.data.term.ICatalogTerm;
-import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
-import metaindex.data.term.ICatalogTerm.TERM_DATATYPE;
 import metaindex.data.userprofile.IUserProfileData;
-import toolbox.database.IDbItem;
 import toolbox.database.IDbSearchResult.SORTING_ORDER;
-import toolbox.database.elasticsearch.ESBulkProcess;
-import toolbox.database.elasticsearch.ElasticSearchConnector;
 import toolbox.database.elasticsearch.ESDownloadCsvProcess;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.BasicPair;
-import toolbox.utils.FileSystemUtils;
+import toolbox.utils.filetools.FileSystemUtils;
 import toolbox.utils.IPair;
-import toolbox.utils.IProcessingTask;
 import toolbox.utils.StrTools;
-import toolbox.utils.parsers.ACsvParser;
-import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
-import toolbox.utils.parsers.IListParser.ParseException;
 
 @Controller
 public class WsControllerItemsCsvDownload extends AMxWSController {
 	
-	private Log log = LogFactory.getLog(WsControllerItemsFileUpload.class);
+	private Log log = LogFactory.getLog(WsControllerItemsCsvFileUpload.class);
 	
 	 
 	@Autowired

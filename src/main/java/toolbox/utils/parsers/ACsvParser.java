@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import metaindex.app.control.websockets.items.WsControllerItemsFileUpload;
+import metaindex.app.control.websockets.items.WsControllerItemsCsvFileUpload;
 
 
 /**
