@@ -92,7 +92,7 @@ public class WsControllerCatalogUserDataFileUpload extends AMxWSController {
 	    	// Instantiate a Processing task
 	    	HandleFileUploadProcess procTask = new HandleFileUploadProcess(
 	    									user,
-	    									"Files Uploader from Web Interface",
+	    									user.getText("Items.uploadItems.uploadingFiles"),
 	    									c.getLocalFsFilesPath(),
 	    									requestMsg.getFileDescriptions()); 
     				

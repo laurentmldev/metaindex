@@ -435,7 +435,8 @@ public class WsControllerItem extends AMxWSController {
     	}
     	
     	ESBulkProcess procTask = 
-    			Globals.Get().getDatabasesMgr().getDocumentsDbInterface().getNewItemsBulkProcessor(user, c, "Creating Item", 1, now);    	
+    			Globals.Get().getDatabasesMgr().getDocumentsDbInterface().getNewItemsBulkProcessor(user, c, 
+    																					user.getText("Items.creatingItem"), 1, now);    	
     	
     	try {
 	    	    

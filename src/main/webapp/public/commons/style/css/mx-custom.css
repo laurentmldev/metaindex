@@ -17,6 +17,16 @@
 input[type="file"] {
     display: none;
 }
+
+.mx-progress {
+  height: 2rem;
+  border-radius: 0.15rem;
+}
+
+.mx-progress-bar-contents {
+	line-height:2rem;
+	font-size:1rem;
+}
 .mx-editable {
 	/* necessary to keep bottom border visible */
 	display:inline-block;

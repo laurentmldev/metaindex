@@ -259,7 +259,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		if (myself._callback_ServerMessages_debug==true) {
 			console.log("MxAPI Received [ServerMessage]\n"+parsedMsg);
 		}
-		if (myself._callback_ServerMessages!=null) {
+		if (myself._callback_ServerMessages!=null) {			
 			myself._callback_ServerMessages(parsedMsg); 
 		}		
 	}

@@ -45,16 +45,16 @@
     </ul>
     <!-- End of Sidebar -->
     
-     <div id="progressbar-template" class="progress" style="display:none; margin:1em;">
-	  <div class="progress-bar progress-bar-striped bg-success _pourcentage_" style="width:0%">
-	  	<span class="_text_" style="font-size:0.8em;padding-left:0.2em;"></span>
+     <div id="progressbar-template" class="progress mx-progress " style="display:none; margin:1em;">
+	  <div class="progress-bar  progress-bar-striped bg-success _pourcentage_" style="width:0%">
+	  	<span class="_text_ mx-progress-bar-contents" style="padding-left:0.2em;"></span>
 	  </div>
 	 </div> 
 	 
 	 
     <script>
     
-    var PROGRESS_FINISHED_DISAPPEAR_DELAY_SEC=2;
+    var PROGRESS_FINISHED_DISAPPEAR_DELAY_SEC=3;
     
     var operationsTitleNode = document.getElementById("leftbar.operations.title");
     //operationsTitleNode.innerHTML= "<s:text name="leftbar.operations"></s:text>";
@@ -92,6 +92,7 @@
     			var progressBarNode = document.getElementById("leftbar.progressbars."+processId);
     			if (progressBarNode!=null) { progressBarNode.parentNode.removeChild(progressBarNode); }
     		}, timeoutMs);
+    		
     	}
     	
     }

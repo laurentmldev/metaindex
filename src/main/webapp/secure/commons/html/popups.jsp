@@ -368,9 +368,13 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFile
 			newFormInputFile.classList.remove("form-text-input-active");
 			let dt = e.dataTransfer;
 			let files = dt.files;
+			if (files.length>1) {
+				footer_showAlert(ERROR,"<s:text name="Items.uploadItems.dropFileToUpload.tooMany"/>")
+				return;
+			}
 			newFormInputFile.value="";
 			
-			let header="<tr><th>File to Upload</th><th>Size</th><th>Preview</th></tr>";
+			let header="<tr><th><s:text name="Items.uploadItems.fileToUpload"/></th><th>Size</th><th>Preview</th></tr>";
 			filesListNode.innerHTML=header;
 			for (var i = 0;i<files.length;i++)
 			{
@@ -384,7 +388,9 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFile
 				newTr.appendChild(name);
 				
 				let size=document.createElement("td");
-				size.innerHTML=file.size/1000000.0+"Mo";
+				let sizeValText=(Math.round(file.size/10.0)/100)+" KB";
+				if (file.size>=1000000) { sizeValText=(Math.round(file.size/10000.0)/100)+" MB"; }
+				size.innerHTML=sizeValText;
 				newTr.appendChild(size);
 				
 				// create a preview if it's an image
@@ -394,7 +400,7 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFile
 					let reader = new FileReader()
 					reader.readAsDataURL(file)
 					reader.onloadend = function() {
-						let img = document.createElement('img')
+						let img = document.createElement('img');
 						img.style="max-width:80px;height:auto";
 						img.src = reader.result;
 						preview.appendChild(img);
@@ -636,7 +642,7 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFile
    	</legend>
    	<input  type="text" style="width:90%;border:2px dashed grey;"
    			class="_form_input_  card  modals-form-control bg-light small " 
-   			placeholder="Drop file here or click to select one"
+   			placeholder="<s:text name="Items.uploadItems.dropFileToUpload"/>"
    			/>
 	<table class=" table table-striped" style="font-size:0.8rem;" >
 		<tbody class="_files_list_" style="display:none"></tbody>
