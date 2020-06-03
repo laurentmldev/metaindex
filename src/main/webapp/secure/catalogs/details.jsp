@@ -189,8 +189,8 @@ function details_memGui() {
  			<td><h2 class="_title_" style="font-weight:bold;margin-right:2rem;"></h2></td>
  		<td  >
 	 		<span class="_foundInDb_" style="display:none">
-		 		<a href="#"  class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm" style="font-size:1.3rem">
-		 			<i class="mx-btn-text-icon fas fa-database fa-sm text-white-50" ></i><b><s:text name="Catalogs.enter" /></b>
+		 		<a href="#"  class="_openBtn_ d-none d-sm-inline-block btn-big btn btn-sm btn-info shadow-sm" style="font-size:1.3rem">
+		 			<i class="mx-btn-text-icon fas fa-database fa-sm" ></i><b><s:text name="Catalogs.enter" /></b>
 		 		</a>
 	 		</span>
 	 	</td>

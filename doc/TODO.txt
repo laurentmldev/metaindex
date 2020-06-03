@@ -14,7 +14,7 @@ editing fields when translation is used results in an error (using translation i
 press escape to exit the "create new item" modal
 
 
-#56 hover texte sur l'étoile près de la barre de recherche
+
 #55 welcome tour
 
 
@@ -115,6 +115,7 @@ v2.0.2
 #58 increase DB size of field quotaFtpDiscSpaceBytes (int 64)
 #54 file dropzone when creating element
 	createItem form : placeholder text color is too bright, not visible
+#56 hover texte sur l'étoile près de la barre de recherche
 
 v2.0.1
 

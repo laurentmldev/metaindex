@@ -72,11 +72,13 @@
               		placeholder="<s:text name="Header.search.placeholder"/>" aria-label="Filter" aria-describedby="basic-addon2"   
               		onchange="document.getElementById('header.filter.text.xs').value=this.value;"           		
               		onkeypress="event.stopPropagation(); if (event.which==13||event.keycode==13) { MxGuiHeader.refreshSearch();}"
-              		onkeydown="event.stopPropagation();">
+              		onkeydown="event.stopPropagation();"
+              		title="<s:text name="Header.search.querycontents.title"/>">
               		
               <div class="input-group-append">
               	<!--  call to external (custom) function header_onSearchClick(searchQuery) -->
-                <button class="btn btn-secondary" type="button" onclick="MxGuiHeader.onFilterClick(MxGuiHeader.getCurrentSearchQuery());" >
+                <button class="btn btn-secondary" type="button" onclick="MxGuiHeader.onFilterClick(MxGuiHeader.getCurrentSearchQuery());" 
+                	title="<s:text name="Header.search.runquery.title"/>" >
                   <i class="fas fa-search fa-sm text-grey-50"></i>
                 </button>
               </div>
@@ -88,7 +90,7 @@
                 	copyToClipBoard(MxGuiHeader.getCurrentSearchQuery());
                 	MxGuiHeader.setCurrentSearchQuery('');
                    	MxGuiHeader.onFilterClick(MxGuiHeader.getCurrentSearchQuery());"
-                   title="clear current search contents">
+                   title="<s:text name="Header.search.clearquery.title"/>" >
                   <i class="fas fa-cut fa-sm text-grey-50"></i>
                 </button>
               </div>
@@ -97,7 +99,8 @@
               <!-- save current filter expression -->
                <div id="save_current_search_button" class="input-group-append dropdown no-arrow ">
               	<!--  call to external (custom) function header_onSearchClick(searchQuery) -->
-                <a class="btn btn-secondary dropdown-toggle" id="saveFilterDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+                <a class="btn btn-secondary dropdown-toggle" id="saveFilterDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
+                	title="<s:text name="Header.search.savequery.title"/>" > 
                   <i class="far fa-star fa-sm text-grey-50"></i>
                 </a>
                	  <!-- Dropdown - Filter Save Name -->
@@ -137,12 +140,14 @@
             
              <select id="header.filter.sortString" class="mx-dropdown form-control bg-light border-0 small"             	
              	onchange="MxGuiHeader.refreshSearch();"           		
-              	onkeypress="if (event.which==13||event.keycode==13) { MxGuiHeader.refreshSearch();}" >
+              	onkeypress="if (event.which==13||event.keycode==13) { MxGuiHeader.refreshSearch();}" 
+              	title="<s:text name="Header.sortby.title"/>" >
               	
               </select>
               <select id="header.filter.sortOrderReversed" class="mx-dropdown form-control bg-light border-0 small"  
               	onchange="MxGuiHeader.refreshSearch();"           		
-              	onkeypress="if (event.which==13||event.keycode==13) { MxGuiHeader.refreshSearch();}" >
+              	onkeypress="if (event.which==13||event.keycode==13) { MxGuiHeader.refreshSearch();}" 
+              	title="<s:text name="Header.sortorder.title"/>">
               	<option value="false" Selected><s:text name='Header.sortorder.asc' /></option>
               	<option value="true"><s:text name='Header.sortorder.desc' /></option>
               </select>
