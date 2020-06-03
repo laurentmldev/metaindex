@@ -111,10 +111,11 @@ Done:
 -----
 
 v2.0.2
+#57 plus gros bouton pour entrer dans un catalogue
 #58 increase DB size of field quotaFtpDiscSpaceBytes (int 64)
 #54 file dropzone when creating element
 	createItem form : placeholder text color is too bright, not visible
-#57 plus gros bouton pour entrer dans un catalogue
+
 v2.0.1
 
 #51 fill-in text for empty places

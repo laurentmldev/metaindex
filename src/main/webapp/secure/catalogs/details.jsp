@@ -201,6 +201,7 @@ function details_memGui() {
  		</td>
  	</tr>
  	</table>
+ 	<hr/> 
  	<table>
  	<tr>
  		<td>
@@ -245,7 +246,7 @@ function details_memGui() {
 		</tr>
 		</table>
 		
- 	<hr/> 
+ 	
 
 				<nav>
 					<div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
