@@ -8,13 +8,13 @@ terms and conditions and Cookies
 rename ASC/DESC with CROISS/DECR in frenc
 
 editing fields when translation is used results in an error (using translation instead of term id somewhere...?)
-createItem form : placeholder text color is too bright, not visible
+
 
 #57 plus gros bouton pour entrer dans un catalogue
 #56 hover texte sur l'étoile près de la barre de recherche
 #55 welcome tour
 
-#58 increase DB size of field quotaFtpDiscSpaceBytes (int 64)
+
 #59 auto mx start at server reboot and ensure userdata is resilient to server reboot ???
 #60 can import with one CSV more than max allowed data ...
 #61 click on image shall go to another tab (target _blank)
@@ -108,8 +108,9 @@ Done:
 -----
 
 v2.0.2
-
+#58 increase DB size of field quotaFtpDiscSpaceBytes (int 64)
 #54 file dropzone when creating element
+	createItem form : placeholder text color is too bright, not visible
 
 v2.0.1
 

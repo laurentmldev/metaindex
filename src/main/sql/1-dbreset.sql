@@ -76,10 +76,10 @@ CREATE TABLE `catalogs` (
   `perspectiveMatchField` varchar(1024) DEFAULT '',
   
   /* maximum of number allowed within this catalog */
-  `quotaNbDocs` int(64) NOT NULL DEFAULT '1000',
+  `quotaNbDocs` int(64) NOT NULL DEFAULT '5000',
   
   /* maximum disk space used by this catalogs's FTP data in bytes */
-  `quotaFtpDiscSpaceBytes` int(64) NOT NULL DEFAULT '1000000',
+  `quotaFtpDiscSpaceBytes` int(64) NOT NULL DEFAULT '10000000',
   
   /* FTP port to be used to access userdata for this catalog */
   `ftpPort` int(32) NOT NULL DEFAULT '0',
