@@ -7,10 +7,13 @@ terms and conditions and Cookies
 
 rename ASC/DESC with CROISS/DECR in frenc
 
-editing fields when translation is used results in an error (using translation instead of term id somewhere...?)
+
+editing fields when translation is used results in an error (using translation instead of term id somewhere...?) TBC
 
 
-#57 plus gros bouton pour entrer dans un catalogue
+press escape to exit the "create new item" modal
+
+
 #56 hover texte sur l'étoile près de la barre de recherche
 #55 welcome tour
 
@@ -111,7 +114,7 @@ v2.0.2
 #58 increase DB size of field quotaFtpDiscSpaceBytes (int 64)
 #54 file dropzone when creating element
 	createItem form : placeholder text color is too bright, not visible
-
+#57 plus gros bouton pour entrer dans un catalogue
 v2.0.1
 
 #51 fill-in text for empty places

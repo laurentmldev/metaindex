@@ -183,20 +183,33 @@ function details_memGui() {
  <div id="MxGui._templates_.catalog_details" style="display:none;margin-top:2rem;">
  	
  	
- 	<table><tr>
- 		<td>
- 			<h2 style='font-size:1.5rem'><s:text name="Catalogs.configurationPanel" /></h2>
- 			<h2 class="_title_" style="font-weight:bold"></h2>
- 		</td>
- 		<td style="padding-left:1rem;padding-right:1rem;">
- 			<span class="_nbdocs_"  ></span> <span class="_nbdocs_name_"></span>
- 		</td>
- 		<td>
- 			<span class="_foundInDb_" style="display:none">
-		 		<a href="#"  class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm">
-		 			<i class="mx-btn-text-icon fas fa-pen fa-sm text-white-50"></i><s:text name="Catalogs.enter" />
+ 
+		<table style="margin-bottom:1rem;">
+ 		<tr>
+ 			<td><h2 class="_title_" style="font-weight:bold;margin-right:2rem;"></h2></td>
+ 		<td  >
+	 		<span class="_foundInDb_" style="display:none">
+		 		<a href="#"  class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm" style="font-size:1.3rem">
+		 			<i class="mx-btn-text-icon fas fa-database fa-sm text-white-50" ></i><b><s:text name="Catalogs.enter" /></b>
 		 		</a>
 	 		</span>
+	 	</td>
+ 	
+ 	
+ 		<td style="padding-left:1rem;padding-right:1rem;width:min-contents;text-align:center;font-size:1.4rem;">
+ 			<span class="_nbdocs_"  ></span> <span class="_nbdocs_name_"></span>
+ 		</td>
+ 	</tr>
+ 	</table>
+ 	<table>
+ 	<tr>
+ 		<td>
+ 			<h2 style='font-size:1.5rem'><s:text name="Catalogs.configurationPanel" /></h2> 			
+ 		</td>
+	 	
+	 		
+ 		<td>
+ 			
 	 		<span class="_notFoundInDb_" style="display:none">
 	 			<div class="alert fade show alert-warning" >
 					  <span class="_text_" data-toggle="collapse" data-target="" ><s:text name="Catalogs.notFoundInDb" /></span>		  					  
@@ -227,10 +240,11 @@ function details_memGui() {
 		 			style="margin-left:1em;"><i class="fa fa-times" aria-hidden="true"></i> 
 		 			<s:text name="Catalogs.delete" />
 		 		</button>
-              </div>
-          
+              </div>          
 		</td>
- 	</tr></table>
+		</tr>
+		</table>
+		
  	<hr/> 
 
 				<nav>
