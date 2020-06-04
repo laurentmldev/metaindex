@@ -30,6 +30,7 @@ import metaindex.app.control.websockets.items.messages.*;
 import metaindex.app.control.websockets.commons.AMxWSController;
 import metaindex.app.control.websockets.terms.WsControllerTerm;
 import metaindex.app.control.websockets.terms.messages.WsMsgCreateTerm_request;
+import metaindex.data.catalog.ICatalog;
 import metaindex.data.catalog.UserItemCsvParser;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
@@ -196,7 +197,7 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
 	    try {
 	    	
 	    	IUserProfileData user = getUserProfile(headerAccessor);
-	    	
+	    	ICatalog c = user.getCurrentCatalog();
 	    	ESBulkProcess procTask;
 	    	
     		IProcessingTask pt = user.getProcessingTask(taskId);
@@ -229,7 +230,9 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
     		// (preserve order of data sent)
     		procTask.lock();
     		List<IDbItem> parsedItemsToIndex = csvParser.parseAll(requestMsg.getCsvLines());  
+    		Long nbMaxItemsToAdd=c.getQuotaNbDocs()-c.getNbDocuments();
     		procTask.postDataToIndexOrUpdate(parsedItemsToIndex);
+    		
     		procTask.unlock();    		
 
 	    } catch (ParseException e) 

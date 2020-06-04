@@ -52,6 +52,8 @@ public class ESBulkProcess extends AProcessingTask   {
 	private Date _timestamp=new Date(0);
 	private Boolean _interruptFlag=false;
 	
+	private Long _nbIndexedData = 0L;
+	
 	private class MxESBulkListener implements BulkProcessor.Listener {
 		Integer _bulkItemIndex=0;
 		ESBulkProcess _process;
@@ -169,6 +171,7 @@ public class ESBulkProcess extends AProcessingTask   {
 		if (!isRunning()) {
 			throw new DataProcessException("Processing not ready, unable to post data before");
 		}
+		
 		List<IDbItem> itemsToIndex = new ArrayList<IDbItem>();
 		List<IDbItem> itemsToUpdate = new ArrayList<IDbItem>();
 		for (IDbItem curItem : d) {
@@ -181,6 +184,7 @@ public class ESBulkProcess extends AProcessingTask   {
 		
 		postDataToIndex(itemsToIndex);
 		postDataToUpdate(itemsToUpdate);
+		
 	}
 	
 	/** Create given new document */
@@ -188,7 +192,7 @@ public class ESBulkProcess extends AProcessingTask   {
 		if (!isRunning()) {
 			throw new DataProcessException("Processing not ready, unable to post data before");
 		}
-		if (_catalog.getNbDocuments()+d.size()>_catalog.getQuotaNbDocs()) {
+		if (_catalog.getNbDocuments()+_nbIndexedData+d.size()>_catalog.getQuotaNbDocs()) {
 			_activeUser.sendGuiErrorMessage(_activeUser.getText("Items.serverside.uploadItems.tooManyItemsForQuota"));
 			this.stop();
 			throw new DataProcessException("Processing leading to quota overpass, aborted");
@@ -198,6 +202,7 @@ public class ESBulkProcess extends AProcessingTask   {
 			IndexRequest request = new IndexRequest().source(itemToIndex.getData());
 			_processor.add(request);
 		}
+		_nbIndexedData+=d.size();
 		this.addReceivedNbData(new Long(d.size()));
 	}
 	
