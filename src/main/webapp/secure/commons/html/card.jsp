@@ -84,7 +84,7 @@ function card_buildNewCard(objDescr) {
 		container.classList.remove('mx-card-lighter-bg');
 	}
 	
-	newCard.isSelected=false;
+	newCard.isSelected=false;	
 	newCard.select = function(e) {
 		newCard.isSelected=true;
 		scrollTo("anchor-details");
@@ -108,11 +108,14 @@ function card_buildNewCard(objDescr) {
 		 
 	}
 	// onclick
-	newCard.onclick = function(e) {
-		if (newCard.isSelected) { newCard.deselect(e); }
-		else {
-			card_deselectAll();
-			newCard.select(e); 
+	if (objDescr.onclick!=null) { newCard.onclick=objDescr.onclick; }
+	else {
+		newCard.onclick = function(e) {
+			if (newCard.isSelected) { newCard.deselect(e); }
+			else {
+				card_deselectAll();
+				newCard.select(e); 
+			}
 		}
 	}
 	
@@ -121,12 +124,22 @@ function card_buildNewCard(objDescr) {
 };
 
 function card_deselectAll() {
-	var cardsInsertSpot = document.getElementById(CARDS_INSERTSPOT_ID); 
+	let cardsInsertSpot = document.getElementById(CARDS_INSERTSPOT_ID); 
 	for (var curCard=cardsInsertSpot.firstChild;curCard!==null;curCard=curCard.nextElementSibling) {		
 		if (typeof(curCard)!='object') { continue; }
 		if (curCard.isSelected) { curCard.deselect(); }
 	}
 } 
+
+function card_getNbCards() {
+	let count=0;
+	var cardsInsertSpot = document.getElementById(CARDS_INSERTSPOT_ID); 
+	for (var curCard=cardsInsertSpot.firstChild;curCard!==null;curCard=curCard.nextElementSibling) {		
+		if (typeof(curCard)!='object') { continue; }
+		count++;
+	}
+	return count;
+}
 
 function card_getActiveCard() { return _activeCard; }
 
@@ -156,7 +169,9 @@ function card_selectPrevious() {
 // Public Interface
 var MxGuiCards={}
 MxGuiCards.deselectAll=card_deselectAll;
-// expect structure with at least fields 'id','name','thumbnailUrl'
+// expect structure with at least fields 'id','name','thumbnailUrl', 
+// optional : 
+//	'onclick' function
 MxGuiCards.addNewCard=card_addNewCard;
 MxGuiCards.clearCards=card_ClearCards;
 MxGuiCards.getActiveCard=card_getActiveCard;
@@ -164,6 +179,7 @@ MxGuiCards.selectNext=card_selectNext;
 MxGuiCards.selectPrevious=card_selectPrevious;
 MxGuiCards.extractName=card_extractName;
 MxGuiCards.extractId=card_extractId;
+MxGuiCards.getNbCards=card_getNbCards;
 
 </script>
 

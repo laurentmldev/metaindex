@@ -141,13 +141,15 @@
              <select id="header.filter.sortString" class="mx-dropdown form-control bg-light border-0 small"             	
              	onchange="MxGuiHeader.refreshSearch();"           		
               	onkeypress="if (event.which==13||event.keycode==13) { MxGuiHeader.refreshSearch();}" 
-              	title="<s:text name="Header.sortby.title"/>" >
+              	title="<s:text name="Header.sortby.title"/>"
+              	style="width:min-content;" >
               	
               </select>
               <select id="header.filter.sortOrderReversed" class="mx-dropdown form-control bg-light border-0 small"  
               	onchange="MxGuiHeader.refreshSearch();"           		
               	onkeypress="if (event.which==13||event.keycode==13) { MxGuiHeader.refreshSearch();}" 
-              	title="<s:text name="Header.sortorder.title"/>">
+              	title="<s:text name="Header.sortorder.title"/>"
+              	style="width:min-content;">
               	<option value="false" Selected><s:text name='Header.sortorder.asc' /></option>
               	<option value="true"><s:text name='Header.sortorder.desc' /></option>
               </select>

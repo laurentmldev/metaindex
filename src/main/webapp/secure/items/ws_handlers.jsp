@@ -132,9 +132,13 @@
 <!-- Other functions using Mx API -->
 <script type="text/javascript" >
 
+
+// items search requested explicitly by user
 function ws_handlers_requestItemsSearch(query,selectedFiltersNames,sortByFieldName,reversedSortOrder) {
 	
-	retrieveItemsSuccess=function(itemsAnswerMsg) {
+	_fromIdx=0;		
+	
+	let retrieveItemsSuccess=function(itemsAnswerMsg) {
 		 MxGuiCards.deselectAll();
 		 MxGuiDetails.setNbMatchingItems(itemsAnswerMsg.totalHits);
 		 MxGuiDetails.setNbTotalItems(itemsAnswerMsg.totalItems);
@@ -145,12 +149,32 @@ function ws_handlers_requestItemsSearch(query,selectedFiltersNames,sortByFieldNa
 			 var item=itemsAnswerMsg.items[idx];
 			 MxGuiCards.addNewCard(item);		 
 		 }	 
-		 
+
+   		 // if amount of cards is fewer than total results size,
+   		 // auto feed results with additional documents when reaching bottom of the page			
+		 if (itemsAnswerMsg.items.length<itemsAnswerMsg.totalItems && _fromIdx==0) {
+			 $(window).scroll(function() {
+				   let isScrollBottom=$(window).scrollTop() + $(window).height() == $(document).height();
+				   let needMoreResults=MxGuiCards.getNbCards()<itemsAnswerMsg.totalItems
+			 	   if(isScrollBottom && needMoreResults) {
+		 				 retrieveItemsError=function(msg) { footer_showAlert(ERROR, msg); }
+		 				 _fromIdx=_fromIdx+itemsAnswerMsg.items.length;
+		 				 MxApi.requestCatalogItems({"fromIdx":_fromIdx,
+		 					 						"size":_size,
+		 					 						"query":query,
+		 					 						"filtersNames":selectedFiltersNames,
+		 					 						"sortByFieldName":sortByFieldName,
+		 					 						"reverseSortOrder":reversedSortOrder,
+		 					 						"successCallback":retrieveItemsSuccess,
+		 					 						"errorCallback":retrieveItemsError});			 		
+			 	   }
+			 	});
+		 }
 		 // if only one item in the result, open it directly
 		 if (itemsAnswerMsg.items.length==1) {
 			 MxGuiCards.selectNext();
 		 }
-	 }
+	}
 	
 	 retrieveItemsError=function(msg) { footer_showAlert(ERROR, msg); }
 	 MxApi.requestCatalogItems({"fromIdx":_fromIdx,
@@ -163,8 +187,9 @@ function ws_handlers_requestItemsSearch(query,selectedFiltersNames,sortByFieldNa
 		 						"errorCallback":retrieveItemsError});
 } 
 
-function ws_handlers_requestCreateFilter(filterName, query) {
 	
+function ws_handlers_requestCreateFilter(filterName, query) {
+		
 	let successCallback=function() { 
 		footer_showAlert(SUCCESS, "Filter '"+filterName+"' created.");
 		filterDescr={ "name":filterName,"query":query};

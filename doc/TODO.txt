@@ -10,7 +10,7 @@ rename ASC/DESC with CROISS/DECR in frenc
 
 editing fields when translation is used results in an error (using translation instead of term id somewhere...?) TBC
 
-
+delete all items, not only max 10000 items (ELK limit)
 press escape to exit the "create new item" modal
 
 
@@ -82,7 +82,7 @@ Backlog:
 - design definition in Latek
 - waiting icon while loading real name of link 
 - when deleting a document, filters selection is cleared
-- add 'show more items' icon
+
 - when accessing Communities without valid session, a nice error msg should appear (for now only crippy JSON decoding error is seen in console)
 - exporter un CSV vide prêt à remplir pour aider l'utilisateur à créer son CSV
 - unable to create a new field right after creating new catalog
@@ -116,6 +116,7 @@ v2.0.2
 #54 file dropzone when creating element
 	createItem form : placeholder text color is too bright, not visible
 #56 hover texte sur l'étoile près de la barre de recherche
+#65 add a "show more documents" button to increase amount of displayed results : implemented as autofeed when reaching bottom of the page
 
 v2.0.1
 
