@@ -3,7 +3,7 @@
 v2.0.2:
 -------
 
-#61 click on image shall go to another tab (target _blank)
+
 #62 when adding new item, message to others is 'xx changed undefined items'
 #64 type longtext (rich?) pour étude du language / analyse de corpus
 #63 progress bar when creating new fields from CSV, and try to make it faster
@@ -12,13 +12,14 @@ v2.0.2:
 #41 Terms and Conditions and use of Cookies presentation and acceptation on first login
 #19 send email to users and admin when useful
 editing fields when translation is used results in an error (using translation instead of term id somewhere...?) TBC
-delete all items, not only max 10000 items (ELK limit)
+
 press escape to exit the "create new item" modal
 statistics create items with CSV is not traced
 statistics : count CSV download
 
 v2.1.0:
 -------
+delete all items, not only max 10000 items (ELK limit)
 #59 auto mx start at server reboot and ensure userdata is resilient to server reboot ???
 #55 welcome tour
 #23 avoid use of kibana_user user once ELK issue 51759 us fixed
@@ -91,6 +92,7 @@ Done:
 -----
 
 v2.0.2
+#61 click on image shall go to another tab (target _blank)
 #60 can import with one CSV more than max allowed data
 #57 plus gros bouton pour entrer dans un catalogue
 #58 increase DB size of field quotaFtpDiscSpaceBytes (int 64)

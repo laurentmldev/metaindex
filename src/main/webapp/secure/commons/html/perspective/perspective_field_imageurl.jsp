@@ -43,7 +43,7 @@
 
 <div style="display:none;" class="mx-perspective-field" id="_commons_perspectives_field_readonly_template_image_url"  >
 	<table style="height:100%;width:100%" >	
-		<tr><td ><img class="_value_ mx-perspective-field-img " src="" onclick="redirectToPage(this.src);" /></td></tr>
+		<tr><td ><img class="_value_ mx-perspective-field-img " src="" onclick="window.open(this.src,'_blank');" /></td></tr>
 		<tr><td style="text-align:center" class="mx-perspective-field-title"><span class="_title_"></span></td></tr>
 	</table>	               
 </div>
