@@ -3,7 +3,6 @@
 v2.0.2:
 -------
 
-#66 improve item details open/close : it is currently not smooth (flickering)
 #62 when adding new item, message to others is 'xx changed undefined items'
 #64 type longtext (rich?) pour étude du language / analyse de corpus
 #63 progress bar when creating new fields from CSV, and try to make it faster
@@ -92,6 +91,7 @@ Done:
 -----
 
 v2.0.2
+#66 improve item details open/close : it is currently not smooth (flickering)
 #61 click on image shall go to another tab (target _blank)
 #60 can import with one CSV more than max allowed data
 #57 plus gros bouton pour entrer dans un catalogue

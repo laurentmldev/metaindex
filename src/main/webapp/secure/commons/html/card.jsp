@@ -94,7 +94,8 @@ function card_buildNewCard(objDescr) {
 		container.classList.add("mx-card-lighter-bg");		
 		_selectedCardsMapById[MxGuiCards.extractId(newCard.descr)]=newCard;
 		_activeCard=newCard;				
-		MxGuiDetails.populate(newCard);									
+		MxGuiDetails.populate(newCard);		
+		MxGuiPerspective.activateLastChosenTab();
 		
 	}
 	newCard.deselect = function(e) {

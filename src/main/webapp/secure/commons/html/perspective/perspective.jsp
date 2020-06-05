@@ -28,7 +28,7 @@
 
 var _deletePerspectiveFuncsById={};
 var _curPerspectiveId=0;
- 
+var _curPerspectiveTabs=[];
 //--------------- PERSPECTIVE --------------
 
  // function used by commons/details, and items/details
@@ -40,8 +40,7 @@ var _curPerspectiveId=0;
 	 	let curPerspectiveId="perspective_"+perspectiveData.id;
 		let perspectiveNode = document.getElementById("_details_perspective_template_").cloneNode(true);
 	 	perspectiveNode.id=curPerspectiveId;
-	 	perspectiveNode.style.display='block';
-	 	
+	 	perspectiveNode.style.display='block';	 	
 	 	
 	 	// title
 	 	let perspectiveTitleNode=perspectiveNode.querySelector("._perspective_title_");
@@ -94,9 +93,9 @@ var _curPerspectiveId=0;
 	 	//  body id
 	 	let perspectiveBodyIdNode=perspectiveNode.querySelector("._perspective_bodyid_");
 	 	perspectiveBodyIdNode.id=curPerspectiveId;
-	 	// show contents if we click anywhere on the container, not only on the title	 	
-	 	perspectiveNode.open=function() {
-	 		
+	 	
+	 	// show contents (if we click anywhere on the container, not only on the title)	 	
+	 	perspectiveNode.open=function() {	 		
 	 		if (perspectiveBodyIdNode.className.indexOf("show")<0) { 
 	 			perspectiveBodyIdNode.classList.add("show");
 	 			_curPerspectiveId=perspectiveData.id;
@@ -118,9 +117,7 @@ var _curPerspectiveId=0;
 		 			curBodyIdNode.classList.remove("show");
 	 			}	 											
 	 		}
-	 		
-	 		 
-	 		
+
 	 	}
 	 	perspectiveNode.onclick=function(event) {
 	 		// flag set in tab when user changed it: then event shall be ignored. Couldn't find a better way.
@@ -137,16 +134,18 @@ var _curPerspectiveId=0;
 	 	let tabNodeToActivate=null;
 	 	
 	 	for (var tabidx=0;tabidx<perspectiveData.tabs.length;tabidx++) {
-	 		//console.log("creating index "+tabidx);
+	 		//console.log("creating index "+tabidx+" getCurrentTabIndex="+MxGuiPerspective.getCurrentTabIndex());
 	 		let curTabDef=perspectiveData.tabs[tabidx];
 	 		// some refresh to be improved, don't know why
 	 		// pb occures when deleting a tab, closing catalog and opening it again
 	 		if (curTabDef==null) { continue; }	 		
 	 		let tabNode = _commons_perspective_build_tab(catalogDesc,perspectiveData,tabidx,tabsContainerNode,editMode,itemId,fieldsValueMap,editSuccessCallback);
+	 		 
 	 		if (MxGuiPerspective.getCurrentTabIndex()==tabidx) {
 	 			tabNodeToActivate=tabNode;
 	 			perspectiveNode.activeTabNode=tabNode;	 			
 	 		}
+	 		_curPerspectiveTabs[tabidx]=tabNode;
 	 	}	 	
 	 	
 	 	// add new tab
@@ -156,13 +155,9 @@ var _curPerspectiveId=0;
 	 	}
 	 	perspectiveBodyNode.appendChild(tabsContainerNode);
 	 	
-	 	// append to perspectives node
+	 	// new perspectives node
 		insertSpot.appendChild(perspectiveNode);
 	 	
-		if (tabNodeToActivate!=null) { 
-			tabNodeToActivate.click(); 
-		}
-		
 	 	return perspectiveNode;
 	 	
  }
@@ -189,6 +184,13 @@ MxGuiPerspective.deletePerspective=function(perspectiveNodeId) {
 	_deletePerspectiveFuncsById[perspectiveNodeId]();
 }
 MxGuiPerspective.getCurrentPerspectiveId=function() { return _curPerspectiveId; }
+MxGuiPerspective.activateLastChosenTab=function() {
+	// activate tab corresponding to latest user selection
+	let curTabIndex=MxGuiPerspective.getCurrentTabIndex();
+	let tabAtIndex=_curPerspectiveTabs[curTabIndex];
+	if (tabAtIndex!=null) { tabAtIndex.activate(); }
+	
+}
 
 function _get_new_perspective_json(perspectiveName,catalogId) {
 		return {

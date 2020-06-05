@@ -34,11 +34,15 @@ var _curTabIndex=0;
 	 tabNavNode.setAttribute("aria-controls",tabContentsId);
 	 tabNavNode.onclick=function(event) { 
 		 event.preventDefault();
+		 // remember selected tab so that we can keep it if we change item
 		 _curTabIndex=tabIdx;
+		 
 		 // could not find a simple way to prevent propagation without breaking the tabs switch
 		 // so adding information that onclick event with this flag shall be ignored
 		 // @see perspective.jsp perspectiveNode.onclick
 		 event.fromTabChange=true; 
+		 
+		 tabNavNode.activate();
 	 }
 	
 	 
@@ -69,8 +73,7 @@ var _curTabIndex=0;
 		 	 								});	 
 		 }
 	 }
-	 
-	 
+	 	 
 	 // nav text 
 	 tabText=tabNavNode.querySelector("._nav_text_");
 	 
