@@ -73,7 +73,7 @@
  
 //called from commons/details/details_populate() function
  function details_buildContents(itemCard) {
-	 
+		
 	 _curItemCard=itemCard;
 	 var newItemDetails = document.getElementById("MxGuiDetails._templates_.item_details").cloneNode(true);
 	 newItemDetails.id="current_item_details";
@@ -156,10 +156,12 @@
 					perspectiveDefinition,
 					itemCard.descr.id,fieldsValuesMap,editSuccessCallback);
 		} else {
+			
 			MxGuiPerspective.buildReadOnlyPerspective(fieldsInsertSpot,
 				MxGuiDetails.getCurCatalogDescription(),
 				perspectiveDefinition,
 				itemCard.descr.id,fieldsValuesMap);
+			
 		}
 	}
 	perspectiveSelector.onchange();
@@ -209,7 +211,7 @@
 		
  			<button type="button" class="btn btn-default btn-sm editable-cancel alert alert-info"
  			style="margin:0.2em;"
- 			onclick="_curItemCard=null;MxGuiCards.deselectAll();" >
+ 			onclick="_curItemCard.click();_curItemCard=null;" >
  				<i class="fa fa-times" aria-hidden="true"></i>
  				 
  			</button>

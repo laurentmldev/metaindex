@@ -42,7 +42,7 @@
 		
 	</tr></table>          
 </div>
- <a name="anchor-details" class="anchor_top"></a>
+ 
  
  
  <div id="MxGui.details.insertspot" class="navbar-nav  mx-active-item-details mx-current-item-area-closed container  " > 	 
@@ -76,8 +76,7 @@
 	clearNodeChildren(_detailsInsertSpot);		
  }
 
- function details_populate(card) {
-	 
+ function details_populate(card) {	 
 	// function declared in specific details page
 	var newDetailsNode = details_buildContents(card);
 	details_clear();	

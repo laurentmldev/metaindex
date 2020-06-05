@@ -61,8 +61,7 @@
         
         <!-- Cards Container -->
         
-      <div id="details-wrapper">
-       
+      <div id="details-wrapper">       
         <div id="cards-content-wrapper" class="container-fluid" >
           <s:include value="../commons/html/details-right.jsp"></s:include>
           <div class="row"><div class="col-lg-12" >

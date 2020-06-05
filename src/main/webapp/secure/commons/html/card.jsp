@@ -50,6 +50,7 @@ function card_buildNewCard(objDescr) {
 	newCard.descr=objDescr;
 	newCard.id=guiId;
 	
+	
 	// name
 	let name = newCard.querySelector("._name_");
 	name.innerHTML=MxGuiCards.extractName(objDescr);
@@ -57,6 +58,7 @@ function card_buildNewCard(objDescr) {
 	// anchor
 	let anchor = newCard.querySelector("._anchor_");
 	anchor.name="anchor-"+MxGuiCards.extractId(objDescr);
+	newCard.anchorName=anchor.name;
 	
 	// container
 	let container = newCard.querySelector("._container_");
@@ -86,38 +88,46 @@ function card_buildNewCard(objDescr) {
 	
 	newCard.isSelected=false;	
 	newCard.select = function(e) {
-		newCard.isSelected=true;
-		scrollTo("anchor-details");
+		newCard.isSelected=true;		
 		container.classList.add("mx-card-selected");
 		container.classList.remove("mx-card-darker-bg");
-		container.classList.add("mx-card-lighter-bg");
+		container.classList.add("mx-card-lighter-bg");		
 		_selectedCardsMapById[MxGuiCards.extractId(newCard.descr)]=newCard;
-		_activeCard=newCard;		
-		MxGuiDetails.populate(newCard);
+		_activeCard=newCard;				
+		MxGuiDetails.populate(newCard);									
+		
 	}
 	newCard.deselect = function(e) {
 		newCard.isSelected=false;
 		container.classList.remove("mx-card-selected");
-		container.classList.add("mx-card-darker-bg");		
+		container.classList.add("mx-card-darker-bg");	
 		MxGuiDetails.clear();
 		_selectedCardsMapById[MxGuiCards.extractId(newCard.descr)]=null;
 		_activeCard=null;
+		
 		// mark cark as lighter
-		scrollTo(anchor.name);
 		container.classList.add("mx-card-lighter-bg");
 		 
 	}
-	// onclick
-	if (objDescr.onclick!=null) { newCard.onclick=objDescr.onclick; }
-	else {
-		newCard.onclick = function(e) {
-			if (newCard.isSelected) { newCard.deselect(e); }
-			else {
-				card_deselectAll();
-				newCard.select(e); 
-			}
+	
+	newCard.onclick = function(e) {
+
+		if (e!=null) {
+			e.stopPropagation();
+			e.preventDefault();
+		}
+		if (newCard.isSelected) { 
+			newCard.deselect(e);
+			scrollTo(anchor.name);			
+		}
+		else {
+			MxGuiDetails.clear();
+			card_deselectAll();
+			newCard.select(e); 	
+			scrollTo("page-top");
 		}
 	}
+
 	
 	newCard.style.display='block';
 	return newCard;	
@@ -170,8 +180,6 @@ function card_selectPrevious() {
 var MxGuiCards={}
 MxGuiCards.deselectAll=card_deselectAll;
 // expect structure with at least fields 'id','name','thumbnailUrl', 
-// optional : 
-//	'onclick' function
 MxGuiCards.addNewCard=card_addNewCard;
 MxGuiCards.clearCards=card_ClearCards;
 MxGuiCards.getActiveCard=card_getActiveCard;

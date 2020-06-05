@@ -33,6 +33,7 @@ var _curTabIndex=0;
 	 tabNavNode.setAttribute("href","#"+tabContentsId);
 	 tabNavNode.setAttribute("aria-controls",tabContentsId);
 	 tabNavNode.onclick=function(event) { 
+		 event.preventDefault();
 		 _curTabIndex=tabIdx;
 		 // could not find a simple way to prevent propagation without breaking the tabs switch
 		 // so adding information that onclick event with this flag shall be ignored
