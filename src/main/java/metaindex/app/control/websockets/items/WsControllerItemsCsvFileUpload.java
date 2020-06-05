@@ -39,6 +39,7 @@ import metaindex.data.userprofile.IUserProfileData;
 import toolbox.database.IDbItem;
 import toolbox.database.elasticsearch.ESBulkProcess;
 import toolbox.exceptions.DataProcessException;
+import toolbox.utils.AProcessingTask;
 import toolbox.utils.BasicPair;
 import toolbox.utils.IPair;
 import toolbox.utils.IProcessingTask;
@@ -90,6 +91,26 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
 				
 				return;
     		}
+    		
+    		// display CSV prepation only if some terms have to be created
+			// otherwise it's very fast, and no use to have a progress bar
+    		Integer curTermToCreateIndex=0;
+    		Integer totalNbTermsToCreate=0;    		
+    		Integer csvCheckProcId=AProcessingTask.getNewProcessingTaskId();
+    		Boolean someTermsToCreate=false;
+    		
+    		// detect if some new terms shall be created
+    		for (String csvColName : requestMsg.getCsvColsList()) {
+    			String termName=requestMsg.getChosenFieldsMapping().get(csvColName);
+    			if (termName==null) { continue; }
+    			if (termName.startsWith(WsMsgCsvFileUpload_request.CSV_MAPPING_NEWTERM_PREFIX)) {
+    				someTermsToCreate=true;
+    				totalNbTermsToCreate++;
+    				user.sendGuiProgressMessage(csvCheckProcId, 
+    	    				user.getText("Items.uploadItems.creatingNewTerms"), new Float(0), true);
+    			}    			
+    		}
+    		
     		// go through required mapping, and check that terms exist or create them
     		for (String csvColName : requestMsg.getCsvColsList()) {
     			
@@ -104,6 +125,9 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
     			}    			
     			
     			if (termName.startsWith(WsMsgCsvFileUpload_request.CSV_MAPPING_NEWTERM_PREFIX)) {
+    				
+    				curTermToCreateIndex++;
+    				
     				String newTermName = csvColName.toLowerCase();
     				WsMsgCreateTerm_request newTermRequest = new WsMsgCreateTerm_request();
     				newTermRequest.setCatalogId(user.getCurrentCatalog().getId());
@@ -117,6 +141,10 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
 		    			user.sendGuiErrorMessage(msgStr);
 						return;
 					}
+    				
+    				user.sendGuiProgressMessage(csvCheckProcId, 
+            				user.getText("Items.uploadItems.creatingNewTerms"), new Float(curTermToCreateIndex*100/totalNbTermsToCreate), true);
+    				
     				user.sendGuiInfoMessage("Term '"+newTermName+"' created in catalog "+user.getCurrentCatalog().getName());
     				termName=newTermName;
     				requestMsg.getChosenFieldsMapping().put(csvColName, termName);
@@ -139,6 +167,13 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
     			csvParsingType.add(new BasicPair<String,PARSING_FIELD_TYPE>(termName,parsingType));
     		}
     		
+    		// display CSV prepation only if some terms have to be created
+			// otherwise it's very fast, and no use to have a progress bar
+			if (someTermsToCreate) {			
+				user.sendGuiProgressMessage(csvCheckProcId, 
+    				user.getText("Items.uploadItems.creatingNewTerms"), new Float(100.0), false);
+			}			
+    		
     		// if some fields in CSV file could not be found in catalog, reject the request
     		if (fieldsNotFound.size()>0) {
     			WsMsgCsvFileUpload_answer msg = new WsMsgCsvFileUpload_answer(
@@ -156,7 +191,8 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
 	    				msg);
 				return;
     		}
-    		    		
+    		
+    	
     		// set-up the parser and start the processing task
     		user.addProcessingTask(procTask);
     		csvParser.setCsvColsTypes(csvParsingType);

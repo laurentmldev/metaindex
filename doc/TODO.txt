@@ -4,10 +4,6 @@ v2.0.2:
 -------
 
 #62 when adding new item, message to others is 'xx changed undefined items'
-#64 type longtext (rich?) pour étude du language / analyse de corpus
-#63 progress bar when creating new fields from CSV, and try to make it faster
-#35 Fields: multi shall be visible only if enum is not empty
-#39 when delete catalog failed because of Kibana, page is not refreshed while it should be
 #41 Terms and Conditions and use of Cookies presentation and acceptation on first login
 #19 send email to users and admin when useful
 editing fields when translation is used results in an error (using translation instead of term id somewhere...?) TBC
@@ -18,6 +14,10 @@ statistics : count CSV download
 
 v2.1.0:
 -------
+when updating CSV with terms to create, the terms list is not updated in the GUI
+#39 when delete catalog failed because of Kibana, page is not refreshed while it should be
+#35 Fields: multi shall be visible only if enum is not empty
+#64 type longtext (rich?) pour étude du language / analyse de corpus
 delete all items, not only max 10000 items (ELK limit)
 #59 auto mx start at server reboot and ensure userdata is resilient to server reboot ???
 #55 welcome tour
@@ -91,6 +91,7 @@ Done:
 -----
 
 v2.0.2
+#63 progress bar when creating new fields from CSV, and try to make it faster
 #66 improve item details open/close : it is currently not smooth (flickering)
 #61 click on image shall go to another tab (target _blank)
 #60 can import with one CSV more than max allowed data

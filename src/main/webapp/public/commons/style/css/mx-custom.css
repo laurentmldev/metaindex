@@ -26,6 +26,7 @@ input[type="file"] {
 .mx-progress-bar-contents {
 	line-height:2rem;
 	font-size:1rem;
+	color:lightgrey;
 }
 .mx-editable {
 	/* necessary to keep bottom border visible */
