@@ -40,6 +40,11 @@
 				
 				if (event.key=='ArrowRight') { MxGuiCards.selectNext(); }
 				else if (event.key=='ArrowLeft') { MxGuiCards.selectPrevious(); }
+				//escape : closing any open modal
+				if (event.which==27||event.keycode==27) {
+	  				let modals = document.getElementById('leftbar.operations.insertspot').querySelectorAll('.modal');	  				
+	  				for (var idx=0;idx<modals.length;idx++) { modals[idx].style.display='none';}
+	  			}
 				"
 	>
 

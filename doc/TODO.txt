@@ -8,9 +8,11 @@ v2.0.2:
 #19 send email to users and admin when useful
 editing fields when translation is used results in an error (using translation instead of term id somewhere...?) TBC
 
-press escape to exit the "create new item" modal
-statistics create items with CSV is not traced
+
+statistics create items with CSV upload is not traced
 statistics : count CSV download
+statistics : FTP upload
+statistics : GUI file upload
 
 v2.1.0:
 -------
@@ -91,6 +93,7 @@ Done:
 -----
 
 v2.0.2
+#67 press escape to exit the "create new item" modal
 #63 progress bar when creating new fields from CSV, and try to make it faster
 #66 improve item details open/close : it is currently not smooth (flickering)
 #61 click on image shall go to another tab (target _blank)

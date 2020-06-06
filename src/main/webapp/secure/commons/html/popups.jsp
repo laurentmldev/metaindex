@@ -582,7 +582,8 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFile
  </script>
 
   <div class="modal _modal_root_" id="_commons_popups_multi_input_template_" 
-  	onkeypress="event.stopPropagation();
+  	onkeypress="event.stopPropagation();  	
+ 		// when pressing enter
   		if (event.which==13||event.keycode==13) { 
   			let formNodes=this.querySelectorAll('._form_input_');
  			 for (var i=0;i<formNodes.length;i++) {
@@ -591,7 +592,11 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFile
  			 }
   			this.querySelector('._button_ok_').click(); 
   		}"
- 	onkeydown="event.stopPropagation();" >
+ 	onkeydown="event.stopPropagation();
+  			// when pressing escape, close modal
+  			if (event.which==27||event.keycode==27) {
+  				this.style.display='none';
+  			}" >
     <div class="mx-modal-dialog-big modal-dialog">
       <div class="modal-content" style="width:70vw;">
       
