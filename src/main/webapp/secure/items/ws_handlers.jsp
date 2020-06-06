@@ -61,7 +61,10 @@
 	if (msg.catalogName!="<s:property value='currentCatalog.name'/>") { return; }
  	if (msg.modifType==MxApi.CATALOG_MODIF_TYPE.DOCS_LIST) {
 		 if (msg.userNickname!="<s:property value='currentUserProfile.nickname'/>") {
-			 footer_showAlert(INFO, msg.userNickname+" changed "+msg.nbImpactedDocss+" item(s)");
+			 footer_showAlert(INFO, 
+					 msg.userNickname+" changed catalog with "+msg.nbImpactedDocs+" document(s). <a href='Items'>Click to Refresh</a>",
+					 null,
+					 5000);
 		 } else {
 			 // refresh the items list only, not the full GUI
 			 // otherwise when creating a new item the popup 
@@ -80,7 +83,7 @@
 			 				null,
 			 				5000);
 			 } else {
-				 footer_showAlert(INFO, msg.userNickname+" changed contents of "+msg.nbImpactedDocs+" documents");
+				 footer_showAlert(INFO, msg.userNickname+" changed contents of "+msg.nbImpactedDocs+" document(s)");
 			 }
 		 } else { /*ws_handlers_refreshItemsGui();*/ }
 	 }

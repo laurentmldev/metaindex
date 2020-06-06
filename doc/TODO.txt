@@ -3,7 +3,6 @@
 v2.0.2:
 -------
 
-#62 when adding new item, message to others is 'xx changed undefined items'
 #41 Terms and Conditions and use of Cookies presentation and acceptation on first login
 #19 send email to users and admin when useful
 editing fields when translation is used results in an error (using translation instead of term id somewhere...?) TBC
@@ -93,6 +92,7 @@ Done:
 -----
 
 v2.0.2
+#62 when adding new item, message to others is 'xx changed undefined items'
 #67 press escape to exit the "create new item" modal
 #63 progress bar when creating new fields from CSV, and try to make it faster
 #66 improve item details open/close : it is currently not smooth (flickering)
