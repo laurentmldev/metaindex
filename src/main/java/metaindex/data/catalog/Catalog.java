@@ -45,7 +45,7 @@ public class Catalog implements ICatalog {
 
 	public static final Integer AUTOREFRESH_PERIOD_SEC=5;
 	public static final Long DEFAULT_QUOTA_NBDOCS = 200L;
-	public static final Integer DEFAULT_QUOTA_DISCSPACEBYTES = 0;
+	public static final Long DEFAULT_QUOTA_DISCSPACEBYTES = 0L;
 	
 	private Log log = LogFactory.getLog(Catalog.class);
 	
@@ -78,7 +78,7 @@ public class Catalog implements ICatalog {
 	
 	// Quota data
 	private Long _quotaNbDocs=DEFAULT_QUOTA_NBDOCS;
-	private Integer _quotaFtpDiskSpaceBytes=DEFAULT_QUOTA_DISCSPACEBYTES;
+	private Long _quotaFtpDiskSpaceBytes=DEFAULT_QUOTA_DISCSPACEBYTES;
 	
 	// from ElasticSearch DB
 	private Long _nbDocuments=0L;
@@ -636,11 +636,11 @@ public class Catalog implements ICatalog {
 		_quotaNbDocs=maxNbDocs;
 	}
 	@Override
-	public Integer getQuotaFtpDiscSpaceBytes() {
+	public Long getQuotaFtpDiscSpaceBytes() {
 		return _quotaFtpDiskSpaceBytes;
 	}
 	@Override
-	public void setQuotaFtpDiscSpaceBytes(Integer maxFtpSpaceBytes) {
+	public void setQuotaFtpDiscSpaceBytes(Long maxFtpSpaceBytes) {
 		_quotaFtpDiskSpaceBytes=maxFtpSpaceBytes;
 	}
 	

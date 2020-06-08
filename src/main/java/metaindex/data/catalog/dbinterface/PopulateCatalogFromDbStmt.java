@@ -88,7 +88,7 @@ class PopulateCatalogFromDbStmt extends SQLPopulateStmt<ICatalog>   {
 		d.setItemsUrlPrefix(rs.getString(7));
 		d.setPerspectiveMatchField(rs.getString(8));
 		d.setQuotaNbDocs(rs.getLong(9));
-		d.setQuotaFtpDiscSpaceBytes(rs.getInt(10));
+		d.setQuotaFtpDiscSpaceBytes(rs.getLong(10));
 		d.setFtpPort(rs.getInt(11));
 		d.setLastUpdate(rs.getTimestamp(12));
 		return d;

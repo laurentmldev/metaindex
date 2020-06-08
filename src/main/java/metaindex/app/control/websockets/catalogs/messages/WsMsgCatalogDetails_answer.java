@@ -37,7 +37,7 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 	private String _itemsUrlPrefix;
 	private String _pespectiveMatchField;
 	private Long _quotaNbDocs=Catalog.DEFAULT_QUOTA_NBDOCS;
-	private Integer _quotaDiscSpaceBytes=Catalog.DEFAULT_QUOTA_DISCSPACEBYTES;
+	private Long _quotaDiscSpaceBytes=Catalog.DEFAULT_QUOTA_DISCSPACEBYTES;
 	private Long _nbDocuments;
 	private Long _discSpaceUseBytes=Long.MAX_VALUE;
 	private Boolean _dbIndexFound;
@@ -221,10 +221,10 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 		this._quotaNbDocs=maxNbDocs;
 		
 	}
-	public Integer getQuotaFtpDiscSpaceBytes() {
+	public Long getQuotaFtpDiscSpaceBytes() {
 		return this._quotaDiscSpaceBytes;
 	}
-	public void setQuotaFtpDiscSpaceBytes(Integer maxFtpSpaceBytes) {
+	public void setQuotaFtpDiscSpaceBytes(Long maxFtpSpaceBytes) {
 		this._quotaDiscSpaceBytes=maxFtpSpaceBytes;		
 	}
 	public Long getDiscSpaceUseBytes() {

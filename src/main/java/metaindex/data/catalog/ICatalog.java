@@ -76,8 +76,8 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 	// Quotas Management
 	public Long getQuotaNbDocs();
 	public void setQuotaNbDocs(Long maxNbDocs);
-	public Integer getQuotaFtpDiscSpaceBytes();
-	public void setQuotaFtpDiscSpaceBytes(Integer maxFtpSpaceBytes);		
+	public Long getQuotaFtpDiscSpaceBytes();
+	public void setQuotaFtpDiscSpaceBytes(Long maxFtpSpaceBytes);		
 	public Boolean checkQuotasNbDocsOk();
 	public Boolean checkQuotasDisckSpaceOk();
 	public Long getDiscSpaceUseBytes();

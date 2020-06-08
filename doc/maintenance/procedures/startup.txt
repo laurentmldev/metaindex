@@ -2,9 +2,19 @@
 Startup Procedure
 -----------------
 From Server console
+
+# if volumes not created yet :
+	$ docker volume create --name=mxmysql-data
+	$ docker volume create --name=mxelsrc-data
+	$ docker volume create --name=mxelsrc-backups
+	$ docker volume create --name=mxwebapp-userdata
+
+# start apps
 - docker-compose up -d 
 - docker logs -f mxkibana
 - wait for Kibana to be ready
+{"type":"log","@timestamp":"2020-06-07T14:22:30Z","tags":["listening","info"],"pid":6,"message":"Server running at http://0:5601"}
+{"type":"log","@timestamp":"2020-06-07T14:22:31Z","tags":["info","http","server","Kibana"],"pid":6,"message":"http server running at http://0:5601"}
 
 
 system checks

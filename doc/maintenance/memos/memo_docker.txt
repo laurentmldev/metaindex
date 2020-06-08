@@ -67,5 +67,12 @@ $ ls /var/lib/docker/volumes/<volume-name>/_data/
 
 $ docker volume ls
 
+### create external volume
 
+docker volume create --name=my_data
+
+# and then from docker-compose :
+volumes: 
+  my_data:
+    external: true
 

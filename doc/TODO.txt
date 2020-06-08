@@ -3,8 +3,11 @@
 v2.0.2:
 -------
 
+
+stoping and starting over seems to delete elk data!
 #41 Terms and Conditions and use of Cookies presentation and acceptation on first login
 #19 send email to users and admin when useful
+
 editing fields when translation is used results in an error (using translation instead of term id somewhere...?) TBC
 
 
