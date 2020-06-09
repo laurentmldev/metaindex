@@ -109,7 +109,9 @@
 	                  <div class="input-group">
 	                    <input id="header.filter.name" type="text" class="form-control bg-light border-0 small" 
 	                    		style="min-width:200px"
-	                    		onkeypress="if (event.which==13||event.keycode==13) {
+	                    		onkeydown="event.stopPropagation();"
+	                    		onkeypress="event.stopPropagation();
+	                    					if (event.which==13||event.keycode==13) {
 				                    			MxGuiHeader.onFilterSave(document.getElementById('header.filter.name').value,
          									  								MxGuiHeader.getCurrentSearchQuery());
 					                    		document.getElementById('header.filter.text').value='';

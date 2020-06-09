@@ -62,12 +62,18 @@
     -->
     <Connector connectionTimeout="120000" port="8080" protocol="HTTP/1.1" redirectPort="8443" URIEncoding="UTF-8" />
     
-    <Connector SSLEnabled="true" keystoreFile="/Users/laurentml/dev/webserver/conf/metaindex.keystore.RSA.pkcs12.dev" 
-                                 keystorePass="metaindexpwd" port="8443" scheme="https"      
-                                 secure="true" sslProtocol="TLS"
-                                 connectionTimeout="120000"
-                                 URIEncoding="UTF-8"/>
-                                 
+    <!-- 
+    	mx.ssl.keystore.file and mx.ssl.keystore.password shall be set in 
+    	catalina command line arguments as -Dmx.ssl.keystore.xxx=XXX
+    	Hard coded for now, because this variables replacement needs to activate this ins catalina.properties:
+    		org.apache.tomcat.util.digester.PROPERTY_SOURCE=org.apache.tomcat.util.digester.Digester$EnvironmentPropertySource
+    	which fails because of classNotFound exception
+     -->
+    <Connector SSLEnabled="true" URIEncoding="UTF-8" connectionTimeout="120000" 
+    								keystoreFile="/etc/metaindex/keystore/metaindex.p12" 
+    								keystorePass="metaindexpwd" port="8443" 
+    								scheme="https" secure="true" sslProtocol="TLS"/>
+    
     <!-- A "Connector" using the shared thread pool-->
     <!--
     <Connector executor="tomcatThreadPool"
