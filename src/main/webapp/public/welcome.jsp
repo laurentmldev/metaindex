@@ -233,7 +233,19 @@
             <span><s:text name="globals.copyright"/> - MetaindeX v<s:property value="mxVersion"/></span>
           </div>
         </div>
+        <div  id="cookies-alert-div"
+        	  class="container fixed-bottom mx-cookies-alert" 
+        	  style="" >
+        	  <s:text name="global.cookiesAlert" />
+        	  <a href="#"  
+        	  	class="btn btn-sm btn-info mx_welcome_btn scale nav-item no-arrow" 
+        	  	style="margin-left:5vw;background:green;border:none" 
+        	  	onclick="this.parentNode.style.display='none';">
+        	  	OK</a>
+        </div>
   </footer>
+   
+      
 	 
   <!-- Bootstrap core JavaScript-->
   <script src="${mxurl}public/commons/deps/jquery/jquery.min.js"></script>

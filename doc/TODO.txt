@@ -3,7 +3,6 @@
 v2.0.2:
 -------
 
-
 #41 Terms and Conditions and use of Cookies presentation and acceptation on first login
 #19 send email to users and admin when useful
 
