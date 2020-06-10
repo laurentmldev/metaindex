@@ -1,18 +1,15 @@
 
 
-v2.0.2:
+v2.0.3:
 -------
-
-
 
 editing fields when translation is used results in an error (using translation instead of term id somewhere...?) TBC
 
 
-
-
 v2.1.0:
 -------
-graph
+
+graphs
 #41 Terms and Conditions and use of Cookies presentation and acceptation on first login
 #19 send email to users and admin when useful
 when updating CSV with terms to create, the terms list is not updated in the GUI
@@ -20,17 +17,20 @@ when updating CSV with terms to create, the terms list is not updated in the GUI
 #35 Fields: multi shall be visible only if enum is not empty
 #64 type longtext (rich?) pour étude du language / analyse de corpus
 delete all items, not only max 10000 items (ELK limit)
-#59 auto mx start at server reboot and ensure userdata is resilient to server reboot ???
+#59 auto mx start at server reboot
 #55 welcome tour
 #23 avoid use of kibana_user user once ELK issue 51759 us fixed
 #10 websocket connection refused after session timeout and re-login
-
-#53 real certificates instead of self-signed
 #28 user profile picture
 #40 when deleting a catalog, delete also associated userdata or archive it?
 #43 search on accentuated characters imported from UTF-16 does not seem to work
 #45 when logging out from Mx, log-out Kibana session too
 
+
+
+
+Backlog:
+--------
 
 welcome page :
 	- sciences sociales et humaines
@@ -46,11 +46,7 @@ FTP server with
 NFS access : swith to JLAN remote files
 	https://stackoverflow.com/questions/26631989/how-to-setup-alfresco-jlan-file-server-as-a-standalone-java-package
 	 
-
-
-Backlog:
---------
-- construite un graph schéma conceptuel
+- construire un graph schéma conceptuel
 	Un schéma conceptuel (ou carte conceptuelle) est une représentation structurée d'un ensemble de concepts reliés sémantiquement. Les concepts sont liés par des lignes fléchées auxquelles sont accolés un mot ou deux décrivant leur relation : « mène à », « prévient que », « favorise », etc.
 - intégration ouitl d'analyse lexicographique TXM 
 - left-items submenus not visible when window width too small
@@ -92,6 +88,12 @@ Done:
 -----
 
 v2.0.2
+ensure userdata is resilient to server reboot ???
+statistics create items with CSV upload is not traced
+statistics : count CSV download
+statistics : FTP upload
+statistics : GUI file upload
+#53 real certificates instead of self-signed
 # create new filters : left/right arrows are not blocked (going to next item)
 #stopping and starting over seems to delete elk data! 
 	pb in ELSrc docker config
