@@ -20,8 +20,10 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
+import metaindex.app.Globals;
 import metaindex.app.control.websockets.catalogs.messages.*;
 import metaindex.app.control.websockets.commons.AMxWSController;
+import metaindex.app.periodic.statistics.catalog.WebFileUploadMxStat;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.exceptions.DataProcessException;
@@ -109,6 +111,7 @@ public class WsControllerCatalogUserDataFileUpload extends AMxWSController {
     				"/queue/upload_userdata_files_response", 
     				answer);
         				
+    		Globals.GetStatsMgr().handleStatItem(new WebFileUploadMxStat(user,c));
 	    } catch (DataProcessException e) 
 		{
 			log.error("Unable to process upload_filter_file_request from '"+headerAccessor.getUser().getName()+"' : "+e);

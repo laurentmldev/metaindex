@@ -3,19 +3,18 @@
 v2.0.2:
 -------
 
-#41 Terms and Conditions and use of Cookies presentation and acceptation on first login
-#19 send email to users and admin when useful
+
 
 editing fields when translation is used results in an error (using translation instead of term id somewhere...?) TBC
 
 
-statistics create items with CSV upload is not traced
-statistics : count CSV download
-statistics : FTP upload
-statistics : GUI file upload
+
 
 v2.1.0:
 -------
+graph
+#41 Terms and Conditions and use of Cookies presentation and acceptation on first login
+#19 send email to users and admin when useful
 when updating CSV with terms to create, the terms list is not updated in the GUI
 #39 when delete catalog failed because of Kibana, page is not refreshed while it should be
 #35 Fields: multi shall be visible only if enum is not empty

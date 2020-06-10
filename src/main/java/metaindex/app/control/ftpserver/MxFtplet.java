@@ -12,43 +12,25 @@ See full version of LICENSE in <https://fsf.org/>
 
 import java.io.File;
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.ftpserver.DataConnectionConfiguration;
-import org.apache.ftpserver.DataConnectionConfigurationFactory;
-import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.ftplet.DefaultFtplet;
 import org.apache.ftpserver.ftplet.FileSystemView;
-import org.apache.ftpserver.ftplet.FtpletContext;
 import org.apache.ftpserver.ftplet.FtpletResult;
-import org.apache.ftpserver.usermanager.impl.BaseUser;
-import org.apache.ftpserver.usermanager.impl.WritePermission;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import metaindex.app.Globals;
+import metaindex.app.periodic.statistics.catalog.FtpUploadMxStat;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.IUserProfileData.USER_CATALOG_ACCESSRIGHTS;
 
-import org.apache.ftpserver.FtpServerFactory;
-import org.apache.ftpserver.ftplet.Authority;
 import org.apache.ftpserver.ftplet.DefaultFtpReply;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.ftplet.FtpFile;
 import org.apache.ftpserver.ftplet.FtpReply;
 import org.apache.ftpserver.ftplet.FtpRequest;
 import org.apache.ftpserver.ftplet.FtpSession;
-import org.apache.ftpserver.ftplet.UserManager;
-import org.apache.ftpserver.listener.Listener;
-import org.apache.ftpserver.listener.ListenerFactory;
-import org.apache.ftpserver.ssl.SslConfigurationFactory;
-import org.apache.ftpserver.usermanager.PasswordEncryptor;
-import org.apache.ftpserver.usermanager.PropertiesUserManagerFactory;
 
 
 public class MxFtplet extends DefaultFtplet {
@@ -92,6 +74,7 @@ public class MxFtplet extends DefaultFtplet {
 				return FtpletResult.DISCONNECT;
 			}
 		}
+		
 		
 		return super.afterCommand(session,request,reply);
 	}
@@ -199,6 +182,12 @@ public class MxFtplet extends DefaultFtplet {
 																	+" to increase quota allocated to catalog."));
 							return FtpletResult.SKIP;
 						}
+					}
+					
+					if (request.getCommand().equals("APPE")
+							|| request.getCommand().equals("STOR")
+							|| request.getCommand().equals("STOU")) {
+						Globals.GetStatsMgr().handleStatItem(new FtpUploadMxStat(user,_catalog));
 					}
 					
 					return super.beforeCommand(session,request);

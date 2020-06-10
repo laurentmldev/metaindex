@@ -30,6 +30,8 @@ import metaindex.app.control.websockets.items.messages.*;
 import metaindex.app.control.websockets.commons.AMxWSController;
 import metaindex.app.control.websockets.terms.WsControllerTerm;
 import metaindex.app.control.websockets.terms.messages.WsMsgCreateTerm_request;
+import metaindex.app.periodic.statistics.items.CsvUploadMxStat;
+import metaindex.app.periodic.statistics.user.ErrorOccuredMxStat;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.catalog.UserItemCsvParser;
 import metaindex.data.term.ICatalogTerm;
@@ -211,12 +213,15 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
     				msg);
         	
 			user.setItemsLastChangeDate(now);
+			Globals.GetStatsMgr().handleStatItem(new CsvUploadMxStat(user,user.getCurrentCatalog()));
 	    } catch (DataProcessException e) 
 		{
 			log.error("Unable to process upload_filter_file_request from '"+headerAccessor.getUser().getName()+"' : "+e);
 			e.printStackTrace();
 			
 		}   
+    	
+    	
     }
     
     /**

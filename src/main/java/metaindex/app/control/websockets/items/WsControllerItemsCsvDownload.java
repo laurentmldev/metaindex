@@ -29,6 +29,8 @@ import org.springframework.stereotype.Controller;
 import metaindex.data.filter.IFilter;
 import metaindex.app.Globals;
 import metaindex.app.control.websockets.items.messages.*;
+import metaindex.app.periodic.statistics.items.CsvDownloadMxStat;
+import metaindex.app.periodic.statistics.items.CsvUploadMxStat;
 import metaindex.app.control.websockets.commons.AMxWSController;
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.database.IDbSearchResult.SORTING_ORDER;
@@ -118,7 +120,7 @@ public class WsControllerItemsCsvDownload extends AMxWSController {
     				headerAccessor.getUser().getName(),
     				"/queue/download_items_csv_response", 
     				answer);
-        	
+    		Globals.GetStatsMgr().handleStatItem(new CsvDownloadMxStat(user,user.getCurrentCatalog()));
 	    } catch (DataProcessException | MessagingException | IOException e) 
 		{
 			log.error("Unable to process download_items_csv_file from '"+headerAccessor.getUser().getName()+"' : "+e);
