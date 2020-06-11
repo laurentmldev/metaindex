@@ -255,6 +255,68 @@ MxGuiLeftBar.showDownloadCsvPrevisu=function() {
 	
 	
 }
-</script>
+</script> 
 
+ 	 	  <!-- Custom CSV FileDownload button -->
+          <label id="csv_download_label"
+ 		  	class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button" 
+ 		  	onclick="MxGuiLeftBar.showDownloadCsvPrevisu();" >
+ 		  	<i class="fas fa-download fa-sm text-white" style="margin-right:1em"></i><s:text name="Items.downloadItems.asCsv"></s:text>
+ 		  	 <span title="S.O.S" 
+	                	onclick="event.stopPropagation();event.preventDefault();
+	                			MxGuiHeader.showInfoModal('<s:text name="help.items.csv_download.title" />','<s:text name="help.items.csv_download.body" />')">
+	                   <i class="mx-help-icon far fa-question-circle" style="color:white"></i>    
+	          </span>
+ 		  </label>
+ 		  
+ 		 <div id="csv_contents_previsu_body_download" style="display:none">
+ 		  	 
+	 		  	<s:text name="Items.currentSearch" /> : <span id="MxGui.left.csvdownload.nbMatchDocs"></span>  <s:property value='currentUserProfile.catalogVocabulary.itemsCap'/> 		  			 		  		 
+		  		 <hr/>
+		  		 <table style="margin-top:1rem;margin-left:2rem;" class="_csv_columns_tbl_">
+		  		 	<tr><th style="padding-right:1rem;">
+		  		 		<input class="_global_checkbox_" type="checkbox" /></th><th><s:text name="Items.downloadItems.csvSelectedCols" /></th> 
+		  		 	</tr>
+		  		 </table>
+		  </div>
+		  <div id="csv_contents_previsu_download_footer" style="display:none">
+ 		  		 <label class="_downloadBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button"  >
+ 		  				<i class="fas fa-download fa-sm text-white" style="margin-right:1em"></i><s:text name="Items.downloadItems.generate"></s:text>
+ 		  		</label>
+		  </div>
+ 		 
+ 		  
+ 		    			 
+		  <!-- Custom CSV FileUpload button -->
+ 		  <label for="fileUpload"  id="csv_upload_label" 
+ 		  	class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button"  >
+ 		  	<i class="fas fa-upload fa-sm text-white" style="margin-right:1em"></i><s:text name="Items.uploadItems.fromCsv"></s:text>
+ 		  	 <span title="S.O.S" 
+	                	onclick="event.stopPropagation();event.preventDefault();
+	                			MxGuiHeader.showInfoModal('<s:text name="help.items.csv_upload.title" />','<s:text name="help.items.csv_upload.body" />')">
+	                   <i class="mx-help-icon far fa-question-circle" style="color:white"></i>    
+	          </span>
+ 		  </label>
+ 		  
+ 		  <div id="csv_contents_previsu_body" style="display:none">
+ 		  		 <div><span class="_filename_"></span> : <span class="_nbEntries_"></span> entries</div>
+ 		  		 <table style="margin-top:1rem;" class="_csv_columns_tbl_">
+ 		  		 	<tr><th style="padding-right:1rem;min-width:2rem;"></th><th>Csv Column</th><th>Catalog Field</th></tr>
+ 		  		 </table>
+			</div>
+			<div id="csv_contents_previsu_footer" style="display:none">
+ 		  		 <label class="_uploadBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button"  >
+ 		  				<i class="fas fa-upload fa-sm text-white" style="margin-right:1em"></i><s:text name="global.go"></s:text>
+ 		  		</label>
+			</div>
+ 		  <!-- not displayed but used for the file input -->
+ 		 <span style="display:none">	 		 	
+		 		 <input id="fileUpload" type="file"
+		 		  	accept=".csv,.txt"
+		 		  	name="formFile"  
+		 		  	onChange="MxGuiLeftBar.showCsvPrevisu(this);" />				
+ 		  </span>
+ 		  
+	 		   
+	 		 
 

@@ -3,13 +3,15 @@
 v2.0.3:
 -------
 
+#68 export GEXF file for Gephi graphs
+create item : check type VS string format(number)
 editing fields when translation is used results in an error (using translation instead of term id somewhere...?) TBC
 
 
 v2.1.0:
 -------
 
-graphs
+
 #41 Terms and Conditions and use of Cookies presentation and acceptation on first login
 #19 send email to users and admin when useful
 when updating CSV with terms to create, the terms list is not updated in the GUI
