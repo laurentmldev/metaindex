@@ -6,7 +6,7 @@ v2.0.3:
 #68 export GEXF file for Gephi graphs
 create item : check type VS string format(number)
 editing fields when translation is used results in an error (using translation instead of term id somewhere...?) TBC
-
+rename REFERENCE type as Link
 
 v2.1.0:
 -------
