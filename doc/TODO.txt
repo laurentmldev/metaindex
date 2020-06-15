@@ -18,11 +18,12 @@ s@https://metaindex.fr/metaindex/kibana/bundles/kbn-ui-shared-deps/kbn-ui-shared
 
 
 # create item : check type VS string format(number)
-# editing fields when translation is used results in an error (using translation instead of term id somewhere...?) TBC
 #rename REFERENCE type as LINK
 # metaindex.fr/robots.txt
-# when going down, retrieved complementary elements are not related to the current search
+
 # updated profile does not appear in the logs when changing user name or password??
+
+# editing fields when translation is used results in an error (using translation instead of term id somewhere...?) TBC
 
 v2.1.0:
 -------
@@ -106,6 +107,7 @@ Done:
 -----
 
 v2.0.2
+# when going down, retrieved complementary elements are not related to the current search
 #68 export GEXF file for Gephi graphs
 ensure userdata is resilient to server reboot ???
 statistics create items with CSV upload is not traced

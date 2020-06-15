@@ -134,52 +134,58 @@
 
 <!-- Other functions using Mx API -->
 <script type="text/javascript" >
+function retrieveItemsError(msg) { footer_showAlert(ERROR, msg); }
 
+function retrieveItemsSuccess(itemsAnswerMsg) {
+	 MxGuiCards.deselectAll();	 
+	 MxGuiLeftBar.setNbMatchingItems(itemsAnswerMsg.totalHits);
+	 MxGuiDetails.setNbMatchingItems(itemsAnswerMsg.totalHits);
+	 MxGuiDetails.setNbTotalItems(itemsAnswerMsg.totalItems);
+	 if (itemsAnswerMsg.fromIdx==0) { MxGuiCards.clearCards(); }
+	 
+	 for (var idx=0;idx<itemsAnswerMsg.items.length;idx++) {
+		 var item=itemsAnswerMsg.items[idx];
+		 MxGuiCards.addNewCard(item);		 
+	 }	 
+		 
+	 // if only one item in the result, open it directly
+	 if (itemsAnswerMsg.items.length==1) {
+		 MxGuiCards.selectNext();
+	 }
+}
+
+$(window).scroll(function() {
+
+	   let isScrollBottom=$(window).scrollTop() + $(window).height() == $(document).height();
+	   let needMoreResults=MxGuiCards.getNbCards()<MxGuiDetails.getNbMatchingItems();
+	   
+	   if(isScrollBottom && needMoreResults) {		  	 
+	 		 let query = MxGuiHeader.getCurrentSearchQuery();
+	 		 let selectedFiltersNames=MxGuiLeftBar.getSelectedFiltersNames();
+	 		 let sortString = MxGuiHeader.getCurrentSearchSortString();
+	 		 let reversedOrder = MxGuiHeader.getCurrentSearchReversedOrder();
+	 		  
+		  	 retrieveItemsError=function(msg) { footer_showAlert(ERROR, msg); }
+			 _fromIdx=_fromIdx+NB_ITEMS_PER_REQUEST;
+			 
+			 MxApi.requestCatalogItems({"fromIdx":_fromIdx,
+				 						"size":NB_ITEMS_PER_REQUEST,
+				 						"query":query,
+				 						"filtersNames":selectedFiltersNames,
+				 						"sortByFieldName":sortString,
+				 						"reverseSortOrder":reversedOrder,
+				 						"successCallback":retrieveItemsSuccess,
+				 						"errorCallback":retrieveItemsError});
+			
+	   }
+	   
+	   
+	});
 
 // items search requested explicitly by user
 function ws_handlers_requestItemsSearch(query,selectedFiltersNames,sortByFieldName,reversedSortOrder) {
 	
-	_fromIdx=0;		
-	
-	let retrieveItemsSuccess=function(itemsAnswerMsg) {
-		 MxGuiCards.deselectAll();
-		 MxGuiDetails.setNbMatchingItems(itemsAnswerMsg.totalHits);
-		 MxGuiDetails.setNbTotalItems(itemsAnswerMsg.totalItems);
-		 MxGuiLeftBar.setNbMatchingItems(itemsAnswerMsg.totalHits);
-		 if (itemsAnswerMsg.fromIdx==0) { MxGuiCards.clearCards(); }
-		 
-		 for (var idx=0;idx<itemsAnswerMsg.items.length;idx++) {
-			 var item=itemsAnswerMsg.items[idx];
-			 MxGuiCards.addNewCard(item);		 
-		 }	 
-
-   		 // if amount of cards is fewer than total results size,
-   		 // auto feed results with additional documents when reaching bottom of the page			
-		 if (itemsAnswerMsg.items.length<itemsAnswerMsg.totalItems && _fromIdx==0) {
-			 $(window).scroll(function() {
-				   let isScrollBottom=$(window).scrollTop() + $(window).height() == $(document).height();
-				   let needMoreResults=MxGuiCards.getNbCards()<itemsAnswerMsg.totalItems
-			 	   if(isScrollBottom && needMoreResults) {
-		 				 retrieveItemsError=function(msg) { footer_showAlert(ERROR, msg); }
-		 				 _fromIdx=_fromIdx+itemsAnswerMsg.items.length;
-		 				 MxApi.requestCatalogItems({"fromIdx":_fromIdx,
-		 					 						"size":_size,
-		 					 						"query":query,
-		 					 						"filtersNames":selectedFiltersNames,
-		 					 						"sortByFieldName":sortByFieldName,
-		 					 						"reverseSortOrder":reversedSortOrder,
-		 					 						"successCallback":retrieveItemsSuccess,
-		 					 						"errorCallback":retrieveItemsError});			 		
-			 	   }
-			 	});
-		 }
-		 // if only one item in the result, open it directly
-		 if (itemsAnswerMsg.items.length==1) {
-			 MxGuiCards.selectNext();
-		 }
-	}
-	
-	 retrieveItemsError=function(msg) { footer_showAlert(ERROR, msg); }
+	_fromIdx=0;			 
 	 MxApi.requestCatalogItems({"fromIdx":_fromIdx,
 		 						"size":_size,
 		 						"query":query,

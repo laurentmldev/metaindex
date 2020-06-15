@@ -102,12 +102,21 @@
 	 let nbMatchNode=document.getElementById('MxGui.details.count.matchNumber');	 
 	 nbMatchNode.innerHTML=nbMatch; 
  }
+ function details_getNbMatchingItems() {
+	 let nbMatchNode=document.getElementById('MxGui.details.count.matchNumber');	 
+	 return nbMatchNode.innerHTML; 
+ }
+
  function details_setNbTotalItems(nbTotalItems) {
 	 let nbCountNode=document.getElementById('MxGui.details.count');
 	 nbCountNode.style.display="block";
 	 
 	 let nbTotalCountNode=document.getElementById('MxGui.details.count.totalNumber');	 
 	 nbTotalCountNode.innerHTML=nbTotalItems; 
+ }
+ function details_getNbTotalItems() {
+	 let nbTotalCountNode=document.getElementById('MxGui.details.count.totalNumber');
+	 return nbTotalCountNode.innerHTML; 
  }
  
  function details_setTitle(title) {
@@ -146,7 +155,9 @@
  MxGuiDetails.getInsertSpot=function() { return _detailsInsertSpot; }
  MxGuiDetails.getBulkActionsInsertSpot=function() { return _detailsBulkActionsInsertSpot; }
  MxGuiDetails.setNbMatchingItems=details_setNbMatchingItems;
+ MxGuiDetails.getNbMatchingItems=details_getNbMatchingItems;
  MxGuiDetails.setNbTotalItems=details_setNbTotalItems;
+ MxGuiDetails.getNbTotalItems=details_getNbTotalItems;
  MxGuiDetails.setTitle=details_setTitle;
  MxGuiDetails.showAlert=details_showAlert;
  </script>
