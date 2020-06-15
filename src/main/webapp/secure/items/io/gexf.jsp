@@ -8,6 +8,10 @@
 
 // ---------------- DOWNLOAD GEXF File-----------------
 
+var MX_GEXF_RETRIEVE_PERIOD_MS=50;
+var MX_GEXF_RETRIEVE_SIZE=2000;
+var MX_GEXF_GEN_PROCESS_ID=999;
+var _generated_gexf_file=null;
 /*
 public enum RAW_DATATYPE { Tunknown,
 								 Ttext, 
@@ -44,9 +48,8 @@ function rawtype2gexftype(rawtype) {
 	return 'string';	
 }
 
-function generateGexf(options,items) {
+function generateGexf(gexfDoc,options,items,curNbItems,totalItemsTarget) {
 	
-	let gexfDoc = document.implementation.createDocument(null, "gexf");
 	let root = gexfDoc.documentElement;
 	root.setAttribute('xmlns', 'http://www.gexf.net/1.2draft');
 	root.setAttribute('version', '1.2');
@@ -76,7 +79,6 @@ function generateGexf(options,items) {
 	for (termIdx=0;termIdx<options.nodeDataFields.length;termIdx++) {
 		let termDescr=options.nodeDataFields[termIdx];
 		let attribute=document.createElement('attribute');
-		console.log(termDescr);
 		attributes.appendChild(attribute);
 		attribute.setAttribute('id', termDescr.id);
 		attribute.setAttribute('title', termDescr.name);
@@ -126,6 +128,8 @@ function generateGexf(options,items) {
 				 }				 	 
 			 }			 
 		 }
+		 
+		 MxGuiLeftBar.setProgressBar(MX_GEXF_GEN_PROCESS_ID, (curNbItems++)*100/totalItemsTarget, "GEXF Generation", true);
 	 }
 	 
 	
@@ -200,12 +204,14 @@ MxGuiLeftBar.showDownloadGexfPrevisu=function() {
 	// Go button
 	let downloadBtn=previsuNodeFooter.querySelector('._downloadBtn_');
 	downloadBtn.onclick=function() {
-		
+				
 		let graphOptions={ nodeDataFields:[], edgeFields:[] };
+		let query = MxGuiHeader.getCurrentSearchQuery();
+		let selectedFiltersNames=MxGuiLeftBar.getSelectedFiltersNames();
+		
 		let nodesDataFields=previsuNode.querySelectorAll("._graph_node_data_field_");
 		let edgesFields=previsuNode.querySelectorAll("._graph_edge_field_");
-		
-		console.log(nodesDataFields);
+			
 		for (let nodeDataFieldIdx=0;nodeDataFieldIdx<nodesDataFields.length;nodeDataFieldIdx++) {			
 			let curNodeDataFieldCheckBox=nodesDataFields[nodeDataFieldIdx];
 			if (curNodeDataFieldCheckBox.checked==true) {
@@ -220,31 +226,52 @@ MxGuiLeftBar.showDownloadGexfPrevisu=function() {
 			}
 		}
 		
-		let retrieveItemsSuccess=function(itemsAnswerMsg) {			 
-			 let doc = generateGexf(graphOptions,itemsAnswerMsg.items);
-			 var serializer = new XMLSerializer();
-			 var xmlString = serializer.serializeToString(doc);			 
-			 downloadContentsAsFile(catalogDescr.name+".gexf", xmlString);
-
-		};
-		
+		let totalNbRecieved=0;
 		retrieveItemsError=function(msg) { footer_showAlert(ERROR, msg); }
-		MxApi.requestCatalogItems({"fromIdx":0,
-			 						"size":3000,
-			 						"query":"",
+		let retrieveItemsSuccess=function(itemsAnswerMsg) {			 
+			 let doc = _generated_gexf_file;
+			 if (doc==null) { doc=document.implementation.createDocument(null, "gexf"); }
+			 generateGexf(doc,graphOptions,itemsAnswerMsg.items,totalNbRecieved,itemsAnswerMsg.totalHits);
+			 totalNbRecieved=totalNbRecieved+itemsAnswerMsg.items.length;
+			 						 
+			 if (totalNbRecieved<itemsAnswerMsg.totalHits) {
+				 let timer = setInterval(function() { 
+							clearInterval(timer);
+							 MxApi.requestCatalogItems({
+								 	"fromIdx":totalNbRecieved,							 
+			 						"size":MX_GEXF_RETRIEVE_SIZE,
+			 						"query":query,
+			 						"filtersNames":selectedFiltersNames,			 						
 			 						"successCallback":retrieveItemsSuccess,
 			 						"errorCallback":retrieveItemsError});
+						}, 
+						MX_GEXF_RETRIEVE_PERIOD_MS);
+				
+			} else {
+				var serializer = new XMLSerializer();
+				var xmlString = serializer.serializeToString(doc);	
+				doc=null;
+				MxGuiLeftBar.setProgressBar(MX_GEXF_GEN_PROCESS_ID, 100, "GEXF Generation", false);
+				downloadContentsAsFile(catalogDescr.name+".gexf", xmlString);				 
+			}
+			
+		}
 		
-	}
-	
-	
+		MxApi.requestCatalogItems({ "fromIdx":0,
+		 						"size":MX_GEXF_RETRIEVE_SIZE,
+		 						"query":query,
+		 						"filtersNames":selectedFiltersNames,			 								 						
+		 						"successCallback":retrieveItemsSuccess,
+		 						"errorCallback":retrieveItemsError});
+
+	};
 	
 	// show
 	MxGuiHeader.showInfoModal("<s:text name='Items.downloadItems.asGexf' />",previsuNode,previsuNodeFooter);
 	
 	
 	
-}
+};
 </script>
 
 

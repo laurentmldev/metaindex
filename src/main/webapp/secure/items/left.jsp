@@ -378,6 +378,3 @@ MxGuiLeftBar.getSelectedFiltersNames=function() {
 
 
 </script>
-
-
-<s:include value="left_csv_io_js.jsp" />

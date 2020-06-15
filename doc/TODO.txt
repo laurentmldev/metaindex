@@ -3,10 +3,26 @@
 v2.0.3:
 -------
 
-#68 export GEXF file for Gephi graphs
-create item : check type VS string format(number)
-editing fields when translation is used results in an error (using translation instead of term id somewhere...?) TBC
-rename REFERENCE type as Link
+# buggy when adding new user live
+	- Password ???
+	- Kibana : Error loading data
+Request to Elasticsearch failed: {"error":{"root_cause":[{"type":"security_exception","reason":"action [indices:data/read/search] is unauthorized for user [annec.lambert@orange.fr]"}],"type":"security_exception","reason":"action [indices:data/read/search] is unauthorized for user [annec.lambert@orange.fr]"},"status":403}
+
+_construct@https://metaindex.fr/metaindex/kibana/bundles/commons.bundle.js:3:3172252
+Wrapper@https://metaindex.fr/metaindex/kibana/bundles/commons.bundle.js:3:3171351
+KbnError@https://metaindex.fr/metaindex/kibana/bundles/commons.bundle.js:3:3172897
+RequestFailure@https://metaindex.fr/metaindex/kibana/bundles/commons.bundle.js:3:4000131
+fetch$@https://metaindex.fr/metaindex/kibana/bundles/commons.bundle.js:3:1284890
+s@https://metaindex.fr/metaindex/kibana/bundles/kbn-ui-shared-deps/kbn-ui-shared-deps.js:338:774550
+
+
+
+# create item : check type VS string format(number)
+# editing fields when translation is used results in an error (using translation instead of term id somewhere...?) TBC
+#rename REFERENCE type as LINK
+# metaindex.fr/robots.txt
+# when going down, retrieved complementary elements are not related to the current search
+# updated profile does not appear in the logs when changing user name or password??
 
 v2.1.0:
 -------
@@ -90,6 +106,7 @@ Done:
 -----
 
 v2.0.2
+#68 export GEXF file for Gephi graphs
 ensure userdata is resilient to server reboot ???
 statistics create items with CSV upload is not traced
 statistics : count CSV download
