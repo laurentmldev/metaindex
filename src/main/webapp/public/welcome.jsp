@@ -52,9 +52,18 @@
 	onload="carousel();" >
 
 	 <nav class="navbar navbar-expand navbar-light bg-white topbar static-top " style="margin:0;padding:0;margin-top:2rem;">
-	 	<style type="text/css">a.eussl_seal:hover .eussl_bubble { visibility:visible; } a.eussl_seal .eussl_bubble { visibility:hidden; width:145.5px; height:200px; margin-left:3.75px; border:1px solid #6c81b3; border-radius:0 0 3px 3px; overflow:hidden; margin-top:-2px; border-top:0; }</style><a class="eussl_seal eussltip" href="https://secure.europeanssl.eu" target="_blank"><img src="https://secure.europeanssl.eu/seal/metaindex.fr/150" alt="Secured by EuropeanSSL.eu" /><br /><iframe class="eussl_bubble" src="https://secure.europeanssl.eu/sealdetails/metaindex.fr/0.75"></iframe></a>
 	 	
-	 	<div style="width:70vw"></div>	 	
+	 	
+	 	
+		<style type="text/css">a.eussl_seal:hover .eussl_bubble { visibility:visible; } a.eussl_seal .eussl_bubble { visibility:hidden; width:145.5px; height:200px; margin-left:3.75px; border:1px solid #6c81b3; border-radius:0 0 3px 3px; overflow:hidden; border-top:0; }</style>	 		 	
+	 	<a class="eussl_seal eussltip" href="https://secure.europeanssl.eu" target="_blank" style="padding-top:10rem;">
+           			<img src="https://secure.europeanssl.eu/seal/metaindex.fr/150" alt="Secured by EuropeanSSL.eu" />
+           			<br />
+           			<iframe class="eussl_bubble" src="https://secure.europeanssl.eu/sealdetails/metaindex.fr/0.75"></iframe>
+		</a>
+        <div style="width:70vw"></div>	 	   			 	
+	 		 	
+	 	
 	 	<a href="mailto:laurentmlcontact-metaindex@yahoo.fr?subject=Join Metaindex&body=Hi, I'd like to become a MetaindeX Beta-User! Could create an account for me and explain a bit more how to use it ? Thanks! :)"  
 	 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" style="background:green;border-color:white;margin-left:3rem;text-shadow:none"
 	 		>Join us! <br/>Become a <span style="white-space:nowrap;">Beta-User!</span></a>	 	
@@ -68,7 +77,8 @@
     <div class="row justify-content-center"  >
      	 
            	<div class="app-title" style="padding:0;margin:0;width:100%;margin-bottom:1rem;">
-           	
+           		
+           		
            		<img src="public/commons/media/img/mx-title.png" style="max-width:40vw;height: auto;" />
            		<!--span class="scale-color-white">M</span><span class="app-title2 scale-color-white" >etainde</span><span class="scale-color-white">X</span-->
            	
