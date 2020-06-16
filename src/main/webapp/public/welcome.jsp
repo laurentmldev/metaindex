@@ -97,11 +97,13 @@
 				</b>       
 				<div style="font-size:1rem">
 						
-            	<ul>
-            		<li>Prepare data with OpenRefine for cleaning and reconciliation</li>
-					<li>Store and manage your corpus and associated contents (images, documents) in <b>MetaindeX</b></li>
-					<li>Compute statistics and data mining with ELK Kibana (integrated with <b>MetaindeX</b>)</li>
-					<li>Export as GEXF file and explore data connections and graphs with Gephi</li>
+            	<ul class="app-title" style="text-align:left;padding-left:10rem;font-size:1rem;text-shadow:none;padding-top:0;">
+            		<li>Import data from Excel or CSV prepared with OpenRefine</li>
+					<li>Store your corpus and associated contents (images, documents)</li>
+					<li>Explore and filter with powerful Lucene query language</li>
+					<li>Build great statistics charts and find correlations with integrated ELK Kibana</li>
+					<li>Export to Gephi and explore data connections and graphs</li>
+					<li>Share and collaborate safely on the same contents</li>
 				</ul>	
 				</div>       
 						
