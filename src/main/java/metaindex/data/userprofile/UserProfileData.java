@@ -134,7 +134,9 @@ public class UserProfileData implements IUserProfileData
 	public void logOut() throws DataProcessException {
 		
 		// stop auto-refresh
-		_dbAutoRefreshProcessing.stopMonitoring();
+		if (_dbAutoRefreshProcessing!=null) {
+			_dbAutoRefreshProcessing.stopMonitoring();
+		}
 		// exit from current catalog if any
 		if (this.getCurrentCatalog()!=null) {
 			this.getCurrentCatalog().quit(this);
@@ -491,6 +493,29 @@ public class UserProfileData implements IUserProfileData
 	@Override
 	public Boolean shallBeProcessed(Date testedUpdateDate) {
 		return this.getLastUpdate().before(testedUpdateDate);
+	}
+
+	// ----- helpers about user profile
+	public void loadFullUserData() throws DataProcessException {
+		// load user data from DB
+		Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface()
+				.getPopulateUserProfileFromDbStmt(this)
+				.execute();
+		
+		// load user roles data from DB
+		Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface()
+				.getPopulateAccessRightsFromDbStmt(this)
+				.execute();
+		
+		// load user custos
+		Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface()
+				.getPopulateCatalogCustomizationFromDbStmt(this)
+				.execute();
+		
+		// update Kibana/ELK rights
+		Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface()
+				.createOrUpdateCatalogStatisticsUser(this);
+    	
 	}
 
 	@Override

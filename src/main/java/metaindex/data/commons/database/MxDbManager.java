@@ -1,5 +1,6 @@
 package metaindex.data.commons.database;
 
+import metaindex.app.Globals;
 import metaindex.data.catalog.dbinterface.KibanaCatalogDbInterface;
 
 /*
@@ -110,23 +111,6 @@ public class MxDbManager implements IMxDbManager {
 		return _catalogVocInterface;
 	}
 	
-	// ----- helpers about user profile
-	public void loadFullUserData(IUserProfileData u) throws DataProcessException {
-		// load user data from DB
-		this.getUserProfileSqlDbInterface()
-				.getPopulateUserProfileFromDbStmt(u)
-				.execute();
-		
-		// load user roles data from DB
-		this.getUserProfileSqlDbInterface()
-				.getPopulateAccessRightsFromDbStmt(u)
-				.execute();
-		
-		// load user custos
-		this.getUserProfileSqlDbInterface()
-				.getPopulateCatalogCustomizationFromDbStmt(u)
-				.execute();
-	}
-
+	
 
 }

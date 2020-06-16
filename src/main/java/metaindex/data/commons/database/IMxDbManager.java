@@ -33,7 +33,4 @@ public interface IMxDbManager {
 	public metaindex.data.perspective.dbinterface.DbInterface getPerspectivesDbInterface();
 	public metaindex.data.catalog.dbinterface.VocabularySQLDbInterface getCatalogVocDbInterface();
 
-	// helpers
-	/// load user data and associated roles
-	public void loadFullUserData(IUserProfileData u) throws DataProcessException;
 }

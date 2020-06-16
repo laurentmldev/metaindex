@@ -15,9 +15,9 @@ import toolbox.exceptions.DataProcessException;
 
 
 @Component
-public class SessionLogoutListener  extends HttpSessionEventPublisher {
+public class MxHttpSessionEventListener  extends HttpSessionEventPublisher {
 
-	private Log log = LogFactory.getLog(SessionLogoutListener.class);
+	private Log log = LogFactory.getLog(MxHttpSessionEventListener.class);
 	
 	   @Override
 	   public void sessionCreated(HttpSessionEvent event) {

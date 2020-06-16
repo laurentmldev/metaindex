@@ -80,6 +80,7 @@ public class UsersManager implements IUsersManager {
 		if (u.getHttpSessionId().length()>0 
 				&& getUserByHttpSessionId(u.getHttpSessionId())!=null
 				&& !getUserByHttpSessionId(u.getHttpSessionId()).getName().equals(u.getName())) {
+			_usersLock.release();
 			throw new DataProcessException("Session ID '"+u.getHttpSessionId()
 					+"' already registered to user '"
 					+getUserByHttpSessionId(u.getHttpSessionId()).getName()

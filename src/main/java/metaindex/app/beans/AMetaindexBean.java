@@ -87,9 +87,10 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
   	  							+"			   current="+_userProfileData.getRemoteAddress()
   	  										+" newRequest="+request.getRemoteAddr()+"\n"
   	  						);
-  	  					String userMsg="Hum it seems that somebody else just tried to use your login credentials, it has been blocked.";
+  	  					String userMsg="Hum it seems that somebody else just tried to use your login credentials, it has been blocked. "
+  	  											+"Please contact your system administrator";
 	  	  				_userProfileData.sendGuiWarningMessage(userMsg);  	  				
-	  	  				_userProfileData.sendEmail("[METAINDEX] Your account is being used",userMsg);
+	  	  				_userProfileData.sendEmail("[METAINDEX] Your account is maybe being used by somebody else",userMsg);
 	  	  				_userProfileData=null;
 	  	  				return;
   	  				}
@@ -117,7 +118,7 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 			// refresh data of its own account from DB
 			if (getCurrentUserProfile()!=null && !getMxStatus().equals("MAINTENANCE") && getCurrentUserProfile().isLoggedIn()) {
 				// load all user data from DB
-				Globals.Get().getDatabasesMgr().loadFullUserData(getCurrentUserProfile());				
+				getCurrentUserProfile().loadFullUserData();				
 				
 				setSessionLanguage(	getCurrentUserProfile().getGuiLanguage().getShortname(),
 									ActionContext.getContext());

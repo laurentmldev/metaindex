@@ -71,6 +71,9 @@ public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProc
     public void setGuiThemeId(Integer guithemeid);          
     public IGuiTheme getGuiTheme();
     public Collection<IGuiTheme> getGuiThemes();
+    
+	/// load user data and associated roles
+	public void loadFullUserData() throws DataProcessException;
     // --------
     
     public ICatalog getCurrentCatalog();

@@ -1,5 +1,8 @@
 //////// memo docker commands
 
+# monitor CPU/memory usage
+docker stats
+
 $ docker system prune --force --volumes
 $ docker images
 $ docker inspect <imgid> 

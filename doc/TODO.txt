@@ -3,25 +3,13 @@
 v2.0.3:
 -------
 
-# buggy when adding new user live
-	- Password ???
-	- Kibana : Error loading data
-Request to Elasticsearch failed: {"error":{"root_cause":[{"type":"security_exception","reason":"action [indices:data/read/search] is unauthorized for user [annec.lambert@orange.fr]"}],"type":"security_exception","reason":"action [indices:data/read/search] is unauthorized for user [annec.lambert@orange.fr]"},"status":403}
-
-_construct@https://metaindex.fr/metaindex/kibana/bundles/commons.bundle.js:3:3172252
-Wrapper@https://metaindex.fr/metaindex/kibana/bundles/commons.bundle.js:3:3171351
-KbnError@https://metaindex.fr/metaindex/kibana/bundles/commons.bundle.js:3:3172897
-RequestFailure@https://metaindex.fr/metaindex/kibana/bundles/commons.bundle.js:3:4000131
-fetch$@https://metaindex.fr/metaindex/kibana/bundles/commons.bundle.js:3:1284890
-s@https://metaindex.fr/metaindex/kibana/bundles/kbn-ui-shared-deps/kbn-ui-shared-deps.js:338:774550
-
-
-
+# admin could still upload CSV with more items than allowed in quota...
 # create item : check type VS string format(number)
 #rename REFERENCE type as LINK
 # metaindex.fr/robots.txt
+# help.items.gexf_download.body / title
+# when cards title is not set, references shall use ID to list contents
 
-# updated profile does not appear in the logs when changing user name or password??
 
 # editing fields when translation is used results in an error (using translation instead of term id somewhere...?) TBC
 
@@ -107,6 +95,12 @@ Done:
 -----
 
 v2.0.2
+# updated profile does not appear in the logs when changing user name or password??
+# buggy when adding new user live
+	- when adding new catalog rights while user not yet logged in, then Kibana rights are not updated	
+	- Kibana : Error loading data
+		Request to Elasticsearch failed: {"error":{"root_cause":[{"type":"security_exception","reason":"action [indices:data/read/search] is unauthorized for user [annec.lambert@orange.fr]"}],"type":"security_exception","reason":"action [indices:data/read/search] is unauthorized for user [annec.lambert@orange.fr]"},"status":403}
+
 # when going down, retrieved complementary elements are not related to the current search
 #68 export GEXF file for Gephi graphs
 ensure userdata is resilient to server reboot ???
