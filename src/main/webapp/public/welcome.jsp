@@ -109,7 +109,7 @@
 	
 	  
 	</div>
-        	<div style="margin-top:6rem;">   <center>     	
+        	<div style="margin-top:4rem;">   <center>     	
 	        	<img class="mx_welcome_screenshot w3-animate-opacity" src="public/commons/media/img/screenshots/stats.png">	        	
 	        	<img class="mx_welcome_screenshot w3-animate-opacity" src="public/commons/media/img/screenshots/editmode2.png">
 	        	<img class="mx_welcome_screenshot w3-animate-opacity" src="public/commons/media/img/screenshots/cards1.png">				
