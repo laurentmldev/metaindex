@@ -76,10 +76,10 @@
     
     <div class="row justify-content-center"  >
      	 
-           	<div class="app-title" style="padding:0;margin:0;width:100%;margin-bottom:1rem;">
+           	<div class="app-title" style="padding:0;margin:0;width:100%;margin-bottom:1rem;margin-top:4rem;">
            		
            		
-           		<img src="public/commons/media/img/mx-title.png" style="max-width:40vw;height: auto;" />
+           		<img src="public/commons/media/img/mx-title.png" style="max-width:55vw;height: auto;" />
            		<!--span class="scale-color-white">M</span><span class="app-title2 scale-color-white" >etainde</span><span class="scale-color-white">X</span-->
            	
             		<div class="app-title" style="padding:0;margin:0;font-size:1.6vw;text-shadow:none">
@@ -88,17 +88,28 @@
 	 							            			
             </div>
 
-			<div class="" style="padding:0;margin:0;font-size:1.3vw;text-align:center;">            				
-				<b style="color:green">Save time and get more from your data.</b>       
+			<div class="" style="padding:0;margin:0;font-size:2.5vw;text-align:center;">            				
+				<b style="color:green">
+					Get more from your data
+						<br/>
+					<span style="font-size:1.8rem">use proper software and workflow for easy and optimal data analysis</span> 
+				
+				</b>       
 				<div style="font-size:1rem">
-				Especially suited for researchers on history, history of art, social studies, archeology, 
-            			or any field implying work on heavy data corpus.
-				</div>       			
+						
+            	<ul>
+            		<li>Prepare data with OpenRefine for cleaning and reconciliation</li>
+					<li>Store and manage your corpus and associated contents (images, documents) in <b>MetaindeX</b></li>
+					<li>Compute statistics and data mining with ELK Kibana (integrated with <b>MetaindeX</b>)</li>
+					<li>Export as GEXF file and explore data connections and graphs with Gephi</li>
+				</ul>	
+				</div>       
+						
 	 		</div>
 	
 	  
 	</div>
-        	<div style="margin-top:2rem;">   <center>     	
+        	<div style="margin-top:6rem;">   <center>     	
 	        	<img class="mx_welcome_screenshot w3-animate-opacity" src="public/commons/media/img/screenshots/stats.png">	        	
 	        	<img class="mx_welcome_screenshot w3-animate-opacity" src="public/commons/media/img/screenshots/editmode2.png">
 	        	<img class="mx_welcome_screenshot w3-animate-opacity" src="public/commons/media/img/screenshots/cards1.png">				
@@ -188,8 +199,8 @@
 			      				</span>
 			      			</li>
 			      			<li class="fa-li fa fa-check scale-color-blue" >
-			      				<span class="mx_welcome_card_li_contents">Connection graphs with auto-generated VEGA graphs (beta)<br/>
-			      					<span class="_details_ mx_welcome_card_details"  >Control great power of VEGA-graph with dedicated pre-defined templates</span>
+			      				<span class="mx_welcome_card_li_contents">Export contents as GEXF for graphs and connections analysis<br/>
+			      					<span class="_details_ mx_welcome_card_details"  >Export data as GEXF file, and import it in Gephi for amazing graphs and connections analysis </span>
 			      				</span>
 			      			</li> 
 			      		</ul>
