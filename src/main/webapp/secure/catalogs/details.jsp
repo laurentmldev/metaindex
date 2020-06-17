@@ -5,8 +5,6 @@
 <c:url value="/Items" var="itemsUrl"/>
 
 <script type="text/javascript" >
- // due to ElasticSearch limitations, we only limit one single RELATION field per Catalog
- var details_tab_mapping_relationFieldAlreadyUsed=false;
  
  var _curCatalogDesc=null;
 
@@ -26,7 +24,6 @@
  // function used by commons/details.jsp
  function details_buildContents(catalogCard) {
 	 
-	 details_tab_mapping_relationFieldAlreadyUsed=false;
 	 var newPopulatedCatalogDetails = document.getElementById("MxGui._templates_.catalog_details").cloneNode(true);
 	 newPopulatedCatalogDetails.id="details_catalog_"+catalogCard.descr.id;
 	 newPopulatedCatalogDetails.style.display='block';
@@ -464,10 +461,7 @@ function cleanCreateFieldDatatypesList() {
 	let createTermTypeButton = document.getElementById("details.createTerm.datatype");
 	clearNodeChildren(createTermTypeButton);
 	for (datatypeIdx in mx_helpers_FIELDS_DATATYPES) {
-		let datatype=mx_helpers_FIELDS_DATATYPES[datatypeIdx];
-		if (details_tab_mapping_relationFieldAlreadyUsed==true 
-				&& datatype=="RELATION") { continue; }
-			
+		let datatype=mx_helpers_FIELDS_DATATYPES[datatypeIdx];			
 		let option = document.createElement("option");
 		option.id="details.createTerm.datatype."+datatype;
 		option.value=datatype;

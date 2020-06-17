@@ -5,7 +5,7 @@
 
 <script  src="${mxurl}public/commons/deps/sockjs-0.3.min.js"></script>
 <script  src="${mxurl}public/commons/deps/stomp.min.js"></script>
-<script src="${mxurl}public/commons/deps/metaindex.js"></script>
+<script src="${mxurl}public/commons/js/metaindex.js"></script>
 
 <!-- Pako for GZip inflate/deflate for big communication with server  -->
 <script src="${mxurl}public/commons/deps/pako.min.js"></script>

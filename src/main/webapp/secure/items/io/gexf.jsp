@@ -151,7 +151,7 @@ MxGuiLeftBar.showDownloadGexfPrevisu=function() {
 		let termName=sortedTermsNames[termIdx];		
 		let termDescr = catalogDescr.terms[termName];
 		let termDatatype = termDescr.datatype;
-		if (termDatatype=="REFERENCE") { continue; }
+		if (termDatatype=="LINK") { continue; }
 		termTranslation=mx_helpers_getTermName(termDescr, catalogDescr)
 		
 		let termChoice=document.createElement("div");
@@ -177,7 +177,7 @@ MxGuiLeftBar.showDownloadGexfPrevisu=function() {
 		let termName=sortedTermsNames[termIdx];		
 		let termDescr = catalogDescr.terms[termName];
 		let termDatatype = termDescr.datatype;
-		if (termDatatype!="REFERENCE") { continue; }
+		if (termDatatype!="LINK") { continue; }
 		termTranslation=mx_helpers_getTermName(termDescr, catalogDescr)
 		
 		let termChoice=document.createElement("div");

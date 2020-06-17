@@ -103,12 +103,7 @@
 		let successCallbackEnumChange=function(fieldName,newValue) { 
 			termDesc.enumsList=newValue.split(",");
 		}		
-		if (mx_helpers_isCatalogAdmin(catalogCard.descr.userAccessRights)
-				// dynamic enums are read-only in the GUI, because loaded from server.
-				// Typically used for RELATION fields.
-				// In this case, enumeration column is used to show the names
-				// of parent/child relations
-				 && !mx_helpers_isDatatypeDynamicEnumOk(termDesc.datatype)) {
+		if (mx_helpers_isCatalogAdmin(catalogCard.descr.userAccessRights)) {
 			let editableFieldEnumNode = xeditable_create_text_field(
 						termName /* pk */,
 						termName,false /*show termName*/,
@@ -141,11 +136,7 @@
 		
 		// comments
 		let comments = newTermNode.querySelector("._term_comments_");
-		if (termDesc.datatype=="RELATION") {
-			comments.innerHTML="only one such field per catalog."
-			details_tab_mapping_relationFieldAlreadyUsed=true;
-		}
-		else if (termDesc.datatype=="REFERENCE") {
+		if (termDesc.datatype=="LINK") {
 			comments.innerHTML="enums. list shall be a search request (ex: 'type:person')";
 		}
 					
@@ -156,26 +147,8 @@
  
  function details_createTerm(termName,termDatatype) {
 	 
-	 // term datatype 'relation' need extra-information : name of parent/child roles in the relation
-	 if (termDatatype=="RELATION") {
-		 let fieldsList = [ { id:"parent",type:"text",title:"Parent Relation Name",defaultValue:"", important:'true', disabled:'false' },
-			 				{ id:"child", type:"text",title:"Child Relation Name",defaultValue:"", important:'true', disabled:'false' }
-			 				];
-		 let popup = MxGuiPopups.newMultiInputsPopup("Relation Details",
-				 						fieldsList,
-				 						function(resultFields){
-			 								MxApi.requestCreateTerm(_curCatalogDesc.id,termName,termDatatype,resultFields); 
-			 							});
-		 document.getElementById("wrapper").appendChild(popup);
-		 
-		 popup.show();
-	 }
- 
- 	 // default
-	 else {
-		 MxApi.requestCreateTerm(_curCatalogDesc.id,termName,termDatatype);
-	 }
-	 
+ 	MxApi.requestCreateTerm(_curCatalogDesc.id,termName,termDatatype);
+	  
  }
   
  </script>

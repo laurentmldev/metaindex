@@ -12,7 +12,6 @@ See full version of LICENSE in <https://fsf.org/>
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -21,8 +20,6 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
 import metaindex.data.catalog.ICatalog;
-import metaindex.data.term.CatalogTerm;
-import metaindex.data.term.CatalogTermRelation;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
 import toolbox.database.elasticsearch.ElasticSearchConnector;
@@ -59,30 +56,11 @@ class CreateFieldIntoEsDbStmt extends ESWriteStmt<ICatalogTerm>   {
 				        	// removing prefix 'T' letter.
 				        	String esTypeStr = ICatalogTerm.getRawDatatype(t.getDatatype()).toString();
 				        	esTypeStr=esTypeStr.replaceFirst("T", "");
-				            builder.field("type", esTypeStr);
-				            
-				            // join fields need name of parent/childs as extra information
-				            if (ICatalogTerm.getRawDatatype(t.getDatatype()).equals(RAW_DATATYPE.Tjoin)) {
-				            	builder.startObject("relations"); {
-				            		CatalogTermRelation termRelation = (CatalogTermRelation) t;
-				            		
-				            		// add new relation parent/child names
-				            		builder.field(termRelation.getParentRoleName(),termRelation.getChildRoleName());				            	
-				            		
-				            		// add in the request the list of other relations already existing in this catalog
-				            		// i.e. defined in some other 'relation' terms
-				            		Map<String,String> catalogExistingRelationsDef = _catalog.getTermsRelationsDefinitions();
-				            		for (String parentName : catalogExistingRelationsDef.keySet()) {				            		
-				            			String childName=catalogExistingRelationsDef.get(parentName);
-				            			builder.field(parentName, childName);
-				            		}
-				            		
-				            	} builder.endObject();
-				            }
+				            builder.field("type", esTypeStr);				            
 				            				            
 				            // for text objects, add a keyword subtype as 'raw', in order to allow
 				            // ElasticSearch to sort search results following this field
-				            else if (ICatalogTerm.getRawDatatype(t.getDatatype())==RAW_DATATYPE.Ttext) {
+				            if (ICatalogTerm.getRawDatatype(t.getDatatype())==RAW_DATATYPE.Ttext) {
 				            	builder.startObject("fields");
 				            	{
 				            		builder.startObject("raw"); {
@@ -94,11 +72,22 @@ class CreateFieldIntoEsDbStmt extends ESWriteStmt<ICatalogTerm>   {
 		            			builder.field("ignore_malformed", "true");
 		            			builder.field("null_value", "0000");
 		            			builder.field("format", "yyyy||dd/MM/yy||dd/MM/yyyy||MM/yy||MM/yyyy||yyyy-MM-dd"
-						            					+"||yyyy/MM/dd HH:mm:ss.SSS"
-				    									+"||yyyy-MM-dd HH:mm:ss.SSS"
-				    									+"||yyyy-MM-dd HH:mm"
-				    									+"||dd-MM-yyyy HH:mm"
-				    									+"||dd/MM/yyyy HH:mm"
+						            					
+														+"||yyyy/MM/dd HH:mm"
+														+"||yyyy/MM/dd HH:mm:ss"
+		            									+"||yyyy/MM/dd HH:mm:ss.SSS"
+				    									
+														+"||yyyy-MM-dd HH:mm"
+														+"||yyyy-MM-dd HH:mm:ss"
+						            					+"||yyyy-MM-dd HH:mm:ss.SSS"
+				    													    									
+														+"||dd-MM-yyyy HH:mm"
+														+"||dd-MM-yyyy HH:mm:ss"
+				    									+"||dd-MM-yyyy HH:mm:ss.SSS"
+				    									
+														+"||dd/MM/yyyy HH:mm"
+				    									+"||dd/MM/yyyy HH:mm:ss"
+				    									+"||dd/MM/yyyy HH:mm:ss.SSS"
 		            									);
 				            }
 				            

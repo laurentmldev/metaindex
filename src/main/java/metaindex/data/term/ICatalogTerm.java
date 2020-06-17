@@ -31,13 +31,12 @@ public interface ICatalogTerm extends IIdentifiable<Integer>{
 								DATE, 
 								INTEGER, 
 								FLOAT, 
-								LINK_URL, 
+								PAGE_URL, 
 								IMAGE_URL, 
 								AUDIO_URL, 
 								VIDEO_URL,
 								GEO_POINT,
-								RELATION,
-								REFERENCE
+								LINK
 								// update also SQL table enum if this list is changed
 								// and webapp/secure/commons/js/mx_helpers.jsp, and webapp/secure/catalogs/details.jsp
 							  }
@@ -59,8 +58,7 @@ public interface ICatalogTerm extends IIdentifiable<Integer>{
 		if (datatype==TERM_DATATYPE.INTEGER) { return RAW_DATATYPE.Tshort; }
 		if (datatype==TERM_DATATYPE.DATE) { return RAW_DATATYPE.Tdate; }
 		if (datatype==TERM_DATATYPE.GEO_POINT) { return RAW_DATATYPE.Tgeo_point; }
-		if (datatype==TERM_DATATYPE.RELATION) { return RAW_DATATYPE.Tjoin; }
-		if (datatype==TERM_DATATYPE.REFERENCE) { return RAW_DATATYPE.Ttext; }
+		if (datatype==TERM_DATATYPE.LINK) { return RAW_DATATYPE.Ttext; }
 		return RAW_DATATYPE.Ttext;
 	}
 
@@ -79,7 +77,7 @@ public interface ICatalogTerm extends IIdentifiable<Integer>{
 			case Tgeo_point :			
 				return TERM_DATATYPE.GEO_POINT;
 			case Tjoin:
-				return TERM_DATATYPE.RELATION;
+				return TERM_DATATYPE.UNKNOWN;
 			default:
 				return TERM_DATATYPE.TINY_TEXT;
 		}
@@ -97,7 +95,6 @@ public interface ICatalogTerm extends IIdentifiable<Integer>{
 		else if (typeStr.equals("float")) { type = RAW_DATATYPE.Tfloat; }
 		else if (typeStr.equals("geo_point")) { type = RAW_DATATYPE.Tgeo_point; }
 		else if (typeStr.equals("date")) { type = RAW_DATATYPE.Tdate; }
-		else if (typeStr.equals("join")) { type = RAW_DATATYPE.Tjoin; }
 		else { type = RAW_DATATYPE.Tunknown; }
 		
 		return type;
@@ -114,21 +111,13 @@ public interface ICatalogTerm extends IIdentifiable<Integer>{
 				|| fieldName.equals(MX_TERM_LASTMODIF_USERID);
 	}
 	
-	// ignore terms starting with "mx_" (internal use) in WsMsgCatalogDetails_answer.java
-	public static final String MX_FIELD_RELATIONS="mx_relations";
 	
 	/// Factory method for Terms
 	public static ICatalogTerm BuildCatalogTerm(TERM_DATATYPE type) {
 		ICatalogTerm t = null;
-		if (type==TERM_DATATYPE.RELATION) { 
-			t = new CatalogTermRelation(); 
-		}
-		else { 
 			t = new CatalogTerm();
 			t.setDatatype(type);
 			t.setRawDatatype(ICatalogTerm.getRawDatatype(type));
-		}
-		
 		return t;
 	}
 	public static ICatalogTerm BuildCatalogTerm(String type) {
@@ -142,7 +131,7 @@ public interface ICatalogTerm extends IIdentifiable<Integer>{
 	 * Retrieve the name of the field containing the actual value.
 	 * Basically return the name of ElasticSearch field name.
 	 * Default behaviour is to use same name for the applicative term and underlying field,
-	 * but that might be different in some special cases like 'relation' terms.
+	 * but that might be different if required.
 	 * @return name of corresponding raw field
 	 */
 	public String getRawFieldName();

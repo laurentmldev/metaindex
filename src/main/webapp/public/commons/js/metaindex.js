@@ -1210,8 +1210,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		myself._callback_CreateTerm=callback_func;
 	}
 	
-	// complementaryInfoMap: map containing complementary info, might be needed depending on created datatype :
-	// 									- RELATION fields ned to define name of parent and child relations
+	// complementaryInfoMap: map containing complementary info, might be needed depending on created datatype
 	this.requestCreateTerm= function(catalogId,termName,termDatatype,complementaryInfoMap) {
 		
 		if (myself._callback_CreateTerm_debug==true) {

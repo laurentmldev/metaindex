@@ -160,12 +160,7 @@ function _commons_perspective_build_section(catalogDesc,perspectiveData,tabIdx,s
  		 	 			
  			let curFieldValue=null;
  			if (fieldsValueMap!=null) {
- 				// ElasticSearch store all relations in one single field (called 'mx_relations', one max such field per index)
- 				// So we give here the full value of the 'mx_relations' field for current item,
- 				// and let complex work in specific implementation of 'relation' field.
- 				if (curFieldTermDesc.datatype=='RELATION') { curFieldValue=fieldsValueMap[MX_RELATIONS_FIELD_NAME]; }
- 				// normal case : the field in ElasticSearch match with the name of the term
- 				else { curFieldValue=fieldsValueMap[curFieldVisuDef.term]; }
+ 				curFieldValue=fieldsValueMap[curFieldVisuDef.term];
  				// if field not defined in current element, suppose value is empty string
  				if (curFieldValue==null) { curFieldValue=""; }
  				// if it's an object we suppose it is a Json to stringify

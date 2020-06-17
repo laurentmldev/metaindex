@@ -222,7 +222,7 @@ public class WsControllerItem extends AMxWSController {
     		Date now = new Date();
     		
     		// use proper object mapping
-    		// typically 'relation' datatypes needs a JSON object, not a string
+    		// in case some datatype needs a JSON object rather than a basic not a string
     		String termValueStr = requestMsg.getFieldValue().trim(); 
     		Object termValue=termValueStr;
     		ICatalogTerm termDef = c.getTerms().get(requestMsg.getFieldName());
@@ -232,13 +232,6 @@ public class WsControllerItem extends AMxWSController {
     			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_field_value.unknown_field"));
     			c.releaseLock();
     			return;
-    		}
-    		
-    		if (termDef.getDatatype().equals(TERM_DATATYPE.RELATION)) {
-    			if (termValueStr.length()==0) {
-    				termValueStr="{ \"name\" = \"\" }";
-    			}
-    			termValue = new JSONObject(termValueStr.toString());    			
     		}
     		
     		Boolean isSuccess = Globals.Get().getDatabasesMgr().getDocumentsDbInterface()

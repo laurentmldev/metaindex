@@ -5,7 +5,7 @@ v2.0.3:
 
 # admin could still upload CSV with more items than allowed in quota...
 # create item : check type VS string format(number)
-#rename REFERENCE type as LINK
+# rename REFERENCE type as LINK and LINK_URL as PAGE_URL, and remove 'RELATION' obsolete 
 # metaindex.fr/robots.txt
 # help.items.gexf_download.body / title
 # when cards title is not set, references shall use ID to list contents

@@ -169,17 +169,6 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 	 */
 	public void updateTermVocabulary(List<TermVocabularySet> data) throws DataProcessException;
 	
-	/**
-	 * Walk through all 'Relation' terms and build a map with full ist
-	 * of parent/child names. This is used when adding a new Relation term,
-	 * since ElasticSearch only supports one single relation field per index
-	 * listing all the relations.
-	 * @return
-	 */
-	public Map<String,String> getTermsRelationsDefinitions();
-
 	
-	
-
 	
 }

@@ -11,12 +11,7 @@
 		 	fieldContainerNode,fieldVisuDesc,termDesc,
 			itemId,curTermValue,successCallback,onChangeCallback) {		 		
  	
-	 if (termDesc.datatype=="RELATION") { 		
-			return _commons_perspective_buildEditableRelationTerm(catalogDesc, itemId, termDesc, curTermValue, 
-																					onChangeCallback, successCallback);
-	 } 
-	 
-	 if (termDesc.datatype=="REFERENCE") { 		
+	 if (termDesc.datatype=="LINK") { 		
 			return _commons_perspective_buildEditableReferenceTerm(catalogDesc,tabIdx,sectionIdx,fieldIdx,
 				 	fieldContainerNode,fieldVisuDesc,termDesc,
 					itemId,curTermValue,successCallback,onChangeCallback);

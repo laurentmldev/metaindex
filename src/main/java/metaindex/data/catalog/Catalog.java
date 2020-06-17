@@ -346,19 +346,7 @@ public class Catalog implements ICatalog {
 	}
 	
 	public String getTimeFieldRawName() { return _chronologyReferenceTermName; }
-	public void setTimeFieldRawName(String t) { _chronologyReferenceTermName=t; }
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public Map<String, String> getTermsRelationsDefinitions() {
-		ICatalogTerm mxRelationsTerm = this.getTerms().get(ICatalogTerm.MX_FIELD_RELATIONS);
-		if (mxRelationsTerm==null) { return new HashMap<String,String>(); }
-		
-		// 'relations' comes from ElasticSearch field contents 
-		if (!mxRelationsTerm.getMappingProperties().containsKey("relations")) { return new HashMap<String,String>(); }
-		
-		return (Map<String,String>)mxRelationsTerm.getMappingProperties().get("relations");
-	}
+	public void setTimeFieldRawName(String t) { _chronologyReferenceTermName=t; }	
 	
 	@Override
 	/**
@@ -507,19 +495,11 @@ public class Catalog implements ICatalog {
 									+term.getDatatype()+" is not compatible with raw datatype "+existingTermObj.getRawDatatype());
 					}
 					
-					// if raw field and term have same name, use same 'term' data-structure
-					if (existingTermObj.getName().equals(term.getName())) {
-						existingTermObj.setId(term.getId());
-						existingTermObj.setDatatype(term.getDatatype());
-						existingTermObj.setEnumsList(term.getEnumsList());
-						existingTermObj.setIsMultiEnum(term.getIsMultiEnum());
-					// if not, add the new term in the list
-					// This case only occurs for 'RELATION' terms, for which the raw field is unique and shared
-					// among all applicative terms because of ElasticSearch constraint (only 1 single 'join' field per index)
-					} else {
-						term.setCatalogId(this.getId());
-						this.getTerms().put(term.getName(), term);
-					}
+					// raw field and term have same name					
+					existingTermObj.setId(term.getId());
+					existingTermObj.setDatatype(term.getDatatype());
+					existingTermObj.setEnumsList(term.getEnumsList());
+					existingTermObj.setIsMultiEnum(term.getIsMultiEnum());
 				}
 				
 				_termsLock.release();

@@ -161,28 +161,7 @@ public class WsControllerTerm extends AMxWSController {
     	term = ICatalogTerm.BuildCatalogTerm(requestMsg.getTermDatatype());
     	term.setCatalogId(requestMsg.getCatalogId());
     	term.setName(requestMsg.getTermName());   
-    	// if type is "relation", adding necessary complementary information which will be expected by DB procressing
-    	if (requestMsg.getTermDatatype()==TERM_DATATYPE.RELATION) {
-	    	Map<String,String> relationsMap = new HashMap<>();
-	    	if (!requestMsg.getComplementaryInfoMap().containsKey("parent")
-	    			|| !requestMsg.getComplementaryInfoMap().containsKey("child")) {
-	    		answer.setRejectMessage("term '"+requestMsg.getTermName()+"' missing parent/child relation names.");
-	    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_term", answer);
-	    		return;
-	    	}
-	    		
-	    	relationsMap.put(requestMsg.getComplementaryInfoMap().get("parent"),requestMsg.getComplementaryInfoMap().get("child"));
-	    	// mapping properties contains details of the relations names from ElasticSearch, here we populate here manually
-	    	// to have consistent state of our newly built term before database processing
-	    	Map<String,Object> mappingProperties = new HashMap<>();
-	    	mappingProperties.put("relations", relationsMap);
-	    	term.setMappingProperties(mappingProperties);
-	    	// should be done after set properties, because there is a consistency check inside the setEnumsList method
-	    	List<String> enumsList = new ArrayList<>();
-	    	enumsList.add(requestMsg.getComplementaryInfoMap().get("parent"));
-	    	enumsList.add(requestMsg.getComplementaryInfoMap().get("child"));	    	
-	    	term.setEnumsList(enumsList);
-    	}
+    	
     	try {
     		Boolean result = Globals.Get().getDatabasesMgr().getTermsDbInterface()
     					.createIntoDbStmt(c,term).execute();

@@ -88,21 +88,6 @@ function array2str(arrayVal) {
 	 return strVal;	 
 }
 
-
-function mx_helpers_getTermParentRelationName(termDesc) {
-	if (termDesc==null || termDesc.datatype!='RELATION') { return null; }	
-	// for RELATION terms, we use enumsList 
-	// to store name of parent and child relations
-	return termDesc.enumsList[0];
-}
-
-function mx_helpers_getTermChildRelationName(termDesc) {
-	if (termDesc==null || termDesc.datatype!='RELATION') { return null; }
-	// for RELATION terms, we use enumsList 
-	// to store name of parent and child relations
-	return termDesc.enumsList[1];
-}
-
 // receivedItemContentsCallback(itemDesc)
 // where itemDesc is null when not found
 function mx_helpers_getItemDetailsById(itemId, receivedItemContentsCallback) {
@@ -130,18 +115,16 @@ function mx_helpers_getItemDetailsById(itemId, receivedItemContentsCallback) {
 
 // matches Metaindex DB table 'catalog_terms', enum of field 'datatype'
 // used to generate dropdown box in Field type
-//var mx_helpers_FIELDS_DATATYPES = [	"TINY_TEXT","RICH_TEXT","DATE","INTEGER","FLOAT","LINK_URL","IMAGE_URL","AUDIO_URL","VIDEO_URL","GEO_POINT",
-//									"RELATION","REFERENCE"];
-var mx_helpers_FIELDS_DATATYPES = [	"TINY_TEXT","DATE","INTEGER","FLOAT","LINK_URL","IMAGE_URL","REFERENCE"];
-//var mx_helpers_FIELDS_DATATYPES_text = ["TINY_TEXT","RICH_TEXT","LINK_URL","IMAGE_URL","AUDIO_URL","VIDEO_URL","REFERENCE"];
-var mx_helpers_FIELDS_DATATYPES_text = ["TINY_TEXT","LINK_URL","IMAGE_URL","REFERENCE"];
+//var mx_helpers_FIELDS_DATATYPES = [	"TINY_TEXT","RICH_TEXT","DATE","INTEGER","FLOAT","PAGE_URL","IMAGE_URL","AUDIO_URL","VIDEO_URL","GEO_POINT",
+//									,"LINK"];
+var mx_helpers_FIELDS_DATATYPES = [	"TINY_TEXT","DATE","INTEGER","FLOAT","PAGE_URL","IMAGE_URL","LINK"];
+//var mx_helpers_FIELDS_DATATYPES_text = ["TINY_TEXT","RICH_TEXT","PAGE_URL","IMAGE_URL","AUDIO_URL","VIDEO_URL","LINK"];
+var mx_helpers_FIELDS_DATATYPES_text = ["TINY_TEXT","PAGE_URL","IMAGE_URL","LINK"];
 var mx_helpers_FIELDS_DATATYPES_date = ["DATE"];
 var mx_helpers_FIELDS_DATATYPES_integer = ["INTEGER"];
 var mx_helpers_FIELDS_DATATYPES_float = ["FLOAT"];
 var mx_helpers_FIELDS_DATATYPES_geo_point = ["GEO_POINT"];
 var mx_helpers_FIELDS_DATATYPES_geo_point = ["GEO_POINT"];
-var mx_helpers_FIELDS_DATATYPES_relation = ["RELATION"];
-
 
 //curDatatype : if null, returns all available datatypes
 // 			  if defined, returns only compatible datatypes (i.e. based on same under-lying ElasticSearch mapping type)
@@ -153,8 +136,7 @@ function mx_helpers_getDataTypesChoice(curDatatype) {
 		else if (curDatatype=="INTEGER") { dataTypesList=mx_helpers_FIELDS_DATATYPES_integer;}
 		else if (curDatatype=="FLOAT") { dataTypesList=mx_helpers_FIELDS_DATATYPES_float;}
 		else if (curDatatype=="GEO_POINT") { dataTypesList=mx_helpers_FIELDS_DATATYPES_geo_point;}
-		else if (curDatatype=="RELATION") { dataTypesList=mx_helpers_FIELDS_DATATYPES_relation;}
-		else if (curDatatype=="REFERENCE") { dataTypesList=mx_helpers_FIELDS_DATATYPES_text;}
+		else if (curDatatype=="LINK") { dataTypesList=mx_helpers_FIELDS_DATATYPES_text;}
 		// text
 		else { dataTypesList=mx_helpers_FIELDS_DATATYPES_text;}
 	}
@@ -167,22 +149,16 @@ function mx_helpers_getDataTypesChoice(curDatatype) {
 	 return mxDatatypesChoice;
 }
 
-
-function mx_helpers_isDatatypeDynamicEnumOk(datatype) {
-	return datatype=="RELATION" ;
-}
-
 function mx_helpers_isDatatypeEnumOk(datatype) {
 	return datatype=="TINY_TEXT" 
 		|| datatype=="INTEGER"
 		|| datatype=="FLOAT"
 		|| datatype=="DATE"
-		|| datatype=="LINK_URL"
+		|| datatype=="PAGE_URL"
 		|| datatype=="IMAGE_URL"
 		|| datatype=="AUDIO_URL"
 		|| datatype=="VIDEO_URL"
-		|| datatype=="RELATION"  // name or relations : <parent>,<child>
-		|| datatype=="REFERENCE" // query matching possible referenced elements 
+		|| datatype=="LINK" // query matching possible referenced elements 
 		;
 				
 }
@@ -193,11 +169,11 @@ function mx_helpers_isDatatypeEnumOk(datatype) {
 // unless using vectors in ES which is a non-free feature
 function mx_helpers_isDatatypeMultiEnumOk(datatype) {
 	return datatype=="TINY_TEXT" 
-		|| datatype=="LINK_URL"
+		|| datatype=="PAGE_URL"
 		|| datatype=="IMAGE_URL"
 		|| datatype=="AUDIO_URL"
 		|| datatype=="VIDEO_URL"
-		|| datatype=="REFERENCE";
+		|| datatype=="LINK";
 }
 
 

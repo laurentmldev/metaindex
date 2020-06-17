@@ -4,13 +4,10 @@
  
  
  
-<!--------------- REFERENCE -------------->
-<!--
-REFERENCE field is based on classic 'Text' ElasticSearch field type,
-where contents is a coma-separated list of documents IDs.
-It intends to replace 'RELATION' field because less restrictive.
-The referencing resolution is performed by the application, but 
-then several references can be defined within documents.  
+<!--------------- LINK -------------->
+<!-- 
+LINK field is based on classic 'Text' ElasticSearch field type,
+where contents is a coma-separated list of documents IDs.  
  -->		  
  <script type="text/javascript" >
  

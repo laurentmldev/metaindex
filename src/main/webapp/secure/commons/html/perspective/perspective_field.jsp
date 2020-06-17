@@ -3,10 +3,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <s:include value="./perspective_field_tinytext.jsp"></s:include>
-<s:include value="./perspective_field_linkurl.jsp"></s:include>
+<s:include value="./perspective_field_pageurl.jsp"></s:include>
 <s:include value="./perspective_field_imageurl.jsp"></s:include>
-<s:include value="./perspective_field_relation.jsp"></s:include>
-<s:include value="./perspective_field_reference.jsp"></s:include>
+<s:include value="./perspective_field_link.jsp"></s:include>
  
 <s:include value="./perspective_field_gen_customizable.jsp"></s:include>
 <s:include value="./perspective_field_gen_editable.jsp"></s:include>
