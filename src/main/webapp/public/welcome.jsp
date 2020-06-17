@@ -61,7 +61,7 @@
            			<br />
            			<iframe class="eussl_bubble" src="https://secure.europeanssl.eu/sealdetails/metaindex.fr/0.75"></iframe>
 		</a>
-        <div style="width:70vw"></div>	 	   			 	
+        <div style="width:60vw"></div>	 	   			 	
 	 		 	
 	 	
 	 	<a href="mailto:laurentmlcontact-metaindex@yahoo.fr?subject=Join Metaindex&body=Hi, I'd like to become a MetaindeX Beta-User! Could create an account for me and explain a bit more how to use it ? Thanks! :)"  
@@ -101,7 +101,7 @@
             		<li>Import data from Excel or CSV prepared with OpenRefine</li>
 					<li>Store your corpus and associated contents (images, documents)</li>
 					<li>Explore and filter with powerful Lucene query language</li>
-					<li>Build great statistics charts and find correlations with integrated ELK Kibana</li>
+					<li>Build great statistics charts and find correlations using integrated Kibana from Elastic Stack</li>
 					<li>Export to Gephi and explore data connections and graphs</li>
 					<li>Share and collaborate safely on the same contents</li>
 				</ul>	

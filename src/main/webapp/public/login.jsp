@@ -32,7 +32,9 @@ onkeypress="if (event.which==13||event.keycode==13) {
 	}"
 	>
 
+
   <div class="container p-5" style="width:50%;">
+	
 	
     <!-- Outer Row -->
     <div class="row justify-content-center"  >
@@ -98,7 +100,13 @@ onkeypress="if (event.which==13||event.keycode==13) {
               </div>
             </div>
         
-        	<div class="row">
+        	<div class="row" >
+        			<div style="width:100%;text-align:center">
+        			  <style type="text/css">a.eussl_seal:hover .eussl_bubble { visibility:visible; } a.eussl_seal .eussl_bubble { visibility:hidden; width:145.5px; height:200px; margin-left:3.75px; border:1px solid #6c81b3; border-radius:0 0 3px 3px; overflow:hidden; border-top:0; }</style>	 		 	
+					  <a class="eussl_seal eussltip" href="https://secure.europeanssl.eu" target="_blank" >
+					    <img src="https://secure.europeanssl.eu/seal/metaindex.fr/150" alt="Secured by EuropeanSSL.eu" />					    	         			
+					  </a>
+				    </div>	
             	<div class="app-title mx-copyright" 
             	style="" >
             	<s:text name="globals.copyright"/> - MetaindeX v<s:property value="mxVersion"/></div>
