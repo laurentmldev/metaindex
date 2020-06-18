@@ -3,19 +3,18 @@
 v2.0.3:
 -------
 
-# admin could still upload CSV with more items than allowed in quota...
-# create item : check type VS string format(number)
- 
-# metaindex.fr/robots.txt
-# when cards title is not set, references shall use ID to list contents
-
+#71 when cards title is not set, references shall have a default value (ID or document name?)
+#72 when creating new item : check type VS string format(number)
+#73 when importing CSV, shall ignore first line even if no '#' at the beginning
 
 # editing fields when translation is used results in an error (using translation instead of term id somewhere...?) TBC
+# admin could still upload CSV with more items than allowed in quota... ? TBC
+
 
 v2.1.0:
 -------
 
-
+# metaindex.fr/robots.txt
 #41 Terms and Conditions and use of Cookies presentation and acceptation on first login
 #19 send email to users and admin when useful
 when updating CSV with terms to create, the terms list is not updated in the GUI

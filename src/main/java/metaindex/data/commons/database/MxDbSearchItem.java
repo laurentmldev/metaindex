@@ -99,10 +99,30 @@ public class MxDbSearchItem implements IDbItem {
 		return separator.equals(")") || separator.equals("]") || separator.equals("}");
 	}
 	@Override
+	/**
+	 * Item name is a string to summarize item contents.
+	 * It is built from a list of fields (see 'cards title' field in catalog customization)
+	 * to be concatenated to build this name.
+	 */
 	public String getName() {
 		Integer openSeparator=0;
 		String separator="";
+		
+		
+		// user defined a _nameFields string listing the name of the fields
+		// to be used to build the item 'name'
+
 		if (_nameVal.length()==0) {
+			
+			// if no fields list defined, we use item Id by default
+			if (_nameFields.size()==0 
+					// handle case when a single empty list has been set ...
+					// TODO: fix properly the way to not add value if empty.
+					|| _nameFields.size()==1 && _nameFields.get(0).length()==0) { 
+				_nameVal=_id; 
+			}
+			
+			// else
 			for (String fieldname : _nameFields) {
 				Object curFieldVal = _data.get(fieldname);
 				// custom separator defined within quotes
@@ -132,6 +152,7 @@ public class MxDbSearchItem implements IDbItem {
 			}
 			if (_nameVal.length()>0 && isClosingSeparator(separator)  && openSeparator>0) { _nameVal+=separator; }
 		}
+		 
 		return _nameVal;
 	}
 
