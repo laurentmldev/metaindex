@@ -3,7 +3,6 @@
 v2.0.3:
 -------
 
-#71 when cards title is not set, references shall have a default value (ID or document name?)
 #72 when creating new item : check type VS string format(number)
 #73 when importing CSV, shall ignore first line even if no '#' at the beginning
 
