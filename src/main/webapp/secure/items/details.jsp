@@ -196,6 +196,10 @@
 	
  }
 
+ MxGuiCards.extractName=function(objDescr) {
+	 if (objDescr.name == "") { return "<s:property value='currentUserProfile.catalogVocabulary.itemCap'/>"; }
+	 else { return objDescr.name; }
+ }
  </script>
  
  <!-- expected by commons/perspectives.jsp -->

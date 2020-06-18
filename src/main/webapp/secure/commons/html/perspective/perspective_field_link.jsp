@@ -37,6 +37,7 @@ function  _commons_perspective_getUnknownItemDisplay(itemId) {
 function _commons_perspective_buildLinkToItem(itemId,itemName,title) {
 	let anchorNode = document.createElement("a");
 	
+	if (itemName=="") { itemName=itemId; }
 	anchorNode.innerHTML=itemName;
 	anchorNode.href="#";
 	anchorNode.title=title;
