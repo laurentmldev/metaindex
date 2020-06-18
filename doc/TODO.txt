@@ -5,9 +5,8 @@ v2.0.3:
 
 # admin could still upload CSV with more items than allowed in quota...
 # create item : check type VS string format(number)
-# rename REFERENCE type as LINK and LINK_URL as PAGE_URL, and remove 'RELATION' obsolete 
+ 
 # metaindex.fr/robots.txt
-# help.items.gexf_download.body / title
 # when cards title is not set, references shall use ID to list contents
 
 
@@ -93,8 +92,9 @@ NFS access : swith to JLAN remote files
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
-
-v2.0.2
+v2.0.3
+# help.items.gexf_download.body / title
+# rename REFERENCE type as LINK and LINK_URL as PAGE_URL, and remove 'RELATION' obsolete
 # updated profile does not appear in the logs when changing user name or password??
 # buggy when adding new user live
 	- when adding new catalog rights while user not yet logged in, then Kibana rights are not updated	
@@ -103,6 +103,9 @@ v2.0.2
 
 # when going down, retrieved complementary elements are not related to the current search
 #68 export GEXF file for Gephi graphs
+
+
+v2.0.2
 ensure userdata is resilient to server reboot ???
 statistics create items with CSV upload is not traced
 statistics : count CSV download
