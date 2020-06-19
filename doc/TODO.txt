@@ -94,6 +94,7 @@ NFS access : swith to JLAN remote files
 Done:
 -----
 v2.0.3
+#72 when creating new item : check type VS string format(number)
 #73 when importing CSV, shall ignore first line even if no '#' at the beginning
 # help.items.gexf_download.body / title
 # rename REFERENCE type as LINK and LINK_URL as PAGE_URL, and remove 'RELATION' obsolete
