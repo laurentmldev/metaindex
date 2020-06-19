@@ -3,7 +3,11 @@
 v2.0.3:
 -------
 
-#72 when creating new item : check type VS string format(number)
+# improve welcome page. compare with Heurist DB : https://heuristplus.sydney.edu.au
+	- humanities and science
+	- small to large databases
+	- handle heterogeneous contents
+	- integrate files and images 
 
 # editing fields when translation is used results in an error (using translation instead of term id somewhere...?) TBC
 # admin could still upload CSV with more items than allowed in quota... ? TBC

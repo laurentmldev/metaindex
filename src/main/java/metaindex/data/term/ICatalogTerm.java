@@ -41,6 +41,8 @@ public interface ICatalogTerm extends IIdentifiable<Integer>{
 								// and webapp/secure/commons/js/mx_helpers.jsp, and webapp/secure/catalogs/details.jsp
 							  }
 	
+	// if changing that, look for occurrences in javascript too,
+	// it might be used for adaptive GUI
 	public enum RAW_DATATYPE { Tunknown,
 								 Ttext, 
 								 Tkeyword, 

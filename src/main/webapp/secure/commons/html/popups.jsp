@@ -153,6 +153,9 @@
 // 				 { id:"xxx",type:"multiselect",values:['val1','val2'], important:'true' }
 //				 { id:"xxx",type:"file-url",title:"xxx",defaultValue:"xxx", important:'false',disabled:'false' },
 //				]
+// text fields can have optional 'datatype' attribute : text|number. 
+// 		- text : free text
+//		- number : check number syntax
 //
 // onValidCallback(choices)
 // 	choice[id]="xxx"
@@ -191,7 +194,17 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFile
 			newFormInputText.placeholder=curFieldDescr.placeholder;
 		}
 		newFormInputText.value=curFieldDescr.defaultValue;
-		newFormInputText.onchange=function(event) { resultFields[curFieldDescr.id]=this.value; }
+		newFormInputText.onchange=function(event) {
+			
+			if (curFieldDescr.datatype=="number") {
+				if (isNaN(this.value)) {
+					newFormInputText.classList.add("form-input-error");
+				} else {
+					newFormInputText.classList.remove("form-input-error");
+				}
+			}
+			resultFields[curFieldDescr.id]=this.value; 
+		}
 		newFormInputText.onfocusout=function(event) { resultFields[curFieldDescr.id]=this.value; }
 		
 		if (curFieldDescr.disabled=='true') {

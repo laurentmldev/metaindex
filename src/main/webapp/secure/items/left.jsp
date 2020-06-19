@@ -251,6 +251,11 @@ function _left_build_newitem_form_field_desc(termId,fieldName,termDesc,catalogDe
 	else {
 		fieldFormDef.type="text";		
 		fieldFormDef.defaultValue="";
+		if (termDesc.rawDatatype=="Tshort" 
+				|| termDesc.rawDatatype=="Tinteger"
+				|| termDesc.rawDatatype=="Tfloat") {
+			fieldFormDef.datatype="number";	
+		}		
 	}
 	return fieldFormDef;
 	
