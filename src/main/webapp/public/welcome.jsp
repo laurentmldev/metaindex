@@ -48,78 +48,68 @@
 	</script>
 </head>
 
-<body class="bg-gradient-primary" style="background-color:#fff;background-image:none;"
+<body class="" style="background-color:#f5f5f5;background-image:none;"
 	onload="carousel();" >
 
-	 <nav class="navbar navbar-expand navbar-light bg-white topbar static-top " style="margin:0;padding:0;margin-top:2rem;">
+	 <nav class="navbar navbar-expand navbar-light bg-white topbar static-top mx_welcome_navbar" 
+	 		style="background:#aaa;height:5rem">
 	 	
 	 	
 	 	
-		<style type="text/css">a.eussl_seal:hover .eussl_bubble { visibility:visible; } a.eussl_seal .eussl_bubble { visibility:hidden; width:145.5px; height:200px; margin-left:3.75px; border:1px solid #6c81b3; border-radius:0 0 3px 3px; overflow:hidden; border-top:0; }</style>	 		 	
-	 	<a class="eussl_seal eussltip" href="https://secure.europeanssl.eu" target="_blank" style="padding-top:10rem;">
-           			<img src="https://secure.europeanssl.eu/seal/metaindex.fr/150" alt="Secured by EuropeanSSL.eu" />
-           			<br />
-           			<iframe class="eussl_bubble" src="https://secure.europeanssl.eu/sealdetails/metaindex.fr/0.75"></iframe>
-		</a>
-        <div style="width:60vw"></div>	 	   			 	
-	 		 	
+			 	<div class="app-title" style="font-size:4vw;padding:0;margin:0;width:auto;">
+			 		<span class="scale-color-white">M</span><span class="app-title2 scale-color-white" style="color:white;">etainde</span><span class="scale-color-white">X</span>            		            			
+            	</div>
+            
+          
+        	 	   			 	
+	 	<div style="width:20vw"></div>
 	 	
-	 	<a href="mailto:laurentmlcontact-metaindex@yahoo.fr?subject=Join Metaindex&body=Hi, I'd like to become a MetaindeX Beta-User! Could create an account for me and explain a bit more how to use it ? Thanks! :)"  
-	 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" style="background:green;border-color:white;margin-left:3rem;text-shadow:none"
-	 		>Join us! <br/>Become a <span style="white-space:nowrap;">Beta-User!</span></a>	 	
+	 	<a href="mailto:laurentmlcontact-metaindex@yahoo.fr?subject=Join Metaindex&body=Hi, I'd like to become a MetaindeX User! Could create an account for me and explain a bit more how to use it ? Thanks! :)"  
+	 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" style="background:green;border-color:white;margin-left:3rem;text-shadow:none;width:10vw"
+	 		>Join us!</a>
+	 		
+	 	<div style="width:35vw"></div>	 	
 	 	<a href="loginform"  class="btn btn-sm btn-info mx_welcome_btn scale nav-item no-arrow " style="background:#777" >Sign In</a>
 	 			
 	 </nav>
-	
-		 		
+	 		
   <div class="container" style="width:100%;"  >
     
     <div class="row justify-content-center"  >
-     	 
-           	<div class="app-title" style="padding:0;margin:0;width:100%;margin-bottom:1rem;margin-top:4rem;">
-           		
-           		
-           		<img src="public/commons/media/img/mx-title.png" style="max-width:55vw;height: auto;" />
-           		<!--span class="scale-color-white">M</span><span class="app-title2 scale-color-white" >etainde</span><span class="scale-color-white">X</span-->
-           	
-            		<div class="app-title" style="padding:0;margin:0;font-size:1.6vw;text-shadow:none">
-            			Opensource Data Cataloger           			
-	 				</div>
-	 							            			
-            </div>
-
-			<div class="" style="padding:0;margin:0;font-size:2.5vw;text-align:center;">            				
-				<b style="color:green">
-					Get more from your data
-						<br/>
-					<span style="font-size:1.8rem">use proper software and workflow for easy and optimal data analysis</span> 
-				
-				</b>       
-				<div style="font-size:1rem">
-						
-            	<ul class="app-title" style="text-align:left;padding-left:10rem;font-size:1rem;text-shadow:none;padding-top:0;">
-            		<li>Import data from Excel or CSV prepared with OpenRefine</li>
-					<li>Store your corpus and associated contents (images, documents)</li>
-					<li>Explore and filter with powerful Lucene query language</li>
-					<li>Build great statistics charts and find correlations using integrated Kibana from Elastic Stack</li>
-					<li>Export to Gephi and explore data connections and graphs</li>
-					<li>Share and collaborate safely on the same contents</li>
+     	 	<div style="text-align:left;padding-left:10rem;font-size:1rem;text-shadow:none;padding-top:1rem;">						
+				MetaindeX is an <b>OpenSource</b> Cataloging app thought for easy and powerful data management, especially for humanities studies and research
+				</div>
+           <div class="" style="padding:0;margin-top:2rem;font-size:2.2vw;text-align:center;font-weight:bold;">
+			We're very excited to announce the very first official release!<br/>
+			<span style="font-size:1.6rem;">
+			We try to grow smoothly, so ask for your free account  
+			<a href="mailto:laurentmlcontact-metaindex@yahoo.fr?subject=Join Metaindex&body=Hi, I'd like to become a MetaindeX User! Could create an account for me and explain a bit more how to use it ? Thanks! :)"  
+	 		 style="color:#77d"
+	 		>Here</a></span> 
+			</div>
+			<div style="text-align:left;padding-left:7rem;font-size:1.3rem;text-shadow:none;padding-top:0;font-weight:bold">
+            	<ul class="app-title" style="text-align:left;padding-left:6rem;font-size:1.1rem;text-shadow:none;padding-top:0;">
+            		<li style="list-style-type:'\2713';padding-left:1rem;">Inject data from Excel or OpenRefine</li>
+					<li style="list-style-type:'\2713';padding-left:1rem;">Work offline thanks to powerful CSV import/export module</li>
+					<li style="list-style-type:'\2713';padding-left:1rem;">Store your corpus associated files (images, documents,...)</li>
+					<li style="list-style-type:'\2713';padding-left:1rem;">Explore and filter with powerful query language</li>
+					<li style="list-style-type:'\2713';padding-left:1rem;">Build great statistics charts and find correlations</li>
+					<li style="list-style-type:'\2713';padding-left:1rem;">Export to Gephi and explore data connections and graphs</li>
+					<li style="list-style-type:'\2713';padding-left:1rem;">Think collaborative and work safely as a team on the same contents</li>
 				</ul>	
 				</div>       
-						
-	 		</div>
+			<div style="margin-top:1rem;margin-bottom:3rem;">   <center>     	
+	        	<img class="mx_welcome_screenshot w3-animate-opacity" src="public/commons/media/img/screenshots/stats.png">	        	
+	        	<img class="mx_welcome_screenshot w3-animate-opacity" src="public/commons/media/img/screenshots/cards1.png">				
+        	</center></div>
+        	
 	
 	  
 	</div>
-        	<div style="margin-top:4rem;">   <center>     	
-	        	<img class="mx_welcome_screenshot w3-animate-opacity" src="public/commons/media/img/screenshots/stats.png">	        	
-	        	<img class="mx_welcome_screenshot w3-animate-opacity" src="public/commons/media/img/screenshots/editmode2.png">
-	        	<img class="mx_welcome_screenshot w3-animate-opacity" src="public/commons/media/img/screenshots/cards1.png">				
-        	</center></div>
+        	
 
         <div style="padding-left:6rem;padding-right:6rem;" ><center>
-        
-         	
+    		 	
   			<div id="features-list"  >  
    				<div class="card mb-3 scale-bgcolor-white" style="border:none" >    					
 				    <div class="card-body " >
@@ -133,8 +123,8 @@
 						      	</span>
 					      	</li>
 					      	<li class="fa-li fa fa-check scale-color-blue">
-					      			<span class="mx_welcome_card_li_contents">Upload contents from Excel or third-party database<br/>
-					      				<span class="_details_ mx_welcome_card_details" >Synchronize your work or third-party DB using advanced CSV injection utility</span>
+					      			<span class="mx_welcome_card_li_contents">Exchange contents with third-party tools<br/>
+					      				<span class="_details_ mx_welcome_card_details" >Synchronize your work or third-party tools (Excel, <a class="mx_welcome_card_body_link" target="_blank"  href="http://openrefine.org">OpenRefine</a>,...) using advanced CSV injection utility</span>
 					      			</span>
 					      	</li>
 					      	<li class="fa-li fa fa-check scale-color-blue">
@@ -155,7 +145,7 @@
 					    	</li>
 					      	<li class="fa-li fa fa-check scale-color-blue">
 					      			<span class="mx_welcome_card_li_contents">Links documents with each other<br/>
-					      				<span class="_details_ mx_welcome_card_details" >Reference documents from each other to build connections</span>
+					      				<span class="_details_ mx_welcome_card_details" >Link documents with each other to build connections</span>
 					      			</span>
 					      	</li>	
 					      	<li class="fa-li fa fa-check scale-color-blue">
@@ -176,17 +166,22 @@
 					      <ul class="mx_welcome_card_ul fa-ul">
 					        <li class="fa-li fa fa-check scale-color-blue" >
 					      			<span class="mx_welcome_card_li_contents" >Build Powerful Search Queries<br/>
-					      				<span class="_details_ mx_welcome_card_details"  >Experience powerful <a class="mx_welcome_card_body_link" href="http://lucene.org">Lucene</a> Search Queries, and make very efficient and precise search queries</span>	
+					      				<span class="_details_ mx_welcome_card_details"  >Experience powerful <a class="mx_welcome_card_body_link" target="_blank"  href="http://lucene.org">Lucene</a> Search Queries, and make very efficient and precise search queries</span>	
 					      			</span>
 					      	</li>
 					      	<li class="fa-li fa fa-check scale-color-blue" >
 			      				<span class="mx_welcome_card_li_contents">Generate great statistic charts in few clicks<br/>
-			      					<span class="_details_ mx_welcome_card_details"  >Full integration with world-famous <a class="mx_welcome_card_body_link" href="http://elk.org">Kibana</a> for generation of statistics charts</span>
+			      					<span class="_details_ mx_welcome_card_details"  >Full integration with world-famous <a class="mx_welcome_card_body_link" target="_blank"  href="http://elk.org">Kibana</a> for generation of statistics charts</span>
+			      				</span>
+			      			</li>			      			
+					      	<li class="fa-li fa fa-check scale-color-blue" >
+			      				<span class="mx_welcome_card_li_contents">Export data for graph analysis<br/>
+			      					<span class="_details_ mx_welcome_card_details"  >Generate GEXF file and load it with <a class="mx_welcome_card_body_link" target="_blank"  href="http://gephi.org">Gephi</a> graph analyzer</span>
 			      				</span>
 			      			</li>			      			
 					      	<li class="fa-li fa fa-check scale-color-blue" >
 					      			<span class="mx_welcome_card_li_contents">Amazingly fast search engine<br/>
-					      				<span class="_details_ mx_welcome_card_details"  >Lightning-fast search with world-famous <a class="mx_welcome_card_body_link" href="http://elk.org">Elastic-Search</a> engine</span>
+					      				<span class="_details_ mx_welcome_card_details"  >Lightning-fast search with world-famous <a class="mx_welcome_card_body_link" target="_blank" href="http://elk.org">Elastic-Search</a> engine</span>
 					      			</span>
 					      	</li>
 					      	<li class="fa-li fa fa-check scale-color-blue" >
@@ -199,12 +194,7 @@
 			      				<span class="mx_welcome_card_li_contents">Integrate charts into your workspace<br/>
 			      					<span class="_details_ mx_welcome_card_details"  >Access to updated dynamic statistic charts from main application</span>
 			      				</span>
-			      			</li>
-			      			<li class="fa-li fa fa-check scale-color-blue" >
-			      				<span class="mx_welcome_card_li_contents">Export contents as GEXF for graphs and connections analysis<br/>
-			      					<span class="_details_ mx_welcome_card_details"  >Export data as GEXF file, and import it in Gephi for amazing graphs and connections analysis </span>
-			      				</span>
-			      			</li> 
+			      			</li>			      			
 			      		</ul>
 				      </div>
 				    </div>
@@ -255,8 +245,15 @@
  <footer class="sticky-footer bg-white">
         <div class="container my-auto">
           <div class="mx-copyright text-center my-auto">
-            <span><s:text name="globals.copyright"/> - MetaindeX v<s:property value="mxVersion"/></span>
+            <span><b><s:text name="globals.copyright"/></b> - MetaindeX v<s:property value="mxVersion"/></span>
           </div>
+          <center><div>
+		<a class="" href="https://secure.europeanssl.eu" target="_blank" style="">
+           			<img src="https://secure.europeanssl.eu/seal/metaindex.fr/150" 
+           			style="margin-top:1rem" />
+           			
+		</a>	
+		</div></center>
         </div>
         <div  id="cookies-alert-div"
         	  class="container fixed-bottom mx-cookies-alert" 
@@ -268,6 +265,7 @@
         	  	onclick="this.parentNode.style.display='none';">
         	  	OK</a>
         </div>
+         
   </footer>
    
       

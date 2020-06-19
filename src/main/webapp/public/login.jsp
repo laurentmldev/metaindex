@@ -43,8 +43,11 @@ onkeypress="if (event.which==13||event.keycode==13) {
         <div class="card o-hidden border-0 shadow-lg my-5">
           <div class="card-body p-0">
             <!-- Nested Row within Card Body -->
-            <div class="row">
-            	<div class="app-title" ><img src="public/commons/media/img/mx-title.png" style="max-width:100%;height: auto;" /></div>
+            <div class="row" style="display:block;">            	
+            	<div class="app-title" style="font-size:6vw;padding:0;margin:0;width:auto;">
+			 		<span class="scale-color-white">M</span><span class="app-title2 scale-color-white" style="color:white;">etainde</span><span class="scale-color-white">X</span>            		            			
+            	</div>
+            	 
             </div>
             
             <div class="row">
