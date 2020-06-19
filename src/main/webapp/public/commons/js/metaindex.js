@@ -564,7 +564,9 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	    		if (	   CSVrows[curLineNb].length>0 
 	    				&& CSVrows[curLineNb][0]!='#' 
 	    				&& !CSVrows[curLineNb].match(/^\s*$/)
-	    				&& !CSVrows[curLineNb].match(/^\s*#/)) {
+	    				&& !CSVrows[curLineNb].match(/^\s*#/)
+	    				&& curLineNb!=0 // ignore first line (header)
+	    				) {
 	    			nbItemsToBeCreated++;
 	    		}
 	    			
@@ -640,6 +642,9 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			}
 	    	
 	    	while (curLineNb<CSVrows.length) {
+	    		// ignore first line (header)
+	    		if (curLineNb==0) { curLineNb++; continue; }
+	    		
 	    		curLinesWsBuffer.push(CSVrows[curLineNb]);
 	    		
 	    		if (curLineNb % MX_WS_UPLOAD_FILE_MAX_LINES==0 || curLineNb==CSVrows.length-1) {
