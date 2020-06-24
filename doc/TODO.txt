@@ -1,29 +1,37 @@
 
 
-v2.0.3:
+v2.0.4:
 -------
+#83 once user has been blocked, unable to log in again
+#81 FTP server shall accept WinSCP client commands
+#77 faster add of new fields when importing from CSV
+	+ refresh terms list from catalog in webpage
+   
+#76 https://metaindex.fr:8443/ is error page 
 
-# improve welcome page. compare with Heurist DB : https://heuristplus.sydney.edu.au
-	- humanities and science
-	- small to large databases
-	- handle heterogeneous contents
-	- integrate files and images 
+
+#79 cannot generate GEXF file bigger than 10000 items
+#80 admin could still upload CSV with more items than allowed in quota... ? TBC
+
+# statistics: existing JSP/J2EE framework?
+# statistics: count how many time welcome page has been reached
 
 # editing fields when translation is used results in an error (using translation instead of term id somewhere...?) TBC
-# admin could still upload CSV with more items than allowed in quota... ? TBC
+
 
 
 v2.1.0:
 -------
-
-# metaindex.fr/robots.txt
-#41 Terms and Conditions and use of Cookies presentation and acceptation on first login
+#78 import from json file
+#75 mxwebapp shall be robust to a restart of elsrc and kibana (and mxsql ?)
+#41 create account automatically
+	Terms and Conditions and use of Cookies presentation and acceptation on first login
 #19 send email to users and admin when useful
 when updating CSV with terms to create, the terms list is not updated in the GUI
 #39 when delete catalog failed because of Kibana, page is not refreshed while it should be
 #35 Fields: multi shall be visible only if enum is not empty
 #64 type longtext (rich?) pour étude du language / analyse de corpus
-delete all items, not only max 10000 items (ELK limit)
+# delete all items, not only max 10000 items (ELK limit)
 #59 auto mx start at server reboot
 #55 welcome tour
 #23 avoid use of kibana_user user once ELK issue 51759 us fixed
@@ -32,6 +40,7 @@ delete all items, not only max 10000 items (ELK limit)
 #40 when deleting a catalog, delete also associated userdata or archive it?
 #43 search on accentuated characters imported from UTF-16 does not seem to work
 #45 when logging out from Mx, log-out Kibana session too
+# metaindex.fr/robots.txt
 
 
 
@@ -39,10 +48,6 @@ delete all items, not only max 10000 items (ELK limit)
 Backlog:
 --------
 
-welcome page :
-	- sciences sociales et humaines
-	- détermination thématique d'un corpus
-	- analyse de contenu
 
 
 FTP server with 
@@ -52,7 +57,8 @@ FTP server with
 
 NFS access : swith to JLAN remote files
 	https://stackoverflow.com/questions/26631989/how-to-setup-alfresco-jlan-file-server-as-a-standalone-java-package
-	 
+	
+- Kibana logs rotating daily 
 - construire un graph schéma conceptuel
 	Un schéma conceptuel (ou carte conceptuelle) est une représentation structurée d'un ensemble de concepts reliés sémantiquement. Les concepts sont liés par des lignes fléchées auxquelles sont accolés un mot ou deux décrivant leur relation : « mène à », « prévient que », « favorise », etc.
 - intégration ouitl d'analyse lexicographique TXM 
@@ -93,7 +99,19 @@ NFS access : swith to JLAN remote files
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+v2.0.4
+#82 long text on TINY_TEXT shall be displayed with "xxxx ..."
+# elsrc cannot stop and restart properly: -> config as volume
+	{"type": "server", "timestamp": "2020-06-22T06:35:17,019Z", "level": "ERROR", "component": "o.e.x.s.a.e.ReservedRealm", "cluster.name": "mx-cluster", "node.name": "mxelsrc", "message": "failed to retrieve password hash for reserved user [kibana]", "cluster.uuid": "LSy3Ox2PR5S64xbhmD6JxQ", "node.id": "7J3tErm7SYyt6CpZdLKPiQ" , 
+	"stacktrace": ["org.elasticsearch.action.UnavailableShardsException: at least one primary shard for the index [.security-7] is unavailable",
+
 v2.0.3
+
+# improve welcome page. compare with Heurist DB : https://heuristplus.sydney.edu.au
+	- humanities and science
+	- small to large databases
+	- handle heterogeneous contents
+	- integrate files and images 
 #72 when creating new item : check type VS string format(number)
 #73 when importing CSV, shall ignore first line even if no '#' at the beginning
 # help.items.gexf_download.body / title

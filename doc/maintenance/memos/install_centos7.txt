@@ -1,5 +1,7 @@
 
 
+#Set timezone
+sudo timedatectl set-timezone Europe/Paris
 
 Create user
 -----------

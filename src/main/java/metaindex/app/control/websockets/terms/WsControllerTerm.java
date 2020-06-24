@@ -189,15 +189,18 @@ public class WsControllerTerm extends AMxWSController {
     	}
     	
     	// refresh terms list in catalog
-    	try {
-	    	c.acquireLock();
-	    	c.clearTerms();
-	    	c.loadMappingFromDb();
-	    	c.loadTermsFromDb();
-	    	c.releaseLock();
-    	} catch (Throwable t) {
-    		c.releaseLock();
-    		throw t;
+    	// might not be required if several terms are created in a row
+    	if (requestMsg.getUpdateCatalog()) {	    	
+	    	try {
+		    	c.acquireLock();
+		    	c.clearTerms();
+		    	c.loadMappingFromDb();
+		    	c.loadTermsFromDb();
+		    	c.releaseLock();
+	    	} catch (Throwable t) {
+	    		c.releaseLock();
+	    		throw t;
+	    	}
     	}
     	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_term", answer);
     	user.notifyCatalogContentsChanged(CATALOG_MODIF_TYPE.FIELDS_LIST, 1L);

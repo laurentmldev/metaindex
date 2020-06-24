@@ -67,7 +67,7 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
     	try {
 	    	
 	    	IUserProfileData user = getUserProfile(headerAccessor);
-	    	
+	    	ICatalog c = user.getCurrentCatalog();
     		ESBulkProcess procTask = Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
     						.getNewItemsBulkProcessor(user, user.getCurrentCatalog(), 
  													user.getText("Items.serverside.createFromCsvTask"), 
@@ -135,7 +135,7 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
     				newTermRequest.setCatalogId(user.getCurrentCatalog().getId());
     				newTermRequest.setTermName(newTermName);
     				newTermRequest.setTermDatatype(TERM_DATATYPE.valueOf(termName.replace(WsMsgCsvFileUpload_request.CSV_MAPPING_NEWTERM_PREFIX, "")));    				
-    				
+    				newTermRequest.setUpdateCatalog(false);// don't update catalog for each term, it will be done one all terms are created
     				try {
 						termsController.handleCreateTermRequest(headerAccessor, newTermRequest);
 					} catch (Exception e) {
@@ -169,7 +169,20 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
     			csvParsingType.add(new BasicPair<String,PARSING_FIELD_TYPE>(termName,parsingType));
     		}
     		
-    		// display CSV prepation only if some terms have to be created
+    		try {
+		    	c.acquireLock();
+		    	c.clearTerms();
+		    	c.loadMappingFromDb();
+		    	c.loadTermsFromDb();
+		    	c.releaseLock();
+	    	} catch (Throwable t) {
+	    		c.releaseLock();
+	    		String msgStr = user.getText("Items.serverside.uploadItems.unableToAutomaticallyCreateTerm");
+    			user.sendGuiErrorMessage(msgStr);				
+				return;	    		
+	    	}
+    		
+    		// display CSV preparation only if some terms have to be created
 			// otherwise it's very fast, and no use to have a progress bar
 			if (someTermsToCreate) {			
 				user.sendGuiProgressMessage(csvCheckProcId, 

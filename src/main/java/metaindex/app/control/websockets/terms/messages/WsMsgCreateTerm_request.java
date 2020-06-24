@@ -19,6 +19,7 @@ public class WsMsgCreateTerm_request extends WsMsgDeleteTerm_request {
 
 	private TERM_DATATYPE _termDatatype;
 	private Map<String,String> _complementaryInfoMap=new HashMap<>();
+	private Boolean _updateCatalog = true;
 	
 	public TERM_DATATYPE getTermDatatype() {
 		return _termDatatype;
@@ -34,5 +35,13 @@ public class WsMsgCreateTerm_request extends WsMsgDeleteTerm_request {
 
 	public void setComplementaryInfoMap(Map<String,String> complementaryInfoMap) {
 		this._complementaryInfoMap = complementaryInfoMap;
+	}
+	
+	public Boolean getUpdateCatalog() {
+		return _updateCatalog;
+	}
+	
+	public Boolean setUpdateCatalog(Boolean doIt) {
+		return _updateCatalog=doIt;
 	}
 }
