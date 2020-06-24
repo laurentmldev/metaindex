@@ -7,6 +7,18 @@
 <!--------------- TINYTEXT -------------->		  
  <script type="text/javascript" >
 
+ var TINYTEXT_MAX_DISPLAY_NB_CHARS=120;
+ 
+// from KooiInc https://stackoverflow.com/questions/1199352/smart-way-to-truncate-long-strings 
+ function truncate( str, n, useWordBoundary ){
+	  if (str.length <= n) { return str; }
+	  const subString = str.substr(0, n-1); // the original check
+	  return (useWordBoundary 
+	    ? subString.substr(0, subString.lastIndexOf(" ")) 
+	    : subString) + "&hellip;";
+	};
+	
+	
  function _commons_perspective_build_readonly_field_tinytext(catalogDesc,tabIdx,sectionIdx,fieldIdx,fieldContainerNode,fieldVisuDesc,termDesc,fieldValue) {
  	
  	 let fieldNode=document.getElementById("_commons_perspectives_field_readonly_template_tinytext").cloneNode(true);
@@ -20,7 +32,8 @@
  	 
  	 // value
  	 let valueNode = fieldNode.querySelector("._value_");
- 	 valueNode.innerHTML=fieldValue;
+ 	 let displayedStr=truncate(fieldValue,TINYTEXT_MAX_DISPLAY_NB_CHARS,true); 	 
+ 	 valueNode.innerHTML=displayedStr;
  	
  	// size 
  	 let textSizeClass="mx-perspective-field-text-size-"+fieldVisuDesc.size;
