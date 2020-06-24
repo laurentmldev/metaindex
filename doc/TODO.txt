@@ -1,6 +1,6 @@
 
 
-v2.0.4:
+v2.0.5:
 -------
 #83 once user has been blocked, unable to log in again
 #81 FTP server shall accept WinSCP client commands
