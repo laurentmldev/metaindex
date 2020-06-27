@@ -40,6 +40,8 @@ import metaindex.data.term.ICatalogTerm.TERM_DATATYPE;
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.database.IDbItem;
 import toolbox.database.elasticsearch.ESBulkProcess;
+import toolbox.database.elasticsearch.ESDataProcessException;
+import toolbox.database.sql.SQLDataProcessException;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.AProcessingTask;
 import toolbox.utils.BasicPair;
@@ -77,7 +79,9 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
     		List<IPair<String,PARSING_FIELD_TYPE>> csvParsingType = new ArrayList<IPair<String,PARSING_FIELD_TYPE>>();    		
     		
     		List<String> fieldsNotFound=new ArrayList<String>();
-    		WsControllerTerm termsController = new WsControllerTerm(this.messageSender);
+    		
+    		WsMsgCsvFileUpload_answer answer = new WsMsgCsvFileUpload_answer(
+					procTask.getId(),requestMsg.getClientFileId());
     		
     		if (requestMsg.getCsvColsList().size()==0) {
     			String msgStr = user.getText("Items.serverside.uploadItems.emptyCsvColsList");
@@ -94,30 +98,19 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
 				return;
     		}
     		
-    		// display CSV prepation only if some terms have to be created
+    		// display CSV preparation only if some terms have to be created
 			// otherwise it's very fast, and no use to have a progress bar
     		Integer curTermToCreateIndex=0;
-    		Integer totalNbTermsToCreate=0;    		
-    		Integer csvCheckProcId=AProcessingTask.getNewProcessingTaskId();
-    		Boolean someTermsToCreate=false;
     		
-    		// detect if some new terms shall be created
-    		for (String csvColName : requestMsg.getCsvColsList()) {
-    			String termName=requestMsg.getChosenFieldsMapping().get(csvColName);
-    			if (termName==null) { continue; }
-    			if (termName.startsWith(WsMsgCsvFileUpload_request.CSV_MAPPING_NEWTERM_PREFIX)) {
-    				someTermsToCreate=true;
-    				totalNbTermsToCreate++;
-    				user.sendGuiProgressMessage(csvCheckProcId, 
-    	    				user.getText("Items.uploadItems.creatingNewTerms"), new Float(0), true);
-    			}    			
-    		}
-    		
+    		// 
+    		List<ICatalogTerm> termsToCreate = new ArrayList<ICatalogTerm>();
+    		String newTermsList="";
     		// go through required mapping, and check that terms exist or create them
     		for (String csvColName : requestMsg.getCsvColsList()) {
     			
     			String termName=requestMsg.getChosenFieldsMapping().get(csvColName);
-    			
+    			ICatalogTerm term=null;
+    					
     			// '_id' special field or field to be ignored so no need to check if corresponding term exists
     			if (termName==null || termName.equals("_id")) { 
     				// declare it with TEXT as default, but anyway that won't be used later on because field
@@ -129,36 +122,46 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
     			if (termName.startsWith(WsMsgCsvFileUpload_request.CSV_MAPPING_NEWTERM_PREFIX)) {
     				
     				curTermToCreateIndex++;
-    				
     				String newTermName = csvColName.toLowerCase();
-    				WsMsgCreateTerm_request newTermRequest = new WsMsgCreateTerm_request();
-    				newTermRequest.setCatalogId(user.getCurrentCatalog().getId());
-    				newTermRequest.setTermName(newTermName);
-    				newTermRequest.setTermDatatype(TERM_DATATYPE.valueOf(termName.replace(WsMsgCsvFileUpload_request.CSV_MAPPING_NEWTERM_PREFIX, "")));    				
-    				newTermRequest.setUpdateCatalog(false);// don't update catalog for each term, it will be done one all terms are created
-    				try {
-						termsController.handleCreateTermRequest(headerAccessor, newTermRequest);
-					} catch (Exception e) {
-						String msgStr = user.getText("Items.serverside.uploadItems.unableToAutomaticallyCreateTerm");
-		    			user.sendGuiErrorMessage(msgStr);
-						return;
-					}
-    				
-    				user.sendGuiProgressMessage(csvCheckProcId, 
-            				user.getText("Items.uploadItems.creatingNewTerms"), new Float(curTermToCreateIndex*100/totalNbTermsToCreate), true);
-    				
-    				user.sendGuiInfoMessage("Term '"+newTermName+"' created in catalog "+user.getCurrentCatalog().getName());
+    				term = c.getTerms().get(newTermName);
+    				if (term!=null) {   
+    					String msgStr = user.getText("Items.serverside.uploadItems.emptyCsvColsList");
+    	    			WsMsgCsvFileUpload_answer msg = new WsMsgCsvFileUpload_answer(
+    							procTask.getId(),requestMsg.getClientFileId());
+    					msg.setIsSuccess(false);
+    					msg.setRejectMessage(msgStr);
+    					
+    					this.messageSender.convertAndSendToUser(
+    		    				headerAccessor.getUser().getName(),
+    		    				"/queue/upload_items_csv_response", 
+    		    				msg);
+    					
+    		    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_term.already_exists"));
+    		    		return;
+    		    	}
+    				term = ICatalogTerm.BuildCatalogTerm(TERM_DATATYPE.valueOf(termName.replace(WsMsgCsvFileUpload_request.CSV_MAPPING_NEWTERM_PREFIX, "")));
+    		    	term.setCatalogId(user.getCurrentCatalog().getId());
+    		    	term.setName(newTermName);   
+    		    	
+    				termsToCreate.add(term);
     				termName=newTermName;
-    				requestMsg.getChosenFieldsMapping().put(csvColName, termName);
+    				newTermsList+=" "+newTermName;
+    				// update the term to match with CSV col name (it was a special string before
+    				// saying "create a new term"
+    				requestMsg.getChosenFieldsMapping().put(csvColName, newTermName);
     			}
     			
     			// else check term already exists
-    			ICatalogTerm term =  user.getCurrentCatalog().getTerms().get(termName);
-    			// if field not found, send back an error message
-    			if (term==null) { 
-    					fieldsNotFound.add(termName); 
-    					continue;  
-    			}    				
+    			else {
+	    			
+	    			term =  user.getCurrentCatalog().getTerms().get(termName);
+	    			// if field not found, send back an error message
+	    			if (term==null) { 
+	    					fieldsNotFound.add(termName); 
+	    					continue;  
+	    			}
+    			}
+    			
     			RAW_DATATYPE dbType = term.getRawDatatype();    			
     			PARSING_FIELD_TYPE parsingType = PARSING_FIELD_TYPE.TEXT;
     			if (dbType==RAW_DATATYPE.Tfloat 
@@ -167,28 +170,66 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
     				parsingType=PARSING_FIELD_TYPE.NUMBER;
     			}
     			csvParsingType.add(new BasicPair<String,PARSING_FIELD_TYPE>(termName,parsingType));
+    			    			
     		}
     		
-    		try {
-		    	c.acquireLock();
-		    	c.clearTerms();
-		    	c.loadMappingFromDb();
-		    	c.loadTermsFromDb();
-		    	c.releaseLock();
-	    	} catch (Throwable t) {
-	    		c.releaseLock();
-	    		String msgStr = user.getText("Items.serverside.uploadItems.unableToAutomaticallyCreateTerm");
-    			user.sendGuiErrorMessage(msgStr);				
-				return;	    		
-	    	}
+    		// creating missing terms
+    		if (termsToCreate.size()>0) {
+    			user.sendGuiInfoMessage(user.getText("Items.uploadItems.creatingNewTerms")+":"+newTermsList);
+    			try {    				
+    				
+    	    		Boolean result = Globals.Get().getDatabasesMgr().getTermsDbInterface()
+    	    					.createIntoDbStmt(c,termsToCreate).execute();
+    	    		
+    	    		if (result==false) {
+    	    			answer.setIsSuccess(false);    	    			
+    	        		answer.setRejectMessage("unable to create new terms '"+newTermsList+"'.");
+    	        		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/upload_items_csv_response", answer);	
+    	        		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_term.refused_by_server"));
+    	        		return;
+    	        	}
+    	    		    	    		
+    	    		
+    	    		try {
+    			    	c.acquireLock();
+    			    	c.clearTerms();
+    			    	c.loadMappingFromDb();
+    			    	c.loadTermsFromDb();
+    			    	c.releaseLock();
+    			    	
+    		    		// Refresh Kibana index-pattern so that new term is available for statistics
+    		        	Boolean rst = Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().refreshStatisticsIndexPattern(user, c);
+    		        	if (rst==false) {
+    		        		answer.setRejectMessage("Unable to update index-pattern in Kibana for current catalog '"+c.getName()+"'");
+    		        		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_term.kibana"));
+    		        	}
+
+    		    	} catch (Throwable t) {
+    		    		c.releaseLock();
+    		    		String msgStr = user.getText("Items.serverside.uploadItems.unableToAutomaticallyCreateTerm");
+    	    			user.sendGuiErrorMessage(msgStr);				
+    					return;	    		
+    		    	}
+    	    		
+    	    	} catch (ESDataProcessException e) {
+    	    		e.printStackTrace();
+    	    		answer.setIsSuccess(false);    	    			
+	        		answer.setRejectMessage("unable to create new terms '"+newTermsList+"' : "+e.getMessage());
+	        		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/upload_items_csv_response", answer);    	    		
+    	    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_term.elasticsearch"));
+    	    		return;
+    	    	}
+    	    	catch (SQLDataProcessException e) {
+    	    		// most probably term description already exist
+    	    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_term.sql"));
+    	    		// no return here, we still want to refresh contents (field could still be added into ES db)
+    	    	}
+    		}
+    	
     		
     		// display CSV preparation only if some terms have to be created
 			// otherwise it's very fast, and no use to have a progress bar
-			if (someTermsToCreate) {			
-				user.sendGuiProgressMessage(csvCheckProcId, 
-    				user.getText("Items.uploadItems.creatingNewTerms"), new Float(100.0), false);
-			}			
-    		
+			
     		// if some fields in CSV file could not be found in catalog, reject the request
     		if (fieldsNotFound.size()>0) {
     			WsMsgCsvFileUpload_answer msg = new WsMsgCsvFileUpload_answer(

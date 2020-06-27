@@ -2,6 +2,9 @@
 
 v2.0.5:
 -------
+# quand gros upload: "connection to server lost"
+# ciseaux : "couper" plutôt que grosse explication
+
 #83 once user has been blocked, unable to log in again
 #81 FTP server shall accept WinSCP client commands
 #77 faster add of new fields when importing from CSV
@@ -22,6 +25,8 @@ v2.0.5:
 
 v2.1.0:
 -------
+# integrate https://openseadragon.github.io/ for big images viewer
+# integrate annona for annotations IIIF images overlay ?
 #78 import from json file
 #75 mxwebapp shall be robust to a restart of elsrc and kibana (and mxsql ?)
 #41 create account automatically
@@ -99,6 +104,10 @@ NFS access : swith to JLAN remote files
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+
+v2.0.5
+# erreur lorsque import avec nouveaux champs
+
 v2.0.4
 #82 long text on TINY_TEXT shall be displayed with "xxxx ..."
 # elsrc cannot stop and restart properly: -> config as volume

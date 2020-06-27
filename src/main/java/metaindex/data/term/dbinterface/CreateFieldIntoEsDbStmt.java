@@ -61,9 +61,10 @@ class CreateFieldIntoEsDbStmt extends ESWriteStmt<ICatalogTerm>   {
 				            // for text objects, add a keyword subtype as 'raw', in order to allow
 				            // ElasticSearch to sort search results following this field
 				            if (ICatalogTerm.getRawDatatype(t.getDatatype())==RAW_DATATYPE.Ttext) {
+				            	builder.field("fielddata", true);// allow significant terms search
 				            	builder.startObject("fields");
 				            	{
-				            		builder.startObject("raw"); {
+				            		builder.startObject("keyword"); {
 					            		builder.field("type", "keyword");
 					            	} builder.endObject();
 				            	} builder.endObject();
@@ -71,20 +72,35 @@ class CreateFieldIntoEsDbStmt extends ESWriteStmt<ICatalogTerm>   {
 				            else if (ICatalogTerm.getRawDatatype(t.getDatatype())==RAW_DATATYPE.Tdate) {
 		            			builder.field("ignore_malformed", "true");
 		            			builder.field("null_value", "0000");
-		            			builder.field("format", "yyyy||dd/MM/yy||dd/MM/yyyy||MM/yy||MM/yyyy||yyyy-MM-dd"
-						            					
-														+"||yyyy/MM/dd HH:mm"
+		            			builder.field("format",  
+		            									"yyyy"
+		            											            									
+		            									+"||MM/yy"
+		            									+"||MM-yy"
+		            									
+		            									+"||MM/yyyy"
+		            									+"||MM-yyyy"
+		            									
+		            									+"||yyyy/MM/dd"
+		            									+"||yyyy/MM"
+		            									+"||yyyy/MM/dd HH:mm"
 														+"||yyyy/MM/dd HH:mm:ss"
 		            									+"||yyyy/MM/dd HH:mm:ss.SSS"
 				    									
+														+"||yyyy-MM-dd"
+														+"||yyyy-MM"
 														+"||yyyy-MM-dd HH:mm"
 														+"||yyyy-MM-dd HH:mm:ss"
 						            					+"||yyyy-MM-dd HH:mm:ss.SSS"
 				    													    									
+														+"||dd-MM-yy"
+														+"||dd-MM-yyyy"
 														+"||dd-MM-yyyy HH:mm"
 														+"||dd-MM-yyyy HH:mm:ss"
 				    									+"||dd-MM-yyyy HH:mm:ss.SSS"
-				    									
+														
+				    									+"||dd/MM/yy"
+				    									+"||dd/MM/yyyy"
 														+"||dd/MM/yyyy HH:mm"
 				    									+"||dd/MM/yyyy HH:mm:ss"
 				    									+"||dd/MM/yyyy HH:mm:ss.SSS"

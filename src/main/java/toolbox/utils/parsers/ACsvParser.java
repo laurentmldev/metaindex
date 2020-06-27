@@ -118,7 +118,7 @@ public abstract class ACsvParser<TTo> implements IFieldsListParser<String,TTo> {
 	 */
 	private Map<String, Object> toMap(String csvLine) throws ParseException {
 		
-		// ignore empty line
+		// ignore empty or comment line
 		if (csvLine.startsWith("#") || csvLine.length()==0) { return null; }
 		
 		// clean input line from separators within quotes
