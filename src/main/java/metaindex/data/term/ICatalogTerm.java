@@ -102,6 +102,7 @@ public interface ICatalogTerm extends IIdentifiable<Integer>{
 		return type;
 	}
 	// ignore terms starting with "mx_" (internal use) in WsMsgCatalogDetails_answer.java
+	// if changed, default value of 'timeFieldName' in sql catalogs table shall be updated to 
 	public static final String MX_TERM_LASTMODIF_TIMESTAMP="mx_updated_timestamp";
 	public static final DateFormat MX_TERM_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 	public static final String MX_TERM_EPOCH_TIMESTAMP="1970-01-01 00:00:00.000";

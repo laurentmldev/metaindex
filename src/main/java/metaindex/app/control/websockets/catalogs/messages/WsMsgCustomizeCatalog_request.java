@@ -27,6 +27,7 @@ public class WsMsgCustomizeCatalog_request implements ICatalogCustomParams {
 	private List<String> _itemNameFields=new ArrayList<>();
 	private String _itemThumbnailUrlField;
 	private Integer _ftpPort=0;
+	private Integer _timeFieldTermId=null;
 	
 	public WsMsgCustomizeCatalog_request() {
 	
@@ -116,6 +117,16 @@ public class WsMsgCustomizeCatalog_request implements ICatalogCustomParams {
 	}
 	public void setFtpPort(Integer p) {
 		_ftpPort=p;
+	}
+
+	@Override
+	public Integer getTimeFieldTermId() {
+		return _timeFieldTermId;
+	}
+	@Override
+	public void setTimeFieldTermId(Integer t) {
+		_timeFieldTermId=t;
+		
 	}
 
 }

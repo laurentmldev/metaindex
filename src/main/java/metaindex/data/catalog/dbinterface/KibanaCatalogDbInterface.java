@@ -81,6 +81,14 @@ public class KibanaCatalogDbInterface
 											c.getTimeFieldRawName());				
 	}
 
+	public Boolean updateStatisticsTimeField(IUserProfileData activeUser,ICatalog c) {
+		
+		return _kibanaConnector.setKibanaIndexTimeField(Globals.GetMxProperty("mx.elk.user"),
+											Globals.GetMxProperty("mx.elk.passwd"),
+											c.getName(),
+											c.getName(),/* c.getName(),*/ 
+											c.getTimeFieldRawName());				
+	}
 	
 	public Boolean refreshStatisticsIndexPattern(IUserProfileData activeUser,ICatalog c) {
 		

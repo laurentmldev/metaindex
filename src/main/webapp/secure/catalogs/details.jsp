@@ -357,7 +357,16 @@ function details_memGui() {
 						        </td>
 						        <td class="_perspective_match_field_"></td>						        
 						      </tr>
-						      						      
+						       <tr>
+						        <td><s:text name="Catalogs.overview.timeField" />
+						        	<span class=""  title="S.O.S" 
+						                	onclick="event.stopPropagation();event.preventDefault();
+						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.kibana_timefield.title" />','<s:text name="help.catalog.overview.kibana_timefield.body" />')">
+						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
+						             </span>
+						        </td>
+						        <td class="_kibana_time_field_"></td>						        
+						      </tr>				      
 						    </tbody>
 						  </table>						  						
 					</div>

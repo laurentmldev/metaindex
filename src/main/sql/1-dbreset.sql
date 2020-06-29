@@ -84,6 +84,9 @@ CREATE TABLE `catalogs` (
   /* FTP port to be used to access userdata for this catalog */
   `ftpPort` int(32) NOT NULL DEFAULT '0',
 
+  /* the (date) field to be used as default time reference in Kibana */
+  `timeField_term_id` int(32) NULL,
+
   `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
@@ -488,7 +491,8 @@ MODIFY `user_catalogs_customization_id` int(32) NOT NULL AUTO_INCREMENT,AUTO_INC
 -- Contraintes pour la table `catalogs`
 --
 ALTER TABLE `catalogs`
-ADD CONSTRAINT `C_FK_COMMUNITIES_CREATOR_ID` FOREIGN KEY (`creator_id`) REFERENCES `users` (`user_id`) ;
+ADD CONSTRAINT `C_FK_COMMUNITIES_CREATOR_ID` FOREIGN KEY (`creator_id`) REFERENCES `users` (`user_id`),
+ADD CONSTRAINT `C_FK_CATALOGS_TIMEFIELD` FOREIGN KEY (`timeField_term_id`) REFERENCES `catalog_terms` (`catalog_term_id`) ON DELETE SET NULL;
 
 
 --

@@ -74,7 +74,7 @@ public class Catalog implements ICatalog {
 	private String _urlPrefix="";
 	private String _perspectiveMatchField="";
 	private Integer _ftpPort=0;
-
+	private Integer _timeFieldTermId = null;
 	
 	// Quota data
 	private Long _quotaNbDocs=DEFAULT_QUOTA_NBDOCS;
@@ -99,7 +99,7 @@ public class Catalog implements ICatalog {
 	
 	private CatalogFtpServer _ftpServer=null;
 	
-	private String _chronologyReferenceTermName = ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP;
+	
 	
 	public Catalog() {}
 	public Catalog(ICatalogCustomParams ref) {
@@ -345,8 +345,24 @@ public class Catalog implements ICatalog {
 		this._nbDocuments = _nbDocuments;
 	}
 	
-	public String getTimeFieldRawName() { return _chronologyReferenceTermName; }
-	public void setTimeFieldRawName(String t) { _chronologyReferenceTermName=t; }	
+	@Override
+	public String getTimeFieldRawName() {
+		if (getTimeFieldTermId()==null) { return ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP; }
+		
+		for (ICatalogTerm t : this.getTerms().values()) {
+			if (t.getId().equals(getTimeFieldTermId())) {
+				return t.getRawFieldName();
+			}
+		}
+		log.warn("Catalog '"+this.getName()+"' uses term id '"+getTimeFieldTermId()
+					+"' as timefield, but no such term found on the catalog, using default.");
+		
+		return ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP; 
+	}
+	@Override
+	public Integer getTimeFieldTermId() { return _timeFieldTermId; }	
+	@Override
+	public void setTimeFieldTermId(Integer tId) { _timeFieldTermId=tId; }	
 	
 	@Override
 	/**

@@ -293,6 +293,7 @@ public class KibanaConnector implements IDataConnector {
 		}
 	}
 	// ---------- INDEX-PATTERNS -------------
+	
 
 	public Boolean createKibanaIndexPattern(String adminUser, String adminPwd,
 						String spaceId,String indexPatternName,String indicesFilter,String timeFieldName) {
@@ -339,7 +340,33 @@ public class KibanaConnector implements IDataConnector {
 			return false;
 		}
 	}
-	
+
+	public Boolean setKibanaIndexTimeField(String adminUser, String adminPwd,
+						String spaceId,String indexPatternName/*,String indicesFilter*/,String timeFieldName) {
+		
+		JSONObject createIndexPatternRequestData = new JSONObject();
+		JSONObject attributes = new JSONObject();
+		createIndexPatternRequestData.put("attributes", attributes);
+		
+		//attributes.put("title", indicesFilter);
+		attributes.put("timeFieldName", timeFieldName);
+		
+		try {
+			/*
+			JSONObject response = requestRestService(adminUser, adminPwd, 
+				KIBANA_HTTP_METHOD.POST,"/api/saved_objects/index-pattern/"+indexPatternName, createIndexPatternRequestData);
+			*/
+			JSONObject response = requestRestService(adminUser, adminPwd, 
+					KIBANA_HTTP_METHOD.PUT,"/s/"+spaceId+"/api/saved_objects/index-pattern/"+indexPatternName, 
+					createIndexPatternRequestData);
+					
+			return response!=null;
+		} catch (DataProcessException  e) {
+			log.error("Error while performing Kibana operation (via REST API) for updating index-pattern '"
+															+indexPatternName+" timeField to '"+timeFieldName+"'");
+			return false;
+		}
+	}
 	// ---------- USERS -------------
 	// Kibana's users management lies directly on ElasticSearch users. See ES connector.
 }

@@ -18,6 +18,7 @@
 			  "itemNameFields":_curCatalogDesc.itemNameFields, 
 			  "itemThumbnailUrlField":_curCatalogDesc.itemThumbnailUrlField,
 			  "perspectiveMatchField":_curCatalogDesc.perspectiveMatchField,
+			  "timeFieldTermId":_curCatalogDesc.timeFieldTermId,
 			  "successCallback":successCallback,
 		 	  "errorCallback":errorCallback
 	 });	
@@ -35,6 +36,7 @@
 			  "itemNameFields":_curCatalogDesc.itemNameFields, 
 			  "itemThumbnailUrlField":_curCatalogDesc.itemThumbnailUrlField,
 			  "perspectiveMatchField":_curCatalogDesc.perspectiveMatchField,
+			  "timeFieldTermId":_curCatalogDesc.timeFieldTermId,
 			  "successCallback":successCallback,
 		 	  "errorCallback":errorCallback
 	 });
@@ -52,6 +54,7 @@
 			  "itemNameFields":newValue.split(","), 
 			  "itemThumbnailUrlField":_curCatalogDesc.itemThumbnailUrlField,
 			  "perspectiveMatchField":_curCatalogDesc.perspectiveMatchField,
+			  "timeFieldTermId":_curCatalogDesc.timeFieldTermId,
 			  "successCallback":successCallback,
 		 	  "errorCallback":errorCallback
 	 });
@@ -70,6 +73,7 @@
 			  "itemNameFields":_curCatalogDesc.itemNameFields, 
 			  "itemThumbnailUrlField":newValue,
 			  "perspectiveMatchField":_curCatalogDesc.perspectiveMatchField,
+			  "timeFieldTermId":_curCatalogDesc.timeFieldTermId,
 			  "successCallback":successCallback,
 		 	  "errorCallback":errorCallback
 	 });
@@ -86,6 +90,27 @@
 			  "itemNameFields":_curCatalogDesc.itemNameFields, 
 			  "itemThumbnailUrlField":_curCatalogDesc.itemThumbnailUrlField,
 			  "perspectiveMatchField":newValue,
+			  "timeFieldTermId":_curCatalogDesc.timeFieldTermId,
+			  "successCallback":successCallback,
+		 	  "errorCallback":errorCallback
+	 });
+}
+ 
+ 
+ 
+ function details_customTimeFieldNameChange(pk,fieldName,newValue,successCallback, errorCallback){	 
+	
+	 // Async request for value update
+ 	 // A message will be sent back to inform success or not of operation,
+ 	 // then MxApi will invoke success/error callback depending on returned result	 
+	 MxApi.requestCustomizeCatalog({
+		 	  "catalogId":_curCatalogDesc.id,
+		 	  "thumbnailUrl":_curCatalogDesc.thumbnailUrl,
+			  "itemsUrlPrefix":_curCatalogDesc.itemsUrlPrefix,
+			  "itemNameFields":_curCatalogDesc.itemNameFields, 
+			  "itemThumbnailUrlField":_curCatalogDesc.itemThumbnailUrlField,
+			  "perspectiveMatchField":_curCatalogDesc.perspectiveMatchField,
+			  "timeFieldTermId":newValue,
 			  "successCallback":successCallback,
 		 	  "errorCallback":errorCallback
 	 });
@@ -232,6 +257,37 @@
 					successCallbackPerspectiveMatchFieldChange);
 			perspectiveMatchField.append(editableFieldItemThumbnailUrlNode);
 		} else { perspectiveMatchField.innerHTML=catalogCard.descr.perspectiveMatchField; }
+		 
+		// Kibana TimeField change
+		let kibanaTimeField = newPopulatedCatalogDetails.querySelector("._kibana_time_field_");
+		let successCallbackKibanaTimeFieldChange=function(fieldName,newValue) {
+			catalogCard.descr.timeFieldTermId=newValue;
+		}		
+		if (mx_helpers_isCatalogAdmin(catalogCard.descr.userAccessRights)) {
+			
+			let choicesDef = [ { value:0, text:"- <s:text name="Catalogs.overview.lastUpdateTimestamp"/> -"} ];
+			let sortedTermsNames = Object.keys(catalogCard.descr.terms).sort();			
+			for (var termIdx=0;termIdx<sortedTermsNames.length;termIdx++) {
+				let termName=sortedTermsNames[termIdx];
+				let termDescr = catalogCard.descr.terms[termName];
+				let termId=termDescr.id;
+				let termRawType=termDescr.rawDatatype;
+				termTranslation=mx_helpers_getTermName(termDescr, catalogCard.descr);
+				if (termRawType=="Tdate") {
+					choicesDef.push({ value:termId, text:termTranslation});
+				}
+			}
+			
+			let editableFieldTiemFieldNode = xeditable_create_dropdown_field(
+					'kibanatimeField' /* pk */,
+					'Kibana-TimeField',false /*show Name*/,
+					catalogCard.descr.timeFieldTermId /* cur value */,
+					choicesDef /* dropdown choices  */,
+					details_customTimeFieldNameChange,
+					successCallbackKibanaTimeFieldChange);
+			kibanaTimeField.append(editableFieldTiemFieldNode);
+			
+		} else { kibanaTimeField.innerHTML=catalogCard.descr.timeFieldTermId; }
 		 
  }
    

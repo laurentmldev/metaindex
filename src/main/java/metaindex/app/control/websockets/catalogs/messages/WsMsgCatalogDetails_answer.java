@@ -42,6 +42,8 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 	private Long _discSpaceUseBytes=Long.MAX_VALUE;
 	private Boolean _dbIndexFound;
 	private Integer _ftpPort=0;
+	private Integer _timeFieldTermId=null;
+	
 	private Map<String,ICatalogTerm> _terms = new HashMap<>();
 	private Map<String,ICatalogPerspective> _perspectives;
 	private List<IFilter> _filters = new ArrayList<>();
@@ -77,6 +79,7 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 		this.setQuotaNbDocs(c.getQuotaNbDocs());
 		this.setQuotaFtpDiscSpaceBytes(c.getQuotaFtpDiscSpaceBytes());
 		this.setDiscSpaceUseBytes(c.getDiscSpaceUseBytes());
+		this.setTimeFieldTermId(c.getTimeFieldTermId());
 		if (u.getCurrentCatalog()==c) { this.setIsUserCurrentCatalog(true); }	
 		
 		// ignore terms for MX internal use (which start with "mx_")
@@ -232,5 +235,15 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 	}
 	public void setDiscSpaceUseBytes(Long discSpaceUseBytes) {
 		this._discSpaceUseBytes = discSpaceUseBytes;
+	}
+	
+	@Override
+	public Integer getTimeFieldTermId() {
+		return _timeFieldTermId;
+	}
+	@Override
+	public void setTimeFieldTermId(Integer t) {
+		_timeFieldTermId=t;
+		
 	}
 }

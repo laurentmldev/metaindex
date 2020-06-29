@@ -5,6 +5,7 @@ v2.0.5:
 # quand gros upload: "connection to server lost"
 # ciseaux : "couper" plutôt que grosse explication
 
+#84 customizable Kibana timefield
 #83 once user has been blocked, unable to log in again
 #81 FTP server shall accept WinSCP client commands
 #77 faster add of new fields when importing from CSV
@@ -106,7 +107,9 @@ Done:
 -----
 
 v2.0.5
-# erreur lorsque import avec nouveaux champs
+
+# SQL update : insert field timeFiledRawName in Catalogs table
+# erreur lorsque import CSV avec nouveaux champs
 
 v2.0.4
 #82 long text on TINY_TEXT shall be displayed with "xxxx ..."

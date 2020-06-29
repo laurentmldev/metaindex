@@ -37,7 +37,7 @@ class PopulateCatalogFromDbStmt extends SQLPopulateStmt<ICatalog>   {
 			"select catalogs.catalog_id,catalogs.shortname, "
 			+"catalogs.creator_id,catalogs.thumbnailUrl, "							
 			+"catalogs.itemNameFields,catalogs.itemThumbnailUrlField,catalogs.urlPrefix,catalogs.perspectiveMatchField, "
-			+"catalogs.quotaNbDocs,catalogs.quotaFtpDiscSpaceBytes,catalogs.ftpPort,catalogs.lastUpdate "
+			+"catalogs.quotaNbDocs,catalogs.quotaFtpDiscSpaceBytes,catalogs.ftpPort,catalogs.timeField_term_id,catalogs.lastUpdate "
 			+"from catalogs";
 	
 	List<ICatalog> _data;
@@ -47,7 +47,8 @@ class PopulateCatalogFromDbStmt extends SQLPopulateStmt<ICatalog>   {
 		super(ds);
 		_data=d;
 	}
-	public PopulateCatalogFromDbStmt(List<ICatalog> d, SQLDataConnector ds, Boolean onlyIfTimestampChanged) throws DataProcessException { 
+	public PopulateCatalogFromDbStmt(List<ICatalog> d, SQLDataConnector ds, Boolean onlyIfTimestampChanged) 
+																				throws DataProcessException { 
 		super(ds);
 		_data=d;
 		_onlyIfTimestampChanged=onlyIfTimestampChanged;
@@ -90,7 +91,8 @@ class PopulateCatalogFromDbStmt extends SQLPopulateStmt<ICatalog>   {
 		d.setQuotaNbDocs(rs.getLong(9));
 		d.setQuotaFtpDiscSpaceBytes(rs.getLong(10));
 		d.setFtpPort(rs.getInt(11));
-		d.setLastUpdate(rs.getTimestamp(12));
+		d.setTimeFieldTermId(rs.getInt(12));
+		d.setLastUpdate(rs.getTimestamp(13));
 		return d;
 	}
 

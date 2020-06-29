@@ -51,4 +51,9 @@ public interface ICatalogCustomParams extends IIdentifiable<Integer> {
 	public void setPerspectiveMatchField(String fieldName);	
 			
 	public Integer getFtpPort();
+	
+	/// get the field to be used as 'chronology reference' for statistics
+	/// if not set, default used is item's date of creation in application
+	public Integer getTimeFieldTermId();
+	public void setTimeFieldTermId(Integer t);
 }

@@ -865,6 +865,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			  itemNameFields, // CSV list of fields names to be used for items cards titles
 			  itemThumbnailUrlField, // containing URL for thumbnail of items cards
 			  perspectiveMatchField, // containing name of field used for perspective auto-detection
+			  timeFieldTermId, // containing termId of the date term to be used as Kibana default time field
 			  successCallback,
 			  errorCallback
 		  }
@@ -876,7 +877,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			if (myself._callback_CustomizedCatalog_debug==true) {
 				console.log("MxAPI Requesting Customize Catalog "+catalogId+" [Catalogs]");
 			}
-			console.log("sending customization requestId="+curRequestId);
+			
 			myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/customize_catalog", {}, 
 									 JSON.stringify({"requestId" : curRequestId,
 										 			 "id":dataObj.catalogId,
@@ -884,7 +885,8 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 													 "itemsUrlPrefix":dataObj.itemsUrlPrefix,
 													 "itemNameFields":dataObj.itemNameFields,
 													 "itemThumbnailUrlField":dataObj.itemThumbnailUrlField,
-													 "perspectiveMatchField":dataObj.perspectiveMatchField
+													 "perspectiveMatchField":dataObj.perspectiveMatchField,
+													 "timeFieldTermId":dataObj.timeFieldTermId
 										 			}));			
 		}
 		

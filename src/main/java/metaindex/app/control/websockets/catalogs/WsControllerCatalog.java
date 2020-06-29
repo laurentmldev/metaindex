@@ -341,6 +341,9 @@ public class WsControllerCatalog extends AMxWSController {
 			return;         		
     	}
     	try {   
+    		Boolean updateKibanaTimeField = !c.getTimeFieldTermId().equals(requestMsg.getTimeFieldTermId());
+    		
+    		// update catalog contents itself
     		c.acquireLock();
 	    	requestMsg.setName(c.getName());	    	
 	    	Boolean result = Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getUpdateIntoDefDbStmt(user, requestMsg).execute();
@@ -355,6 +358,17 @@ public class WsControllerCatalog extends AMxWSController {
 	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_customized", answer);
 	    	Globals.GetStatsMgr().handleStatItem(new SetCustoCatalogMxStat(user,c));
 	    	c.releaseLock();
+	    	
+	    	// update Kibana timafield if needed
+	    	if (updateKibanaTimeField==true) {
+	    		result =Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().updateStatisticsTimeField(user, c);
+		    	if (!result) {		    		
+		    		user.sendGuiWarningMessage("Unable to update Kibana timefield to '"+c.getTimeFieldRawName()+"'");
+	    			return;
+	    		} else {
+	    			user.sendGuiSuccessMessage(user.getText("Catalogs.overview.lastUpdateTimestamp.updated", c.getTimeFieldRawName(),c.getName()));
+	    		}
+	    	}
     	} catch (Exception e) 
     	{    		
     		answer.setIsSuccess(false);  

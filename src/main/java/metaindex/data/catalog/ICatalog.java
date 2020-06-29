@@ -50,12 +50,7 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 		
 	/// flag saying whether DB instance could be done for this catalog
 	public Boolean isDbIndexFound(); 
-	public void setDbIndexFound(Boolean dbIndexFound);	
-	
-	/// get the field to be used as 'chronology reference' for statistics
-	/// if not set, default used is item's date of creation in application
-	public String getTimeFieldRawName();
-	public void setTimeFieldRawName(String t);
+	public void setDbIndexFound(Boolean dbIndexFound);		
 	
 	// Terms
 	public Map<String,ICatalogTerm> getTerms();
@@ -72,6 +67,9 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 	
 	public void startServices() throws DataProcessException;
 	public void stopServices() throws DataProcessException;
+	
+	// Misc
+	public String getTimeFieldRawName();
 	
 	// Quotas Management
 	public Long getQuotaNbDocs();
