@@ -1,11 +1,11 @@
 
 
-v2.0.5:
+v2.0.6:
 -------
-# quand gros upload: "connection to server lost"
+
 # ciseaux : "couper" plutôt que grosse explication
 
-#84 customizable Kibana timefield
+
 #83 once user has been blocked, unable to log in again
 #81 FTP server shall accept WinSCP client commands
 #77 faster add of new fields when importing from CSV
@@ -105,6 +105,9 @@ NFS access : swith to JLAN remote files
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+v2.0.6
+# quand gros upload: "connection to server lost"
+
 
 v2.0.5
 

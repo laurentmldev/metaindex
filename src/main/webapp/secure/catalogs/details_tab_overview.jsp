@@ -188,10 +188,23 @@
 		
 		// thumbnail url
 		if (mx_helpers_isCatalogAdmin(catalogCard.descr.userAccessRights)) {
-			let editableFieldThumbnailUrlNode = xeditable_create_text_field(
+			let choicesDef = [ { value:"", text:""} ];
+			let sortedTermsNames = Object.keys(catalogCard.descr.terms).sort();			
+			for (var termIdx=0;termIdx<sortedTermsNames.length;termIdx++) {
+				let termName=sortedTermsNames[termIdx];
+				let termDescr = catalogCard.descr.terms[termName];
+				let termId=termDescr.id;
+				let datatype=termDescr.datatype;
+				termTranslation=mx_helpers_getTermName(termDescr, catalogCard.descr);
+				if (datatype!="IMAGE_URL") {		
+					choicesDef.push({ value:termId, text:termTranslation});
+				}
+			}
+			let editableFieldThumbnailUrlNode = xeditable_create_dropdown_field(
 					'thumbnailUrl' /* pk */,
 					'Thumbnail-URL',false /*show Name*/,
 					catalogCard.descr.thumbnailUrl /* cur value */,		
+					choicesDef,
 					details_customOnThumbnailUrlChange,
 					successCallbackThumbnailUrlChange);
 			thumbnailUrl.append(editableFieldThumbnailUrlNode);
@@ -233,10 +246,24 @@
 			catalogCard.descr.itemThumbnailUrlField=newValue;
 		}		
 		if (mx_helpers_isCatalogAdmin(catalogCard.descr.userAccessRights)) {
-			let editableFieldItemThumbnailUrlNode = xeditable_create_text_field(
+			let choicesDef = [ { value:"", text:""} ];
+			let sortedTermsNames = Object.keys(catalogCard.descr.terms).sort();			
+			for (var termIdx=0;termIdx<sortedTermsNames.length;termIdx++) {
+				let termName=sortedTermsNames[termIdx];
+				let termDescr = catalogCard.descr.terms[termName];
+				let termId=termDescr.id;
+				let datatype=termDescr.datatype;
+				termTranslation=mx_helpers_getTermName(termDescr, catalogCard.descr);
+				if (datatype!="IMAGE_URL") {		
+					choicesDef.push({ value:termId, text:termTranslation});
+				}
+			}
+			
+			let editableFieldItemThumbnailUrlNode = xeditable_create_dropdown_field(
 					'itemThumbnailUrl' /* pk */,
 					'Items-Thumbnail-Url',false /*show Name*/,
-					catalogCard.descr.itemThumbnailUrlField /* cur value */,		
+					catalogCard.descr.itemThumbnailUrlField /* cur value */,	
+					choicesDef,
 					details_customOnItemThumbnailUrlChange,
 					successCallbackItemThumbnailUrlChange);
 			itemsUrlField.append(editableFieldItemThumbnailUrlNode);
@@ -249,10 +276,25 @@
 			catalogCard.descr.perspectiveMatchField=newValue;
 		}		
 		if (mx_helpers_isCatalogAdmin(catalogCard.descr.userAccessRights)) {
-			let editableFieldItemThumbnailUrlNode = xeditable_create_text_field(
+			
+			let choicesDef = [ { value:"", text:""} ];
+			let sortedTermsNames = Object.keys(catalogCard.descr.terms).sort();			
+			for (var termIdx=0;termIdx<sortedTermsNames.length;termIdx++) {
+				let termName=sortedTermsNames[termIdx];
+				let termDescr = catalogCard.descr.terms[termName];
+				let termId=termDescr.id;
+				termTranslation=mx_helpers_getTermName(termDescr, catalogCard.descr);				
+				// we use termName rather termId because we might want later
+				// use moe complex expression to be interpreted, like
+				// 'date>1980' or so
+				choicesDef.push({ value:termName, text:termTranslation});				
+			}
+			
+			let editableFieldItemThumbnailUrlNode = xeditable_create_dropdown_field(
 					'itemThumbnailUrl' /* pk */,
 					'Items-Thumbnail-Url',false /*show Name*/,
-					catalogCard.descr.perspectiveMatchField /* cur value */,		
+					catalogCard.descr.perspectiveMatchField /* cur value */,	
+					choicesDef,
 					details_customOnPerspectiveMatchFieldChange,
 					successCallbackPerspectiveMatchFieldChange);
 			perspectiveMatchField.append(editableFieldItemThumbnailUrlNode);
@@ -265,7 +307,7 @@
 		}		
 		if (mx_helpers_isCatalogAdmin(catalogCard.descr.userAccessRights)) {
 			
-			let choicesDef = [ { value:0, text:"- <s:text name="Catalogs.overview.lastUpdateTimestamp"/> -"} ];
+			let choicesDef = [ { value:0, text:"<s:text name="Catalogs.overview.lastUpdateTimestamp"/>"} ];
 			let sortedTermsNames = Object.keys(catalogCard.descr.terms).sort();			
 			for (var termIdx=0;termIdx<sortedTermsNames.length;termIdx++) {
 				let termName=sortedTermsNames[termIdx];

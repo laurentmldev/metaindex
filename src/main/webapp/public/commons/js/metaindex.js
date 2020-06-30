@@ -267,7 +267,8 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	
 //------- Server HeartBeat--------	
 	// server heartbeat occuring every 3 seconds
-	var HEARTBEAT_DELAY_TRESHOLD_SEC=7;
+	// consider connection lost if no heartbeat after x secs
+	var HEARTBEAT_DELAY_TRESHOLD_SEC=30;
 	var lastHeartbeatDate = new Date();
 	var heartbeatTimerCheck = null;
 	var curApplicationStatus = 'STOPPED';
@@ -292,7 +293,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		}
 		
 		// check periodicaly that heartbeat arrive often enough
-		// wait for 2 consecutive holes, bcause sometimes the jaavascript is blocked
+		// wait for 2 consecutive holes, because sometimes the javascript is blocked
 		// for example when a "save as" window is open
 		if (heartbeatTimerCheck==null) {
 			heartbeatTimerCheck=setInterval(function() { 
