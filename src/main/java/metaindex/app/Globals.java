@@ -159,7 +159,7 @@ public class Globals {
 		return GetMxProperty("mx.userdata.path");
 	}
 	public String getWebappsTmpFsPath() {
-		String path=getWebappsFsPath()+"/mxtmp/";		
+		String path=getWebappsFsPath()+"/metaindex/secure/mxtmp/";		
 		File directory = new File(path);
         if (! directory.exists()){ directory.mkdir(); }        
         return path;
@@ -170,7 +170,10 @@ public class Globals {
 				+Globals.GetMxProperty("mx.host")+":"+Globals.GetMxProperty("mx.port");
 					
 	}
-	public String getWebappsTmpUrl() { return getAppBaseUrl()+"/mxtmp/"; }
+	public String getWebappsTmpUrl() { 
+		String url = getAppBaseUrl()+"/metaindex/secure/mxtmp/";
+		return url;
+	}
 	
 	/**
 	 * This is the main application initialisation function, called once at startup (i.e. at connection of first user)

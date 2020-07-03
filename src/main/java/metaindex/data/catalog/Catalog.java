@@ -648,7 +648,7 @@ public class Catalog implements ICatalog {
 	@Override
 	public Long getDiscSpaceUseBytes() {
 		try {
-			Long usedDiskSpace = FileSystemUtils.getTotalSizeBytes(this.getLocalFsFilesPath()+"/");
+			Long usedDiskSpace = FileSystemUtils.GetTotalSizeBytes(this.getLocalFsFilesPath()+"/");
 			return usedDiskSpace;
 		} catch (IOException e) {
 			log.error("Unable to retrieve used disc usage for catalog '"+this.getName()+"' at "+this.getLocalFsFilesPath()+" : "+e.getMessage());

@@ -26,7 +26,7 @@ using classpath local versions for spring XSD, otherwise it does not work offlin
 		will be required by spring to access it.
 		Possible configuration to customize better ...
 	 -->
-	<intercept-url pattern="/userdata/**" access="permitAll" />	
+	<intercept-url pattern="/userdata/**" access="permitAll" />		
 	<intercept-url pattern="/wsmx/**" access="hasRole('USER') or hasRole('ADMIN') or hasRole('OBSERVER')" />	
 	<intercept-url pattern="/secure/**" access="hasRole('USER') or hasRole('ADMIN') or hasRole('OBSERVER')" />
 	

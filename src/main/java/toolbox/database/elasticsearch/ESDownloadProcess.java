@@ -11,7 +11,6 @@ See full version of LICENSE in <https://fsf.org/>
 */
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
@@ -19,7 +18,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import metaindex.app.Globals;
-import metaindex.app.control.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
 import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.userprofile.IUserProfileData;
@@ -28,15 +26,13 @@ import toolbox.database.IDbItem;
 import toolbox.database.IDbSearchResult.SORTING_ORDER;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.AProcessingTask;
+import toolbox.utils.AStreamHandler;
 import toolbox.utils.IPair;
 import toolbox.utils.IStreamHandler;
-import toolbox.utils.parsers.CsvDumper;
 
-public class ESDownloadCsvProcess extends AProcessingTask   {
+public class ESDownloadProcess extends AProcessingTask   {
 	
 	private Log log = LogFactory.getLog(Catalog.class);
-	
-	private Date _timestamp=new Date(0);
 	
 	private Semaphore _postingDataLock = new Semaphore(1,true);
 	private Semaphore _stoppingProcessingLock = new Semaphore(1,true);
@@ -45,38 +41,35 @@ public class ESDownloadCsvProcess extends AProcessingTask   {
 
 	private Long _fromIndex=0L;
 	private String _query="";
-	private List<String> _csvColsList=new ArrayList<>();
 	private List<String> _preFilters=new ArrayList<>();
 	private List< IPair<String,SORTING_ORDER> > _sortByFieldName=new ArrayList<>();
 	
-	private CsvDumper<IDbItem> _csvDump=null;
+	private AStreamHandler<IDbItem> _streamHandler=null;
 	
-	private Boolean _csvDataGenerated = false;
+	private Boolean _dataGenerated = false;
 	 
-	public ESDownloadCsvProcess(IUserProfileData u, 
+	public ESDownloadProcess(IUserProfileData u, 
 						 String name, 
 						 String targeFileName,
-						 List<String> csvColsList,
+						 AStreamHandler<IDbItem> streamHandler,
 						 Long maxNbItems,
 						 ICatalog c,
 						 Long fromIndex,
 						 String query,
 						 List<String> preFilters,
-						 List< IPair<String,SORTING_ORDER> > sortingOrder,
-						 Date timestamp) throws DataProcessException { 
+						 List< IPair<String,SORTING_ORDER> > sortingOrder) throws DataProcessException { 
 		super(u,name);
 		_catalog=c;
-		_timestamp=timestamp;
 		this.setTargeFileName(targeFileName);
 		this.setTargetNbData(new Long(maxNbItems));
-		this.setCsvColsList(csvColsList);
+		_streamHandler=streamHandler;
 		this.setFromIndex(fromIndex);
 		this.setQuery(query);
 		this.setPreFilters(preFilters);
 		this.setSortByFieldName(sortingOrder);
 		
-		// progress messages will be sent by the CSV-Dump task
-		// rather by than by the DB-extract task
+		// progress messages will be sent directly by the stream processing task
+		// rather by this by the DB-extract task
 		//this.addObserver(u);		
 	}
 	
@@ -98,15 +91,9 @@ public class ESDownloadCsvProcess extends AProcessingTask   {
 		
 		try { 
 			
-			_csvDump=new CsvDumper<IDbItem>(this.getActiveUser(),
-					this.getName()+":CsvGenerator",
-					this.getTargetNbData(),
-					this.getCsvColsList(),
-					_timestamp,
-					this.getTargeFileName());
-			_csvDump.start();
+			_streamHandler.start();
 
-			class CsvDumpForwarder implements IStreamHandler<DbSearchResult> {
+			class StreamForwarder implements IStreamHandler<DbSearchResult> {
 				@Override public void handle(List<DbSearchResult> loadedDocsResults) throws InterruptedException {
 					if (loadedDocsResults.size()>1) {
 						log.warn("only one dbresult expected for thus usecase, got "+loadedDocsResults.size());						
@@ -118,11 +105,11 @@ public class ESDownloadCsvProcess extends AProcessingTask   {
 		    		if (totalHits==null) { 
 		    			log.error("No Hits for given CSV-dump request");			    			
 		    		}
-		    		_csvDump.setTargetNbData(totalHits);
+		    		_streamHandler.setTargetNbData(totalHits);
 		    		setTargetNbData(totalHits);
 		    		List<IDbItem> items = loadedResult.getItems();
 		    		addReceivedNbData(new Long(items.size()));
-		    		_csvDump.handle(items);			    		
+		    		_streamHandler.handle(items);			    		
 		    		addProcessedNbData(new Long(items.size()));						
 			}}
 			
@@ -132,7 +119,7 @@ public class ESDownloadCsvProcess extends AProcessingTask   {
 					    				this.getTargetNbData(),
 					    				this.getQuery(),
 					    				this.getPreFilters(),							    				
-					    				this.getSortByFieldName()).execute(new CsvDumpForwarder());
+					    				this.getSortByFieldName()).execute(new StreamForwarder());
 			
 			
     		
@@ -158,23 +145,23 @@ public class ESDownloadCsvProcess extends AProcessingTask   {
 				Thread.sleep(200);
 			}
 			_stoppingProcessingLock.acquire();
-			if (_csvDump!=null) { _csvDump.stop(); }
+			if (_streamHandler!=null) { _streamHandler.stop(); }
 			
 			if (this.isTerminated() && !this.isRunning()) { 
 				_stoppingProcessingLock.release();
 				return; 
 			}			
 			
-			Boolean success=(_csvDump!=null && _csvDump.isAllDataProcessed());
+			Boolean success=(_streamHandler!=null && _streamHandler.isAllDataProcessed());
 			if (!success) {
-				log.error("Unable to await end of CSV download processor "+getName());
+				log.error("Unable to await end of download processor "+getName());
 				getActiveUser().sendGuiErrorMessage(getActiveUser().getText("Items.serverside.csvdownload.failed", getName()));
 			} else {
 				// notify active user that its processing finished
 				getActiveUser().sendGuiSuccessMessage(getActiveUser().getText("Items.serverside.csvdownload.success", 
 																				getName(),
 																				this.getProcessedNbData().toString()));
-				_csvDataGenerated=true;
+				_dataGenerated=true;
 			}
 			
 			_stoppingProcessingLock.release();
@@ -188,7 +175,7 @@ public class ESDownloadCsvProcess extends AProcessingTask   {
 	}
 	@Override
 	public void abort() {
-		_csvDump.abort();			
+		_streamHandler.abort();			
 		
 		getActiveUser().removeProccessingTask(this.getId());
 	}
@@ -251,16 +238,6 @@ public class ESDownloadCsvProcess extends AProcessingTask   {
 		this._targeFileName = targeFileName;
 	}
 
-
-	public List<String> getCsvColsList() {
-		return _csvColsList;
-	}
-
-
-	public void setCsvColsList(List<String> _csvColsList) {
-		this._csvColsList = _csvColsList;
-	}
-
-	public Boolean isCsvDataGenerated() { return _csvDataGenerated; }
+	public Boolean isCsvDataGenerated() { return _dataGenerated; }
 
 };

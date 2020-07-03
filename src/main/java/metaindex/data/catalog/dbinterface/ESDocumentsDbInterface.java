@@ -17,15 +17,20 @@ import toolbox.database.elasticsearch.ESBulkProcess;
 import toolbox.database.elasticsearch.ElasticSearchConnector;
 import toolbox.database.elasticsearch.ESDatabaseInterface;
 import toolbox.database.elasticsearch.ESDownloadCsvProcess;
+import toolbox.database.elasticsearch.ESDownloadProcess;
 import toolbox.database.elasticsearch.ESReadStreamStmt;
 import toolbox.database.elasticsearch.ESWriteStmt;
 import toolbox.exceptions.DataProcessException;
+import toolbox.utils.AStreamHandler;
 import toolbox.utils.IPair;
+import toolbox.utils.parsers.CsvDumper;
+import toolbox.utils.parsers.GexfDumper;
 
 import java.util.Date;
 import java.util.List;
 
 import metaindex.data.catalog.ICatalog;
+import metaindex.data.term.ICatalogTerm;
 import metaindex.data.userprofile.IUserProfileData;
 
 public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem> 
@@ -80,7 +85,7 @@ public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem>
 	}
 	
 	// -- extract CSV from given search
-	public ESDownloadCsvProcess getNewCsvExtractProcessor(IUserProfileData u,
+	public ESDownloadProcess getNewCsvExtractProcessor(IUserProfileData u,
 												  ICatalog c, 
 												  String name, 
 												  String targetFileName,
@@ -92,6 +97,44 @@ public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem>
 												  List< IPair<String,SORTING_ORDER> > sortingOrder,
 												  Date timestamp) throws DataProcessException 
 	{
-		return new ESDownloadCsvProcess(u,name, targetFileName,csvColsList,maxNbItems,c,fromIndex,query,preFilters,sortingOrder,timestamp);
+
+		AStreamHandler<IDbItem> streamHandler=new CsvDumper<IDbItem>(
+				u,
+				name+":CsvGenerator",
+				maxNbItems,
+				csvColsList,
+				timestamp,
+				targetFileName);
+		
+		
+		return new ESDownloadProcess(u,name, targetFileName,streamHandler,maxNbItems,c,fromIndex,query,preFilters,sortingOrder);
+	}
+	
+	// -- extract CSV from given search
+	public ESDownloadProcess getNewGexfExtractProcessor(IUserProfileData u,
+												  ICatalog c, 
+												  String name, 
+												  String targetFileName,
+												  List<ICatalogTerm> nodesDataTermsList,
+												  List<ICatalogTerm> edgesTermsList,
+												  Long maxNbItems,
+												  Long fromIndex,
+												  String query,
+												  List<String> preFilters,
+												  List< IPair<String,SORTING_ORDER> > sortingOrder,
+												  Date timestamp) throws DataProcessException 
+	{
+
+		AStreamHandler<IDbItem> streamHandler=new GexfDumper<IDbItem>(
+				u,
+				name+":GexfGenerator",
+				maxNbItems,
+				nodesDataTermsList,
+				edgesTermsList,
+				timestamp,
+				targetFileName);
+		
+		
+		return new ESDownloadProcess(u,name, targetFileName,streamHandler,maxNbItems,c,fromIndex,query,preFilters,sortingOrder);
 	}
 }

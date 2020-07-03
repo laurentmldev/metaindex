@@ -1,9 +1,5 @@
 package toolbox.utils.parsers;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 /*
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -14,53 +10,32 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.elasticsearch.action.bulk.BulkItemResponse;
-import org.elasticsearch.action.bulk.BulkProcessor;
-import org.elasticsearch.action.bulk.BulkRequest;
-import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.delete.DeleteRequest;
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.update.UpdateRequest;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.common.unit.TimeValue;
 
-import metaindex.app.control.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
-import metaindex.data.catalog.Catalog;
-import metaindex.data.catalog.ICatalog;
-import metaindex.data.term.ICatalogTerm;
 import metaindex.data.userprofile.IUserProfileData;
-import toolbox.database.IDbItem;
-import toolbox.database.elasticsearch.ElasticSearchConnector;
 import toolbox.exceptions.DataProcessException;
-import toolbox.utils.AProcessingTask;
+import toolbox.utils.AStreamHandler;
 import toolbox.utils.IFieldValueMapObject;
-import toolbox.utils.parsers.ACsvParser;
 
-public class CsvDumper<T extends IFieldValueMapObject> extends AProcessingTask   {
+public class CsvDumper<T extends IFieldValueMapObject> extends AStreamHandler<T>   {
 
-	private Log log = LogFactory.getLog(Catalog.class);
+	private Log log = LogFactory.getLog(CsvDumper.class);
 	
-	private Semaphore _postingDataLock = new Semaphore(1,true);	
-	private Semaphore _stoppingProcessingLock = new Semaphore(1,true);
-	
-	private String _targetFileName="";
 	private String _separator=";";
 	private String _strMarker="\"";
-	
+	private FileOutputStream _outputstream;
 	private List<String> _csvColumnsList=new ArrayList<>();
 
-	private List<T> _dataToDump = new ArrayList<>();
-	
-	private FileOutputStream _outputstream; 
+	List<String> _linesToWrite = new ArrayList<>();
 	
 	public CsvDumper(IUserProfileData u, 
 						 String name, 
@@ -68,31 +43,15 @@ public class CsvDumper<T extends IFieldValueMapObject> extends AProcessingTask  
 						 List<String> csvColumnsList,
 						 Date timestamp,
 						 String targetFileName) throws DataProcessException { 
-		super(u,name);
-		this.setTargetNbData(expectedNbActions);
-		this.setTargetFileName(targetFileName);
+		super(u,name,expectedNbActions,timestamp,targetFileName,
+						"Items.serverside.gencsvprocess.progress");
+		
 		this.setCsvColumnsList(csvColumnsList);
-		this.addObserver(u);
 		
 	}
-	
-	public void postDataToDump(List<T> o) throws InterruptedException {
-		_postingDataLock.acquire();
-		_dataToDump.addAll(o);
-		addReceivedNbData(new Long(o.size()));
-		//log.error("### added "+o.size()+" data to dump -> "+_dataToDump.size()+" to be dumped");
-		_postingDataLock.release();
-		Thread.sleep(10);
-	}
-	
-	public void lock() throws InterruptedException { _postingDataLock.acquire(); }
-	public void unlock() { _postingDataLock.release(); }
-	
-
-	
 	@Override
-	public void run()  { 
-		
+	public void beforeFirst() {
+
 		try {
 			_outputstream = new FileOutputStream(this.getTargetFileName());
 		} catch (FileNotFoundException e1) {
@@ -100,116 +59,54 @@ public class CsvDumper<T extends IFieldValueMapObject> extends AProcessingTask  
 			this.abort();
 			return;
 		}
-		
-		getActiveUser().sendGuiProgressMessage(
-    			getId(),
-    			getActiveUser().getText("Items.serverside.gencsvprocess.progress", getName()),
-    			AProcessingTask.pourcentage(getProcessedNbData(),getTargetNbData()));
-		
-		
-		while (!this.isAllDataProcessed()) {
-			try { 
-				// wait for having received all data to be processed 
-				Thread.sleep(200);
-				
-				List<String> linesToWrite = new ArrayList<>(); 
-				
-				if (this.getProcessedNbData()==0) {
-					String headerLine="#_id";
-					for (String csvCol : this.getCsvColumnsList()) { headerLine+=this.getSeparator()+csvCol; }
-					linesToWrite.add(headerLine);
-					
-				}
-				_postingDataLock.acquire();
-				//if (_dataToDump.size()>0) { log.error("#### dumping "+_dataToDump.size()+" lines"); }
-				for (IFieldValueMapObject d : _dataToDump) {
-					String curCsvLine=d.getId();
-					Integer colIdx=0;
-					for (String csvCol : this.getCsvColumnsList()) {
-						curCsvLine+=this.getSeparator();
-						Object val = d.getValue(csvCol);
-						if (val!=null) { 
-							String valStr=val.toString();
-							if (valStr.contains(this.getSeparator())) { 
-								if (valStr.contains(this.getStrMarker())) {
-									valStr.replaceAll(this.getStrMarker(), "\\"+this.getStrMarker());
-								}
-								valStr=this.getStrMarker()+valStr+this.getStrMarker();  
-							}
-							curCsvLine+=valStr;
-						}
-						colIdx++;
+		String headerLine="#_id";
+		for (String csvCol : this.getCsvColumnsList()) { headerLine+=this.getSeparator()+csvCol; }
+		_linesToWrite.add(headerLine);
+	}
+	
+	@Override
+	public void handle(T d) {
+		String curCsvLine=d.getId();
+		Integer colIdx=0;
+		for (String csvCol : this.getCsvColumnsList()) {
+			curCsvLine+=this.getSeparator();
+			Object val = d.getValue(csvCol);
+			if (val!=null) { 
+				String valStr=val.toString();
+				if (valStr.contains(this.getSeparator())) { 
+					if (valStr.contains(this.getStrMarker())) {
+						valStr.replaceAll(this.getStrMarker(), "\\"+this.getStrMarker());
 					}
-					linesToWrite.add(curCsvLine);
-				}				
-				_dataToDump.clear();
-				_postingDataLock.release();
-				
-				// actually write lines in file
-				for (String line : linesToWrite) {
-					_outputstream.write((line+"\n").getBytes());
-					if (!line.startsWith("#")) { addProcessedNbData(1L); }		
-					//log.error(" ### dumping line "+line);
+					valStr=this.getStrMarker()+valStr+this.getStrMarker();  
 				}
-				_outputstream.flush();
-				// --------
-				
-				getActiveUser().sendGuiProgressMessage(
-		    			getId(),
-		    			getActiveUser().getText("Items.serverside.gencsvprocess.progress", getName()),
-		    			AProcessingTask.pourcentage(getProcessedNbData(), getTargetNbData()), true /*processing continuing*/);
-				
-			} catch (InterruptedException | IOException e) { 
-				e.printStackTrace(); 
+				curCsvLine+=valStr;
 			}
+			colIdx++;
 		}
-		
+		_linesToWrite.add(curCsvLine);
 	}
-
-	@Override
-	/**
-	 * Blocking, wait for currently posted data is finished to be processed
-	 */
-	public void stop() {
-		
-		try {
-			while (!this.isAllDataProcessed()) {
-				Thread.sleep(200);
-			}
-			_stoppingProcessingLock.acquire();						
-			_outputstream.close();	
-			_stoppingProcessingLock.release();
-		} catch (InterruptedException | IOException e) {
-			e.printStackTrace();
-			_stoppingProcessingLock.release();			
-		}
-		
-		getActiveUser().sendGuiProgressMessage(
-    			getId(),
-    			getActiveUser().getText("Items.serverside.gencsvprocess.progress", getName()),
-    			AProcessingTask.pourcentage(getProcessedNbData(), getTargetNbData()), false /*processing ended*/);
 	
-		getActiveUser().removeProccessingTask(this.getId());
-	}
 	@Override
-	public void abort() {
+	public void flush() throws IOException {
 		
-		getActiveUser().sendGuiProgressMessage(
-    			getId(),
-    			getActiveUser().getText("Items.serverside.gencsvprocess.progress", getName()),
-    			AProcessingTask.pourcentage(getProcessedNbData(), getTargetNbData()), false /*processing ended*/);
-		
-		getActiveUser().removeProccessingTask(this.getId());
+		// actually write lines in file
+		for (String line : _linesToWrite) {
+			_outputstream.write((line+"\n").getBytes());					
+			//log.error(" ### dumping line "+line);
+		}
+		_linesToWrite.clear();
+		_outputstream.flush();
+
+	}
+	
+	@Override
+	public void afterLast() throws IOException {
+		_outputstream.close();
 	}
 	
 
-	public String getTargetFileName() {
-		return _targetFileName;
-	}
-	public void setTargetFileName(String targetFileName) {
-		this._targetFileName = targetFileName;
-	}
 	
+
 	@Override
 	public void sendErrorMessageToUser(String msg, List<String> details) {
 		getActiveUser().sendGuiErrorMessage(msg, details);		

@@ -23,6 +23,8 @@ curl  --header "content-type: application/JSON" http://metaindex.fr:9200/myindex
 #### query string
 curl  --header "content-type: application/JSON" http://metaindex.fr:9200/myindex/_search?pretty -d '{"query": { "query_string" : { "query": "name:lolo AND age:>30"   }}}'
 
+### query all (full data)
+curl -u <user>:<pwd> -XGET --header "content-type: application/JSON" "http://localhost:9200/<index>/_search?scroll=10m&pretty" -d '{"size":200,"query": { "match_all" : {}}}'
 
 ### snapshots
 curl -XGET 'http://localhost:9200/_snapshot?pretty'
