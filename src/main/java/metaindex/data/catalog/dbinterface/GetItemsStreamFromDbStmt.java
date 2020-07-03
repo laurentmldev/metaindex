@@ -111,7 +111,7 @@ class GetItemsStreamFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 				_catalog.getName(),_query,_prefilters,_sort,ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP);
 	}
 
-	private void streamSearchHits(IStreamHandler<DbSearchResult> h,SearchHit[] searchHits) {
+	private void streamSearchHits(IStreamHandler<DbSearchResult> hitsStreamHandler,SearchHit[] searchHits) {
 		
 		
 		try {
@@ -144,16 +144,16 @@ class GetItemsStreamFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 			}
 			//log.error("#### streaming "+result.getItems().size()+" documents ("+_curNbDocs+"/"+_maxNbDocs+")"); 
 			resultList.add(result);
-			h.handle(resultList);
+			hitsStreamHandler.handle(resultList);
 			
 		} catch (DataProcessException | InterruptedException e) {
-			// TODO Auto-generated catch block
+			log.error(e.getMessage());
 			e.printStackTrace();
 		}
 	}
 	
 	@Override
-	public void execute(IStreamHandler<DbSearchResult> h) throws DataProcessException {
+	public void execute(IStreamHandler<DbSearchResult> hitsStreamHandler) throws DataProcessException {
 		try {
 			
 			
@@ -182,7 +182,7 @@ class GetItemsStreamFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 			String scrollId = searchResponse.getScrollId();
 			SearchHit[] searchHits = searchResponse.getHits().getHits();
 			
-			streamSearchHits(h,searchHits);
+			streamSearchHits(hitsStreamHandler,searchHits);
 			
 			while (searchHits != null
 					&& searchHits.length > 0 
@@ -195,7 +195,7 @@ class GetItemsStreamFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 			    scrollId = searchResponse.getScrollId();
 			    searchHits = searchResponse.getHits().getHits();
 			    
-			    streamSearchHits(h,searchHits);
+			    streamSearchHits(hitsStreamHandler,searchHits);
 			    
 			}
 			

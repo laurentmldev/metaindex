@@ -96,7 +96,7 @@ public class WsControllerItemsCsvDownload extends AMxWSController {
 					.getNewCsvExtractProcessor(
 		    			user, 
 		    			user.getCurrentCatalog(),
-		    			 "Extract from "+user.getCurrentCatalog().getName(), 
+		    			 "Extract CSV", 
 		    			 targetFileFsPath,
 		    			 requestMsg.getTermNamesList(),
 		    			 new Long(requestMsg.getSize()),

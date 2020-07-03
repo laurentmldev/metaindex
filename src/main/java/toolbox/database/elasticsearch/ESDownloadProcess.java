@@ -157,11 +157,13 @@ public class ESDownloadProcess extends AProcessingTask   {
 				log.error("Unable to await end of download processor "+getName());
 				getActiveUser().sendGuiErrorMessage(getActiveUser().getText("Items.serverside.csvdownload.failed", getName()));
 			} else {
-				// notify active user that its processing finished
-				getActiveUser().sendGuiSuccessMessage(getActiveUser().getText("Items.serverside.csvdownload.success", 
+				if (_dataGenerated==false) {
+					// notify active user that its processing finished
+					getActiveUser().sendGuiSuccessMessage(getActiveUser().getText("Items.serverside.csvdownload.success", 
 																				getName(),
 																				this.getProcessedNbData().toString()));
-				_dataGenerated=true;
+					_dataGenerated=true;
+				}
 			}
 			
 			_stoppingProcessingLock.release();

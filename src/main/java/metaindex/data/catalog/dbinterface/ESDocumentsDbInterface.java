@@ -16,7 +16,6 @@ import toolbox.database.IDbSearchResult.SORTING_ORDER;
 import toolbox.database.elasticsearch.ESBulkProcess;
 import toolbox.database.elasticsearch.ElasticSearchConnector;
 import toolbox.database.elasticsearch.ESDatabaseInterface;
-import toolbox.database.elasticsearch.ESDownloadCsvProcess;
 import toolbox.database.elasticsearch.ESDownloadProcess;
 import toolbox.database.elasticsearch.ESReadStreamStmt;
 import toolbox.database.elasticsearch.ESWriteStmt;

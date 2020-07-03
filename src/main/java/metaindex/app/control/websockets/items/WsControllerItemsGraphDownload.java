@@ -111,7 +111,7 @@ public class WsControllerItemsGraphDownload extends AMxWSController {
 					.getNewGexfExtractProcessor(
 		    			user, 
 		    			user.getCurrentCatalog(),
-		    			 "Extract from "+user.getCurrentCatalog().getName(), 
+		    			 "Extract GEXF", 
 		    			 targetFileFsPath,
 		    			 nodesDataTermsList,
 		    			 edgesTermsList,

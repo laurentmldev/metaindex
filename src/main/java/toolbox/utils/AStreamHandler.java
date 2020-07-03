@@ -30,6 +30,10 @@ public abstract class AStreamHandler<T> extends AProcessingTask implements IStre
 
 	private Log log = LogFactory.getLog(Catalog.class);
 	
+	
+	// send progress message every n pourcents of progress
+	private static final Integer PROGRESS_MSG_POURCENT_STEP=1;
+	
 	private Semaphore _postingDataLock = new Semaphore(1,true);	
 	private Semaphore _stoppingProcessingLock = new Semaphore(1,true);
 	
@@ -58,7 +62,7 @@ public abstract class AStreamHandler<T> extends AProcessingTask implements IStre
 		_postingDataLock.acquire();
 		_bufferizedDataToHandle.addAll(o);
 		addReceivedNbData(new Long(o.size()));
-		//log.error("### added "+o.size()+" data to dump -> "+_bufferizedDataToHandle.size()+" to be dumped");
+		//log.error("### added "+o.size()+" data to dump -> "+_bufferizedDataToHandle.size()+" in processing queue ");
 		_postingDataLock.release();
 		Thread.sleep(10);
 	}
@@ -92,16 +96,19 @@ public abstract class AStreamHandler<T> extends AProcessingTask implements IStre
 				for (T d : _bufferizedDataToHandle) {
 					handle(d);
 					addProcessedNbData(1L);
+
+					if (this.getProcessedNbData()/this.getTargetNbData()%PROGRESS_MSG_POURCENT_STEP <= 0.01) {
+						getActiveUser().sendGuiProgressMessage(
+			    			getId(),
+			    			getActiveUser().getText(this.getProgressMessageName(), getName()),
+			    			AProcessingTask.pourcentage(getProcessedNbData(), getTargetNbData()), true /*processing continuing*/);
+					}
+					
 				}				
 				_bufferizedDataToHandle.clear();
 				_postingDataLock.release();
 				
 				flush();
-				
-				getActiveUser().sendGuiProgressMessage(
-		    			getId(),
-		    			getActiveUser().getText(this.getProgressMessageName(), getName()),
-		    			AProcessingTask.pourcentage(getProcessedNbData(), getTargetNbData()), true /*processing continuing*/);
 				
 			} catch (InterruptedException|IOException e) { 
 				e.printStackTrace(); 
