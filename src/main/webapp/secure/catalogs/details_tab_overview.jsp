@@ -116,14 +116,45 @@
 	 });
 }
  
+function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
+	dropdown.innerHTML="";
+	let option = document.createElement("option");
+	option.value="";
+	option.innerHTML="- add field -";
+	dropdown.appendChild(option);
+	let optionClear = document.createElement("option");
+	optionClear.value="__CLEAR__";
+	optionClear.innerHTML="- clear -";
+	dropdown.appendChild(optionClear);
+	
+	let sortedTermsNames = Object.keys(catalogCard.descr.terms).sort();			
+	for (var termIdx=0;termIdx<sortedTermsNames.length;termIdx++) {
+		let termName=sortedTermsNames[termIdx];
+		let termDescr = catalogCard.descr.terms[termName];
+		let termId=termDescr.id;
+		let datatype=termDescr.datatype;
+		termTranslation=mx_helpers_getTermName(termDescr, catalogCard.descr);
+		if (datatype!="IMAGE_URL" && datatype!="PAGE_URL" && datatype!="LINK"
+			//	&& curItemsNamesStr.indexOf(termName) == -1
+			) {		
+			let option = document.createElement("option");
+			option.value=termName;
+			option.innerHTML=termTranslation;
+			option.id="itemsName.option.termName";
+			dropdown.appendChild(option);
+		}
+	}
+	
+}
+ 
  // function used by details.jsp:details_buildContents
  function details_buildContents_overview(newPopulatedCatalogDetails,catalogCard) {	 
 
-		// index name
+	// index name
 		let indexName = newPopulatedCatalogDetails.querySelector("._index_name_");
 		indexName.innerHTML=catalogCard.descr.name;
 	
-		// access rights
+	// access rights
 		let accessRights = newPopulatedCatalogDetails.querySelector("._access_rights_");
 		accessRights.innerHTML=catalogCard.descr.userAccessRightsStr;
 	
@@ -134,7 +165,7 @@
 			quotaDiscSpace.parentNode.removeChild(quotaDiscSpace);
 		}
 		else {
-			// quotas nb docs
+	// quotas nb docs
 			let quotaNbDocs=newPopulatedCatalogDetails.querySelector("._quota_nb_docs_");
 			let maxNbDocs=catalogCard.descr.quotaNbDocs;
 			let curNbDocs=catalogCard.descr.nbDocuments;
@@ -146,7 +177,7 @@
 			else pourcentClass="";		
 			quotaNbDocs.innerHTML="<span class=\""+pourcentClass+"\" ><b>"+curNbDocs+ "</b> <i>/ "+maxNbDocs+" ("+usagePourcentNbDocs+"%)</i></span>";
 			
-			// quotas disc space
+	// quotas disc space
 			let quotaDiscSpace=newPopulatedCatalogDetails.querySelector("._quota_disc_space_");
 			let currentUseBytes=catalogCard.descr.discSpaceUseBytes;
 			let currentUseMBytes=currentUseBytes/1000000;
@@ -170,7 +201,7 @@
 			quotaDiscSpace.innerHTML="<span class=\""+pourcentClass+"\" ><b>"+currentUseMBytes+ "MB</b> <i> / "+maxUseSpaceMBytes+"MB ("+usagePourcentDiscSpace+"%</i>)</span>";
 		}
 		
-		// ftp port : no FTP access for Read-Only users
+	// ftp port : no FTP access for Read-Only users
 		if (!mx_helpers_isCatalogWritable(catalogCard.descr.userAccessRights)) {
 			let ftpPortRow = newPopulatedCatalogDetails.querySelector("._ftp_row_");
 			ftpPortRow.parentNode.removeChild(ftpPortRow);
@@ -180,13 +211,12 @@
 			else { ftpPort.innerHTML=catalogCard.descr.ftpPort; }
 		}
 		
-		// thumbnail url
+	// thumbnail url
 		let thumbnailUrl = newPopulatedCatalogDetails.querySelector("._thumbnail_url_");
 		let successCallbackThumbnailUrlChange=function(fieldName,newValue) {
 			catalogCard.descr.thumbnailUrl=newValue;			
 		}		
-		
-		// thumbnail url
+	
 		if (mx_helpers_isCatalogAdmin(catalogCard.descr.userAccessRights)) {
 			let choicesDef = [ { value:"", text:""} ];
 			let sortedTermsNames = Object.keys(catalogCard.descr.terms).sort();			
@@ -196,7 +226,7 @@
 				let termId=termDescr.id;
 				let datatype=termDescr.datatype;
 				termTranslation=mx_helpers_getTermName(termDescr, catalogCard.descr);
-				if (datatype!="IMAGE_URL") {		
+				if (datatype=="IMAGE_URL") {		
 					choicesDef.push({ value:termId, text:termTranslation});
 				}
 			}
@@ -210,7 +240,7 @@
 			thumbnailUrl.append(editableFieldThumbnailUrlNode);
 		} else { thumbnailUrl.innerHTML=catalogCard.descr.thumbnailUrl; }
 		
-		// url prefix
+	// url prefix
 		let urlPrefix = newPopulatedCatalogDetails.querySelector("._url_prefix_");
 		let successCallbackUrlPrefixChange=function(fieldName,newValue) {
 			catalogCard.descr.itemsUrlPrefix=newValue;			
@@ -225,9 +255,10 @@
 			urlPrefix.append(editableFieldUrlPrefixNode);			
 		} else { urlPrefix.innerHTML=catalogCard.descr.itemsUrlPrefix; }
 		
-		// items name
+	// items name
 		let itemNameFields = newPopulatedCatalogDetails.querySelector("._items_name_fields_");
 		let successCallbackItemNameFieldsChange=function(fieldName,newValue) {
+			//console.log("fieldName="+fieldName+" newValue="+newValue);
 			catalogCard.descr.itemNameFields=newValue.split(","); 
 		}	
 		if (mx_helpers_isCatalogAdmin(catalogCard.descr.userAccessRights)) {
@@ -238,9 +269,56 @@
 					details_customOnItemNameFieldsChange,
 					successCallbackItemNameFieldsChange);
 			itemNameFields.append(editableFieldItemNameFieldsNode);	
+			//editableFieldItemNameFieldsNode.id="globals.overview.itemsNames.text";
+			
+			let dropdown = document.createElement("select");
+			dropdown.id="globals.overview.itemsNames.dropdown";
+			dropdown.classList.add("form-control");
+			dropdown.classList.add("form-control-sm");
+			dropdown.style="margin-top:0.5rem;";
+			dropdown.style.width="auto";			
+			let textValueNode=editableFieldItemNameFieldsNode.querySelector("._value_");
+			dropdown.onchange=function(event) {
+				let termName=dropdown.options[dropdown.selectedIndex].value;
+				let curValue=termName;				
+				if (curValue==null || curValue=="") { return; }
+				
+				if (curValue=="__CLEAR__") {
+					curValue="";
+				} 
+				
+				else if (textValueNode.innerHTML!="Empty" && textValueNode.innerHTML.length>0) {
+					curValue = textValueNode.innerHTML+","+curValue;
+				}
+				
+				details_customOnItemNameFieldsChange(
+								"itemNameFields",
+								'Items-Name-Fields',
+								curValue,
+								function() { 
+									successCallbackItemNameFieldsChange("itemNameFields",curValue); 
+									if (curValue=="") { 
+										curValue="Empty";
+										textValueNode.classList.add("editable-empty");
+									} else {
+										textValueNode.classList.remove("editable-empty");
+									}
+									textValueNode.innerHTML=curValue;
+									dropdown.value="";
+									_refreshItemsNames_options(dropdown,textValueNode,catalogCard);
+									
+								},
+								function() { console.log("ERROR in dropdown"); })
+								
+			}
+						
+			itemNameFields.append(dropdown);
+			_refreshItemsNames_options(dropdown,textValueNode,catalogCard);
+			
 		} else { itemNameFields.innerHTML=catalogCard.descr.itemNameFields; }
 		
-		// items thumbnail URL
+		
+	// items thumbnail URL
 		let itemsUrlField = newPopulatedCatalogDetails.querySelector("._items_url_field_");
 		let successCallbackItemThumbnailUrlChange=function(fieldName,newValue) {
 			catalogCard.descr.itemThumbnailUrlField=newValue;
@@ -254,7 +332,7 @@
 				let termId=termDescr.id;
 				let datatype=termDescr.datatype;
 				termTranslation=mx_helpers_getTermName(termDescr, catalogCard.descr);
-				if (datatype!="IMAGE_URL") {		
+				if (datatype=="IMAGE_URL") {		
 					choicesDef.push({ value:termId, text:termTranslation});
 				}
 			}
@@ -269,7 +347,7 @@
 			itemsUrlField.append(editableFieldItemThumbnailUrlNode);
 		} else { itemsUrlField.innerHTML=catalogCard.descr.itemThumbnailUrlField; }
 		
-		// perspetive Match field : used to detect automatically which perspective to activate
+	// perspetive Match field : used to detect automatically which perspective to activate
 		// on which document : used if perspective name matches contents of field given here
 		let perspectiveMatchField = newPopulatedCatalogDetails.querySelector("._perspective_match_field_");
 		let successCallbackPerspectiveMatchFieldChange=function(fieldName,newValue) {
@@ -300,7 +378,7 @@
 			perspectiveMatchField.append(editableFieldItemThumbnailUrlNode);
 		} else { perspectiveMatchField.innerHTML=catalogCard.descr.perspectiveMatchField; }
 		 
-		// Kibana TimeField change
+	// Kibana TimeField change
 		let kibanaTimeField = newPopulatedCatalogDetails.querySelector("._kibana_time_field_");
 		let successCallbackKibanaTimeFieldChange=function(fieldName,newValue) {
 			catalogCard.descr.timeFieldTermId=newValue;
