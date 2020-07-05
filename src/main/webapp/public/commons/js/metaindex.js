@@ -543,6 +543,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	// store handles to files being uploaded
 	// pb: not robust of performing several CSV upload at a time ...
 	var mx_csv_files_to_be_uploaded=[];
+	var mx_csv_files_upload_finish_callback=[];
 
 	
 	this.subscribeToCsvUpload=function(callback_func,debug) {
@@ -551,7 +552,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		myself._callback_UploadCsv=callback_func;
 	}
 		
-	this.requestUploadItemsFromCsv = function(fileHandle,chosenFieldsMapping) {
+	this.requestUploadItemsFromCsv = function(fileHandle,chosenFieldsMapping,finishCallback) {
 	 	
 		let jsonData = {};
 		jsonData.clientFileId=mx_csv_files_to_be_uploaded.length;		
@@ -608,6 +609,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	 		
 	    	jsonData.fileHandle=fileHandle;
 	    	mx_csv_files_to_be_uploaded[jsonData.clientFileId]=jsonData;
+	    	mx_csv_files_upload_finish_callback[jsonData.clientFileId]=finishCallback;
 	    }
 	    
 	    // load the file into an array buffer
@@ -630,6 +632,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	    let fileIndex=parsedMsg.clientFileId;
 	    //console.log("file index = "+fileIndex);
 	    let fileHandle=mx_csv_files_to_be_uploaded[fileIndex].fileHandle;
+	    let finishCallback=mx_csv_files_upload_finish_callback[fileIndex];
 	    //console.log("fileHandle="+fileHandle);
 	    //dumpStructure(mx_csv_files_to_be_uploaded);
 	    let serverProcessingTaskId=parsedMsg.processingTaskId;
@@ -668,6 +671,8 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	    		}
 	    		curLineNb++;	    		
 	    	}
+	    	
+	    	if (finishCallback!=null) { finishCallback(); }
 	    	
 	    }
 

@@ -227,7 +227,11 @@ function ws_handlers_requestUpdateFilter(filterName,queryString) {
 }
 
 function ws_handlers_requestUploadCsvFile(fileHandle,selectedCsvColsDef) {	
-	MxApi.requestUploadItemsFromCsv(fileHandle,selectedCsvColsDef);    
+	let finishCallback=function(e) {
+		console.log("requesting catalog update");
+		MxApi.requestCatalogs(<s:property value="currentCatalog.id"/>);
+	}
+	MxApi.requestUploadItemsFromCsv(fileHandle,selectedCsvColsDef,finishCallback);    
 }
 
 function ws_handlers_requestDownloadCsvFile(selectedTermsList,query,selectedFiltersNames,sortByFieldName,reversedSortOrder) {

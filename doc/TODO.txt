@@ -5,7 +5,7 @@ v2.0.6:
 
 #83 once user has been blocked, unable to log in again
 #81 FTP server shall accept WinSCP client commands
-#77 refresh terms list from catalog in webpage
+
    
 #76 https://metaindex.fr:8443/ is error page 
 
@@ -104,6 +104,8 @@ v2.0.6
 
 # ciseaux : "couper" plutôt que grosse explication
 #77 faster add of new fields when importing from CSV
+     + refresh terms list from catalog when updating CSV with new fields
+     + better overview page with listboxes rather than free-text 
 #79 cannot generate GEXF file bigger than 10000 items
 # quand gros upload: "connection to server lost"
 

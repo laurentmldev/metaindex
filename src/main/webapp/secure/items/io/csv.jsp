@@ -165,6 +165,7 @@ MxGuiLeftBar.showCsvPrevisu=function(fileHandle) {
 		footer_showAlert(INFO,"<s:text name="global.pleasewait"/>",null,5000);
 		let selectedCsvColsDef = _getSelectedCsvColumnsDef(csvColsTable);
 		ws_handlers_requestUploadCsvFile(fileHandle,selectedCsvColsDef); 
+		ws_handlers_refreshItemsGui();
 		MxGuiHeader.hideInfoModal();
 		
 	}
