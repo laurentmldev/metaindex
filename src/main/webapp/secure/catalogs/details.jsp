@@ -292,22 +292,7 @@ function details_memGui() {
 						        <td  style="font-style:italic" class="_quota_disc_space_"></td>
 						       </tr>
 						        
-						        						        
-						      
-						      <tr title="<s:text name="globals.clickToCopyToClipboard"/>" class="_ftp_row_"
-						      	  onclick="copyToClipBoard(this.querySelector('._ftp_port_').innerHTML);
-						      		footer_showAlert(INFO, '<s:text name="globals.ftpPortCopiedToClipboard"/>');
-						      			" >
-						        <td style="font-style:italic" ><s:text name="Catalogs.overview.ftpPort" />
-						        	<span title="S.O.S" 
-						                	onclick="event.stopPropagation();event.preventDefault();
-						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.ftp.title" />','<s:text name="help.catalog.overview.ftp.body" />')">
-						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
-						             </span>
-						        </td>
-						        <td style="font-style:italic" class="_ftp_port_" ></td>						        
-						      </tr>
-						      <tr>
+						       <tr>
 						        <td ><s:text name="Catalogs.overview.thumbnailUrl" />
 						        	<span title="S.O.S" 
 						                	onclick="event.stopPropagation();event.preventDefault();
@@ -317,16 +302,7 @@ function details_memGui() {
 						        </td>
 						        <td class="_thumbnail_url_"></td>						        
 						      </tr>
-						      <tr>
-						        <td ><s:text name="Catalogs.overview.urlsPrefix" />
-						        	<span class=""  title="S.O.S" 
-						                	onclick="event.stopPropagation();event.preventDefault();
-						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.urls_prefix.title" />','<s:text name="help.catalog.overview.urls_prefix.body" />')">
-						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
-						             </span>
-						        </td>
-						        <td class="_url_prefix_"></td>						        
-						      </tr>
+						      
 						      <tr>
 						        <td><s:text name="Catalogs.overview.cardsTitles" />
 						        	<span class=""  title="S.O.S" 
@@ -335,7 +311,12 @@ function details_memGui() {
 						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
 						             </span>
 						        </td>
-						        <td class="_items_name_fields_"></td>						        
+						        <td><table><tr style="background:none;border:none;">
+						        					<td style="border:none;padding-left:0;padding-top:0;padding-bottom:0;" class="_items_name_fields_"></td>
+						        					<td style="border:none;padding-top:0;padding-bottom:0;" class="_items_name_fields_dropdown_"></td>
+						        			</tr>
+						        	</table>
+						        </td>						        
 						      </tr>
 						      <tr>
 						        <td ><s:text name="Catalogs.overview.cardsThumbnailField" />
@@ -366,7 +347,32 @@ function details_memGui() {
 						             </span>
 						        </td>
 						        <td class="_kibana_time_field_"></td>						        
-						      </tr>				      
+						      </tr>						        
+						      
+						      <tr title="<s:text name="globals.clickToCopyToClipboard"/>" class="_ftp_row_"
+						      	  onclick="copyToClipBoard(this.querySelector('._ftp_port_').innerHTML);
+						      		footer_showAlert(INFO, '<s:text name="globals.ftpPortCopiedToClipboard"/>');
+						      			" >
+						        <td style="font-style:italic" ><s:text name="Catalogs.overview.ftpPort" />
+						        	<span title="S.O.S" 
+						                	onclick="event.stopPropagation();event.preventDefault();
+						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.ftp.title" />','<s:text name="help.catalog.overview.ftp.body" />')">
+						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
+						             </span>
+						        </td>
+						        <td style="font-style:italic" class="_ftp_port_" ></td>						        
+						      </tr>
+						      	
+						      <tr>
+						        <td ><s:text name="Catalogs.overview.urlsPrefix" />
+						        	<span class=""  title="S.O.S" 
+						                	onclick="event.stopPropagation();event.preventDefault();
+						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.urls_prefix.title" />','<s:text name="help.catalog.overview.urls_prefix.body" />')">
+						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
+						             </span>
+						        </td>
+						        <td class="_url_prefix_"></td>						        
+						      </tr>		      
 						    </tbody>
 						  </table>						  						
 					</div>

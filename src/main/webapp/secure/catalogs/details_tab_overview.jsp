@@ -120,11 +120,11 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 	dropdown.innerHTML="";
 	let option = document.createElement("option");
 	option.value="";
-	option.innerHTML="- add field -";
+	option.innerHTML="- <s:text name="Catalogs.overview.cardsTitles.addNew" /> -";
 	dropdown.appendChild(option);
 	let optionClear = document.createElement("option");
 	optionClear.value="__CLEAR__";
-	optionClear.innerHTML="- clear -";
+	optionClear.innerHTML="* <s:text name="Catalogs.overview.cardsTitles.clear" /> *";
 	dropdown.appendChild(optionClear);
 	
 	let sortedTermsNames = Object.keys(catalogCard.descr.terms).sort();			
@@ -134,8 +134,10 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 		let termId=termDescr.id;
 		let datatype=termDescr.datatype;
 		termTranslation=mx_helpers_getTermName(termDescr, catalogCard.descr);
+		
+		let regex=new RegExp("(^|,)"+termName+"(,|$)","g");		
 		if (datatype!="IMAGE_URL" && datatype!="PAGE_URL" && datatype!="LINK"
-			//	&& curItemsNamesStr.indexOf(termName) == -1
+				&& curItemsNamesStr.match(regex)==null
 			) {		
 			let option = document.createElement("option");
 			option.value=termName;
@@ -211,7 +213,7 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 			else { ftpPort.innerHTML=catalogCard.descr.ftpPort; }
 		}
 		
-	// thumbnail url
+	// catalog thumbnail url
 		let thumbnailUrl = newPopulatedCatalogDetails.querySelector("._thumbnail_url_");
 		let successCallbackThumbnailUrlChange=function(fieldName,newValue) {
 			catalogCard.descr.thumbnailUrl=newValue;			
@@ -275,7 +277,7 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 			dropdown.id="globals.overview.itemsNames.dropdown";
 			dropdown.classList.add("form-control");
 			dropdown.classList.add("form-control-sm");
-			dropdown.style="margin-top:0.5rem;";
+			
 			dropdown.style.width="auto";			
 			let textValueNode=editableFieldItemNameFieldsNode.querySelector("._value_");
 			dropdown.onchange=function(event) {
@@ -304,16 +306,18 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 										textValueNode.classList.remove("editable-empty");
 									}
 									textValueNode.innerHTML=curValue;
+									bgTransit(textValueNode);
 									dropdown.value="";
-									_refreshItemsNames_options(dropdown,textValueNode,catalogCard);
+									_refreshItemsNames_options(dropdown,textValueNode.innerHTML,catalogCard);
 									
 								},
 								function() { console.log("ERROR in dropdown"); })
 								
 			}
 						
-			itemNameFields.append(dropdown);
-			_refreshItemsNames_options(dropdown,textValueNode,catalogCard);
+			let itemNameFieldsDropdownNode = newPopulatedCatalogDetails.querySelector("._items_name_fields_dropdown_");
+			itemNameFieldsDropdownNode.append(dropdown);
+			_refreshItemsNames_options(dropdown,textValueNode.innerHTML,catalogCard);
 			
 		} else { itemNameFields.innerHTML=catalogCard.descr.itemNameFields; }
 		

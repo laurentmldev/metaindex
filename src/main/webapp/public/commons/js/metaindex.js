@@ -978,7 +978,9 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			let requestObj=myself.requestCatalogCustomParamsUpdateCallbacks[requestId];
 			//console.log("received customization requestId="+requestId+" -> "+requestObj);
 			if (requestObj==null) { return; }
-			if (parsedMsg.isSuccess==true) { requestObj.successCallback(); }
+			if (parsedMsg.isSuccess==true) { 
+				requestObj.successCallback(); 
+			}
 			else {
 				let errorMsg=parsedMsg.rejectMessage;
 				// ensure error message is not empty

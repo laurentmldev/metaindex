@@ -4,6 +4,8 @@
 
 
  <script type="text/javascript" >
+ 
+ 
   function clearNodeChildren(node) {
 	var rangeItems = document.createRange();
 	rangeItems.selectNodeContents(node);
@@ -17,6 +19,19 @@
 	        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
 	    });
   	
+  }
+  
+  function bgTransit(node,transitbgcolor) {
+	  if (transitbgcolor==null) { transitbgcolor="yellow"; }
+	  let bgColor = $(node).css('background-color');      
+	  $(node).css('background-color', transitbgcolor);
+	  setTimeout(function(){
+		  $(node).css('background-color', bgColor);
+		  node.classList.add('editable-bg-transition');
+	      setTimeout(function(){
+	    	  node.classList.remove('editable-bg-transition');  
+	      }, 1700);
+	  }, 10);	  
   }
   
   function copyToClipBoard(text) {
@@ -79,12 +94,13 @@
 
 function stripStr(str) { return str.replace(/^\s*/,"").replace(/\s*$/,""); }
 
-function array2str(arrayVal) {	
+function array2str(arrayVal) {
 	 let strVal="";
 	 for (var i=0;i<arrayVal.length;i++) {
 		 if (i>0) { strVal+=","; }
 		 strVal+=arrayVal[i];
 	 }
+	 console.log("array2str ["+arrayVal.length+"] --> '"+strVal+"'")
 	 return strVal;	 
 }
 

@@ -78,6 +78,8 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 	  					_userProfileData=null;
 	  					return;
 	  				}
+	  				_userProfileData.setRemoteAddress(request.getRemoteAddr());
+	  				/*
 	  				if (_userProfileData.getRemoteAddress().length()==0) {
 	  					_userProfileData.setRemoteAddress(request.getRemoteAddr());	  					
 	  				}
@@ -94,6 +96,7 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 	  	  				_userProfileData=null;
 	  	  				return;
   	  				}
+	  				*/
 	  					  				
 	  			} 
 	  			
