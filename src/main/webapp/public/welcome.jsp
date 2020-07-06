@@ -42,7 +42,7 @@
 	  slideIndex++;
 	  if (slideIndex > x.length) {slideIndex = 1}
 	  x[slideIndex-1].style.display = "block";
-	  setTimeout(carousel, 3500); // Change image every 2 seconds
+	  setTimeout(carousel, 5000); // Change image every 3 seconds
 	}
 	
 	</script>
@@ -90,12 +90,12 @@
 			<div style="text-align:left;padding-left:7rem;font-size:1.3rem;text-shadow:none;padding-top:0;font-weight:bold">
             	<ul class="app-title" style="text-align:left;padding-left:6rem;font-size:1.1rem;text-shadow:none;padding-top:0;">
             		<li style="list-style-type:'\2713';padding-left:1rem;">Inject data from Excel or OpenRefine</li>
-					<li style="list-style-type:'\2713';padding-left:1rem;">Work offline thanks to powerful CSV import/export module</li>
+					<li style="list-style-type:'\2713';padding-left:1rem;">Work offline thanks to our powerful CSV import/export module</li>
 					<li style="list-style-type:'\2713';padding-left:1rem;">Store your corpus associated files (images, documents,...)</li>
-					<li style="list-style-type:'\2713';padding-left:1rem;">Explore and filter with powerful query language</li>
-					<li style="list-style-type:'\2713';padding-left:1rem;">Build great statistics charts and find correlations</li>
+					<li style="list-style-type:'\2713';padding-left:1rem;">Explore and filter with a fast and powerful query language</li>
+					<li style="list-style-type:'\2713';padding-left:1rem;">Build great statistical charts and find correlations</li>
 					<li style="list-style-type:'\2713';padding-left:1rem;">Export to Gephi and explore data connections and graphs</li>
-					<li style="list-style-type:'\2713';padding-left:1rem;">Think collaborative and work safely as a team on the same contents</li>
+					<li style="list-style-type:'\2713';padding-left:1rem;">Think as a team and work together on the same contents</li>
 				</ul>	
 				</div>       
 			<div style="margin-top:1rem;margin-bottom:3rem;">   <center>     	
@@ -118,13 +118,13 @@
 					      <ul class="mx_welcome_card_ul fa-ul">
 					      
 					      	<li class="fa-li fa fa-check scale-color-blue">
-						      	<span class="mx_welcome_card_li_contents" >Access and Edit Contents Online<br/>				      	
-						      		<span class="_details_ mx_welcome_card_details"  >Access from anywhere your work, edit, update, modify ...</span>
+						      	<span class="mx_welcome_card_li_contents" >Access and edit contents online<br/>				      	
+						      		<span class="_details_ mx_welcome_card_details"  >Access your work from anywhere - edit, update, modify ...</span>
 						      	</span>
 					      	</li>
 					      	<li class="fa-li fa fa-check scale-color-blue">
 					      			<span class="mx_welcome_card_li_contents">Exchange contents with third-party tools<br/>
-					      				<span class="_details_ mx_welcome_card_details" >Synchronize your work or third-party tools (Excel, <a class="mx_welcome_card_body_link" target="_blank"  href="http://openrefine.org">OpenRefine</a>,...) using advanced CSV injection utility</span>
+					      				<span class="_details_ mx_welcome_card_details" >Synchronize your work or third-party tools (Excel, <a class="mx_welcome_card_body_link" target="_blank"  href="http://openrefine.org">OpenRefine</a>,...) using advanced CSV injection utilities</span>
 					      			</span>
 					      	</li>
 					      	<li class="fa-li fa fa-check scale-color-blue">
@@ -135,16 +135,16 @@
 					      	<li class="fa-li fa fa-check scale-color-blue">
 					      		<span class="mx_welcome_card_li_contents">
 					      			 Customize visualization <br/>
-					      			<span class="_details_ mx_welcome_card_details" >Decide what and how to display your data</span>
+					      			<span class="_details_ mx_welcome_card_details" >Decide what and how you want to display your data</span>
 					      		</span>
 					      	</li>
 					      	<li class="fa-li fa fa-check scale-color-blue">
-					      			<span class="mx_welcome_card_li_contents">Store on-line all associated files<br/>
+					      			<span class="mx_welcome_card_li_contents">Store all your files online<br/>
 					    				<span class="_details_ mx_welcome_card_details" >Store images, text, or any type of data related to your project and reference it from the documents</span>
 					    			</span>
 					    	</li>
 					      	<li class="fa-li fa fa-check scale-color-blue">
-					      			<span class="mx_welcome_card_li_contents">Links documents with each other<br/>
+					      			<span class="mx_welcome_card_li_contents">Link documents with each other<br/>
 					      				<span class="_details_ mx_welcome_card_details" >Link documents with each other to build connections</span>
 					      			</span>
 					      	</li>	
@@ -166,12 +166,12 @@
 					      <ul class="mx_welcome_card_ul fa-ul">
 					        <li class="fa-li fa fa-check scale-color-blue" >
 					      			<span class="mx_welcome_card_li_contents" >Build Powerful Search Queries<br/>
-					      				<span class="_details_ mx_welcome_card_details"  >Experience powerful <a class="mx_welcome_card_body_link" target="_blank"  href="http://lucene.org">Lucene</a> Search Queries, and make very efficient and precise search queries</span>	
+					      				<span class="_details_ mx_welcome_card_details"  >Experience the powerful <a class="mx_welcome_card_body_link" target="_blank"  href="http://lucene.org">Lucene</a> Search Queries, and make very efficient and precise search queries</span>	
 					      			</span>
 					      	</li>
 					      	<li class="fa-li fa fa-check scale-color-blue" >
 			      				<span class="mx_welcome_card_li_contents">Generate great statistic charts in few clicks<br/>
-			      					<span class="_details_ mx_welcome_card_details"  >Full integration with world-famous <a class="mx_welcome_card_body_link" target="_blank"  href="http://elk.org">Kibana</a> for generation of statistics charts</span>
+			      					<span class="_details_ mx_welcome_card_details"  >Full integration with industry leading <a class="mx_welcome_card_body_link" target="_blank"  href="http://elk.org">Kibana</a> for generation of statistical charts</span>
 			      				</span>
 			      			</li>			      			
 					      	<li class="fa-li fa fa-check scale-color-blue" >
@@ -181,12 +181,12 @@
 			      			</li>			      			
 					      	<li class="fa-li fa fa-check scale-color-blue" >
 					      			<span class="mx_welcome_card_li_contents">Amazingly fast search engine<br/>
-					      				<span class="_details_ mx_welcome_card_details"  >Lightning-fast search with world-famous <a class="mx_welcome_card_body_link" target="_blank" href="http://elk.org">Elastic-Search</a> engine</span>
+					      				<span class="_details_ mx_welcome_card_details"  >Lightning-fast search with the <a class="mx_welcome_card_body_link" target="_blank" href="http://elk.org">Elastic-Search</a> engine which is used worldwide</span>
 					      			</span>
 					      	</li>
 					      	<li class="fa-li fa fa-check scale-color-blue" >
 					      			<span class="mx_welcome_card_li_contents">Save and combine queries<br/>
-					      				<span class="_details_ mx_welcome_card_details"  >Keep track of useful queries to be reused or combined</span>
+					      				<span class="_details_ mx_welcome_card_details"  >Keep track of useful queries so you can reused or combined them</span>
 					      			</span>
 					      	</li>
 
@@ -224,11 +224,11 @@
 				      		</li>	
 					      	<li class="fa-li fa fa-check scale-color-blue" >
 					      		<span class="mx_welcome_card_li_contents">Get notified when data has changed<br/>
-					      			<span class="_details_ mx_welcome_card_details"  >Get lively updated with what has actually been modified in your data</span>
+					      			<span class="_details_ mx_welcome_card_details"  >Get live updates on the data that has been modified</span>
 					      		</span>
 					      	</li>
 					      	<li class="fa-li fa fa-check scale-color-blue" >
-					      		<span class="mx_welcome_card_li_contents">Trace who changed what and when<br/>
+					      		<span class="mx_welcome_card_li_contents">See who changed the documents<br/>
 					      			<span class="_details_ mx_welcome_card_details"  >Find when a document has been changed lastly and by who</span>
 					      		</span>
 					      	</li>
@@ -241,6 +241,17 @@
 			   
 	  </div>
 	  	
+	  	<div style="font-size:0.8rem;padding:1rem;" >
+	  	Special thanks to <i>Elastic Stack Team</i> for their great products, and also for their advices and support
+	  		<i>Tiphaine, 
+	  		Jean, 
+	  		S&eacute;verine, 
+	  		Romain, 
+	  		Anne,
+	  		Jakob Heigl-Auer, 
+	  		 ...</i>.
+
+	  	</div>
 	  </center></div>
  <footer class="sticky-footer bg-white">
         <div class="container my-auto">

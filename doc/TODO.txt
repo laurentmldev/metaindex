@@ -3,6 +3,7 @@
 v2.0.6:
 -------
 
+# when adding new field to cards title and then editing by hand, it is not updated
 #83 once user has been blocked, unable to log in again
 #76 https://metaindex.fr:8443/ is error page 
 
@@ -14,7 +15,7 @@ v2.0.6:
 
 v2.1.0:
 -------
-
+# FTP server accept unsecure FTP connection 
 # integrate https://openseadragon.github.io/ for big images viewer
 # integrate annona for annotations IIIF images overlay ?
 #78 import from json file
