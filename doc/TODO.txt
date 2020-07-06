@@ -4,15 +4,8 @@ v2.0.6:
 -------
 
 #83 once user has been blocked, unable to log in again
-#81 FTP server shall accept WinSCP client commands
-
-   
 #76 https://metaindex.fr:8443/ is error page 
 
-
-#80 admin could still upload CSV with more items than allowed in quota... ? TBC
-
-# statistics: existing JSP/J2EE framework?
 # statistics: count how many time welcome page has been reached
 
 # editing fields when translation is used results in an error (using translation instead of term id somewhere...?) TBC
@@ -21,6 +14,7 @@ v2.0.6:
 
 v2.1.0:
 -------
+
 # integrate https://openseadragon.github.io/ for big images viewer
 # integrate annona for annotations IIIF images overlay ?
 #78 import from json file
@@ -28,7 +22,7 @@ v2.1.0:
 #41 create account automatically
 	Terms and Conditions and use of Cookies presentation and acceptation on first login
 #19 send email to users and admin when useful
-when updating CSV with terms to create, the terms list is not updated in the GUI
+
 #39 when delete catalog failed because of Kibana, page is not refreshed while it should be
 #35 Fields: multi shall be visible only if enum is not empty
 #64 type longtext (rich?) pour étude du language / analyse de corpus
@@ -49,15 +43,17 @@ when updating CSV with terms to create, the terms list is not updated in the GUI
 Backlog:
 --------
 
+improve userdata drive connection
 
+	FTP server with 
+		- explicit message when uploading file too big for quota
+		- fewer debug messages 
+		- banner welcome message
 
-FTP server with 
-	- explicit message when uploading file too big for quota
-	- fewer debug messages 
-	- banner welcome message
-
-NFS access : swith to JLAN remote files
-	https://stackoverflow.com/questions/26631989/how-to-setup-alfresco-jlan-file-server-as-a-standalone-java-package
+	NFS access : swith to JLAN remote files
+		https://stackoverflow.com/questions/26631989/how-to-setup-alfresco-jlan-file-server-as-a-standalone-java-package
+		
+	#81 accept WinSCP connection
 	
 - Kibana logs rotating daily 
 - construire un graph schéma conceptuel
@@ -102,6 +98,7 @@ Done:
 -----
 v2.0.6
 
+#80 one can upload CSV with more items than allowed in quota 
 # ciseaux : "couper" plutôt que grosse explication
 #77 faster add of new fields when importing from CSV
      + refresh terms list from catalog when updating CSV with new fields

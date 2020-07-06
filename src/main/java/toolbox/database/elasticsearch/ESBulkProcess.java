@@ -166,19 +166,38 @@ public class ESBulkProcess extends AProcessingTask   {
 		getActiveUser().sendGuiErrorMessage(msg);		
 	}
 
+
+	private void checkQuota() throws DataProcessException {
+		// update catalog nb documents every nth posted data
+		if (this.getReceivedNbData()%BULK_FLUSH_TRESHOLD==0) {
+			_catalog.loadStatsFromDb();
+		}
+		// ensure total amount of documents did not overpassed accepted quota
+		if (_catalog.getNbDocuments()>_catalog.getQuotaNbDocs()) {
+			_activeUser.sendGuiErrorMessage(_activeUser.getText("Items.serverside.uploadItems.tooManyItemsForQuota"));
+			this.stop();
+			throw new DataProcessException("Processing leading to quota overpass, aborted");
+		}
+	}
+	
 	public void postDataToIndexOrUpdate(List<IDbItem> d) throws DataProcessException {
 		//log.error("### posting "+d.size()+" items");
 		if (!isRunning()) {
 			throw new DataProcessException("Processing not ready, unable to post data before");
 		}
 		
+		checkQuota();
+		
 		List<IDbItem> itemsToIndex = new ArrayList<IDbItem>();
 		List<IDbItem> itemsToUpdate = new ArrayList<IDbItem>();
 		for (IDbItem curItem : d) {
 			curItem.getData().put(ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP,ICatalogTerm.MX_TERM_DATE_FORMAT.format(_timestamp));
 			curItem.getData().put(ICatalogTerm.MX_TERM_LASTMODIF_USERID, this.getActiveUser().getId());
-			if (curItem.getData().containsKey("_id")) { itemsToUpdate.add(curItem); }
-			else { itemsToIndex.add(curItem); }
+			if (curItem.getData().containsKey("_id")
+					&& curItem.getData().get("_id").toString().length()>0) { itemsToUpdate.add(curItem); }
+			else { 
+				itemsToIndex.add(curItem); 
+			}
 			
 		}
 		
@@ -191,11 +210,6 @@ public class ESBulkProcess extends AProcessingTask   {
 	public void postDataToIndex(List<IDbItem> d) throws DataProcessException {
 		if (!isRunning()) {
 			throw new DataProcessException("Processing not ready, unable to post data before");
-		}
-		if (_catalog.getNbDocuments()+_nbIndexedData+d.size()>_catalog.getQuotaNbDocs()) {
-			_activeUser.sendGuiErrorMessage(_activeUser.getText("Items.serverside.uploadItems.tooManyItemsForQuota"));
-			this.stop();
-			throw new DataProcessException("Processing leading to quota overpass, aborted");
 		}
 		
 		for (IDbItem itemToIndex : d) {	
@@ -210,11 +224,11 @@ public class ESBulkProcess extends AProcessingTask   {
 	public void postDataToUpdate(List<IDbItem> d) throws DataProcessException {
 		if (!isRunning()) {
 			throw new DataProcessException("Processing not ready, unable to post data before");
-		}
+		}		
 		List<String> errors = new ArrayList<String>();
 		for (IDbItem itemToUpdate : d) {
 			if (itemToUpdate.getId().length()==0) {
-				errors.add("Unable to delete item '"+itemToUpdate.getName()+"', no id defined");
+				errors.add("Unable to update item '"+itemToUpdate.getName()+"', no id defined");
 				continue;
 			}
 			
@@ -230,7 +244,7 @@ public class ESBulkProcess extends AProcessingTask   {
 	}
 	public void postDataToDelete(List<IDbItem> d) throws DataProcessException {
 		if (!isRunning()) {
-			throw new DataProcessException("Processing not ready, unable to post data before");
+			throw new DataProcessException("Processing not ready, unable to post data to delete");
 		}
 		List<String> errors = new ArrayList<String>();
 		for (IDbItem itemToDelete : d) {
