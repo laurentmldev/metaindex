@@ -242,15 +242,8 @@
 	  </div>
 	  	
 	  	<div style="font-size:0.8rem;padding:1rem;" >
-	  	Special thanks to <i>Elastic Stack Team</i> for their great products, and also for their advices and support
-	  		<i>Tiphaine, 
-	  		Jean, 
-	  		S&eacute;verine, 
-	  		Romain, 
-	  		Anne,
-	  		Jakob Heigl-Auer, 
-	  		 ...</i>.
-
+	  	Special thanks to <i>Elastic Stack Team</i> for their great products, and also, for advices and support, to
+	  		<i>Jakob H</i>.
 	  	</div>
 	  </center></div>
  <footer class="sticky-footer bg-white">

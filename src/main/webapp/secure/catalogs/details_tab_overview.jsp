@@ -147,6 +147,21 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 		}
 	}
 	
+	let optionSepComma = document.createElement("option");
+	optionSepComma.value="\" , \"";
+	optionSepComma.innerHTML=" , ";
+	dropdown.appendChild(optionSepComma);
+	
+	let optionSepDash = document.createElement("option");	
+	optionSepDash.value="\" - \"";
+	optionSepDash.innerHTML=" - ";
+	dropdown.appendChild(optionSepDash);
+	
+	let optionSepSlash = document.createElement("option");	
+	optionSepSlash.value="\" \/ \"";
+	optionSepSlash.innerHTML=" \/ ";
+	dropdown.appendChild(optionSepSlash);
+	
 }
  
  // function used by details.jsp:details_buildContents
@@ -219,24 +234,11 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 			catalogCard.descr.thumbnailUrl=newValue;			
 		}		
 	
-		if (mx_helpers_isCatalogAdmin(catalogCard.descr.userAccessRights)) {
-			let choicesDef = [ { value:"", text:""} ];
-			let sortedTermsNames = Object.keys(catalogCard.descr.terms).sort();			
-			for (var termIdx=0;termIdx<sortedTermsNames.length;termIdx++) {
-				let termName=sortedTermsNames[termIdx];
-				let termDescr = catalogCard.descr.terms[termName];
-				let termId=termDescr.id;
-				let datatype=termDescr.datatype;
-				termTranslation=mx_helpers_getTermName(termDescr, catalogCard.descr);
-				if (datatype=="IMAGE_URL") {		
-					choicesDef.push({ value:termId, text:termTranslation});
-				}
-			}
-			let editableFieldThumbnailUrlNode = xeditable_create_dropdown_field(
+		if (mx_helpers_isCatalogAdmin(catalogCard.descr.userAccessRights)) {			
+			let editableFieldThumbnailUrlNode = xeditable_create_text_field(
 					'thumbnailUrl' /* pk */,
 					'Thumbnail-URL',false /*show Name*/,
 					catalogCard.descr.thumbnailUrl /* cur value */,		
-					choicesDef,
 					details_customOnThumbnailUrlChange,
 					successCallbackThumbnailUrlChange);
 			thumbnailUrl.append(editableFieldThumbnailUrlNode);
@@ -264,14 +266,18 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 			catalogCard.descr.itemNameFields=newValue.split(","); 
 		}	
 		if (mx_helpers_isCatalogAdmin(catalogCard.descr.userAccessRights)) {
-			let editableFieldItemNameFieldsNode = xeditable_create_text_field(
-					'itemNameFields' /* pk */,
-					'Items-Name-Fields',false /*show Name*/,
-					catalogCard.descr.itemNameFields /* cur value */,		
+			let editableFieldItemNameFieldsNode = document.createElement("span");
+			editableFieldItemNameFieldsNode.innerHTML=catalogCard.descr.itemNameFields;
+				/*
+				xeditable_create_text_field(
+					'itemNameFields',// pk ,
+					'Items-Name-Fields',false, //show Name
+					catalogCard.descr.itemNameFields, // cur value		
 					details_customOnItemNameFieldsChange,
 					successCallbackItemNameFieldsChange);
+				*/
 			itemNameFields.append(editableFieldItemNameFieldsNode);	
-			//editableFieldItemNameFieldsNode.id="globals.overview.itemsNames.text";
+			editableFieldItemNameFieldsNode.id="globals.overview.itemsNames.text";
 			
 			let dropdown = document.createElement("select");
 			dropdown.id="globals.overview.itemsNames.dropdown";
@@ -279,7 +285,7 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 			dropdown.classList.add("form-control-sm");
 			
 			dropdown.style.width="auto";			
-			let textValueNode=editableFieldItemNameFieldsNode.querySelector("._value_");
+			let textValueNode=editableFieldItemNameFieldsNode;//.querySelector("._value_");
 			dropdown.onchange=function(event) {
 				let termName=dropdown.options[dropdown.selectedIndex].value;
 				let curValue=termName;				
@@ -298,17 +304,37 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 								'Items-Name-Fields',
 								curValue,
 								function() { 
+									let newStrValue=curValue;
 									successCallbackItemNameFieldsChange("itemNameFields",curValue); 
 									if (curValue=="") { 
-										curValue="Empty";
+										newStrValue="Empty";
 										textValueNode.classList.add("editable-empty");
 									} else {
 										textValueNode.classList.remove("editable-empty");
 									}
-									textValueNode.innerHTML=curValue;
+									textValueNode.innerHTML=newStrValue;									
 									bgTransit(textValueNode);
 									dropdown.value="";
-									_refreshItemsNames_options(dropdown,textValueNode.innerHTML,catalogCard);
+									_refreshItemsNames_options(dropdown,curValue,catalogCard);
+									
+									
+									
+									/*
+									console.log(Object.getOwnPropertyNames(textValueNode));
+									let jQueryEditableName=Object.getOwnPropertyNames(textValueNode)[3];									
+									
+									textValueNode[jQueryEditableName].editable.value=curValue;
+									textValueNode[jQueryEditableName].editable.input.value=curValue;
+									console.log(textValueNode[jQueryEditableName].editable.input);
+									if ("$input" in textValueNode[jQueryEditableName].editable.input) {
+										console.log("### blurp");
+										textValueNode[jQueryEditableName].editable.input["$input"][0].value=curValue;										
+									}
+									*/
+									
+									//
+									//console.log(textValueNode[jQueryEditableName].editable);
+																	
 									
 								},
 								function() { console.log("ERROR in dropdown"); })

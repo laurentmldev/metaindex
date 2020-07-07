@@ -3,13 +3,18 @@
 v2.0.6:
 -------
 
-# when adding new field to cards title and then editing by hand, it is not updated
-#83 once user has been blocked, unable to log in again
-#76 https://metaindex.fr:8443/ is error page 
-
-# statistics: count how many time welcome page has been reached
 
 # editing fields when translation is used results in an error (using translation instead of term id somewhere...?) TBC
+
+
+v2.0.7:
+-------
+
+#87 when several indices with same user, "'field' needed" error in Kibana
+#88 use scripted fields to get decades automatically computed
+#89 autonomous password reset
+#83 once user has been blocked, unable to log in again
+#76 https://metaindex.fr:8443/ is error page 
 
 
 
@@ -98,7 +103,7 @@ improve userdata drive connection
 Done:
 -----
 v2.0.6
-
+#90 when adding new field to cards title and then editing by hand, it is not updated
 #80 one can upload CSV with more items than allowed in quota 
 # ciseaux : "couper" plutôt que grosse explication
 #77 faster add of new fields when importing from CSV
