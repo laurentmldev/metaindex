@@ -71,7 +71,8 @@ class CreateFieldIntoEsDbStmt extends ESWriteStmt<ICatalogTerm>   {
 				            }
 				            else if (ICatalogTerm.getRawDatatype(t.getDatatype())==RAW_DATATYPE.Tdate) {
 		            			builder.field("ignore_malformed", "true");
-		            			builder.field("null_value", "0000");
+		            			builder.field("null_value", "1970/01/01");
+		            			
 		            			builder.field("format",  
 		            									"yyyy"
 		            											            									
@@ -105,6 +106,13 @@ class CreateFieldIntoEsDbStmt extends ESWriteStmt<ICatalogTerm>   {
 				    									+"||dd/MM/yyyy HH:mm:ss"
 				    									+"||dd/MM/yyyy HH:mm:ss.SSS"
 		            									);
+
+		            			builder.startObject("fields");
+				            	{
+				            		builder.startObject("keyword"); {
+					            		builder.field("type", "keyword");
+					            	} builder.endObject();
+				            	} builder.endObject();
 				            }
 				            
 				        } builder.endObject();

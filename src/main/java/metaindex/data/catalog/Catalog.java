@@ -347,7 +347,7 @@ public class Catalog implements ICatalog {
 	
 	@Override
 	public String getTimeFieldRawName() {
-		if (getTimeFieldTermId()==null) { return ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP; }
+		if (getTimeFieldTermId()==null || getTimeFieldTermId().equals(0)) { return ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP; }
 		
 		for (ICatalogTerm t : this.getTerms().values()) {
 			if (t.getId().equals(getTimeFieldTermId())) {

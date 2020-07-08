@@ -1,25 +1,17 @@
 
 
-v2.0.6:
--------
-
-
-# editing fields when translation is used results in an error (using translation instead of term id somewhere...?) TBC
-
-
 v2.0.7:
 -------
 
-#join us : use an online form rather than 'mailto'
-#87 when several indices with same user, "'field' needed" error in Kibana
+#91 join us : use an online form rather than 'mailto'
 #88 use scripted fields to get decades automatically computed
 #89 autonomous password reset
 #83 once user has been blocked, unable to log in again
 #76 https://metaindex.fr:8443/ is error page 
 #64 type longtext (rich?) pour étude du language / analyse de corpus
-# mxtmp folder shall be segregated per catalog
-# uploading field empty might mean "clean the field" ... rather than "leave it as it is"
-# close GEXF window once generation started
+#92 mxtmp folder shall be sgregated and secured by catalog
+#94 when uploading CSV, empty fields might mean "clear contents" while currently it means "ignore it" (i.e. "leave it as is")
+#93 close GEXF window once generation started
 
 v2.1.0:
 -------
@@ -105,6 +97,10 @@ improve userdata drive connection
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+v2.0.7
+
+#87 error: mx_timestamp misses a 'field' entry in mapping
+
 v2.0.6
 #90 when adding new field to cards title and then editing by hand, it is not updated
 #80 one can upload CSV with more items than allowed in quota 
