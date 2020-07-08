@@ -315,27 +315,7 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 									textValueNode.innerHTML=newStrValue;									
 									bgTransit(textValueNode);
 									dropdown.value="";
-									_refreshItemsNames_options(dropdown,curValue,catalogCard);
-									
-									
-									
-									/*
-									console.log(Object.getOwnPropertyNames(textValueNode));
-									let jQueryEditableName=Object.getOwnPropertyNames(textValueNode)[3];									
-									
-									textValueNode[jQueryEditableName].editable.value=curValue;
-									textValueNode[jQueryEditableName].editable.input.value=curValue;
-									console.log(textValueNode[jQueryEditableName].editable.input);
-									if ("$input" in textValueNode[jQueryEditableName].editable.input) {
-										console.log("### blurp");
-										textValueNode[jQueryEditableName].editable.input["$input"][0].value=curValue;										
-									}
-									*/
-									
-									//
-									//console.log(textValueNode[jQueryEditableName].editable);
-																	
-									
+									_refreshItemsNames_options(dropdown,curValue,catalogCard);																		
 								},
 								function() { console.log("ERROR in dropdown"); })
 								
@@ -363,7 +343,7 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 				let datatype=termDescr.datatype;
 				termTranslation=mx_helpers_getTermName(termDescr, catalogCard.descr);
 				if (datatype=="IMAGE_URL") {		
-					choicesDef.push({ value:termId, text:termTranslation});
+					choicesDef.push({ value:termName, text:termTranslation});
 				}
 			}
 			

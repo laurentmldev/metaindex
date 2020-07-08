@@ -325,7 +325,6 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
     		// (preserve order of data sent)
     		procTask.lock();
     		List<IDbItem> parsedItemsToIndex = csvParser.parseAll(requestMsg.getCsvLines());  
-    		Long nbMaxItemsToAdd=c.getQuotaNbDocs()-c.getNbDocuments();
     		procTask.postDataToIndexOrUpdate(parsedItemsToIndex);
     		
     		procTask.unlock();    		

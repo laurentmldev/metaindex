@@ -10,13 +10,16 @@ v2.0.6:
 v2.0.7:
 -------
 
+#join us : use an online form rather than 'mailto'
 #87 when several indices with same user, "'field' needed" error in Kibana
 #88 use scripted fields to get decades automatically computed
 #89 autonomous password reset
 #83 once user has been blocked, unable to log in again
 #76 https://metaindex.fr:8443/ is error page 
-
-
+#64 type longtext (rich?) pour étude du language / analyse de corpus
+# mxtmp folder shall be segregated per catalog
+# uploading field empty might mean "clean the field" ... rather than "leave it as it is"
+# close GEXF window once generation started
 
 v2.1.0:
 -------
@@ -31,7 +34,7 @@ v2.1.0:
 
 #39 when delete catalog failed because of Kibana, page is not refreshed while it should be
 #35 Fields: multi shall be visible only if enum is not empty
-#64 type longtext (rich?) pour étude du language / analyse de corpus
+
 # delete all items, not only max 10000 items (ELK limit)
 #59 auto mx start at server reboot
 #55 welcome tour
