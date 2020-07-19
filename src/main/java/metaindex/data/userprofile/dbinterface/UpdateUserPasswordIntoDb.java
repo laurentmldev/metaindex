@@ -20,10 +20,10 @@ import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLWriteStmt;
 import toolbox.exceptions.DataProcessException;
 
-class UpdateUserPreferencesIntoDb extends SQLWriteStmt<IUserProfileData>   {
+class UpdateUserPasswordIntoDb extends SQLWriteStmt<IUserProfileData>   {
 
 	List<IUserProfileData> _data = new ArrayList<>();
-	public UpdateUserPreferencesIntoDb(List<IUserProfileData> users, SQLDataConnector ds) throws DataProcessException { 
+	public UpdateUserPasswordIntoDb(List<IUserProfileData> users, SQLDataConnector ds) throws DataProcessException { 
 		super(ds);
 		_data.addAll(users);
 		
@@ -40,7 +40,7 @@ class UpdateUserPreferencesIntoDb extends SQLWriteStmt<IUserProfileData>   {
 		try {
 			// insert if not present, update if already present
 			result.add(this.getDataConnector().getConnection().prepareStatement(
-					"update users set nickname=?, guilanguage_id=?, guitheme_id=? where email=? and enabled=1;")); 
+					"update users set password=? where user_id=?;")); 
 			
 		} catch (SQLException e) { throw new DataProcessException(e); }
 		
@@ -53,11 +53,8 @@ class UpdateUserPreferencesIntoDb extends SQLWriteStmt<IUserProfileData>   {
 		
 		try {
 			
-			stmt.setString(1, dataObject.getNickname());
-			stmt.setInt(2, dataObject.getGuiLanguageId());
-			stmt.setInt(3, dataObject.getGuiThemeId());
-			stmt.setString(4, dataObject.getName());
-			
+			stmt.setString(1, dataObject.getPassword());
+			stmt.setInt(2, dataObject.getId());						
 			stmt.addBatch();
 		} catch (SQLException e) { throw new DataProcessException(e); }		
 	}

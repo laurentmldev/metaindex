@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="/struts-tags" prefix="s" %>  
 <c:url value="/" var="mxurl"/>
-<c:url value="/loginprocess" var="loginUrl"/>
+<c:url value="/signupprocess" var="signupUrl"/>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -15,7 +15,7 @@
   <meta name="author" content="">
 
   
-  <title>MetaindeX - Login</title>
+  <title>MetaindeX - Sign-Up</title>
   <link rel="icon" type="image/svg" href="public/commons/media/img/favicon.png">
   <!-- Custom fonts for this template-->
   <link href="${mxurl}public/commons/deps/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -24,6 +24,28 @@
   <!-- Custom styles for this template-->
   <s:include value="/public/commons/style/style_global.jsp" />  							 
 
+
+	<script type="text/javascript">
+	/*
+	  if(this.email.value == "") {
+	        alert("Error: Username cannot be blank!");
+	        this.email.focus();
+	        e.preventDefault(); // equivalent to return false
+	        return;
+	      }
+	  
+	      re = /^\w+$/;
+	      if(!re.test(this.email.value)) {
+	        alert("Error: Username must contain only letters, numbers and underscores!");
+	        this.email.focus();
+	        e.preventDefault();
+	        return;
+	      }
+	      
+	   }
+	   
+	   */
+	</script>      
 </head>
 
 <body class=""
@@ -46,6 +68,7 @@ onkeypress="if (event.which==13||event.keycode==13) {
             <div class="row" style="display:block;">            	
             	<div class="app-title" style="font-size:6vw;padding:0;margin:0;width:auto;">
 			 		<span class="scale-color-white">M</span><span class="app-title2 scale-color-white" style="color:white;">etainde</span><span class="scale-color-white">X</span>            		            			
+            		<div style="font-size:1rem;text-shadow:none;">Create your account for free and try MetaindeX!</div>
             	</div>
             	 
             </div>
@@ -60,22 +83,26 @@ onkeypress="if (event.which==13||event.keycode==13) {
 	
            	<c:if test="${mxStatus == 'ACTIVE'}">
            	
-                  <form id="loginform" class="user" action="${loginUrl}" method="post" >
+                  <form id="signupform" class="user" action="${signupUrl}" method="post" >
                   	<input type="hidden"  name="${_csrf.parameterName}" value="${_csrf.token}"/>
                   	
                   	<div class="form-group">
-	                  	<c:if test="${param.error != null}"> <p><s:text name="session.loginerror" /></p></c:if>
-						<c:if test="${param.logout != null}"><p><s:text name="session.logoutmessage" /></p></c:if>
-						<c:if test="${param.expired != null}"><p><s:text name="session.expiredmessage" /></p></c:if>
-						<c:if test="${param.passwordreset != null}"><p><s:text name="session.passwordreset" /></p></c:if>
+	                  	<c:if test="${param.emailalreadyused != null}"> <p>This email is already used, please try another one.</p></c:if>
+	                  	<c:if test="${param.newemailalreadywaiting != null}"> <p>This email is already waiting confirmation. 
+	                  			Please check your 'spams' mail folder if you did not received yet the confirmation instructions.
+	                  			</p>
+	                  	</c:if>	                  	
+	                  	<c:if test="${param.error != null}"> <p>Woops sorry something wrong occured on server side, please retry in a few moments.</p></c:if>
+						
 					</div>
 					
                     <div class="form-group">
-                      <input type="email" name='username' class="form-control form-control-user" aria-describedby="emailHelp" placeholder="Enter Email Address...">
+                      <input type="email" name='email' class="form-control form-control-user" aria-describedby="emailHelp" placeholder="Email address" required>
                     </div>
                     <div class="form-group">
-                      <input type="password" name='password' class="form-control form-control-user" placeholder="<s:text name="session.password" />">
+                      <input type="text" name='nickname' class="form-control form-control-user" placeholder="Nickname" required>
                     </div>
+                    
                     <!--div class="form-group">
                       <div class="custom-control custom-checkbox small">
                         <input type="checkbox" class="custom-control-input" id="customCheck">
@@ -83,8 +110,8 @@ onkeypress="if (event.which==13||event.keycode==13) {
                       </div>
                     </div-->
                     <center>
-                    <a href="#" class="btn btn-primary btn-user btn-block scale" style="max-width:30%;" onclick="document.getElementById('loginform').submit();">
-                      Sign-in
+                    <a href="#" class="btn btn-primary btn-user btn-block scale" style="max-width:30%;" onclick="document.getElementById('signupform').submit();">
+                      Sign-up!
                     </a>
                     </center>
                     <hr>                 

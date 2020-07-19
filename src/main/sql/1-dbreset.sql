@@ -264,8 +264,8 @@ CREATE TABLE `users` (
 `user_id` int(32) NOT NULL,
   `email` varchar(128) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `nickname` varchar(45) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `password` varchar(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `enabled` tinyint(4) NOT NULL DEFAULT '1',
+  `password` varchar(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'change_me',
+  `enabled` tinyint(4) NOT NULL DEFAULT '0',
   `guilanguage_id` int(32) NOT NULL DEFAULT '1',
   `guitheme_id` int(32) NOT NULL DEFAULT '1',  
   `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

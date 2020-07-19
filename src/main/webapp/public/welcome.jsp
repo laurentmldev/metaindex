@@ -64,7 +64,7 @@
         	 	   			 	
 	 	<div style="width:20vw"></div>
 	 	
-	 	<a href="mailto:laurentmlcontact-metaindex@yahoo.fr?subject=Join Metaindex&body=Hi, I'd like to become a MetaindeX User! Could create an account for me and explain a bit more how to use it ? Thanks! :)"  
+	 	<a href="signup"  
 	 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" style="background:green;border-color:white;margin-left:3rem;text-shadow:none;width:10vw"
 	 		>Join us!</a>
 	 		

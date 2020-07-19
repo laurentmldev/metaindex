@@ -1,35 +1,41 @@
 
 
-v2.0.7:
+v2.1.0:
 -------
-
+#95 autonomous account creation
+	Terms and Conditions and use of Cookies presentation and acceptation on first login
+#89 autonomous password reset
 #91 join us : use an online form rather than 'mailto'
 #88 use scripted fields to get decades automatically computed
-#89 autonomous password reset
+#93 close GEXF window once generation started
+
+
+#19 send email to users and admin when useful
+
+#55 welcome tour
+
+v2.1.1:
+-------
+
 #83 once user has been blocked, unable to log in again
 #76 https://metaindex.fr:8443/ is error page 
 #64 type longtext (rich?) pour étude du language / analyse de corpus
-#92 mxtmp folder shall be sgregated and secured by catalog
+#92 mxtmp folder shall be segregated and secured by catalog
 #94 when uploading CSV, empty fields might mean "clear contents" while currently it means "ignore it" (i.e. "leave it as is")
-#93 close GEXF window once generation started
+# install Fai2Ban
 
-v2.1.0:
--------
-# FTP server accept unsecure FTP connection 
+# FTP server shall not accept unsecure FTP connection 
 # integrate https://openseadragon.github.io/ for big images viewer
 # integrate annona for annotations IIIF images overlay ?
 #78 import from json file
 #75 mxwebapp shall be robust to a restart of elsrc and kibana (and mxsql ?)
-#41 create account automatically
-	Terms and Conditions and use of Cookies presentation and acceptation on first login
-#19 send email to users and admin when useful
 
 #39 when delete catalog failed because of Kibana, page is not refreshed while it should be
 #35 Fields: multi shall be visible only if enum is not empty
 
 # delete all items, not only max 10000 items (ELK limit)
 #59 auto mx start at server reboot
-#55 welcome tour
+
 #23 avoid use of kibana_user user once ELK issue 51759 us fixed
 #10 websocket connection refused after session timeout and re-login
 #28 user profile picture
@@ -37,8 +43,6 @@ v2.1.0:
 #43 search on accentuated characters imported from UTF-16 does not seem to work
 #45 when logging out from Mx, log-out Kibana session too
 # metaindex.fr/robots.txt
-
-
 
 
 Backlog:

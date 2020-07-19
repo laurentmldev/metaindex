@@ -132,6 +132,39 @@ public class Globals {
 	
 	// -------------
 	
+	private final String MX_EMAIL_HEADER="<html>    \n" + 
+			"<header>\n" + 
+			"\n" + 
+			"    <style>\n" + 
+			"        .scale-color-white:hover {\n" + 
+			"            color: white;\n" + 
+			"        }\n" + 
+			"        .scale, .scale-color-white, .scale-color-blue, .scale-color-green, .scale-bgcolor-white, .mx-help-icon {\n" + 
+			"            transition: all 0.3s ease-in-out;\n" + 
+			"        }\n" + 
+			"        .app-title {\n" + 
+			"            color: #929292;\n" + 
+			"            text-shadow: 1px 2px 3px #555;\n" + 
+			"            font-size: 5vw;\n" + 
+			"            font-weight: bold;\n" + 
+			"            text-align: center;\n" + 
+			"            letter-spacing: 0.08rem;\n" + 
+			"            font-family: \"Helvetica Neue\", Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\";\n" + 
+			"        }\n" + 
+			"        .app-title2 {\n" + 
+			"            color: #a5c8d8;\n" + 
+			"        }\n" + 
+			"    </style>\n" + 
+			"</header>\n" + 
+			"<body>\n";
+	
+	private final String MX_EMAIL_FOOTER="<br/>\n" + 
+			"<div class=\"app-title\" style=\"font-size:4vw;padding:0;margin:0;width:auto;\">\n" + 
+			"    <span class=\"scale-color-white\">M</span><span class=\"app-title2 scale-color-white\" style=\"color:white;\">etainde</span><span class=\"scale-color-white\">X</span>            		            			\n" + 
+			"</div>\n" + 
+			"</body>\n" + 
+			"</html>";
+	
 	public void sendEmail(String recipientEmail, String subject, String msg) throws DataProcessException {
 		
 		if (msg.length()==0 || subject.length()==0) {
@@ -143,7 +176,7 @@ public class Globals {
 							 GetMxProperty("mx.mailer.password"), 
 							 recipientEmail, 
 							 MX_EMAIL_SUBJECT_PREFIX+" "+subject, 
-							 msg);
+							 MX_EMAIL_HEADER+msg+MX_EMAIL_FOOTER);
 			
 		} catch (MessagingException e) {
 			throw new DataProcessException("Unable to send email '"+subject+"' to '"+recipientEmail+"' : "+e.getMessage(),e);

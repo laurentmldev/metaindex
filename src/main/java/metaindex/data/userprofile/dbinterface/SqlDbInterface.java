@@ -22,6 +22,7 @@ import java.util.List;
 
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.userprofile.IUserProfileData;
+import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
 
 public class SqlDbInterface  extends SQLDatabaseInterface<IUserProfileData> 
 {
@@ -41,6 +42,12 @@ public class SqlDbInterface  extends SQLDatabaseInterface<IUserProfileData>
 		list.add(data);
 		return getPopulateUserProfileFromDbStmt(list);
 	}
+		
+	public SQLPopulateStmt<IUserProfileData> getPopulateUserProfileIdFromDbStmt(IUserProfileData data) throws DataProcessException {
+		List<IUserProfileData> list = new ArrayList<IUserProfileData>();
+		list.add(data);
+		return new PopulateUserProfileIdFromDb(list, getDataConnector());
+	}
 
 	public SQLWriteStmt<IUserProfileData> getUpdateIntoDbStmt(List<IUserProfileData> data) throws DataProcessException {
 		return new UpdateUserPreferencesIntoDb(data, getDataConnector());
@@ -51,6 +58,21 @@ public class SqlDbInterface  extends SQLDatabaseInterface<IUserProfileData>
 		list.add(data);
 		return getUpdateIntoDbStmt(list);
 	}
+	public SQLWriteStmt<IUserProfileData> getUpdatePasswordIntoDbStmt(List<IUserProfileData> data) throws DataProcessException {
+		return new UpdateUserPasswordIntoDb(data, getDataConnector());
+	}
+	public SQLWriteStmt<IUserProfileData> getUpdatePassswordIntoDbStmt(IUserProfileData data) throws DataProcessException {
+		List<IUserProfileData> list = new ArrayList<>();
+		list.add(data);
+		return getUpdatePasswordIntoDbStmt(list);
+	}
+	public SQLWriteStmt<IUserProfileData> getCreateUserIntoSqlDbStmt(IUserProfileData data) throws DataProcessException {
+		return new CreateSqlUser(data,getDataConnector());
+	}
+	public SQLWriteStmt<IUserProfileData> getCreateorUpdateUserRoleIntoSqlDbStmt(IUserProfileData data, USER_ROLE role) throws DataProcessException {
+		return new CreateOrUpdateUserRole(data,role,getDataConnector());
+	}
+	
 	
 	// Access Rights
 	public SQLPopulateStmt<IUserProfileData> getPopulateAccessRightsFromDbStmt(List<IUserProfileData> data,Boolean onlyIfRequired) throws DataProcessException {

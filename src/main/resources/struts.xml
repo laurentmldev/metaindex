@@ -24,34 +24,55 @@
    
 </global-exception-mappings>
 
-		
+		<!-- Welcome page -->
 		<action name="welcome" class="metaindex.app.beans.BeanProfile">
 			<result name="BeanProcess_SUCCESS" >/public/welcome.jsp</result>			
 		</action>
+		
+		<!-- Sign-up (create new account) -->
+		<action name="signup" class="metaindex.app.beans.BeanProfile">
+			<result name="BeanProcess_SUCCESS" >/public/signup.jsp</result>			
+		</action>
+		<action name="signupprocess" class="metaindex.app.beans.BeanSignup">
+			<result name="BeanProcess_SUCCESS" >/public/signup_confirmemail.jsp</result>
+			<result name="emailalreadyinuse" >/public/signup.jsp?emailalreadyused</result>
+			<result name="newemailalreadywaiting" >/public/signup.jsp?newemailalreadywaiting</result>
+			<result name="BeanProcess_ERROR" >/public/signup.jsp?error</result>
+			  		
+		</action>
+		<action name="signup_confirmemail" class="metaindex.app.beans.BeanSignupConfirmEmail">
+			<result name="BeanProcess_SUCCESS" >/public/signup_finalize.jsp</result>			
+		</action>
+		<action name="resetpassword" class="metaindex.app.beans.BeanSetPassword">
+			<result name="BeanProcess_SUCCESS" >/public/login.jsp?passwordreset</result>			
+		</action>
+
+		
+		<!-- Sign-in -->
 		<action name="" class="metaindex.app.beans.BeanProfile">
 			<result name="BeanProcess_SUCCESS" >/public/login.jsp</result>			
 		</action>
 		<action name="loginform" class="metaindex.app.beans.BeanProfile">
 			<result name="BeanProcess_SUCCESS" >/public/login.jsp</result>  		
-		</action>  		
+		</action>  
+				
+		<!-- Successful login -->
 		<action name="loginprocess" class="metaindex.app.beans.BeanProfile">
 			<result name="BeanProcess_SUCCESS" >/secure/catalogs/main.jsp</result>  		
 		</action>  		
+		  		
+		
+		<!-- Catalogs View -->
 		<action name="Catalogs" class="metaindex.app.beans.BeanProfile">
 			<result name="BeanProcess_SUCCESS" >/secure/catalogs/main.jsp</result>  			
 		</action> 
+		<!-- Items View -->
 		<action name="Items" class="metaindex.app.beans.BeanProfile">
 			<result name="BeanProcess_SUCCESS" >/secure/items/main.jsp</result>  			
 		</action>
-		<action name="Statistics" class="metaindex.app.beans.BeanProfile">
-			<result name="BeanProcess_SUCCESS" >/secure/statistics/main.jsp</result>  			
-		</action> 
-		<action name="Files" class="metaindex.app.beans.BeanProfile">
-			<result name="BeanProcess_SUCCESS" >/secure/files/main.jsp</result>  			
-		</action> 
 		
-		<action name="Error" class="metaindex.app.beans.BeanProfile">
-						
+		<!-- Error -->
+		<action name="Error" class="metaindex.app.beans.BeanProfile">						
 		</action>
 		
 	</package>  

@@ -79,6 +79,8 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 	  					return;
 	  				}
 	  				_userProfileData.setRemoteAddress(request.getRemoteAddr());
+	  				// check to detect multiple parallel users disabled for now
+	  				// not robust enough
 	  				/*
 	  				if (_userProfileData.getRemoteAddress().length()==0) {
 	  					_userProfileData.setRemoteAddress(request.getRemoteAddr());	  					
