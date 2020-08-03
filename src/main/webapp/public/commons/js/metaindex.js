@@ -54,6 +54,10 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	// Set user preferences
 	myself._callback_SetUserPreferences=null;	
 	myself._callback_SetUserPreferences_debug=false;
+		
+	// User profiles
+	myself._callback_GetUserProfiles=null;	
+	myself._callback_GetUserProfiles_debug=false;
 	
 	// Server Messages
 	myself._callback_ServerMessages=null;
@@ -159,6 +163,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	myself._callback_UploadFiles=null;	
 	myself._callback_UploadFiles_debug=false;
 
+	
 	// uncompress GZIP and Base64 encoded data
 	function uncompressBase64(base64data) {
 
@@ -197,6 +202,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			// user
 			myself._stompClient.subscribe('/user/queue/user_preferences_set',myself._handleSetUserPreferencesMsg);
 			myself._stompClient.subscribe('/user/queue/user_catalogcusto_set',myself._handleSetUserCatalogCustoMsg);
+			myself._stompClient.subscribe('/user/queue/users_profiles',myself._handleGetUsersProfilesMsg);
 			
 			// catalog
 			myself._stompClient.subscribe('/user/queue/catalogs',myself._handleCatalogsMsg);
@@ -443,7 +449,54 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			requestObj.errorCallback(errorMsg); 
 		}			
 	}
-	
+
+
+//------- Get Users Profiles --------	
+		
+		this.requestUsersProfilesCallbacks=[];
+		
+		// dataObj {
+		// 	usersIds = []
+		//  successCallback
+		//  errorCallback
+		// }
+		this.requestGetUsersProfiles = function(dataObj) {
+			
+			var curRequestId=myself.requestUsersProfilesCallbacks.length;
+			myself.requestUsersProfilesCallbacks.push(dataObj);
+			if (myself._callback_GetUserProfiles_debug==true) {
+				console.log("MxAPI Requesting Get User Profiles ");
+			}
+			
+			myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/users_profiles", {}, 
+									 JSON.stringify({"requestId" : curRequestId,
+										 			 "usersIds":dataObj.usersIds,
+										 			}));			
+		}
+		
+		this._handleGetUsersProfilesMsg = function (responseMsg) {
+			var decodedData=responseMsg.body;
+			var parsedMsg = JSON.parse(decodedData);
+			
+			if (myself._callback_GetUserProfiles_debug==true) {
+				console.log("MxAPI Received Get Users Profiles\n"+decodedData);
+			}
+			
+			let requestId=parsedMsg.requestId;
+			let requestObj=myself.requestUsersProfilesCallbacks[requestId];
+			//console.log("received users profiles requestId="+requestId+" -> "+requestObj);
+			if (requestObj==null) { return; }
+			if (parsedMsg.isSuccess==true) { requestObj.successCallback(parsedMsg); }
+			else {
+				let errorMsg=parsedMsg.rejectMessage;
+				// ensure error message is not empty
+				// (otherwise can lead to some mis behaviour in user app (ex: x-editable) )
+				if (errorMsg==undefined) { errorMsg="set user catalog customisation refused by server, sorry." }
+				requestObj.errorCallback(errorMsg); 
+			}			
+		}
+		
+		
 //------- Catalog Contents Changed notification --------
 			// coherent with Metadindex WsControllerUser.CATALOG_MODIF_TYPE enumeration
 			this.CATALOG_MODIF_TYPE={ 'CATALOGS_LIST':'CATALOGS_LIST', 

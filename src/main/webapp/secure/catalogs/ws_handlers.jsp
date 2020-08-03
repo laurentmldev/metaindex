@@ -8,7 +8,7 @@
  
  function ws_handlers_refreshCatalogsGui() {
 	 MxGuiDetails.memGui();
-	 MxApi.requestCatalogs();
+	 MxApi.requestCatalogs();	 
  }
  
  function onWsConnect(isConnected) {
@@ -18,6 +18,7 @@
 	else {
 		footer_showAlert(SUCCESS, "Connected to Metaindex server");
  		MxApi.requestCatalogs();
+ 		
 	}
  }
  
@@ -76,6 +77,32 @@
  function handleMxWsServerGuiMessage(msg) {
 	 footer_showAlert(msg.level, msg.text);
  }
+ 
+
+
+ function ws_handlers_getUserProfileData(userId,callbackFunc) {	
+	function successCallback(msgData) {		
+		let userData=msgData.users[userId];
+		callbackFunc(userData);		
+	}
+	function errorCallback(msg) { footer_showAlert(WARNING, "Unable to retrieve data for user '"+userId+"' : "+msg); }
+	
+	let usersIds=[];
+	usersIds.push(userId);
+	MxApi.requestGetUsersProfiles({	"usersIds":usersIds,
+ 									"successCallback":successCallback,
+ 									"errorCallback":errorCallback
+ 									});		
+ }
+ 
+//refresh nb created catalogs
+function handleNbCreatedCatalogs(profileData) {
+	let curNbCatalogsCreated=profileData.curNbCatalogsCreated;
+	let maxNbCatalogsCreated=profileData.maxNbCatalogsCreated;		
+	MxGuiLeftBar.updateNbCatalogsCreated(curNbCatalogsCreated,maxNbCatalogsCreated);
+}
+
+ 
  function handleMxWsCatalogs(msg) {
 	 
 	 if (msg.isSuccess==false) {
@@ -97,8 +124,7 @@
 		 MxGuiDetails.restoreGui();
 	 }
 	 
-	 //footer_showAlert(INFO, "Loaded "+msg.length+" catalogs");	
-	 
+	 ws_handlers_getUserProfileData(<s:property value='currentUserProfile.id'/>,handleNbCreatedCatalogs);
   }
  
 
@@ -127,4 +153,5 @@
 	
  }
 
+ 
 </script>

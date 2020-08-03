@@ -72,7 +72,9 @@ public class SqlDbInterface  extends SQLDatabaseInterface<IUserProfileData>
 	public SQLWriteStmt<IUserProfileData> getCreateorUpdateUserRoleIntoSqlDbStmt(IUserProfileData data, USER_ROLE role) throws DataProcessException {
 		return new CreateOrUpdateUserRole(data,role,getDataConnector());
 	}
-	
+	public SQLPopulateStmt<IUserProfileData> getCountUserCatalogsInDbStmt(IUserProfileData data) throws DataProcessException {
+		return new CountUserCatalogsInDb(data,getDataConnector());
+	}
 	
 	// Access Rights
 	public SQLPopulateStmt<IUserProfileData> getPopulateAccessRightsFromDbStmt(List<IUserProfileData> data,Boolean onlyIfRequired) throws DataProcessException {

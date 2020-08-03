@@ -3,11 +3,14 @@
 v2.1.0:
 -------
 #95 autonomous account creation
-	Terms and Conditions and use of Cookies presentation and acceptation on first login
+	- create a catalog if current pack allows it
+	- ask for access to a catalog : send email + notification to admins
+	- access rights panel : accept or reject catalogs access requests
+	- terms and Conditions and use of Cookies presentation and acceptation on first login
 #89 autonomous password reset
-#91 join us : use an online form rather than 'mailto'
 #88 use scripted fields to get decades automatically computed
 #93 close GEXF window once generation started
+#40 when deleting a catalog, delete also associated userdata (with strong confirmation message)
 
 
 #19 send email to users and admin when useful
@@ -39,7 +42,7 @@ v2.1.1:
 #23 avoid use of kibana_user user once ELK issue 51759 us fixed
 #10 websocket connection refused after session timeout and re-login
 #28 user profile picture
-#40 when deleting a catalog, delete also associated userdata or archive it?
+
 #43 search on accentuated characters imported from UTF-16 does not seem to work
 #45 when logging out from Mx, log-out Kibana session too
 # metaindex.fr/robots.txt
@@ -101,6 +104,12 @@ improve userdata drive connection
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+
+v2.1.0
+
+#91 join us : use an online form rather than 'mailto'
+   - canceled, replaced by autonomous account creation
+
 v2.0.7
 
 #87 error: mx_timestamp misses a 'field' entry in mapping

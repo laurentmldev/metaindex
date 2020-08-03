@@ -70,6 +70,8 @@ public class UserProfileData implements IUserProfileData
 	private Integer _guiLanguageId = DEFAULT_LANG_ID;
 	private Integer _guiThemeId = DEFAULT_GUITHEME_ID;
 	
+	private Integer _maxNbCatalogsCreated = 0;
+	private Integer _curNbCatalogsCreated = 0;
 	private ICatalog _selectedCatalog=null;
 	private Integer _currentFilterId=IFilter.ALL_ITEMS_CATALOG_ID;
 
@@ -189,6 +191,21 @@ public class UserProfileData implements IUserProfileData
 	public String getNickname() { return _nickname; }
 	public void setNickname(String nickname) { this._nickname = nickname; }
 	
+	@Override
+    public Integer getMaxNbCatalogsCreated() {
+		return _maxNbCatalogsCreated;
+	}
+	@Override
+	public void setMaxNbCatalogsCreated(Integer nbCatalogs) {
+		_maxNbCatalogsCreated=nbCatalogs;
+	}
+	@Override 
+	public Integer getCurNbCatalogsCreated() {
+		return _curNbCatalogsCreated;
+	}
+	public void setCurNbCatalogsCreated(Integer nbCats) {
+		_curNbCatalogsCreated=nbCats;
+	}
 	
     /** Retrieve (encrypted) password. 
      *  Only used for unit test 
@@ -502,6 +519,11 @@ public class UserProfileData implements IUserProfileData
 				.getPopulateUserProfileFromDbStmt(this)
 				.execute();
 		
+		// load nb catalogs created
+		Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface()
+			.getCountUserCatalogsInDbStmt(this)
+			.execute();
+			
 		// load user roles data from DB
 		Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface()
 				.getPopulateAccessRightsFromDbStmt(this)
@@ -570,6 +592,7 @@ public class UserProfileData implements IUserProfileData
 				+"\n\t- role: "+this.getRole().toString()
 				+"\n\t- language: "+this.getGuiLanguageShortname()
 				+"\n\t- theme: "+this.getGuiThemeShortname()
+				+"\n\t- mxNbCatalogsCreated: "+this.getMaxNbCatalogsCreated()
 				+"\n\t- catalogs rights: ";
 		if (this.getRole() == USER_ROLE.ROLE_ADMIN) {
 			str+=USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN.toString()+" for all";

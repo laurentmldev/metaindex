@@ -33,6 +33,7 @@ import metaindex.app.periodic.statistics.user.LoginUserMxStat;
 import metaindex.app.periodic.statistics.user.SetPrefUserMxStat;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.userprofile.IUserProfileData;
+import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
 import metaindex.data.userprofile.UserProfileData;
 import toolbox.exceptions.DataProcessException;
 
@@ -83,7 +84,46 @@ public class WsControllerUser extends AMxWSController {
     		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.register_request"));
     	}
     }
-   
+ 
+		
+	
+    @MessageMapping("/users_profiles")
+    @SubscribeMapping ("/user/queue/users_profiles")
+    public void handleUserProfileRequest(SimpMessageHeaderAccessor headerAccessor, 
+    										WsMsgUserProfile_request requestMsg) throws Exception {
+    	
+    	WsMsgUserProfile_answer answer = new WsMsgUserProfile_answer();
+    	answer.setRequestId(requestMsg.getRequestId());
+    	IUserProfileData user = getUserProfile(headerAccessor);
+    	if (user==null || !user.isLoggedIn() || user.getRole()==USER_ROLE.ROLE_OBSERVER) { return; }
+    	
+    	try {
+    		
+    		for (Integer userId : requestMsg.getUsersIds()) {
+	    		IUserProfileData requestedUser = Globals.Get().getUsersMgr().getUserById(userId);
+	    		if (requestedUser==null) {
+	    			answer.setRejectMessage("no such user : "+userId);
+	    			answer.setIsSuccess(false);
+	    			messageSender.convertAndSendToUser(	headerAccessor.getUser().getName(), 
+	    					"/queue/users_profiles", answer); 
+	    			return;
+	    		}    		
+	    		answer.addUser(requestedUser);
+    		}
+    		answer.setIsSuccess(true);
+    		messageSender.convertAndSendToUser(	headerAccessor.getUser().getName(), 
+					"/queue/users_profiles", answer);
+    		
+    		Globals.GetStatsMgr().handleStatItem(new LoginUserMxStat(user));
+	    	
+    	} catch (DataProcessException e) 
+    	{
+    		log.error("Unable to register '"+headerAccessor.getUser().getName()+"' on websockets API : "+e);  
+    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.register_request"));
+    	}
+    }
+ 
+    
     @SendTo ("/user/queue/gui_messaging")
     public void sendUserGuiMessageText(	IUserProfileData user, 
     									MESSAGE_CRITICITY  level, 

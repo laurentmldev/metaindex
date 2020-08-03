@@ -235,6 +235,13 @@ public class WsControllerCatalog extends AMxWSController {
 			c.loadMappingFromDb();	
 			c.loadVocabulariesFromDb();
 			c.setDbIndexFound(true);
+			// update user stats info, typically nb of catalogs created
+			IUserProfileData creator = Globals.Get().getUsersMgr().getUserById(c.getCreatorId());
+			if (creator!=null) { 
+				Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface()
+					.getCountUserCatalogsInDbStmt(creator)
+					.execute();
+			}
 			
 			// create Kibana space dedicated to this catalog
 	    	Boolean result =Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().createStatisticsSpace(user, c);
@@ -421,6 +428,14 @@ public class WsControllerCatalog extends AMxWSController {
     		}
 	    	Globals.Get().getCatalogsMgr().removeCatalog(c.getId());
 	    	
+	    	// update user stats info, typically nb of catalogs created
+			IUserProfileData creator = Globals.Get().getUsersMgr().getUserById(c.getCreatorId());
+			if (creator!=null) { 
+				Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface()
+					.getCountUserCatalogsInDbStmt(creator)
+					.execute();
+			}
+			
 	    	// Try to delete ES index (if any)
 	    	try {
 		    	result = Globals.Get().getDatabasesMgr().getCatalogContentsDbInterface().getDeleteFromDocsDbStmt(user, c).execute();
@@ -453,15 +468,19 @@ public class WsControllerCatalog extends AMxWSController {
 	    		answer.setRejectMessage("Unable to delete statistics spaces for '"+c.getName()+"'");
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_catalog", answer);
     		}
-	    	// no need to explicitly delete index pattern, because it has defined as part of the space,
-	    	// and has been deleted by Kibana when deleting the space itself
 	    	
+			
+	    	// no need to explicitly delete index pattern, because it has defined as part of the space,
+	    	// and has been deleted by Kibana when deleting the space itself	    	
 	    	user.setCurrentCatalog(0);
 	    	user.setUserCatalogAccessRights(c.getId(), null);
 	    	answer.setIsSuccess(kResult1&&kResult2);    	
 	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_catalog", answer);
 	    	Globals.GetStatsMgr().handleStatItem(new DeleteCatalogMxStat(user,c));
 	    	c.releaseLock();
+	    	
+
+			
     	} catch (Exception e) {    					    	
 	    		answer.setIsSuccess(false);  
 	    		answer.setRejectMessage("Unable to process delete_catalog '"+c.getName()+"' by '"+user.getName()+"'");

@@ -72,6 +72,11 @@ public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProc
     public IGuiTheme getGuiTheme();
     public Collection<IGuiTheme> getGuiThemes();
     
+    public Integer getMaxNbCatalogsCreated();
+	public void setMaxNbCatalogsCreated(Integer nbCatalogs);
+	public Integer getCurNbCatalogsCreated();
+	public void setCurNbCatalogsCreated(Integer nbCatalogs);
+	
 	/// load user data and associated roles
 	public void loadFullUserData() throws DataProcessException;
     // --------

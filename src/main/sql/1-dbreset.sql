@@ -268,6 +268,8 @@ CREATE TABLE `users` (
   `enabled` tinyint(4) NOT NULL DEFAULT '0',
   `guilanguage_id` int(32) NOT NULL DEFAULT '1',
   `guitheme_id` int(32) NOT NULL DEFAULT '1',  
+  -- max number of catalogs this user is authorized to create
+  `maxNbCatalogsCreated` int(32) NOT NULL DEFAULT '1',  
   `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 

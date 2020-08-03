@@ -28,7 +28,7 @@ class PopulateUserProfileFromDb extends SQLPopulateStmt<IUserProfileData>   {
 
 	public static final String SQL_REQUEST = 
 			"select users.user_id,users.email,users.password, "
-			+"users.nickname,users.guilanguage_id,users.guitheme_id, role, users.lastUpdate, user_roles.lastUpdate,users.enabled"							
+			+"users.nickname,users.guilanguage_id,users.guitheme_id,users.maxNbCatalogsCreated,role,users.lastUpdate, user_roles.lastUpdate,users.enabled"							
 			+" from users,user_roles";
 
 	private Boolean _onlyIfTimestampChanged=false;
@@ -61,8 +61,8 @@ class PopulateUserProfileFromDb extends SQLPopulateStmt<IUserProfileData>   {
 			_data.add(d);
 		}
 		
-		Timestamp dbDateUsers = rs.getTimestamp(8);
-		Timestamp dbDateRoles = rs.getTimestamp(9);
+		Timestamp dbDateUsers = rs.getTimestamp(9);
+		Timestamp dbDateRoles = rs.getTimestamp(10);
 		Timestamp newerDbDate = dbDateUsers;
 		if (newerDbDate.before(dbDateRoles)) { newerDbDate=dbDateRoles; }
 		if (_onlyIfTimestampChanged==true) {
@@ -74,9 +74,10 @@ class PopulateUserProfileFromDb extends SQLPopulateStmt<IUserProfileData>   {
 		d.setNickname(rs.getString(4));
 		d.setGuiLanguageId(rs.getInt(5));
 		d.setGuiThemeId(rs.getInt(6));
-		d.setRole(USER_ROLE.valueOf(rs.getString(7)));
+		d.setMaxNbCatalogsCreated(rs.getInt(7));
+		d.setRole(USER_ROLE.valueOf(rs.getString(8)));
 		d.setLastUpdate(newerDbDate);
-		d.setEnabled(rs.getBoolean(10));
+		d.setEnabled(rs.getBoolean(11));
 		
 		return d;
 	}

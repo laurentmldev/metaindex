@@ -15,7 +15,17 @@
           
           	
             <h6 class="collapse-header"><s:text name="Catalogs.new_catalog" /></h6>
-                        
+                    <center>
+                   <a 	id="leftbar_catalog_nbCreatedCatalogs" 
+                   		class="btn-big btn btn-sm btn-warning shadow-sm" 
+                   		style="font-size:0.8rem;margin-bottom:1rem;color:white"
+                   		>
+						<s:text name="Catalogs.left.maxNbCatalogsCreatedReached" /> 
+										(<span id="leftbar_catalog_curNbCreatedCatalogs" ></span> 
+													/ 
+										  <span id="leftbar_catalog_maxNbCreatedCatalogs" ></span>)
+						<br/><span style="font-weight:bold;font-size:1rem;padding:1rem"><s:text name="Catalogs.left.getMoreCatalogs" /></span>
+					</a></center>    
 				 <div id="leftbar_create_catalog" class="mx-collapse-item collapse-item small">
 					
 			 		<input class="_query_input_ form-control bg-light border-0 small" 
@@ -59,6 +69,27 @@ if (mx_helpers_isUser()) {
 	var createCatalogOp = document.getElementById("leftbar_catalog_create").cloneNode(true);
 	createCatalogOp.style.display="block";
 	MxGuiLeftBar.addOperation(createCatalogOp);
+}
+
+MxGuiLeftBar.updateNbCatalogsCreated=function(curNb,maxNb) {
+	
+	let curNbCatalogsEl = document.getElementById("leftbar_catalog_curNbCreatedCatalogs");
+	let maxNbCatalogsEl = document.getElementById("leftbar_catalog_maxNbCreatedCatalogs");
+	
+	curNbCatalogsEl.innerHTML=curNb;
+	maxNbCatalogsEl.innerHTML=maxNb;
+	
+	document.getElementById("leftbar_catalog_nbCreatedCatalogs").onclick=function() {
+		console.log("click ploc");
+	}
+	
+	if (curNb>=maxNb) {
+		document.getElementById("leftbar_create_catalog").style.display="none";
+		document.getElementById("leftbar_catalog_nbCreatedCatalogs").style.display="block";
+	} else {
+		document.getElementById("leftbar_create_catalog").style.display="block";
+		document.getElementById("leftbar_catalog_nbCreatedCatalogs").style.display="none";
+	}
 }
 
 </script>
