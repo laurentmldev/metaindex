@@ -35,21 +35,21 @@ USE metaindex;
 SET FOREIGN_KEY_CHECKS=0;
 
 -- catalog tables
-DROP TABLE if exists 	catalog_vocabulary, 
-						catalog_terms_vocabulary,
-						catalog_terms,
-						catalog_perspectives,
-						filters
-						;
+DROP TABLE if exists  catalog_vocabulary, 
+            catalog_terms_vocabulary,
+            catalog_terms,
+            catalog_perspectives,
+            filters
+            ;
 
 
 -- generic tables
-DROP TABLE if exists user_roles, user_catalogs_rights, user_catalogs_customization, catalogs, users, guilanguages, guithemes;
+DROP TABLE if exists user_roles, user_plans, plans, user_catalogs_rights, user_catalogs_customization, catalogs, users, guilanguages, guithemes;
 
 
 SET FOREIGN_KEY_CHECKS=1;
 
-SET @MX_DB_VERSION = 1;
+SET @MX_DB_VERSION = 2;
 -- --------------------------------------------------------
 
 --
@@ -130,23 +130,23 @@ CREATE TABLE `catalog_perspectives` (
 
 -- perspective_json_string= {
 -- tabs: [
---		{
---			title:"my tab",
---			sections: [
---				   {
---					   title : "my section",
---					   type: "mozaic", (mozaic|table)
--- 					   align : "left", (left|center|right)
---					   fields: [ 
---								nom : {
---									size:"small", (small,medium,big)
---									color:"normal",  (normal, black, red, yellow, green, orange, blue, purple)
--- 									showTitle:"true"
---									weight:"normal", (normal|bold|italic)
---								}
---							]
---				   }
---				]
+--    {
+--      title:"my tab",
+--      sections: [
+--           {
+--             title : "my section",
+--             type: "mozaic", (mozaic|table)
+--             align : "left", (left|center|right)
+--             fields: [ 
+--                nom : {
+--                  size:"small", (small,medium,big)
+--                  color:"normal",  (normal, black, red, yellow, green, orange, blue, purple)
+--                  showTitle:"true"
+--                  weight:"normal", (normal|bold|italic)
+--                }
+--              ]
+--           }
+--        ]
 --      }
 --  ]
 -- }   
@@ -276,6 +276,33 @@ CREATE TABLE `users` (
 
 
 --
+-- Structure de la table `plans`
+--
+
+CREATE TABLE `plans` (
+`plan_id` int(32) NOT NULL,
+  `name` varchar(45) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `catalogsCreatedQuota` int(32) NOT NULL DEFAULT '0',
+  `docsQuotaPerCatalog` int(32) NOT NULL DEFAULT '0',
+  `discQuotaPerCatalog` int(32) NOT NULL DEFAULT '0',
+  `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+
+
+--
+-- Structure de la table `user_plans`
+--
+
+CREATE TABLE `user_plans` (
+  `user_plan_id` int(32) NOT NULL,
+  `user_id` int(32) NOT NULL,
+  `plan_id` int(32) NOT NULL,
+  `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+
+--
 -- Structure de la table `user_roles`
 --
 
@@ -376,7 +403,7 @@ ALTER TABLE `guilanguages`
 --
 -- Index pour la table `guithemes` 
 ALTER TABLE `guithemes` 
-	ADD PRIMARY KEY (`guitheme_id`);
+  ADD PRIMARY KEY (`guitheme_id`);
 
 --
 -- Index pour la table `users`
@@ -389,30 +416,48 @@ ALTER TABLE `users`
  ADD KEY `FK_USERS_GUITHEME_ID` (`guitheme_id`);
 
 --
+-- Index pour la table `plans`
+--
+ALTER TABLE `plans`
+ ADD PRIMARY KEY (`plan_id`);
+
+
+--
+-- Index pour la table `user_plans`
+--
+ALTER TABLE `user_plans`
+ ADD PRIMARY KEY (`user_plan_id`), 
+ ADD UNIQUE KEY `uni_userid_planid` (`plan_id`,`user_id`), 
+  ADD KEY `fk_userid_idx` (`user_id`),
+  ADD KEY `fk_userplan_idx` (`plan_id`);
+
+
+--
 -- Index pour la table `user_roles`
 --
 ALTER TABLE `user_roles`
- ADD PRIMARY KEY (`user_role_id`), ADD UNIQUE KEY `uni_userid_role` (`role`,`user_id`), 
- 	ADD KEY `fk_userid_idx` (`user_id`);
+ ADD PRIMARY KEY (`user_role_id`), 
+ ADD UNIQUE KEY `uni_userid_role` (`role`,`user_id`), 
+  ADD KEY `fk_userid_idx` (`user_id`);
 
- 	
+  
 --
 -- Index pour la table `user_catalogs_rights`
 --
 ALTER TABLE `user_catalogs_rights`
  ADD PRIMARY KEY (`user_catalogs_rights_id`), 
- 	ADD UNIQUE KEY `uni_userid_catalog_rights` (`user_id`,`catalog_id`), 
- 	ADD KEY `fk_rights_userid_idx` (`user_id`),
- 	ADD KEY `fk_rights_catalogid_idx` (`catalog_id`);
+  ADD UNIQUE KEY `uni_userid_catalog_rights` (`user_id`,`catalog_id`), 
+  ADD KEY `fk_rights_userid_idx` (`user_id`),
+  ADD KEY `fk_rights_catalogid_idx` (`catalog_id`);
 
 --
 -- Index pour la table `user_catalogs_customization`
 --
 ALTER TABLE `user_catalogs_customization`
  ADD PRIMARY KEY (`user_catalogs_customization_id`), 
- 	ADD UNIQUE KEY `uni_userid_catalog_customization` (`user_id`,`catalog_id`), 
- 	ADD KEY `fk_custo_userid_idx` (`user_id`),
- 	ADD KEY `fk_custo_catalogid_idx` (`catalog_id`);
+  ADD UNIQUE KEY `uni_userid_catalog_customization` (`user_id`,`catalog_id`), 
+  ADD KEY `fk_custo_userid_idx` (`user_id`),
+  ADD KEY `fk_custo_catalogid_idx` (`catalog_id`);
 
 --
 -- AUTO_INCREMENT pour la table `catalogs`
@@ -466,6 +511,11 @@ MODIFY `guitheme_id` int(32) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1000;
 --
 ALTER TABLE `users`
 MODIFY `user_id` int(32) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1000;
+--
+-- AUTO_INCREMENT pour la table `user_plans`
+--
+ALTER TABLE `user_plans`
+MODIFY `user_plan_id` int(32) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1000;
 --
 -- AUTO_INCREMENT pour la table `user_roles`
 --
@@ -536,6 +586,13 @@ ADD CONSTRAINT `C_FK_COMMUNITYVOCABULARY_COMMUNITY_ID` FOREIGN KEY (`catalog_id`
 ALTER TABLE `users`
 ADD CONSTRAINT `C_FK_USERS_GUILANGUAGE_ID` FOREIGN KEY (`guilanguage_id`) REFERENCES `guilanguages` (`guilanguage_id`),
 ADD CONSTRAINT `C_FK_USERS_GUITHEME_ID` FOREIGN KEY (`guitheme_id`) REFERENCES `guithemes` (`guitheme_id`);
+
+--
+-- Contraintes pour la table `user_plans`
+--
+ALTER TABLE `user_plans`
+ADD CONSTRAINT `c_fk_userplans_userid` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
+ADD CONSTRAINT `c_fk_userplans_planid` FOREIGN KEY (`plan_id`) REFERENCES `plans` (`plan_id`);
 
 --
 -- Contraintes pour la table `user_roles`
