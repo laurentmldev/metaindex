@@ -2,8 +2,69 @@
 <%@ taglib uri="/struts-tags" prefix="s" %>  
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
- 
+   
+<script type="text/javascript" >
 
+
+//-------- Blank --------
+ function _commons_popups_makeBlankPopup(title) {
+	 let newPopup = document.getElementById("_commons_popups_ blank_input_template_").cloneNode(true);
+	 newPopup.id="";	 
+	 
+	 // header
+	 let titleNode=newPopup.querySelector("._title_");
+	 titleNode.innerHTML=title;
+	 
+	 // 'close' button
+	 let closeButton=newPopup.querySelector("._button_close_");
+	 closeButton.onclick=function(event) { newPopup.style.display="none"; }
+	 
+	 newPopup.show=function() { newPopup.style.display="block"; }
+	 newPopup.hide=function() { newPopup.style.display='none'; }
+	 newPopup.toggleShowHide=function() {
+		 if (newPopup.style.display=='block') { newPopup.hide(); }
+		 else { newPopup.show(); }
+	 }
+	 return newPopup;
+ }
+ 
+ </script>
+
+  <div class="modal _modal_root_" id="_commons_popups_ blank_input_template_"
+  	onkeypress="event.stopPropagation();
+  		if (event.which==13||event.keycode==13) { this.querySelector('._button_close_').click(); }"
+ 	onkeydown="event.stopPropagation();" >
+    <div class="modal-dialog">
+      <div class="modal-content">
+      
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title _title_"></h4>
+          <button type="button" class="close" data-dismiss="modal"
+          			onclick="event.preventDefault();event.stopPropagation();
+								findAncestorNode(this,'_modal_root_').style.display='none';
+								"><i class="fa fa-times fa-sm"></i></button>
+        </div>
+        
+        <!-- Modal body -->
+        <div class="modal-body">
+          <h3>Details</h3>
+        </div>
+        
+        <!-- Modal footer -->
+        <div class="modal-footer">
+        	<button class="_button_close_ btn btn-info" >
+				<i class="fa fa-check fa-sm text-grey-50"></i>
+		 	</button>
+          
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  
+  
+  
 <script type="text/javascript" >
  // -------- Dropdown --------
  // choices : { value:xxx, text:xxx}
@@ -709,6 +770,7 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFile
 <script type="text/javascript">
 
 MxGuiPopups={}
+MxGuiPopups.newBlankPopup=_commons_popups_makeBlankPopup;
 MxGuiPopups.newTextInputPopup=_commons_popups_makeTextInputPopup;
 MxGuiPopups.newDropdownInputPopup=_commons_popups_makeDropdownInputPopup;
 MxGuiPopups.newMultiInputsPopup=_commons_popups_makeMultiInputsPopup;

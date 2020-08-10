@@ -75,5 +75,10 @@
 		<action name="Error" class="metaindex.app.beans.BeanProfile">						
 		</action>
 		
+		<!-- Payement -->
+		<action name="Checkout" class="metaindex.app.beans.BeanCheckout">
+			<result name="BeanProcess_SUCCESS" >/secure/payment/checkout.jsp</result>  			
+		</action> 
+		
 	</package>  
 </struts>      

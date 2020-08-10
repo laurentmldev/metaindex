@@ -69,5 +69,16 @@
   return popupForm;
   
 }
-  
+ 
+ function profile_modal_createFeaturesForm() {
+	 
+	 let popupForm=MxGuiPopups.newBlankPopup("Features and Pricing");
+	 let bodynode = popupForm.querySelector(".modal-body");
+	 let paypalButtonContainer = document.createElement("div");
+	 paypalButtonContainer.id="paypal-button-container";
+	 bodynode.append(paypalButtonContainer);
+	 return popupForm;
+	 
+ 
+ }
   </script>

@@ -2,11 +2,25 @@
 
 v2.1.0:
 -------
-#95 autonomous account creation
-	- create a catalog if current pack allows it
-	- ask for access to a catalog : send email + notification to admins
-	- access rights panel : accept or reject catalogs access requests
+#95 autonomous account creation 
 	- terms and Conditions and use of Cookies presentation and acceptation on first login
+	
+#99 manage users access to catalogs
+	- create a catalog only if current plan allows it
+	- access rights panel : accept or reject catalogs access requests
+	- ask for access to a catalog : send email + notification to admins
+#100 only catalog owner shall be able to delete a catalog	
+	
+#96 pricing policy
+	- Free : 1 catalog, 5000 documents, 5MB : 0 (1000 max 5GB)
+	- Small : 1 catalog, 10000 documents, 100MB : 29€/y (100 max 10GB)
+	- Medium : 3 catalogs, 50000 documents/cat, 500MB/catalog : 49€/y 1.5GB/user (10 max 15GB)
+	- Big : 5 catalogs, 200000 documents/cat, 500MB/catalog, 249€/year  2.5GB/user (5 max 13GB)
+	- need more? ask for custom plan. 
+	- accept paypal check-out
+#97 adaptive policy (idle features?) when user plan gets outdated
+  freeze extra catalogs if user down-gradded its plan?
+#98 ensure user cannot arm data from others via kibana
 #89 autonomous password reset
 #88 use scripted fields to get decades automatically computed
 #93 close GEXF window once generation started
@@ -68,7 +82,7 @@ improve userdata drive connection
 	Un schéma conceptuel (ou carte conceptuelle) est une représentation structurée d'un ensemble de concepts reliés sémantiquement. Les concepts sont liés par des lignes fléchées auxquelles sont accolés un mot ou deux décrivant leur relation : « mène à », « prévient que », « favorise », etc.
 - intégration ouitl d'analyse lexicographique TXM 
 - left-items submenus not visible when window width too small
-- use field alias to rename fields and make lexic translation available in Kibana and searxh queries
+- use field alias to rename fields and make lexic translation available in Kibana and search queries
 - websocket connection lost when 'save as...' window open ?
 - detect when same user logged from 2 different hosts : TO BE TESTED
 - when entering edit mode, shall stay in current tab

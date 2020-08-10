@@ -31,6 +31,9 @@
   <!-- Bootstrap Confirmation -->  
   <script src="${mxurl}public/commons/deps/bootstrap-confirmation/bootstrap-confirmation.js"></script>
   
+  <!-- Paypal API -->
+   <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=EUR">/*${mxPaypalId}*/</script>
+  
   <!-- Fontawsome icons -->
   <link href="${mxurl}public/commons/deps/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
