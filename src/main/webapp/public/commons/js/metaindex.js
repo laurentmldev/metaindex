@@ -163,6 +163,14 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	myself._callback_UploadFiles=null;	
 	myself._callback_UploadFiles_debug=false;
 
+	// Request Plan Update, answer is details for payment 
+	myself._callback_PlanRequest=null;	
+	myself._callback_PlanRequest_debug=false;
+	
+	// Plan Payment confirmation Request 
+	myself._callback_PlanConfirmPayment=null;	
+	myself._callback_PlanConfirmPayment_debug=false;
+	
 	
 	// uncompress GZIP and Base64 encoded data
 	function uncompressBase64(base64data) {
@@ -203,6 +211,8 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			myself._stompClient.subscribe('/user/queue/user_preferences_set',myself._handleSetUserPreferencesMsg);
 			myself._stompClient.subscribe('/user/queue/user_catalogcusto_set',myself._handleSetUserCatalogCustoMsg);
 			myself._stompClient.subscribe('/user/queue/users_profiles',myself._handleGetUsersProfilesMsg);
+			myself._stompClient.subscribe('/user/queue/update_plan_answer',myself._handlePlanUpdateMsg);
+			myself._stompClient.subscribe('/user/queue/update_plan_confirm_payment_answer',myself._handlePlanUpdatePaymentConfirmMsg);
 			
 			// catalog
 			myself._stompClient.subscribe('/user/queue/catalogs',myself._handleCatalogsMsg);
@@ -1804,5 +1814,115 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		}		
 		
 	}
+	
+
+//------- Request Plan Update --------	
+		
+		this.requestPlanUpdateCallbacks=[];
+		
+		// dataObj {
+		// 	userId
+		// 	planId
+		//  successCallback
+		//  errorCallback
+		// }
+		this.requestPlanUpdate = function(dataObj) {
+			
+			var curRequestId=myself.requestPlanUpdateCallbacks.length;
+			myself.requestPlanUpdateCallbacks.push(dataObj);
+			if (myself._callback_PlanRequest_debug==true) {
+				console.log("MxAPI Requesting Plan Update");
+			}
+			
+			myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/update_plan_request", {}, 
+									 JSON.stringify({"requestId" : curRequestId,
+										 			 "userId":dataObj.userId,
+										 			 "planId":dataObj.planId
+										 			}));			
+		}
+		
+		this._handlePlanUpdateMsg = function (responseMsg) {
+			var decodedData=responseMsg.body;
+			var parsedMsg = JSON.parse(decodedData);
+			
+			if (myself._callback_PlanRequest_debug==true) {
+				console.log("MxAPI Received Plan Update Response\n"+decodedData);
+			}
+			
+			let requestId=parsedMsg.requestId;
+			let requestObj=myself.requestPlanUpdateCallbacks[requestId];
+			//console.log("received Received Plan Update Response");
+			if (requestObj==null) { return; }
+			if (parsedMsg.isSuccess==true) {
+				requestObj.successCallback(parsedMsg); 
+			}
+			else {
+				let errorMsg=parsedMsg.rejectMessage;
+				// ensure error message is not empty
+				// (otherwise can lead to some mis behaviour in user app (ex: x-editable) )
+				if (errorMsg==undefined) { errorMsg="plan update request refused by server, sorry." }
+				requestObj.errorCallback(errorMsg); 
+			}			
+		}
+
+
+	//------- Confirm Plan Update Payment --------	
+			
+			this.requestPlanUpdatePaymentConfirmCallbacks=[];
+			
+			// dataObj {
+			// 	userId
+			// 	planId
+			// 	transactionId
+			// 	totalCost
+			//  paymentMethod: paypal|sandbox
+			// 	paymentDetails : string
+			//  successCallback
+			//  errorCallback
+			// }
+			this.requestPlanUpdatePaymentConfirm = function(dataObj) {
+				
+				var curRequestId=myself.requestPlanUpdatePaymentConfirmCallbacks.length;
+				myself.requestPlanUpdatePaymentConfirmCallbacks.push(dataObj);
+				if (myself._callback_PlanRequestPaymentConfirm_debug==true) {
+					console.log("MxAPI Requesting Plan Update Payment Confirmation");
+				}
+				
+				myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/update_plan_confirm_payment_request", {}, 
+										 JSON.stringify({"requestId" : curRequestId,
+											 			 "userId":dataObj.userId,
+											 			 "planId":dataObj.planId,
+											 			 "transactionId":dataObj.transactionId,
+											 			 "totalCost":dataObj.totalCost,
+											 			 "paymentMethod":dataObj.paymentMethod,
+											 			 "paymentDetails":dataObj.paymentDetails
+											 			}));			
+			}
+			
+			this._handlePlanUpdatePaymentConfirmMsg = function (responseMsg) {
+				var decodedData=responseMsg.body;
+				var parsedMsg = JSON.parse(decodedData);
+				
+				if (true || myself._callback_PlanRequestPaymentConfirm_debug==true) {
+					console.log("MxAPI Received Plan Update Payment Confirmation Msg\n"+decodedData);
+				}
+				
+				let requestId=parsedMsg.requestId;
+				let requestObj=myself.requestPlanUpdatePaymentConfirmCallbacks[requestId];
+				
+				if (requestObj==null) { return; }
+				if (parsedMsg.isSuccess==true) {
+					console.log("invoking success callback for payment confirmation");
+					requestObj.successCallback(parsedMsg); }
+				else {
+					let errorMsg=parsedMsg.rejectMessage;
+					// ensure error message is not empty
+					// (otherwise can lead to some mis behaviour in user app (ex: x-editable) )
+					if (errorMsg==undefined) { errorMsg="confirm plan update payment refused by server, sorry." }
+					requestObj.errorCallback(errorMsg); 
+				}			
+			}
+
+
 }
 

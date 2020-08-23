@@ -11,6 +11,7 @@ See full version of LICENSE in <https://fsf.org/>
 */
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -28,6 +29,7 @@ import metaindex.data.filter.IFilter;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.commons.globals.guitheme.GuiThemesManager;
 import metaindex.data.commons.globals.guitheme.IGuiTheme;
+import metaindex.data.commons.globals.plans.IPlan;
 import metaindex.app.Globals;
 import metaindex.app.control.websockets.users.WsControllerUser;
 import metaindex.app.control.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
@@ -97,6 +99,30 @@ public class UserProfileData implements IUserProfileData
 	private PeriodicProcessMonitor _dbAutoRefreshProcessing=null;
 	
 	private Boolean _enabled=false;
+	
+	// plan info
+	private Integer _planId;
+	private Date _planStartDate;
+	
+	public Integer getPlanId() { return _planId; }
+	public void setPlanId(Integer planId) { _planId=planId; }
+	
+	public IPlan getPlan() {
+		Collection<IPlan> plans = Globals.Get().getPlansMgr().getPlans();
+		for (IPlan curPlan : plans) {
+			if (curPlan.getId().equals(_planId)) { return curPlan; }		
+		}
+		return null;
+	}
+	public Date getPlanStartDate() { return _planStartDate; }
+	public void setPlanStartDate(Date planStartDate) { _planStartDate=planStartDate; }
+	
+	public Date getPlanEndDate() { 
+		Calendar c = Calendar.getInstance();
+		c.setTime(getPlanStartDate());
+		c.add(Calendar.MONTH, IPlan.PLANS_DURATION_MONTHS.intValue());
+		return  c.getTime();		
+	}
 	
 	@Override
 	public Integer getId() {
@@ -439,6 +465,11 @@ public class UserProfileData implements IUserProfileData
 	@Override
 	public void sendEmail(String subject, String body) throws DataProcessException {
 		Globals.Get().sendEmail(this.getName(), subject, body);
+	}
+	
+	@Override
+	public void sendEmailCCAdmin(String subject, String body) throws DataProcessException {
+		Globals.Get().sendEmail(this.getName(),Globals.GetMxProperty("mx.mailer.admin_recipient"),subject, body);
 	}
 	
 	private void sendGuiMessage(MESSAGE_CRITICITY level, String msg, List<String> details) {

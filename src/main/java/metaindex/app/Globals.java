@@ -37,6 +37,8 @@ import metaindex.data.commons.globals.guilanguage.GuiLanguagesManager;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguagesManager;
 import metaindex.data.commons.globals.guitheme.GuiThemesManager;
 import metaindex.data.commons.globals.guitheme.IGuiThemesManager;
+import metaindex.data.commons.globals.plans.IPlansManager;
+import metaindex.data.commons.globals.plans.PlansManager;
 import metaindex.app.periodic.fs.MxTmpFolderMonitor;
 import metaindex.app.periodic.statistics.MxStatisticsManager;
 import metaindex.data.catalog.CatalogsManager;
@@ -121,7 +123,8 @@ public class Globals {
 	private ElasticSearchConnector _esConnector;
 	private KibanaConnector _kibanaConnector;
 	private IGuiLanguagesManager _guiLanguagesManager = new GuiLanguagesManager();
-	private IGuiThemesManager _guiThemesManager = new GuiThemesManager();	
+	private IGuiThemesManager _guiThemesManager = new GuiThemesManager();
+	private IPlansManager _plansManager = new PlansManager();
 	private IUsersManager _usersManager = new UsersManager();
 	private ICatalogsManager _catalogsManager = new CatalogsManager();
 	private IMxDbManager _dbManager; 
@@ -165,7 +168,7 @@ public class Globals {
 			"</body>\n" + 
 			"</html>";
 	
-	public void sendEmail(String recipientEmail, String subject, String msg) throws DataProcessException {
+	public void sendEmail(String recipientEmail,String ccEmail, String subject, String msg) throws DataProcessException {
 		
 		if (msg.length()==0 || subject.length()==0) {
 			throw new DataProcessException("Cowardly refusing to send empty email (or with empty subject) to '"+recipientEmail+"'");
@@ -175,12 +178,16 @@ public class Globals {
 			_mailSender.send(GetMxProperty("mx.mailer.user"), 
 							 GetMxProperty("mx.mailer.password"), 
 							 recipientEmail, 
+							 ccEmail,
 							 MX_EMAIL_SUBJECT_PREFIX+" "+subject, 
 							 MX_EMAIL_HEADER+msg+MX_EMAIL_FOOTER);
 			
 		} catch (MessagingException e) {
 			throw new DataProcessException("Unable to send email '"+subject+"' to '"+recipientEmail+"' : "+e.getMessage(),e);
 		}
+	}
+	public void sendEmail(String recipientEmail, String subject, String msg) throws DataProcessException {
+		sendEmail(recipientEmail,"",subject,msg);
 	}
 	public void setWebappsFsPath(String contextPath) { 
 		_contextPath=contextPath; 
@@ -235,7 +242,8 @@ public class Globals {
 			try {			
 				// load all languages and themes data at init
 				_guiLanguagesManager.loadFromDb();
-				_guiThemesManager.loadFromDb();	
+				_guiThemesManager.loadFromDb();
+				_plansManager.loadFromDb();
 				Globals.Get().getCatalogsMgr().loadFromDb();
 				Globals.Get().getUsersMgr().loadFromDb();
 								
@@ -270,6 +278,7 @@ public class Globals {
 	}
 	public IGuiLanguagesManager getGuiLanguagesMgr() { return _guiLanguagesManager; }
 	public IGuiThemesManager getGuiThemesMgr() { return _guiThemesManager; }
+	public IPlansManager getPlansMgr() { return _plansManager; }
 	public IUsersManager getUsersMgr() { return _usersManager; }
 	public ICatalogsManager getCatalogsMgr() { return _catalogsManager; }
 	public IMxDbManager getDatabasesMgr() { return _dbManager; }

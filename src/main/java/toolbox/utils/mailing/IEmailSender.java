@@ -20,6 +20,9 @@ public interface IEmailSender {
 	public void send(String username, String password, 
 					 String recipientEmail, String title, String message) throws AddressException, MessagingException;
 	
+	public void send(String username, String password, 
+			 String recipientEmail, String ccEmail, String title, String message) throws AddressException, MessagingException;
+	
 	public void sendHtml(String username, String password, 
 			 String recipientEmail, String ccEmail, String title, String message) throws AddressException, MessagingException;
  

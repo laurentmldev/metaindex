@@ -7,9 +7,21 @@
 
 
 //-------- Blank --------
- function _commons_popups_makeBlankPopup(title) {
-	 let newPopup = document.getElementById("_commons_popups_ blank_input_template_").cloneNode(true);
-	 newPopup.id="";	 
+ function _commons_popups_makeBlankPopup(title,closeButtonText,maxWidth,maxHeight,bgColor) {
+	 let newPopup = document.getElementById("_commons_popups_blank_input_template_").cloneNode(true);
+	 newPopup.id="";
+	 
+	 let modal=newPopup.querySelector(".modal-dialog");
+	 let styleStr="";
+	 if (maxWidth!=null) { styleStr+="max-width:"+maxWidth+";"; }
+	 if (bgColor!=null) { styleStr+="background-color:"+bgColor+";"; }
+	 if (styleStr!="") { modal.style=styleStr; }
+	 
+	 modal=newPopup.querySelector(".modal-content");
+	 styleStr="";
+	 if (maxHeight!=null) { styleStr+="max-height:"+maxHeight+";"; }
+	 if (styleStr!="") { modal.style=styleStr; }
+	 
 	 
 	 // header
 	 let titleNode=newPopup.querySelector("._title_");
@@ -18,19 +30,23 @@
 	 // 'close' button
 	 let closeButton=newPopup.querySelector("._button_close_");
 	 closeButton.onclick=function(event) { newPopup.style.display="none"; }
-	 
+	 if (closeButtonText!=null) {
+		 closeButton.innerHTML=closeButtonText;
+	 }
 	 newPopup.show=function() { newPopup.style.display="block"; }
 	 newPopup.hide=function() { newPopup.style.display='none'; }
 	 newPopup.toggleShowHide=function() {
 		 if (newPopup.style.display=='block') { newPopup.hide(); }
 		 else { newPopup.show(); }
 	 }
+	 
+	 
 	 return newPopup;
  }
  
  </script>
 
-  <div class="modal _modal_root_" id="_commons_popups_ blank_input_template_"
+  <div class="modal _modal_root_" id="_commons_popups_blank_input_template_"
   	onkeypress="event.stopPropagation();
   		if (event.which==13||event.keycode==13) { this.querySelector('._button_close_').click(); }"
  	onkeydown="event.stopPropagation();" >
@@ -47,8 +63,7 @@
         </div>
         
         <!-- Modal body -->
-        <div class="modal-body">
-          <h3>Details</h3>
+        <div class="modal-body" style="max-height:80vh;overflow:auto;">
         </div>
         
         <!-- Modal footer -->

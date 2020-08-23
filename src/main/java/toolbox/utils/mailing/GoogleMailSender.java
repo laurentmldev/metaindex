@@ -42,6 +42,10 @@ public class GoogleMailSender implements IEmailSender {
     public void send(final String username, final String password, String recipientEmail, String title, String message) throws AddressException, MessagingException {
         sendHtml(username, password, recipientEmail, "", title, message);
     }
+    
+    public void send(final String username, final String password, String recipientEmail, String ccEmail, String title, String message) throws AddressException, MessagingException {
+        sendHtml(username, password, recipientEmail, ccEmail, title, message);
+    }
 
     /**
      * Send email using GMail SMTP server.

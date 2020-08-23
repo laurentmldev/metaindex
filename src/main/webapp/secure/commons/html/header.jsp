@@ -25,66 +25,17 @@
 </div> 
 <div id="show_profile_container"></div>
 <s:include value="profile_modal.jsp" />
+<s:include value="plans_modal_proprietary.jsp" />
 <script type="text/javascript">
 
 	var MX_HEADER_PROFILE_POPUP_ID="profile_preferences_popup";
+	var MX_HEADER_PLANS_POPUP_ID="profile_plans_popup";
+	
 	let popupNode = profile_modal_createPreferencesForm();
 	popupNode.id=MX_HEADER_PROFILE_POPUP_ID;
 	document.getElementById("show_profile_container").appendChild(popupNode);
 
-	
-	 
-	 function addCheckoutButton(containerId, amount) {
-
-		 paypal.Buttons({
-		        createOrder: function(data, actions) {
-		          return actions.order.create({
-		            purchase_units: [{
-		              amount: {
-		                value: amount,
-		                currency_code: "EUR",
-		                breakdown: {
-		                    item_total: {
-		                      currency_code: "EUR",
-		                      value: amount
-		                    },
-		                  }
-		                
-		              },
-		              description:"A MetaindeX Plan",
-		              invoice_id: "INVOICE-123",
-		              custom_id:"id-abcd",
-		              
-		              items: [
-		      				{
-		      				name: 'hat',
-		      				description: 'Brown hat.',
-		      				quantity: '1',
-		      				unit_amount: {
-		      					value : amount,
-		      					currency_code : 'EUR'
-		      				  }
-		      				}
-		      			],
-		      		
-		            }],
-		            
-		          });
-		        },
-		        onApprove: function(data, actions) {
-		          return actions.order.capture().then(function(details) {
-		            alert('Transaction completed by ' + details.payer.name.given_name);
-		          });
-		        }
-		      }).render('#'+containerId); // Display payment options on your web page
-		      
-	 }
-	
-	var MX_HEADER_ENABLED_FEATURES_POPUP_ID="profile_features_popup";
-	let featuresPopupNode=profile_modal_createFeaturesForm();
-	featuresPopupNode.id=MX_HEADER_ENABLED_FEATURES_POPUP_ID;
-	document.getElementById("show_profile_container").appendChild(featuresPopupNode);
-	addCheckoutButton("paypal-button-container",29);
+	if (plans_modal_addHeaderMenu!=null) { plans_modal_addHeaderMenu();	}
 	
 </script>
 
@@ -138,9 +89,9 @@
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                   <s:text name="Profile.preferences"></s:text>
                 </a>
-                <a class="dropdown-item" href="#" onclick="document.getElementById(MX_HEADER_ENABLED_FEATURES_POPUP_ID).toggleShowHide();">
+                <a class="dropdown-item" href="#" onclick="document.getElementById(MX_HEADER_PLANS_POPUP_ID).toggleShowHide();">
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                  <s:text name="Profile.features"></s:text>
+                  <s:text name="Profile.plans"></s:text>
                 </a>
                 <a class="dropdown-item" data-toggle="modal" data-target="#logoutModal">
                   <i class="fas fa-running fa-sm fa-fw mr-2 text-gray-400"></i>

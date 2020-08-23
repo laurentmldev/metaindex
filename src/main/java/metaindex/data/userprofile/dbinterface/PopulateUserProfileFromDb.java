@@ -28,8 +28,10 @@ class PopulateUserProfileFromDb extends SQLPopulateStmt<IUserProfileData>   {
 
 	public static final String SQL_REQUEST = 
 			"select users.user_id,users.email,users.password, "
-			+"users.nickname,users.guilanguage_id,users.guitheme_id,users.maxNbCatalogsCreated,role,users.lastUpdate, user_roles.lastUpdate,users.enabled"							
-			+" from users,user_roles";
+			+"users.nickname,users.guilanguage_id,users.guitheme_id,users.maxNbCatalogsCreated,role,users.lastUpdate,"
+			+" user_roles.lastUpdate,users.enabled,"
+			+" user_plans.plan_id, user_plans.lastUpdate"
+			+" from users,user_roles,user_plans";
 
 	private Boolean _onlyIfTimestampChanged=false;
 	
@@ -79,13 +81,16 @@ class PopulateUserProfileFromDb extends SQLPopulateStmt<IUserProfileData>   {
 		d.setLastUpdate(newerDbDate);
 		d.setEnabled(rs.getBoolean(11));
 		
+		d.setPlanId(rs.getInt(12));
+		d.setPlanStartDate(rs.getTimestamp(13));
+		
 		return d;
 	}
 
 	@Override
 	public String buildSqlQuery()  {				
 		String sql = SQL_REQUEST;
-		sql += " where users.user_id=user_roles.user_id ";
+		sql += " where users.user_id=user_roles.user_id and users.user_id=user_plans.user_id ";
 		if (_data.size()>0) {
 			sql+=" and (";
 			Iterator<IUserProfileData> it = _data.iterator();

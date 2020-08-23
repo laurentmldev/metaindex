@@ -28,6 +28,7 @@ public class MxDbManager implements IMxDbManager {
 	
 	private metaindex.data.commons.globals.guitheme.dbinterface.DbInterface _guithemeInterface;
 	private metaindex.data.commons.globals.guilanguage.dbinterface.DbInterface _guilanguageInterface;
+	private metaindex.data.commons.globals.plans.dbinterface.DbInterface _plansInterface;
 	private metaindex.data.userprofile.dbinterface.SqlDbInterface _userProfileSqlInterface;
 	private metaindex.data.userprofile.dbinterface.ESDbInterface _userProfileESInterface;
 	private metaindex.data.catalog.dbinterface.SQLDbInterface _catalogInterface;
@@ -46,6 +47,7 @@ public class MxDbManager implements IMxDbManager {
 		
 		_guithemeInterface = new metaindex.data.commons.globals.guitheme.dbinterface.DbInterface(_sqlConnector);
 		_guilanguageInterface = new metaindex.data.commons.globals.guilanguage.dbinterface.DbInterface(_sqlConnector);
+		_plansInterface = new metaindex.data.commons.globals.plans.dbinterface.DbInterface(_sqlConnector);
 		
 		_userProfileSqlInterface = new metaindex.data.userprofile.dbinterface.SqlDbInterface(_sqlConnector);
 		_userProfileESInterface = new metaindex.data.userprofile.dbinterface.ESDbInterface(esConnector);
@@ -76,6 +78,10 @@ public class MxDbManager implements IMxDbManager {
 	@Override
 	public metaindex.data.commons.globals.guilanguage.dbinterface.DbInterface getGuiLanguageDbInterface() {
 		return _guilanguageInterface;
+	}
+	@Override
+	public metaindex.data.commons.globals.plans.dbinterface.DbInterface getPlansDbInterface() {
+		return _plansInterface;
 	}
 	@Override
 	public metaindex.data.catalog.dbinterface.SQLDbInterface getCatalogDefDbInterface() {

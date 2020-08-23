@@ -4,6 +4,7 @@ v2.1.0:
 -------
 #95 autonomous account creation 
 	- terms and Conditions and use of Cookies presentation and acceptation on first login
+		what happens to the data once the plan expired : keep it 3 months and then deleted?
 	
 #99 manage users access to catalogs
 	- create a catalog only if current plan allows it
@@ -11,13 +12,14 @@ v2.1.0:
 	- ask for access to a catalog : send email + notification to admins
 #100 only catalog owner shall be able to delete a catalog	
 	
-#96 pricing policy
+#96 user plans and pricing policy
 	- Free : 1 catalog, 5000 documents, 5MB : 0 (1000 max 5GB)
 	- Small : 1 catalog, 10000 documents, 100MB : 29€/y (100 max 10GB)
 	- Medium : 3 catalogs, 50000 documents/cat, 500MB/catalog : 49€/y 1.5GB/user (10 max 15GB)
 	- Big : 5 catalogs, 200000 documents/cat, 500MB/catalog, 249€/year  2.5GB/user (5 max 13GB)
 	- need more? ask for custom plan. 
 	- accept paypal check-out
+	- server-side trace transactions details for user support
 #97 adaptive policy (idle features?) when user plan gets outdated
   freeze extra catalogs if user down-gradded its plan?
 #98 ensure user cannot arm data from others via kibana
@@ -25,7 +27,9 @@ v2.1.0:
 #88 use scripted fields to get decades automatically computed
 #93 close GEXF window once generation started
 #40 when deleting a catalog, delete also associated userdata (with strong confirmation message)
-
+# include ELK disck space
+	GET /_cat/indices?v
+	GET /_cluster/stats summarizes
 
 #19 send email to users and admin when useful
 

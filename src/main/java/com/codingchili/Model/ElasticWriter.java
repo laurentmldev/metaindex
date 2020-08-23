@@ -161,7 +161,7 @@ public class ElasticWriter extends AbstractVerticle {
         return new JsonObject()
                 .put("index", new JsonObject()
                         .put("_index", event.getIndex())
-                        .put("_type", event.getMapping())).encode() + "\n";
+                        .put("type", event.getMapping())).encode() + "\n";
     }
 
     /**

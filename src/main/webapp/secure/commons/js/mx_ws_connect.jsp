@@ -55,5 +55,36 @@ var tokenName = "${_csrf.headerName}";
 var tokenVal = "${_csrf.token}";
 var mxApiConnectionParams={};
 mxApiConnectionParams[tokenName]=tokenVal;
-		
+
+
+
+function ws_handlers_requestPlanUpdate(planId,onResponseCallback) {
+	
+	function errorCallback(msg) { footer_showAlert(WARNING, "Unable to contact server for Plan Update details : "+msg); }
+	
+	MxApi.requestPlanUpdate({	"userId":<s:property value="currentUserProfile.id"/>,
+								"planId":planId,
+								"successCallback":onResponseCallback,
+								"errorCallback":errorCallback
+									});
+	
+}
+
+
+function ws_handlers_requestPlanUpdateConfirmPayment(planId,transactionId,totalCost,paymentMethod,paymentDetailsStr,onResponseCallback) {
+	
+	function errorCallback(msg) { footer_showAlert(WARNING, "Unable to contact server for Plan Update Payment Confirmation : "+msg); }
+	
+	MxApi.requestPlanUpdatePaymentConfirm({	"userId":<s:property value="currentUserProfile.id"/>,
+								"planId":planId,
+								"transactionId":transactionId,
+								"totalCost":totalCost,
+								"paymentMethod":paymentMethod,
+								"paymentDetails":paymentDetailsStr,
+								"successCallback":onResponseCallback,
+								"errorCallback":errorCallback
+									});
+	
+}
+
 </script>

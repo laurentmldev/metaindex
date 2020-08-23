@@ -10,14 +10,12 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
-import metaindex.data.userprofile.IUserProfileData;
-import toolbox.exceptions.DataProcessException;
-
 public interface IMxDbManager {
 	
 	
 	public metaindex.data.commons.globals.guitheme.dbinterface.DbInterface getGuiThemeDbInterface();
 	public metaindex.data.commons.globals.guilanguage.dbinterface.DbInterface getGuiLanguageDbInterface();
+	public metaindex.data.commons.globals.plans.dbinterface.DbInterface getPlansDbInterface();
 	
 	public metaindex.data.userprofile.dbinterface.SqlDbInterface getUserProfileSqlDbInterface();
 	public metaindex.data.userprofile.dbinterface.ESDbInterface getUserProfileESDbInterface();
@@ -32,5 +30,7 @@ public interface IMxDbManager {
 	public metaindex.data.term.dbinterface.DbInterface getTermsDbInterface();
 	public metaindex.data.perspective.dbinterface.DbInterface getPerspectivesDbInterface();
 	public metaindex.data.catalog.dbinterface.VocabularySQLDbInterface getCatalogVocDbInterface();
+	
+	
 
 }

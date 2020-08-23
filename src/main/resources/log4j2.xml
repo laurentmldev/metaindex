@@ -17,7 +17,23 @@
                 <TimeBasedTriggeringPolicy interval="1" modulate="true" />
             </Policies>
         </RollingFile>
- 		<RollingFile name="metaindex-stats-file-logger" fileName="${sys:catalina.home}/logs/metaindex-stats.log" filePattern="${sys:catalina.home}/logs/metaindex-stats-%d{yyyy-MM-dd}.log">
+ 		<RollingFile name="metaindex-stats-file-logger" fileName="${sys:catalina.home}/logs/metaindex-stats.log" filePattern="${sys:catalina.home}/logs/metaindex-stats-%d{yyyy-MM}.log">
+            <PatternLayout>
+                <pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            </Policies>
+        </RollingFile>
+        <RollingFile name="metaindex-payments-file-logger" fileName="${sys:catalina.home}/logs/metaindex-payments.log" filePattern="${sys:catalina.home}/logs/metaindex-payments-%d{yyyy-MM}.log">
+            <PatternLayout>
+                <pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            </Policies>
+        </RollingFile>
+        <RollingFile name="metaindex-payments-details-file-logger" fileName="${sys:catalina.home}/logs/metaindex-payments-details.log" filePattern="${sys:catalina.home}/logs/metaindex-payments-details-%d{yyyy-MM}.log.gz">
             <PatternLayout>
                 <pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</pattern>
             </PatternLayout>
@@ -50,6 +66,16 @@
         
         <Logger name="metaindex.app.periodic.statistics.MxStatisticsManager" level="info" additivity="false" >
             <appender-ref ref="metaindex-stats-file-logger" level="info" />
+        </Logger>
+        
+        <Logger name="toolbox.utils.payment.PaypalPaymentInterfaceProprietary" level="info" additivity="false" >
+            <appender-ref ref="metaindex-payments-details-file-logger" level="info" />
+        </Logger>
+        <Logger name="toolbox.utils.payment.SandboxPaymentInterface" level="info" additivity="false" >
+            <appender-ref ref="metaindex-payments-details-file-logger" level="info" />
+        </Logger>
+        <Logger name="metaindex.app.control.websockets.users.PaymentLogging" level="info" additivity="false" >
+            <appender-ref ref="metaindex-payments-file-logger" level="info" />
         </Logger>
         
         

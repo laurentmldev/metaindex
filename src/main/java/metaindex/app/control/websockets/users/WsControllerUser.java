@@ -1,5 +1,6 @@
 package metaindex.app.control.websockets.users;
 
+
 /*
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -11,6 +12,10 @@ See full version of LICENSE in <https://fsf.org/>
 */
 
 import java.util.List;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,11 +36,19 @@ import metaindex.app.periodic.statistics.catalog.SetUserCustoCatalogMxStat;
 import metaindex.app.periodic.statistics.user.ErrorOccuredMxStat;
 import metaindex.app.periodic.statistics.user.LoginUserMxStat;
 import metaindex.app.periodic.statistics.user.SetPrefUserMxStat;
+import metaindex.app.periodic.statistics.user.UpdatePlanPaymentMxStat;
+import metaindex.app.periodic.statistics.user.UpdatePlanRequestMxStat;
 import metaindex.data.catalog.ICatalog;
+import metaindex.data.commons.globals.plans.IPlan;
+import metaindex.data.commons.globals.plans.IPlansManager;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
 import metaindex.data.userprofile.UserProfileData;
 import toolbox.exceptions.DataProcessException;
+import toolbox.utils.payment.IPaymentInterface;
+import toolbox.utils.payment.IPaymentInterface.PAYMENT_METHOD;
+import toolbox.utils.payment.PaypalPaymentInterfaceProprietary;
+import toolbox.utils.payment.SandboxPaymentInterface;
 
 @Controller
 public class WsControllerUser extends AMxWSController {
@@ -43,6 +56,8 @@ public class WsControllerUser extends AMxWSController {
 	
 	private Log log = LogFactory.getLog(WsControllerUser.class);
 		
+	public static final Integer NB_DAYS_PLAN_DISCOUNT=182;// approx. half a year
+	
 	// list to be coherent with metaindex.js API equivalent
 	public enum CATALOG_MODIF_TYPE { 	CATALOGS_LIST, 
 										CATALOG_DEFINITION,
@@ -58,7 +73,9 @@ public class WsControllerUser extends AMxWSController {
 	public WsControllerUser(SimpMessageSendingOperations messageSender) {
 		super(messageSender);	
 		UsersWsController=this;
-	}		
+	}
+	
+	private static List<WsMsgUpdateUserPlan_answer> _awaitingPaymentPlanUpdates = new java.util.concurrent.CopyOnWriteArrayList<>();
 		
 	
     @MessageMapping("/register_request")
@@ -208,7 +225,7 @@ public class WsControllerUser extends AMxWSController {
     		tmpUserData.setNickname(requestMsg.getNickName());
     		tmpUserData.setName(user.getName());
     		tmpUserData.setId(user.getId());
-    		Boolean result = Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface().getUpdateIntoDbStmt(tmpUserData).execute();
+    		Boolean result = Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface().getUpdatePreferencesIntoDbStmt(tmpUserData).execute();
     		
     		if (result==false) {
     			answer.setRejectMessage("Update operation refused, sorry.");
@@ -231,6 +248,333 @@ public class WsControllerUser extends AMxWSController {
     	}
     }
    
+
+	public static enum BREAKDOWN_ENTRY_TYPE { product, tax, discount, totalht, total };
+	
+	public class PlanBreakdownEntry {		
+		public String title;
+		public Float cost;
+		public BREAKDOWN_ENTRY_TYPE type;
+		public String unit="";
+		
+		public PlanBreakdownEntry(String title,Float cost,BREAKDOWN_ENTRY_TYPE type,String unit) {
+			this.title=title;
+			this.cost=cost;
+			this.type=type;
+			this.unit=unit;
+		}
+	};
+    private Boolean buildPlanUpdateCheckoutDetails(IUserProfileData u, WsMsgUpdateUserPlan_request requestMsg,WsMsgUpdateUserPlan_answer answerMsg) {
+		
+    	
+    	Integer requestedPlanId = requestMsg.getPlanId();
+    	
+    	Float totalYearlyCost=0.0F;
+    	Float totalYearlyCostHT=0.0F;
+    	
+    	IPlan curPlan = u.getPlan();
+    	if (curPlan==null) {
+    		curPlan=Globals.Get().getPlansMgr().getPlan(IPlansManager.DEFAULT_PLAN_ID);
+    		if (curPlan==null) {
+    			log.error("Default plan (id="+IPlansManager.DEFAULT_PLAN_ID
+    					+") not defined. Unable to build plan update checkout details");
+    			return false;
+    		}
+		}
+		Float curPlanCost = curPlan.getYearlyCostEuros();
+				
+		IPlan newPlan = Globals.Get().getPlansMgr().getPlan(requestedPlanId);
+		if (newPlan==null) {
+			log.error("User "+u.getName()+" requested update to unknown plan id '"+requestedPlanId+"'");
+			return false;
+		}
+		Float newPlanCost = newPlan.getYearlyCostEuros();
+		List<PlanBreakdownEntry> breakDownList= new ArrayList<>();
+		
+		// new plan cost
+		breakDownList.add(new PlanBreakdownEntry(
+						"Plan '"+newPlan.getName()+"'",
+						newPlan.getYearlyCostEuros(),
+						BREAKDOWN_ENTRY_TYPE.product,
+						"€ HT"));
+		totalYearlyCostHT+=newPlanCost;
+		
+		// discount if any
+		Date now = new Date();
+		Long curPlanRemainingDays = (u.getPlanEndDate().getTime() - now.getTime())/(1000*3600*24) ;
+		Float discountValue=curPlanCost/2;
+		if (curPlanCost<=newPlanCost && curPlanRemainingDays>=NB_DAYS_PLAN_DISCOUNT) {
+			breakDownList.add(new PlanBreakdownEntry(
+					"Discount -50% current plan <span style='color:black'>"+curPlan.getName()+"</span>",
+					discountValue,
+					BREAKDOWN_ENTRY_TYPE.discount,
+					"€"));
+		}
+		// totalHT
+		totalYearlyCostHT-=discountValue;
+		breakDownList.add(new PlanBreakdownEntry(
+				"Total HT",
+				totalYearlyCostHT,
+				BREAKDOWN_ENTRY_TYPE.totalht,
+				"€"));
+		
+		// tax
+		Float taxRate = Float.valueOf(Globals.GetMxProperty("mx.payment.taxrate"));
+		Float taxCost = (float) Math.round(taxRate*totalYearlyCostHT)/100; 
+		breakDownList.add(new PlanBreakdownEntry(
+				"Tax "+taxRate+"%",
+				taxCost,
+				BREAKDOWN_ENTRY_TYPE.tax,
+				"€"));
+		
+		// grand total with taxes
+		totalYearlyCost=totalYearlyCostHT+taxCost;
+		breakDownList.add(new PlanBreakdownEntry(
+				"Total",
+				totalYearlyCost,
+				BREAKDOWN_ENTRY_TYPE.total,
+				"€"));
+		
+		answerMsg.setTotalCost(totalYearlyCost);
+		answerMsg.setBreakdownEntries(breakDownList);
+		
+		return true;
+	}
+    
+    /*
+     		Browser          				Server               	Payment Service (Paypal,...)
+     			
+     	    
+     		   -----ask payment details-------> 
+     		   <----send back breakdown detais-
+     		   
+     		   ---------------------------process payment------------->
+     		   <------------------------transaction confirmation-------
+     		   
+     		   
+     		   -----------notify payment----->
+     		   								  --------confirm payment-->
+     		   								  <----payment confirmed----
+     		   								  
+     		   							[update user plan]
+     		   							
+     		   	<--------notify plan update---
+     
+     */
+    
+    
+    @MessageMapping("/update_plan_request")
+    @SubscribeMapping ("/user/queue/update_plan_answer")
+    public void handleUserPlanUpdateRequest(SimpMessageHeaderAccessor headerAccessor, 
+    									WsMsgUpdateUserPlan_request requestMsg) throws Exception {
+    	
+    	WsMsgUpdateUserPlan_answer answer = new WsMsgUpdateUserPlan_answer(requestMsg);
+		IUserProfileData user = getUserProfile(headerAccessor);
+				
+    	try {
+    		if (!requestMsg.getUserId().equals(user.getId())) {
+    			answer.setRejectMessage("User ID does not match currently logged user, sorry.");
+    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_answer", answer);
+    			return;
+    		}
+    		if (!user.isLoggedIn() || !user.isEnabled()) {
+    			answer.setRejectMessage("User not logged in, sorry operation refused.");
+    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_answer", answer);
+    			return;
+    		}
+    		
+    		DateFormat timestampFormat = new SimpleDateFormat("yyMMddHHmmssSSS");
+    		String transactionId = requestMsg.getUserId()+"-"+requestMsg.getPlanId()+"-"+timestampFormat.format(new Date());
+    		answer.setTransactionId(transactionId);
+    		if (buildPlanUpdateCheckoutDetails(user,requestMsg,answer)==false) {
+    			answer.setRejectMessage("Could not properly compute transaction for your request, sorry. Please contact support team.");
+    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_answer", answer);
+    			return;
+    		}
+    		
+    		answer.setIsSuccess(true);
+    		_awaitingPaymentPlanUpdates.add(answer);
+    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_answer", answer);			
+	    	
+    		Globals.GetStatsMgr().handleStatItem(new UpdatePlanRequestMxStat(user,
+    																transactionId,
+    																user.getPlanId(),
+    																requestMsg.getPlanId(),
+    																answer.getTotalCost()));
+    		
+    	} catch (DataProcessException e) 
+    	{
+    		answer.setRejectMessage("Update operation failed : "+e.getMessage());
+			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_answer", answer);
+			e.printStackTrace();
+			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.set_user_preferences"));
+			return;    		
+    	}
+    }
+
+    
+    @MessageMapping("/update_plan_confirm_payment_request")
+    @SubscribeMapping ("/user/queue/update_plan_confirm_payment_answer")
+    public void handleUserPlanUpdateRequest(SimpMessageHeaderAccessor headerAccessor, 
+    									WsMsgUpdateUserPlanPaymentConfirm_request requestMsg) throws Exception {
+    	
+    	WsMsgUpdateUserPlanPaymentConfirm_answer answer = new WsMsgUpdateUserPlanPaymentConfirm_answer(requestMsg);
+		IUserProfileData user = getUserProfile(headerAccessor);
+				
+    	try {
+    		if (!requestMsg.getUserId().equals(user.getId())) {
+    			answer.setRejectMessage("User ID does not match currently logged user, sorry.");
+    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_confirm_payment_answer", answer);
+    			return;
+    		}
+    		if (!user.isLoggedIn() || !user.isEnabled()) {
+    			answer.setRejectMessage("User not logged in, sorry operation refused.");
+    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_confirm_payment_answer", answer);
+    			return;
+    		}
+    		
+    		String transactionId = requestMsg.getTransactionId();
+    		WsMsgUpdateUserPlan_answer awaitingTransactionData = _awaitingPaymentPlanUpdates.stream()
+					.filter(p -> p.getTransactionId().equals(transactionId))
+					.findFirst()
+					.orElse(null);
+    		if (awaitingTransactionData==null) {
+    			answer.setRejectMessage("No such transaction awaiting confirmation.");
+    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_confirm_payment_answer", answer);
+    			return;
+    		}    	
+    		
+    		String paymentEntry = 
+    				   "transactionId="+requestMsg.getTransactionId()
+    				+"\tuserId="+user.getId()
+    				+"\tmethod="+requestMsg.getPaymentMethod()
+    				+"\tcost="+requestMsg.getTotalCost()
+    				+"\tplanId="+requestMsg.getPlanId()
+    				;
+    		
+    		IPaymentInterface pi = null;
+    		if (requestMsg.getPaymentMethod()==PAYMENT_METHOD.paypal) { pi = new PaypalPaymentInterfaceProprietary(); }
+    		else { pi = new SandboxPaymentInterface(); }
+    		
+    		Boolean paymentConfirmed = pi.confirmPayment(
+    				requestMsg.getTransactionId(), 
+    				awaitingTransactionData.getTotalCost(),
+    				requestMsg.getPaymentDetails());
+    		    		
+    		if (!paymentConfirmed) {
+    			PaymentLogging.logger.error(paymentEntry+"\t"+"status=NOT_CONFIRMED");
+    			answer.setRejectMessage("No payment received (yet) for this transaction.");
+    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_confirm_payment_answer", answer);
+    			
+    			user.sendEmailCCAdmin("Your plan purchase via "+requestMsg.getPaymentMethod()+" could not be confirmed yet", 
+						"Hi "+user.getNickname()+",<br/><br/>"						
+						+"Thank you very much for your purchase for a new plan.<br/>"
+						+"It seems that your payment could not be confirmed yet and we apologize for that.<br/>"
+						+"We will check that again regularly and will get back to you as soon as payment confirmation is available.<br/><br/>"
+						+"If you need any time to talk about this issue, please reference the transaction id '"+requestMsg.getTransactionId()+"', that will help a lot.<br/><br/>"
+						+"Thank you very much for your understanding.");
+
+    			return;
+    		}
+    		
+    		IPlan plan = Globals.Get().getPlansMgr().getPlan(requestMsg.getPlanId());
+    		if (plan==null) {
+    			
+    			PaymentLogging.logger.error(paymentEntry+"\t"+"status=UNKNOWN_PLAN_ID");
+    			log.error("User '"+user.getName()+"' purchased unknown plan '"+requestMsg.getPlanId()+"' (transactionId="+requestMsg.getTransactionId()+")");
+    			
+    			user.sendEmailCCAdmin("Your plan purchase via "+requestMsg.getPaymentMethod()+" could not be finalized yet", 
+						"Hi "+user.getNickname()+",<br/><br/>"						
+						+"Thank you very much for your purchase for a new plan.<br/>"
+						+"It seems that operation could not be fully finalized on the server and we apologize for that.<br/>"
+						+"Your payment has been traced though and an email has been sent to administrator so that he can fix it as soon as possible, "
+						+"he will get back to you very shortly.<br/><br/>"
+						+"If you need any time to talk about this issue, please reference the transaction id '"+requestMsg.getTransactionId()+"', that will help a lot.<br/><br/>"
+						+"Thank you very much for your understanding.");
+    			
+    			return;
+    		}
+    		
+
+    		// update user data with new plan    		
+    		try {
+    			user.setPlanId(requestMsg.getPlanId());
+	    		Boolean result = Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface().getUpdatePlanIntoDbStmt(user).execute();    		
+	    		if (result==false) {
+	    			PaymentLogging.logger.error(paymentEntry+"\t"+"status=SQL_UPDATE_REFUSED");
+	    			answer.setRejectMessage("We're very sorry, your payment has been accepted but a technical problem prevented us to finalize operation."
+	    						+" You'll receive shortly an email for technical assistance.");
+	    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_confirm_payment_answer", answer);
+	    			
+	    			user.sendEmailCCAdmin("Your plan purchase via "+requestMsg.getPaymentMethod()+" could not be applied yet", 
+							"Hi "+user.getNickname()+",<br/><br/>"						
+							+"Thank you very much for your purchase for a new plan.<br/>"
+							+"It seems that operation could not be fully finalized on the server and we apologize for that.<br/>"
+							+"Your payment has been accepted though and an email has been sent to administrator so that he can fix it as soon as possible, "
+							+"he will get back to you very shortly to let you know about this issue.<br/><br/>"
+							+"If you need any time to talk about this issue, please reference the transaction id '"+requestMsg.getTransactionId()+"', that will help a lot.<br/><br/>"
+							+"Thank you very much for your understanding.");
+	    			return;
+	    		}
+    		} catch (Throwable t) {
+    			PaymentLogging.logger.error(paymentEntry+"\t"+"status=EXCEPTION "+t.getMessage());
+    			answer.setRejectMessage("We're very sorry, your payment has been accepted but a technical problem prevented us to finalize operation."
+    						+" You'll receive shortly an email for technical assistance.");
+    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_confirm_payment_answer", answer);
+    			
+    			user.sendEmailCCAdmin("Your plan purchase via "+requestMsg.getPaymentMethod()+" could not be applied yet", 
+						"Hi "+user.getNickname()+",<br/><br/>"						
+						+"Thank you very much for your purchase for a new plan.<br/>"
+						+"It seems that operation could not be fully finalized on the server and we apologize for that.<br/>"
+						+"Your payment has been accepted though and an email has been sent to administrator so that he can fix it as soon as possible, "
+						+"he will get back to you very shortly to let you know about this issue.<br/><br/>"
+						+"If you need any time to talk about this issue, please reference the transaction id '"+requestMsg.getTransactionId()+"', that will help a lot.<br/><br/>"
+						+"Thank you very much for your understanding.");
+    			
+    			return;
+    		}
+    		
+    		PaymentLogging.logger.info(paymentEntry+"\t"+"status=SUCCESS");
+    		
+    		user.loadFullUserData();
+    		
+    		
+    		answer.setIsSuccess(true);
+    		_awaitingPaymentPlanUpdates.remove(awaitingTransactionData);
+    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_confirm_payment_answer", answer);			
+	    	
+    		Globals.GetStatsMgr().handleStatItem(new UpdatePlanPaymentMxStat(user,
+    																transactionId,
+    																user.getPlanId(),
+    																requestMsg.getPlanId(),
+    																awaitingTransactionData.getTotalCost()));
+    		
+    		user.sendEmailCCAdmin("Purchase Confirmation - Update to plan '"+plan.getName()+"' for one year", 
+					"Hi "+user.getNickname()+",<br/><br/>"						
+					+"Thank you very much for your purchase for plan '"+plan.getName()+"', at a cost of "+requestMsg.getTotalCost()+"€ TTC.<br/><br/>"
+					+"All operations could be processed successfully and you can use this plan right now and until "+user.getPlanEndDate()+".<br/><br/>"
+					+"If you need any time to talk about this purchase, please reference the transaction id '"+requestMsg.getTransactionId()+"', that will help a lot.<br/><br/>"
+					);
+    	} catch (DataProcessException e) 
+    	{
+    		answer.setRejectMessage("Update operation failed : "+e.getMessage());
+			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_confirm_payment_answer", answer);
+			e.printStackTrace();
+			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_plan_confirm_payment_answer"));
+			
+			user.sendEmailCCAdmin("Your plan purchase via "+requestMsg.getPaymentMethod()+" could not be finalized yet", 
+					"Hi "+user.getNickname()+",<br/><br/>"						
+					+"Thank you very much for your purchase for a new plan.<br/>"
+					+"It seems that operation could not be fully finalized on the server and we apologize for that.<br/>"
+					+"Your payment has been traced though and an email has been sent to administrator so that he can fix it as soon as possible, "
+					+"he will get back to you very shortly.<br/><br/>"
+					+"If you need any time to talk about this issue, please reference the transaction id '"+requestMsg.getTransactionId()+"', that will help a lot.<br/><br/>"
+					+"Thank you very much for your understanding.");
+			return;    		
+    	}
+    }
+
+    
     
     @SendTo ("/user/queue/gui_messaging_progress")
     public void sendUserGuiMessageProgress(	IUserProfileData user, 

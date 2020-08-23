@@ -32,7 +32,9 @@
   <script src="${mxurl}public/commons/deps/bootstrap-confirmation/bootstrap-confirmation.js"></script>
   
   <!-- Paypal API -->
-   <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=EUR">/*${mxPaypalId}*/</script>
+  
+  <s:include value="../js/mx_payment.jsp" />
+   
   
   <!-- Fontawsome icons -->
   <link href="${mxurl}public/commons/deps/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">

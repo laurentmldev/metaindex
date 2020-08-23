@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import metaindex.data.catalog.ICatalog;
+import metaindex.data.commons.globals.plans.IPlan;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
 
@@ -49,14 +50,18 @@ public class SqlDbInterface  extends SQLDatabaseInterface<IUserProfileData>
 		return new PopulateUserProfileIdFromDb(list, getDataConnector());
 	}
 
-	public SQLWriteStmt<IUserProfileData> getUpdateIntoDbStmt(List<IUserProfileData> data) throws DataProcessException {
+	public SQLWriteStmt<IUserProfileData> getUpdatePreferencesIntoDbStmt(List<IUserProfileData> data) throws DataProcessException {
 		return new UpdateUserPreferencesIntoDb(data, getDataConnector());
 	}
 	
-	public SQLWriteStmt<IUserProfileData> getUpdateIntoDbStmt(IUserProfileData data) throws DataProcessException {
+	public SQLWriteStmt<IUserProfileData> getUpdatePreferencesIntoDbStmt(IUserProfileData data) throws DataProcessException {
 		List<IUserProfileData> list = new ArrayList<>();
 		list.add(data);
-		return getUpdateIntoDbStmt(list);
+		return getUpdatePreferencesIntoDbStmt(list);
+	}
+
+	public SQLWriteStmt<IUserProfileData> getUpdatePlanIntoDbStmt(IUserProfileData data) throws DataProcessException {
+		return new CreateOrUpdateUserPlan(data,data.getPlan(),getDataConnector());
 	}
 	public SQLWriteStmt<IUserProfileData> getUpdatePasswordIntoDbStmt(List<IUserProfileData> data) throws DataProcessException {
 		return new UpdateUserPasswordIntoDb(data, getDataConnector());

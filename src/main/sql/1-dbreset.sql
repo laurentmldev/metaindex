@@ -282,9 +282,10 @@ CREATE TABLE `users` (
 CREATE TABLE `plans` (
 `plan_id` int(32) NOT NULL,
   `name` varchar(45) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `catalogsCreatedQuota` int(32) NOT NULL DEFAULT '0',
-  `docsQuotaPerCatalog` int(32) NOT NULL DEFAULT '0',
-  `discQuotaPerCatalog` int(32) NOT NULL DEFAULT '0',
+  `quotaCreatedCatalogs` int(32) NOT NULL DEFAULT '0',
+  `quotaNbDocsPerCatalog` int(32) NOT NULL DEFAULT '0',
+  `quotaFtpDiscSpaceBytesPerCatalog` int(64) NOT NULL DEFAULT '0',
+  `yearlyCostEuros` FLOAT NOT NULL DEFAULT '0',
   `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
@@ -427,8 +428,7 @@ ALTER TABLE `plans`
 --
 ALTER TABLE `user_plans`
  ADD PRIMARY KEY (`user_plan_id`), 
- ADD UNIQUE KEY `uni_userid_planid` (`plan_id`,`user_id`), 
-  ADD KEY `fk_userid_idx` (`user_id`),
+  ADD UNIQUE KEY `fk_userid_idx` (`user_id`),
   ADD KEY `fk_userplan_idx` (`plan_id`);
 
 

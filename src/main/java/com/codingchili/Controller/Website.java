@@ -100,7 +100,7 @@ public class Website extends AbstractVerticle {
                     websock.close();
                 }
             });
-            // we only support one message from the client - to set the upload ID to listen to.
+            // we only support one message from the _client - to set the upload ID to listen to.
             websock.handler(handler -> uploadId.set(handler.toJsonObject().getString(UPLOAD_ID)));
 
             // when the websocket is closed we should stop listening for status messages.

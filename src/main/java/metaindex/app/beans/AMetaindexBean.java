@@ -1,6 +1,7 @@
 package metaindex.app.beans;
 
 
+
 /*
                       GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
@@ -10,9 +11,9 @@ package metaindex.app.beans;
  See full version of LICENSE in <https://fsf.org/>
  
  */
-import java.util.Locale;
 
-import javax.servlet.ServletContext;
+import java.util.Locale;
+import java.util.Collection;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
@@ -26,13 +27,12 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.Preparable;
 
 import metaindex.data.filter.IFilter;
+import metaindex.data.commons.globals.plans.IPlan;
 import metaindex.app.Globals;
 import metaindex.app.Globals.APPLICATION_STATUS;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.userprofile.IUserProfileData;
-import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
 import metaindex.data.userprofile.UserProfileData;
-import toolbox.exceptions.DataAccessException;
 import toolbox.exceptions.DataProcessException;
 
 
@@ -184,6 +184,11 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 	}	
 	public IFilter getCurrentFilter() {
 		return _userProfileData.getCurrentFilter();
+	}
+	
+	/* Get Definition of plans available*/
+	public Collection<IPlan> getPlansList() {
+		return Globals.Get().getPlansMgr().getPlans();
 	}
 	
 	public Integer getCurrentDocumentId() {		

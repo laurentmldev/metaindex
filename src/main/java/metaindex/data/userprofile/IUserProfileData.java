@@ -18,6 +18,7 @@ import java.util.List;
 import metaindex.data.filter.IFilter;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.commons.globals.guitheme.IGuiTheme;
+import metaindex.data.commons.globals.plans.IPlan;
 import metaindex.app.control.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
 import metaindex.data.catalog.CatalogVocabularySet;
 import metaindex.data.catalog.ICatalog;
@@ -127,6 +128,7 @@ public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProc
 	
 	//----------
 	public void sendEmail(String subject, String body) throws DataProcessException;
+	public void sendEmailCCAdmin(String subject, String body) throws DataProcessException;	
 	public void sendGuiErrorMessage(String msg);
 	public void sendGuiErrorMessage(String msg,List<String> details);
 	public void sendGuiInfoMessage(String msg);
@@ -155,4 +157,11 @@ public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProc
 	String getRemoteAddress();
 	void setRemoteAddress(String addr);	
 	
+	// plan info
+	public Integer getPlanId();
+	public void setPlanId(Integer planId);
+	public IPlan getPlan();
+	public Date getPlanStartDate();
+	public void setPlanStartDate(Date planStartDate);
+	public Date getPlanEndDate();
 }
