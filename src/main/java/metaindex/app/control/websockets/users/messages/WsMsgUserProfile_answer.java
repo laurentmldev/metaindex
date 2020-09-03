@@ -48,7 +48,7 @@ public class WsMsgUserProfile_answer implements IWsMsg_answer {
 		private void populate(IUserProfileData u, ICatalog catalog) {
 			setId(u.getId());
 			setName(u.getName());
-			setMaxNbCatalogsCreated(u.getMaxNbCatalogsCreated());
+			setMaxNbCatalogsCreated(u.getPlan().getQuotaCatalogsCreated());
 			setCurNbCatalogsCreated(u.getCurNbCatalogsCreated());
 			if (catalog!=null) {
 				setCatalogId(catalog.getId());

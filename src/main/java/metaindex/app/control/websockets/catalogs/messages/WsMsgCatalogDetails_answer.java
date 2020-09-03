@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import metaindex.data.filter.IFilter;
+import metaindex.app.Globals;
 import metaindex.app.control.websockets.commons.IWsMsg_answer;
 import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.CatalogVocabularySet;
@@ -30,6 +31,10 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 		
 	private Integer _id;
 	private String _name;
+	private String _ownerName;
+	private Integer _ownerId;
+	private String _planName;
+	private Integer _planId;
 	private Boolean _isUserCurrentCatalog=false;
 	private String _itemThumbnailUrlField;
 	private List<String> _itemNameFields;
@@ -60,8 +65,13 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 	@Override public void setRejectMessage(String rejectMessage) { this._rejectMessage = rejectMessage; }
 
 	public WsMsgCatalogDetails_answer(ICatalog c, IUserProfileData u) {
+		IUserProfileData owner = Globals.Get().getUsersMgr().getUserById(c.getOwnerId());
 		this.setId(c.getId());
 		this.setName(c.getName());	
+		this.setOwnerName(owner.getNickname());
+		this.setOwnerId(owner.getId());
+		this.setPlanName(owner.getPlan().getName());
+		this.setPlanId(owner.getPlan().getId());
 		this.setThumbnailUrl(c.getThumbnailUrl());
 		this.setNbDocuments(c.getNbDocuments());
 		this.setItemNameFields(c.getItemNameFields());
@@ -245,5 +255,29 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 	public void setTimeFieldTermId(Integer t) {
 		_timeFieldTermId=t;
 		
+	}
+	public String getOwnerName() {
+		return _ownerName;
+	}
+	public void setOwnerName(String _ownerName) {
+		this._ownerName = _ownerName;
+	}
+	public String getPlanName() {
+		return _planName;
+	}
+	public void setPlanName(String _planName) {
+		this._planName = _planName;
+	}
+	public Integer getOwnerId() {
+		return _ownerId;
+	}
+	public void setOwnerId(Integer _ownerId) {
+		this._ownerId = _ownerId;
+	}
+	public Integer getPlanId() {
+		return _planId;
+	}
+	public void setPlanId(Integer _planId) {
+		this._planId = _planId;
 	}
 }

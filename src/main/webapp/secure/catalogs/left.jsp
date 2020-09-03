@@ -80,7 +80,7 @@ MxGuiLeftBar.updateNbCatalogsCreated=function(curNb,maxNb) {
 	maxNbCatalogsEl.innerHTML=maxNb;
 	
 	document.getElementById("leftbar_catalog_nbCreatedCatalogs").onclick=function() {
-		console.log("click ploc");
+		document.getElementById(MX_HEADER_PLANS_POPUP_ID).toggleShowHide();
 	}
 	
 	if (curNb>=maxNb) {

@@ -73,9 +73,7 @@ public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProc
     public IGuiTheme getGuiTheme();
     public Collection<IGuiTheme> getGuiThemes();
     
-    public Integer getMaxNbCatalogsCreated();
-	public void setMaxNbCatalogsCreated(Integer nbCatalogs);
-	public Integer getCurNbCatalogsCreated();
+    public Integer getCurNbCatalogsCreated();
 	public void setCurNbCatalogsCreated(Integer nbCatalogs);
 	
 	/// load user data and associated roles
@@ -153,7 +151,7 @@ public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProc
 	
 	public void setLastUpdate(Date newDate);
 	
-	// used to ensure that on more than one sesion for a user at the same time
+	// used to ensure that on more than one session for a user at the same time
 	String getRemoteAddress();
 	void setRemoteAddress(String addr);	
 	
@@ -162,6 +160,11 @@ public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProc
 	public void setPlanId(Integer planId);
 	public IPlan getPlan();
 	public Date getPlanStartDate();
+	/** for GUI usage */
+	public String getPlanStartDateStr();
 	public void setPlanStartDate(Date planStartDate);
 	public Date getPlanEndDate();
+	/** for GUI usage */
+	public String getPlanEndDateStr(); 
+	public void setPlanEndDate(Date planEndDate);
 }

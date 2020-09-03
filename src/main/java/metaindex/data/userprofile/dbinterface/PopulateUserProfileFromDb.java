@@ -28,9 +28,9 @@ class PopulateUserProfileFromDb extends SQLPopulateStmt<IUserProfileData>   {
 
 	public static final String SQL_REQUEST = 
 			"select users.user_id,users.email,users.password, "
-			+"users.nickname,users.guilanguage_id,users.guitheme_id,users.maxNbCatalogsCreated,role,users.lastUpdate,"
+			+"users.nickname,users.guilanguage_id,users.guitheme_id,role,users.lastUpdate,"
 			+" user_roles.lastUpdate,users.enabled,"
-			+" user_plans.plan_id, user_plans.lastUpdate"
+			+" user_plans.plan_id, user_plans.startDate,user_plans.endDate,user_plans.lastUpdate"
 			+" from users,user_roles,user_plans";
 
 	private Boolean _onlyIfTimestampChanged=false;
@@ -63,10 +63,12 @@ class PopulateUserProfileFromDb extends SQLPopulateStmt<IUserProfileData>   {
 			_data.add(d);
 		}
 		
-		Timestamp dbDateUsers = rs.getTimestamp(9);
-		Timestamp dbDateRoles = rs.getTimestamp(10);
+		Timestamp dbDateUsers = rs.getTimestamp(8);
+		Timestamp dbDateRoles = rs.getTimestamp(9);
+		Timestamp dbDatePlans = rs.getTimestamp(14);
 		Timestamp newerDbDate = dbDateUsers;
 		if (newerDbDate.before(dbDateRoles)) { newerDbDate=dbDateRoles; }
+		if (newerDbDate.before(dbDatePlans)) { newerDbDate=dbDatePlans; }
 		if (_onlyIfTimestampChanged==true) {
 			if (!d.shallBeProcessed(newerDbDate)) { return d; } 
 		}
@@ -76,13 +78,13 @@ class PopulateUserProfileFromDb extends SQLPopulateStmt<IUserProfileData>   {
 		d.setNickname(rs.getString(4));
 		d.setGuiLanguageId(rs.getInt(5));
 		d.setGuiThemeId(rs.getInt(6));
-		d.setMaxNbCatalogsCreated(rs.getInt(7));
-		d.setRole(USER_ROLE.valueOf(rs.getString(8)));
+		d.setRole(USER_ROLE.valueOf(rs.getString(7)));
 		d.setLastUpdate(newerDbDate);
-		d.setEnabled(rs.getBoolean(11));
+		d.setEnabled(rs.getBoolean(10));
 		
-		d.setPlanId(rs.getInt(12));
-		d.setPlanStartDate(rs.getTimestamp(13));
+		d.setPlanId(rs.getInt(11));
+		d.setPlanStartDate(rs.getDate(12));
+		d.setPlanEndDate(rs.getDate(13));
 		
 		return d;
 	}

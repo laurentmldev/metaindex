@@ -15,7 +15,9 @@ import java.util.List;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -163,14 +165,14 @@ public class WsControllerUser extends AMxWSController {
 				
     	try {
     		if (!requestMsg.getUserId().equals(user.getId())) {
-    			answer.setRejectMessage("User ID does not match currently logged user, sorry.");
+    			answer.setRejectMessage(user.getText("Profile.plans.wrongUser"));
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/user_catalogcusto_set", answer);
     			return;
     		}
     		
     		ICatalog c = user.getCurrentCatalog();
     		if (c==null || !c.getId().equals(requestMsg.getCatalogId())) {
-    			answer.setRejectMessage("User ID does not match currently logged user, sorry.");
+    			answer.setRejectMessage(user.getText("Profile.plans.wrongUser"));
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/user_catalogcusto_set", answer);
     			return;
     		}
@@ -214,7 +216,7 @@ public class WsControllerUser extends AMxWSController {
 				
     	try {
     		if (!requestMsg.getUserId().equals(user.getId())) {
-    			answer.setRejectMessage("User ID does not match currently logged user, sorry.");
+    			answer.setRejectMessage(user.getText("Profile.plans.wrongUser"));
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/user_preferences_set", answer);
     			return;
     		}
@@ -293,27 +295,31 @@ public class WsControllerUser extends AMxWSController {
 		
 		// new plan cost
 		breakDownList.add(new PlanBreakdownEntry(
-						"Plan '"+newPlan.getName()+"'",
+						"Plan '"+newPlan.getName()+"' 1 "+u.getText("Profile.plans.year"),
 						newPlan.getYearlyCostEuros(),
 						BREAKDOWN_ENTRY_TYPE.product,
-						"€ HT"));
+						"€ "+u.getText("Profile.plans.taxExcluded")));
 		totalYearlyCostHT+=newPlanCost;
 		
 		// discount if any
 		Date now = new Date();
 		Long curPlanRemainingDays = (u.getPlanEndDate().getTime() - now.getTime())/(1000*3600*24) ;
-		Float discountValue=curPlanCost/2;
-		if (curPlanCost<=newPlanCost && curPlanRemainingDays>=NB_DAYS_PLAN_DISCOUNT) {
+		Float discountValue=0.0F;
+		if (curPlan.getAvailableForPurchase()==true 
+				&& curPlanCost<=newPlanCost && curPlanRemainingDays>=NB_DAYS_PLAN_DISCOUNT) {
+			discountValue=curPlanCost/2;
 			breakDownList.add(new PlanBreakdownEntry(
-					"Discount -50% current plan <span style='color:black'>"+curPlan.getName()+"</span>",
+					u.getText("Profile.plans.discount") + " -50% "
+								+u.getText("Profile.plans.currentPlan")
+								+" <span style='color:black'>"+curPlan.getName()+"</span>",
 					discountValue,
 					BREAKDOWN_ENTRY_TYPE.discount,
 					"€"));
+			totalYearlyCostHT-=discountValue;
 		}
-		// totalHT
-		totalYearlyCostHT-=discountValue;
+		// totalHT		
 		breakDownList.add(new PlanBreakdownEntry(
-				"Total HT",
+				"Total "+u.getText("Profile.plans.taxExcluded"),
 				totalYearlyCostHT,
 				BREAKDOWN_ENTRY_TYPE.totalht,
 				"€"));
@@ -322,7 +328,7 @@ public class WsControllerUser extends AMxWSController {
 		Float taxRate = Float.valueOf(Globals.GetMxProperty("mx.payment.taxrate"));
 		Float taxCost = (float) Math.round(taxRate*totalYearlyCostHT)/100; 
 		breakDownList.add(new PlanBreakdownEntry(
-				"Tax "+taxRate+"%",
+				u.getText("Profile.plans.tax")+" "+taxRate+"%",
 				taxCost,
 				BREAKDOWN_ENTRY_TYPE.tax,
 				"€"));
@@ -373,12 +379,12 @@ public class WsControllerUser extends AMxWSController {
 				
     	try {
     		if (!requestMsg.getUserId().equals(user.getId())) {
-    			answer.setRejectMessage("User ID does not match currently logged user, sorry.");
+    			answer.setRejectMessage(user.getText("Profile.plans.wrongUser"));
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_answer", answer);
     			return;
     		}
     		if (!user.isLoggedIn() || !user.isEnabled()) {
-    			answer.setRejectMessage("User not logged in, sorry operation refused.");
+    			answer.setRejectMessage(user.getText("Profile.plans.userNotLoggedIn"));
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_answer", answer);
     			return;
     		}
@@ -423,12 +429,12 @@ public class WsControllerUser extends AMxWSController {
 				
     	try {
     		if (!requestMsg.getUserId().equals(user.getId())) {
-    			answer.setRejectMessage("User ID does not match currently logged user, sorry.");
+    			answer.setRejectMessage(user.getText("Profile.plans.wrongUser"));
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_confirm_payment_answer", answer);
     			return;
     		}
     		if (!user.isLoggedIn() || !user.isEnabled()) {
-    			answer.setRejectMessage("User not logged in, sorry operation refused.");
+    			answer.setRejectMessage(user.getText("Profile.plans.userNotLoggedIn"));
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_confirm_payment_answer", answer);
     			return;
     		}
@@ -439,7 +445,7 @@ public class WsControllerUser extends AMxWSController {
 					.findFirst()
 					.orElse(null);
     		if (awaitingTransactionData==null) {
-    			answer.setRejectMessage("No such transaction awaiting confirmation.");
+    			answer.setRejectMessage(user.getText("Profile.plans.noSuchTransactionAwaiting"));
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_confirm_payment_answer", answer);
     			return;
     		}    	
@@ -466,13 +472,8 @@ public class WsControllerUser extends AMxWSController {
     			answer.setRejectMessage("No payment received (yet) for this transaction.");
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_confirm_payment_answer", answer);
     			
-    			user.sendEmailCCAdmin("Your plan purchase via "+requestMsg.getPaymentMethod()+" could not be confirmed yet", 
-						"Hi "+user.getNickname()+",<br/><br/>"						
-						+"Thank you very much for your purchase for a new plan.<br/>"
-						+"It seems that your payment could not be confirmed yet and we apologize for that.<br/>"
-						+"We will check that again regularly and will get back to you as soon as payment confirmation is available.<br/><br/>"
-						+"If you need any time to talk about this issue, please reference the transaction id '"+requestMsg.getTransactionId()+"', that will help a lot.<br/><br/>"
-						+"Thank you very much for your understanding.");
+    			user.sendEmailCCAdmin(  user.getText("Profile.plans.email.purchaseNotConfirmed.title",requestMsg.getPaymentMethod().toString()), 
+										user.getText("Profile.plans.email.purchaseNotConfirmed.body",user.getNickname(),requestMsg.getTransactionId()));
 
     			return;
     		}
@@ -483,14 +484,8 @@ public class WsControllerUser extends AMxWSController {
     			PaymentLogging.logger.error(paymentEntry+"\t"+"status=UNKNOWN_PLAN_ID");
     			log.error("User '"+user.getName()+"' purchased unknown plan '"+requestMsg.getPlanId()+"' (transactionId="+requestMsg.getTransactionId()+")");
     			
-    			user.sendEmailCCAdmin("Your plan purchase via "+requestMsg.getPaymentMethod()+" could not be finalized yet", 
-						"Hi "+user.getNickname()+",<br/><br/>"						
-						+"Thank you very much for your purchase for a new plan.<br/>"
-						+"It seems that operation could not be fully finalized on the server and we apologize for that.<br/>"
-						+"Your payment has been traced though and an email has been sent to administrator so that he can fix it as soon as possible, "
-						+"he will get back to you very shortly.<br/><br/>"
-						+"If you need any time to talk about this issue, please reference the transaction id '"+requestMsg.getTransactionId()+"', that will help a lot.<br/><br/>"
-						+"Thank you very much for your understanding.");
+    			user.sendEmailCCAdmin( user.getText("Profile.plans.email.purchaseNotFinalized.title",requestMsg.getPaymentMethod().toString()), 
+									   user.getText("Profile.plans.email.purchaseNotFinalized.body",user.getNickname(),requestMsg.getTransactionId()));
     			
     			return;
     		}
@@ -499,37 +494,31 @@ public class WsControllerUser extends AMxWSController {
     		// update user data with new plan    		
     		try {
     			user.setPlanId(requestMsg.getPlanId());
+    			user.setPlanStartDate(new Date());
+    			//  set end-date one year later
+    			Integer newPlanDurationYear = 1;
+    			Calendar cal = new GregorianCalendar();
+    			cal.setTime(user.getPlanStartDate());
+    			cal.add(Calendar.YEAR,newPlanDurationYear);
+    			cal.add(Calendar.DAY_OF_MONTH,-1);
+    			user.setPlanEndDate(cal.getTime());       			
 	    		Boolean result = Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface().getUpdatePlanIntoDbStmt(user).execute();    		
 	    		if (result==false) {
 	    			PaymentLogging.logger.error(paymentEntry+"\t"+"status=SQL_UPDATE_REFUSED");
-	    			answer.setRejectMessage("We're very sorry, your payment has been accepted but a technical problem prevented us to finalize operation."
-	    						+" You'll receive shortly an email for technical assistance.");
+	    			answer.setRejectMessage(user.getText("Profile.plans.paymentOkButDBError"));
 	    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_confirm_payment_answer", answer);
 	    			
-	    			user.sendEmailCCAdmin("Your plan purchase via "+requestMsg.getPaymentMethod()+" could not be applied yet", 
-							"Hi "+user.getNickname()+",<br/><br/>"						
-							+"Thank you very much for your purchase for a new plan.<br/>"
-							+"It seems that operation could not be fully finalized on the server and we apologize for that.<br/>"
-							+"Your payment has been accepted though and an email has been sent to administrator so that he can fix it as soon as possible, "
-							+"he will get back to you very shortly to let you know about this issue.<br/><br/>"
-							+"If you need any time to talk about this issue, please reference the transaction id '"+requestMsg.getTransactionId()+"', that will help a lot.<br/><br/>"
-							+"Thank you very much for your understanding.");
+	    			user.sendEmailCCAdmin( user.getText("Profile.plans.email.purchaseNotAppliedYet.title",requestMsg.getPaymentMethod().toString()), 
+	    									user.getText("Profile.plans.email.purchaseNotAppliedYet.body",user.getNickname(),requestMsg.getTransactionId()));
 	    			return;
 	    		}
     		} catch (Throwable t) {
     			PaymentLogging.logger.error(paymentEntry+"\t"+"status=EXCEPTION "+t.getMessage());
-    			answer.setRejectMessage("We're very sorry, your payment has been accepted but a technical problem prevented us to finalize operation."
-    						+" You'll receive shortly an email for technical assistance.");
+    			answer.setRejectMessage(user.getText("Profile.plans.paymentOkButServerError"));
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_confirm_payment_answer", answer);
     			
-    			user.sendEmailCCAdmin("Your plan purchase via "+requestMsg.getPaymentMethod()+" could not be applied yet", 
-						"Hi "+user.getNickname()+",<br/><br/>"						
-						+"Thank you very much for your purchase for a new plan.<br/>"
-						+"It seems that operation could not be fully finalized on the server and we apologize for that.<br/>"
-						+"Your payment has been accepted though and an email has been sent to administrator so that he can fix it as soon as possible, "
-						+"he will get back to you very shortly to let you know about this issue.<br/><br/>"
-						+"If you need any time to talk about this issue, please reference the transaction id '"+requestMsg.getTransactionId()+"', that will help a lot.<br/><br/>"
-						+"Thank you very much for your understanding.");
+    			user.sendEmailCCAdmin( user.getText("Profile.plans.email.purchaseNotAppliedYet.title",requestMsg.getPaymentMethod().toString()), 
+						user.getText("Profile.plans.email.purchaseNotAppliedYet.body",user.getNickname(),requestMsg.getTransactionId()));
     			
     			return;
     		}
@@ -549,12 +538,14 @@ public class WsControllerUser extends AMxWSController {
     																requestMsg.getPlanId(),
     																awaitingTransactionData.getTotalCost()));
     		
-    		user.sendEmailCCAdmin("Purchase Confirmation - Update to plan '"+plan.getName()+"' for one year", 
-					"Hi "+user.getNickname()+",<br/><br/>"						
-					+"Thank you very much for your purchase for plan '"+plan.getName()+"', at a cost of "+requestMsg.getTotalCost()+"€ TTC.<br/><br/>"
-					+"All operations could be processed successfully and you can use this plan right now and until "+user.getPlanEndDate()+".<br/><br/>"
-					+"If you need any time to talk about this purchase, please reference the transaction id '"+requestMsg.getTransactionId()+"', that will help a lot.<br/><br/>"
-					);
+    		user.sendEmailCCAdmin( user.getText("Profile.plans.email.purchaseOk.title",plan.getName()), 
+					user.getText("Profile.plans.email.purchaseOk.body",user.getNickname(),
+																	   plan.getName(),
+																	   requestMsg.getTotalCost().toString(),
+																	   user.getPlanEndDate().toString(),
+																	   requestMsg.getTransactionId()));
+    		
+
     	} catch (DataProcessException e) 
     	{
     		answer.setRejectMessage("Update operation failed : "+e.getMessage());
@@ -562,14 +553,8 @@ public class WsControllerUser extends AMxWSController {
 			e.printStackTrace();
 			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_plan_confirm_payment_answer"));
 			
-			user.sendEmailCCAdmin("Your plan purchase via "+requestMsg.getPaymentMethod()+" could not be finalized yet", 
-					"Hi "+user.getNickname()+",<br/><br/>"						
-					+"Thank you very much for your purchase for a new plan.<br/>"
-					+"It seems that operation could not be fully finalized on the server and we apologize for that.<br/>"
-					+"Your payment has been traced though and an email has been sent to administrator so that he can fix it as soon as possible, "
-					+"he will get back to you very shortly.<br/><br/>"
-					+"If you need any time to talk about this issue, please reference the transaction id '"+requestMsg.getTransactionId()+"', that will help a lot.<br/><br/>"
-					+"Thank you very much for your understanding.");
+			user.sendEmailCCAdmin( user.getText("Profile.plans.email.purchaseNotFinalized.title",requestMsg.getPaymentMethod().toString()), 
+					   user.getText("Profile.plans.email.purchaseNotFinalized.body",user.getNickname(),requestMsg.getTransactionId()));
 			return;    		
     	}
     }

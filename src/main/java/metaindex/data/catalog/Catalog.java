@@ -15,6 +15,7 @@ See full version of LICENSE in <https://fsf.org/>
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +31,7 @@ import metaindex.app.Globals;
 import metaindex.app.control.ftpserver.CatalogFtpServer;
 import metaindex.app.periodic.db.CatalogPeriodicDbReloader;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
+import metaindex.data.commons.globals.plans.IPlan;
 import metaindex.data.perspective.ICatalogPerspective;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
@@ -67,7 +69,8 @@ public class Catalog implements ICatalog {
 	// from SQL DB
 	private Integer _id=0;
 	private String _shortname="";
-	private Integer _creatorId=0;
+	private Integer _ownerId=0;
+	private IUserProfileData _curOwner=null;
 	private String _thumbnailUrl="";	
 	private List<String> _itemNameFieldsList=new ArrayList<>();
 	private String _itemThumbnailUrlField="";
@@ -75,10 +78,6 @@ public class Catalog implements ICatalog {
 	private String _perspectiveMatchField="";
 	private Integer _ftpPort=0;
 	private Integer _timeFieldTermId = null;
-	
-	// Quota data
-	private Long _quotaNbDocs=DEFAULT_QUOTA_NBDOCS;
-	private Long _quotaFtpDiskSpaceBytes=DEFAULT_QUOTA_DISCSPACEBYTES;
 	
 	// from ElasticSearch DB
 	private Long _nbDocuments=0L;
@@ -115,7 +114,7 @@ public class Catalog implements ICatalog {
 	public String getDetailsStr() {
 		return "'"+this.getName()+"' :"
 				+"\n\t- id: "+this.getId()
-				+"\n\t- creator_id: "+this.getCreatorId()
+				+"\n\t- creator_id: "+this.getOwnerId()
 				+"\n\t- ftpPort: "+this.getFtpPort()				
 				+"\n\t- quotaNbDocs: "+this.getQuotaNbDocs()
 				+"\n\t- quotaFtpDiscSpaceBytes: "+this.getQuotaFtpDiscSpaceBytes()+" Bytes"
@@ -182,9 +181,14 @@ public class Catalog implements ICatalog {
 	public void setName(String shortname) { _shortname = shortname; }
 	
 	@Override	
-	public Integer getCreatorId() { return _creatorId; }
+	public Integer getOwnerId() { return _ownerId; }
 	@Override
-	public void setCreatorId(Integer creatorId) { _creatorId=creatorId; }
+	public void setOwnerId(Integer creatorId) { _ownerId=creatorId; }
+	public IUserProfileData getOwner() {
+		if (_curOwner!=null && _curOwner.getId().equals(getOwnerId())) { return _curOwner; }
+		_curOwner = Globals.Get().getUsersMgr().getUserById(getOwnerId());
+		return _curOwner;
+	}
 	
 	@Override 	
 	public Integer getFtpPort() {
@@ -625,19 +629,15 @@ public class Catalog implements ICatalog {
 	
 	@Override
 	public Long getQuotaNbDocs() {
-		return _quotaNbDocs;
-	}
-	@Override
-	public void setQuotaNbDocs(Long maxNbDocs) {
-		_quotaNbDocs=maxNbDocs;
+		IUserProfileData curOwner = getOwner();
+		if (curOwner==null) { return DEFAULT_QUOTA_NBDOCS; }
+		return curOwner.getPlan().getQuotaNbDocsPerCatalog();
 	}
 	@Override
 	public Long getQuotaFtpDiscSpaceBytes() {
-		return _quotaFtpDiskSpaceBytes;
-	}
-	@Override
-	public void setQuotaFtpDiscSpaceBytes(Long maxFtpSpaceBytes) {
-		_quotaFtpDiskSpaceBytes=maxFtpSpaceBytes;
+		IUserProfileData curOwner = getOwner();
+		if (curOwner==null) { return DEFAULT_QUOTA_DISCSPACEBYTES; }
+		return curOwner.getPlan().getQuotaDiscBytesPerCatalog();
 	}
 	
 	@Override

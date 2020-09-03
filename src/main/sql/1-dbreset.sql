@@ -59,7 +59,7 @@ SET @MX_DB_VERSION = 2;
 CREATE TABLE `catalogs` (
 `catalog_id` int(32) NOT NULL,
   `shortname` varchar(45) NOT NULL,
-  `creator_id` int(32) NOT NULL,
+  `owner_id` int(32) NOT NULL,
   `thumbnailUrl` varchar(1024) DEFAULT '',
   
   /* which fields (coma-separated) shall be used (concatenated) in order
@@ -74,12 +74,6 @@ CREATE TABLE `catalogs` (
 
   /* field used to automaically activate perspective matching the name of given field */
   `perspectiveMatchField` varchar(1024) DEFAULT '',
-  
-  /* maximum of number allowed within this catalog */
-  `quotaNbDocs` int(64) NOT NULL DEFAULT '5000',
-  
-  /* maximum disk space used by this catalogs's FTP data in bytes */
-  `quotaFtpDiscSpaceBytes` int(64) NOT NULL DEFAULT '10000000',
   
   /* FTP port to be used to access userdata for this catalog */
   `ftpPort` int(32) NOT NULL DEFAULT '0',
@@ -268,8 +262,6 @@ CREATE TABLE `users` (
   `enabled` tinyint(4) NOT NULL DEFAULT '0',
   `guilanguage_id` int(32) NOT NULL DEFAULT '1',
   `guitheme_id` int(32) NOT NULL DEFAULT '1',  
-  -- max number of catalogs this user is authorized to create
-  `maxNbCatalogsCreated` int(32) NOT NULL DEFAULT '1',  
   `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
@@ -282,8 +274,9 @@ CREATE TABLE `users` (
 CREATE TABLE `plans` (
 `plan_id` int(32) NOT NULL,
   `name` varchar(45) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `availableForPurchase` boolean NOT NULL DEFAULT true,
   `quotaCreatedCatalogs` int(32) NOT NULL DEFAULT '0',
-  `quotaNbDocsPerCatalog` int(32) NOT NULL DEFAULT '0',
+  `quotaNbDocsPerCatalog` int(64) NOT NULL DEFAULT '0',
   `quotaFtpDiscSpaceBytesPerCatalog` int(64) NOT NULL DEFAULT '0',
   `yearlyCostEuros` FLOAT NOT NULL DEFAULT '0',
   `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -299,6 +292,8 @@ CREATE TABLE `user_plans` (
   `user_plan_id` int(32) NOT NULL,
   `user_id` int(32) NOT NULL,
   `plan_id` int(32) NOT NULL,
+  `startDate` date,
+  `endDate` date,
   `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 

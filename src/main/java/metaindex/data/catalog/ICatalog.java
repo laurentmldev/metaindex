@@ -45,8 +45,8 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 	public void setLastUpdate(Date timetampDate);
 		
 	/// get UserId for whom created it
-	public Integer getCreatorId();
-	public void setCreatorId(Integer creatorId);
+	public Integer getOwnerId();
+	public void setOwnerId(Integer ownerId);
 		
 	/// flag saying whether DB instance could be done for this catalog
 	public Boolean isDbIndexFound(); 
@@ -73,9 +73,7 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 	
 	// Quotas Management
 	public Long getQuotaNbDocs();
-	public void setQuotaNbDocs(Long maxNbDocs);
-	public Long getQuotaFtpDiscSpaceBytes();
-	public void setQuotaFtpDiscSpaceBytes(Long maxFtpSpaceBytes);		
+	public Long getQuotaFtpDiscSpaceBytes();		
 	public Boolean checkQuotasNbDocsOk();
 	public Boolean checkQuotasDisckSpaceOk();
 	public Long getDiscSpaceUseBytes();

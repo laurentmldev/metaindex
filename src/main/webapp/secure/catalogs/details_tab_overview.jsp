@@ -164,12 +164,25 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 	
 }
  
+ function _makeUpgradePlanButtton(id) {
+	 let buttonPlanUpgrade=document.createElement("a");
+		buttonPlanUpgrade.id=id;
+		buttonPlanUpgrade.classList="btn-big btn btn-sm btn-warning shadow-sm";
+		buttonPlanUpgrade.style="font-size:0.8rem;margin-left:2rem;color:white";
+		buttonPlanUpgrade.innerHTML="<span style='font-weight:bold;font-size:0.8rem;padding:1rem'><s:text name="Catalogs.left.getMoreCatalogs" /></span>";
+		buttonPlanUpgrade.onclick=function(e) { document.getElementById(MX_HEADER_PLANS_POPUP_ID).toggleShowHide(); }
+		return buttonPlanUpgrade;
+ }
  // function used by details.jsp:details_buildContents
  function details_buildContents_overview(newPopulatedCatalogDetails,catalogCard) {	 
 
-	// index name
+	// index name + owner and plan
 		let indexName = newPopulatedCatalogDetails.querySelector("._index_name_");
-		indexName.innerHTML=catalogCard.descr.name;
+		let ownerName= catalogCard.descr.ownerName;
+		let planName= catalogCard.descr.planName;
+		indexName.innerHTML=catalogCard.descr.name
+			+"<span style='font-size:0.6rem;padding-left:3rem;' > <s:text name="global.ownedBy" /> <b>"+ownerName+"</b>"
+			+" <s:text name="global.withPlan" />"+" <b>"+planName+"</b></span>";
 	
 	// access rights
 		let accessRights = newPopulatedCatalogDetails.querySelector("._access_rights_");
@@ -193,6 +206,11 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 			else if (usagePourcentNbDocs>85)  { pourcentClass="alert-warning"; }
 			else pourcentClass="";		
 			quotaNbDocs.innerHTML="<span class=\""+pourcentClass+"\" ><b>"+curNbDocs+ "</b> <i>/ "+maxNbDocs+" ("+usagePourcentNbDocs+"%)</i></span>";
+			// add a "upgrade plan" button if limit is reached and current user is catalog's owner
+			if (usagePourcentNbDocs>=85
+					&& catalogCard.descr.ownerId==<s:property value="currentUserProfile.id"/>) {
+				quotaNbDocs.appendChild(_makeUpgradePlanButtton("details_overview_upgrade_quotaNbDocs"));
+			}
 			
 	// quotas disc space
 			let quotaDiscSpace=newPopulatedCatalogDetails.querySelector("._quota_disc_space_");
@@ -216,6 +234,11 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 			else if (usagePourcentDiscSpace>85)  { pourcentClass="alert-warning"; }
 			else pourcentClass="";		
 			quotaDiscSpace.innerHTML="<span class=\""+pourcentClass+"\" ><b>"+currentUseMBytes+ "MB</b> <i> / "+maxUseSpaceMBytes+"MB ("+usagePourcentDiscSpace+"%</i>)</span>";
+			// add a "upgrade plan" button if limit is reached and current user is catalog's owner
+			if (usagePourcentDiscSpace>=85 
+					&& catalogCard.descr.ownerId==<s:property value="currentUserProfile.id"/>) {
+				quotaNbDocs.appendChild(_makeUpgradePlanButtton("details_overview_upgrade_quotaDiscSpace"));
+			}
 		}
 		
 	// ftp port : no FTP access for Read-Only users

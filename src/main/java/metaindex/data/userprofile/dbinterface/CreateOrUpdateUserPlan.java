@@ -13,6 +13,7 @@ See full version of LICENSE in <https://fsf.org/>
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -49,8 +50,8 @@ List<PreparedStatement> result = new ArrayList<PreparedStatement>();
 
 try {
 	result.add(this.getDataConnector().getConnection().prepareStatement(
-			"insert into user_plans (user_id,plan_id) values (?,?) "
-					+"ON DUPLICATE KEY UPDATE plan_id=?"));
+			"insert into user_plans (user_id,plan_id,startDate,endDate) values (?,?,?,?) "
+					+"ON DUPLICATE KEY UPDATE plan_id=?, startDate=?, endDate=?"));
 	
 } catch (SQLException e) { throw new DataProcessException(e); }
 
@@ -61,9 +62,15 @@ protected void populateStatements(IUserProfileData dataObject, List<PreparedStat
 
 PreparedStatement stmt = stmts.get(0);
 try {
+	
 	stmt.setInt(1, dataObject.getId());
 	stmt.setInt(2, _plan.getId());
-	stmt.setInt(3, _plan.getId());
+	stmt.setDate(3, new java.sql.Date(dataObject.getPlanStartDate().getTime()));
+	stmt.setDate(4, new java.sql.Date(dataObject.getPlanEndDate().getTime()));
+	stmt.setInt(5, _plan.getId());
+	stmt.setDate(6, new java.sql.Date(dataObject.getPlanStartDate().getTime()));
+	stmt.setDate(7, new java.sql.Date(dataObject.getPlanEndDate().getTime()));
+	
 	stmt.addBatch();
 } catch (SQLException e) { throw new DataProcessException(e); }		
 }

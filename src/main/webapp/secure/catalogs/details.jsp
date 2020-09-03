@@ -278,7 +278,7 @@ function details_memGui() {
 						      <tr>
 						        <td  style="font-style:italic"><s:text name="Catalogs.overview.indexName" /></td>
 						        <td  style="font-style:italic" class="_index_name_"></td>						        
-						      </tr>
+						      </tr>						      
 						      <tr>
 						        <td  style="font-style:italic"><s:text name="Catalogs.overview.userAccessRights" /></td>
 						        <td  style="font-style:italic" class="_access_rights_"></td>						        

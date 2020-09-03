@@ -46,7 +46,7 @@ class CountUserCatalogsInDb extends SQLPopulateStmt<IUserProfileData>   {
 	@Override
 	public String buildSqlQuery()  {				
 		String sql = SQL_REQUEST;
-		sql+=" where catalogs.creator_id="+_data.getId();
+		sql+=" where catalogs.owner_id="+_data.getId();
 		return sql;
 	}	
 					

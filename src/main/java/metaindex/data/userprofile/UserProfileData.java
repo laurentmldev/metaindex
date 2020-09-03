@@ -1,5 +1,8 @@
 package metaindex.data.userprofile;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 /*
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -11,7 +14,6 @@ See full version of LICENSE in <https://fsf.org/>
 */
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -30,6 +32,7 @@ import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.commons.globals.guitheme.GuiThemesManager;
 import metaindex.data.commons.globals.guitheme.IGuiTheme;
 import metaindex.data.commons.globals.plans.IPlan;
+import metaindex.data.commons.globals.plans.IPlansManager;
 import metaindex.app.Globals;
 import metaindex.app.control.websockets.users.WsControllerUser;
 import metaindex.app.control.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
@@ -72,7 +75,6 @@ public class UserProfileData implements IUserProfileData
 	private Integer _guiLanguageId = DEFAULT_LANG_ID;
 	private Integer _guiThemeId = DEFAULT_GUITHEME_ID;
 	
-	private Integer _maxNbCatalogsCreated = 0;
 	private Integer _curNbCatalogsCreated = 0;
 	private ICatalog _selectedCatalog=null;
 	private Integer _currentFilterId=IFilter.ALL_ITEMS_CATALOG_ID;
@@ -102,27 +104,45 @@ public class UserProfileData implements IUserProfileData
 	
 	// plan info
 	private Integer _planId;
+	private IPlan _curPlan;
 	private Date _planStartDate;
+	private Date _planEndDate;
 	
-	public Integer getPlanId() { return _planId; }
+
+	public Integer getPlanId() {
+		return _planId; 
+	}
 	public void setPlanId(Integer planId) { _planId=planId; }
-	
+
+	/**
+	 * if assigned plan is out of date, return default plan id as fallback
+	 */
 	public IPlan getPlan() {
-		Collection<IPlan> plans = Globals.Get().getPlansMgr().getPlans();
-		for (IPlan curPlan : plans) {
-			if (curPlan.getId().equals(_planId)) { return curPlan; }		
-		}
-		return null;
+		Integer activePlanId=getPlanId();
+		Date now=new Date();		
+		if (now.after(getPlanEndDate())) { activePlanId=IPlansManager.DEFAULT_PLAN_ID; }
+		
+		if (_curPlan!=null && _curPlan.getId().equals(activePlanId)) { return _curPlan; }
+		_curPlan = Globals.Get().getPlansMgr().getPlan(activePlanId);		
+		return _curPlan;
 	}
+	private String formatDate(Date date) {
+		DateFormat userDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		if (this.getGuiLanguage().getShortname().equals("FR")) { userDateFormat = new SimpleDateFormat("dd/MM/yyyy"); }
+		return userDateFormat.format(date); 
+	}
+	@Override
 	public Date getPlanStartDate() { return _planStartDate; }
+	@Override
+	public String getPlanStartDateStr() { return formatDate(_planStartDate); }
+	@Override
 	public void setPlanStartDate(Date planStartDate) { _planStartDate=planStartDate; }
-	
-	public Date getPlanEndDate() { 
-		Calendar c = Calendar.getInstance();
-		c.setTime(getPlanStartDate());
-		c.add(Calendar.MONTH, IPlan.PLANS_DURATION_MONTHS.intValue());
-		return  c.getTime();		
-	}
+	@Override
+	public Date getPlanEndDate() { return _planEndDate; }
+	@Override
+	public String getPlanEndDateStr() { return formatDate(_planEndDate); }
+	@Override
+	public void setPlanEndDate(Date planEndDate) { _planEndDate=planEndDate; }
 	
 	@Override
 	public Integer getId() {
@@ -217,14 +237,6 @@ public class UserProfileData implements IUserProfileData
 	public String getNickname() { return _nickname; }
 	public void setNickname(String nickname) { this._nickname = nickname; }
 	
-	@Override
-    public Integer getMaxNbCatalogsCreated() {
-		return _maxNbCatalogsCreated;
-	}
-	@Override
-	public void setMaxNbCatalogsCreated(Integer nbCatalogs) {
-		_maxNbCatalogsCreated=nbCatalogs;
-	}
 	@Override 
 	public Integer getCurNbCatalogsCreated() {
 		return _curNbCatalogsCreated;
@@ -623,7 +635,14 @@ public class UserProfileData implements IUserProfileData
 				+"\n\t- role: "+this.getRole().toString()
 				+"\n\t- language: "+this.getGuiLanguageShortname()
 				+"\n\t- theme: "+this.getGuiThemeShortname()
-				+"\n\t- mxNbCatalogsCreated: "+this.getMaxNbCatalogsCreated()
+				+"\n\t- plan: "+Globals.Get().getPlansMgr().getPlan(getPlanId()).getName()+" (id:"+getPlanId()+")"
+						+" from "+this.getPlanStartDate()+" until "+this.getPlanEndDate()
+				// if defined plan is outdated, fallback into a basic default plan
+				+(getPlan().getId()==getPlanId() ? "" :
+					"\n\t\t\t Plan OUTDATED. Active plan:"+this.getPlan().getName()+" (id:"+this.getPlan().getId()+")")
+				+"\n\t\t- quotaCatalogsCreated: "+this.getPlan().getQuotaCatalogsCreated()
+				+"\n\t\t- quotaNbDocsPerCatalog: "+this.getPlan().getQuotaNbDocsPerCatalog()
+				+"\n\t\t- quotaDiscPerCatalog: "+(this.getPlan().getQuotaDiscBytesPerCatalog()/1000000)+"MB"
 				+"\n\t- catalogs rights: ";
 		if (this.getRole() == USER_ROLE.ROLE_ADMIN) {
 			str+=USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN.toString()+" for all";

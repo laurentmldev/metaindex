@@ -236,7 +236,7 @@ public class WsControllerCatalog extends AMxWSController {
 			c.loadVocabulariesFromDb();
 			c.setDbIndexFound(true);
 			// update user stats info, typically nb of catalogs created
-			IUserProfileData creator = Globals.Get().getUsersMgr().getUserById(c.getCreatorId());
+			IUserProfileData creator = Globals.Get().getUsersMgr().getUserById(c.getOwnerId());
 			if (creator!=null) { 
 				Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface()
 					.getCountUserCatalogsInDbStmt(creator)
@@ -429,7 +429,7 @@ public class WsControllerCatalog extends AMxWSController {
 	    	Globals.Get().getCatalogsMgr().removeCatalog(c.getId());
 	    	
 	    	// update user stats info, typically nb of catalogs created
-			IUserProfileData creator = Globals.Get().getUsersMgr().getUserById(c.getCreatorId());
+			IUserProfileData creator = Globals.Get().getUsersMgr().getUserById(c.getOwnerId());
 			if (creator!=null) { 
 				Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface()
 					.getCountUserCatalogsInDbStmt(creator)

@@ -18,11 +18,11 @@ if (addCheckoutButton==null) {
 	 let buttonGetIt = document.createElement("BUTTON");
 	 buttonGetIt.classList.add("btn");
 	 buttonGetIt.classList.add("btn-success");
-	 buttonGetIt.style["font-size"]="2rem";
-	 buttonGetIt.innerHTML="Checkout!";
+	 buttonGetIt.style["font-size"]="1.4rem";
+	 buttonGetIt.innerHTML="Sandbox Checkout";
 	 buttonGetIt.onclick=function(event) {
-		 footer_showAlert(INFO, "Using 'test' payment interface");		 		
-		 successCallback("test" /*payment partner*/, breakdownCheckout);
+		 footer_showAlert(INFO, "Using 'sandbox' payment interface");		 		
+		 successCallback("sandbox" /*payment partner*/, breakdownCheckout);
 	 }
 	 
 	 breakdownCheckout.transactionId=transactionId;
