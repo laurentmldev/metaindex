@@ -102,6 +102,32 @@ onkeypress="if (event.which==13||event.keycode==13) {
                     <div class="form-group">
                       <input type="text" name='nickname' class="form-control form-control-user" placeholder="Nickname" required>
                     </div>
+                    <div class="form-group" style="width:100%;">
+                    <center>
+                    	
+                    	<div id="termsBody" style="font-size:0.8rem;display:none;max-height:15vh;overflow:auto;padding-bottom:3rem;text-align:left;" >
+                    		<s:text name="signup.termsAndCondition.body" />	                    	
+                    	</div>
+                    	
+                    	 
+                    	 <table ><tr>
+	                      		<td><input id="termsCheckbox" type="checkbox" name='acceptTermsAndConditions' class="form-control form-control-user" /></td>
+	                      		<td style="padding-left:0.5rem;">
+	                      			<s:text name="signup.accept" />
+	                      			<a href="#" style="color:#57e" onclick="document.getElementById('termsBody').style.display='block';">
+	                      				<s:text name="signup.termsAndCondition" />
+	                      				</a>
+	                      		</td>
+						  </tr></table>
+						  
+						  <a href="#" class="btn btn-primary btn-user btn-block scale" style="max-width:30%;" 
+						  	onclick="if (document.getElementById('termsCheckbox').checked==false) { alert('<s:text name="signup.pleaseAcceptTerms"/>'); }
+						  	         else { document.getElementById('signupform').submit(); }">
+		                      Sign-up!
+		                    </a>
+		                    
+                      </center>
+                    </div>
                     
                     <!--div class="form-group">
                       <div class="custom-control custom-checkbox small">
@@ -109,11 +135,8 @@ onkeypress="if (event.which==13||event.keycode==13) {
                         <label class="custom-control-label" for="customCheck">Remember Me</label>
                       </div>
                     </div-->
-                    <center>
-                    <a href="#" class="btn btn-primary btn-user btn-block scale" style="max-width:30%;" onclick="document.getElementById('signupform').submit();">
-                      Sign-up!
-                    </a>
-                    </center>
+                   
+                   
                     <hr>                 
                   </form>
                   <!--

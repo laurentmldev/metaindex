@@ -3,7 +3,7 @@
 v2.1.0:
 -------
 #95 autonomous account creation 
-	- terms and Conditions and use of Cookies presentation and acceptation on first login
+	- terms and Conditions and use of Cookies presentation
 		what happens to the data once the plan expired : keep it 3 months and then deleted?
 	
 #99 manage users access to catalogs
@@ -14,11 +14,7 @@ v2.1.0:
 #100 only catalog owner shall be able to delete a catalog	
 	rename creatorId into ownerUserId
 	
-#96 user plans and pricing policy
-	x need more? ask for custom plan. 
-	x accept paypal check-out
-	x server-side trace transactions details for user support
-	- generate invoice
+
 	
 #97 adaptive policy (idle features?) when user plan gets outdated
   freeze extra catalogs if user down-gradded its plan?
@@ -133,8 +129,17 @@ Done:
 
 v2.1.0
 
+#95 autonomous account creation 
+	- terms and Conditions and use of Cookies presentation
+	
 #91 join us : use an online form rather than 'mailto'
    - canceled, replaced by autonomous account creation
+
+#96 user plans and pricing policy
+	x need more? ask for custom plan. 
+	x accept paypal check-out
+	x server-side trace transactions details for user support
+
 
 v2.0.7
 
