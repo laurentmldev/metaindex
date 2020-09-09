@@ -55,10 +55,34 @@
 		if (mx_helpers_isCatalogReadable(catalogCard.descr.userAccessRights)) {
 			openButtonArea.style.display="table-row";
 			generateButtonArea.style.display="none";
-			let openBtn = newPopulatedCatalogDetails.querySelector("._openBtn_");		
-			openBtn.onclick=function(e) {
-				//console.log("selecting catalog '"+catalogCard.descr.id+"'");
-				details_enterCatalog();			
+			let openBtn = newPopulatedCatalogDetails.querySelector("._openBtn_");
+			
+			if (catalogCard.descr.enabled==true) {
+				openBtn.onclick=function(e) {
+					//console.log("selecting catalog '"+catalogCard.descr.id+"'");
+					details_enterCatalog();			
+				}
+			} else {
+				openBtn.classList.add("mx-btn-disabled");
+				openBtn.classList.remove("btn-info");
+				openBtn.onclick=function(event) {
+					event.stopPropagation();
+					event.preventDefault();
+            		MxGuiHeader.showInfoModal('<s:text name="Catalogs.disabled" />',
+            									'<s:text name="Catalogs.disabledExplanation" />');
+					
+				}
+				let warningDisabled=document.createElement("span");
+				warningDisabled.innerHTML="<s:text name="Catalogs.disabled" />";
+				warningDisabled.title="<s:text name="Catalogs.disabledExplanation" />";
+				warningDisabled.classList.add("mx-tiny-warning");
+				warningDisabled.onclick=function(event) {
+					event.stopPropagation();
+					event.preventDefault();
+            		MxGuiHeader.showInfoModal('<s:text name="Catalogs.disabled" />',
+            									'<s:text name="Catalogs.disabledExplanation" />');					
+				}
+				openButtonArea.append(warningDisabled);
 			}
 		}
 		

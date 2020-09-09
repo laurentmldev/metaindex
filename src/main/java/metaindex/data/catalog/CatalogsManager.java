@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import metaindex.app.Globals;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.commons.globals.guitheme.IGuiTheme;
+import metaindex.data.userprofile.IUserProfileData;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.IStreamHandler;
 
@@ -99,6 +100,16 @@ public class CatalogsManager implements ICatalogsManager {
 		List<ICatalog> rst = new ArrayList<ICatalog>();
 		Iterator<Integer> it = _catalogsById.keySet().iterator();
 		while (it.hasNext()) { rst.add(_catalogsById.get(it.next())); }
+		return rst;
+	}
+	
+	@Override
+	public List<ICatalog> getOwnedCatalogsList(Integer ownerUserId) {
+		List<ICatalog> rst = new ArrayList<>();		
+		// TODO : use java stream/filter ? 
+		for (ICatalog c : _catalogsById.values()) { 
+			if (c.getOwnerId().equals(ownerUserId)) { rst.add(c); }
+		}
 		return rst;
 	}
 

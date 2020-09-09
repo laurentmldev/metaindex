@@ -227,7 +227,7 @@ public class WsControllerUser extends AMxWSController {
     		tmpUserData.setNickname(requestMsg.getNickName());
     		tmpUserData.setName(user.getName());
     		tmpUserData.setId(user.getId());
-    		Boolean result = Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface().getUpdatePreferencesIntoDbStmt(tmpUserData).execute();
+    		Boolean result = Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface().getUpdateUserProfileIntoDbStmt(tmpUserData).execute();
     		
     		if (result==false) {
     			answer.setRejectMessage("Update operation refused, sorry.");
@@ -502,7 +502,7 @@ public class WsControllerUser extends AMxWSController {
     			cal.add(Calendar.YEAR,newPlanDurationYear);
     			cal.add(Calendar.DAY_OF_MONTH,-1);
     			user.setPlanEndDate(cal.getTime());       			
-	    		Boolean result = Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface().getUpdatePlanIntoDbStmt(user).execute();    		
+	    		Boolean result = Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface().getCreateOrUpdatePlanIntoDbStmt(user).execute();    		
 	    		if (result==false) {
 	    			PaymentLogging.logger.error(paymentEntry+"\t"+"status=SQL_UPDATE_REFUSED");
 	    			answer.setRejectMessage(user.getText("Profile.plans.paymentOkButDBError"));

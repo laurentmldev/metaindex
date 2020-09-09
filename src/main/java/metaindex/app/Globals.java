@@ -13,8 +13,6 @@ See full version of LICENSE in <https://fsf.org/>
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,18 +38,14 @@ import metaindex.data.commons.globals.guitheme.IGuiThemesManager;
 import metaindex.data.commons.globals.plans.IPlansManager;
 import metaindex.data.commons.globals.plans.PlansManager;
 import metaindex.app.periodic.fs.MxTmpFolderMonitor;
+import metaindex.app.periodic.monitoring_proprietary.UsersQuotasChecker;
 import metaindex.app.periodic.statistics.MxStatisticsManager;
 import metaindex.data.catalog.CatalogsManager;
 import metaindex.data.catalog.ICatalogsManager;
-import metaindex.data.userprofile.IUserProfileData;
-import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
 import metaindex.data.userprofile.IUsersManager;
-import metaindex.data.userprofile.UserProfileData;
 import metaindex.data.userprofile.UsersManager;
 import toolbox.database.elasticsearch.ElasticSearchConnector;
 import toolbox.database.kibana.KibanaConnector;
-import toolbox.database.kibana.KibanaConnector.KIBANA_PRIVILEGE;
-import toolbox.database.kibana.KibanaConnector.KIBANA_SPACE_FEATURE;
 import toolbox.database.sql.SQLDataConnector;
 import toolbox.exceptions.DataAccessException;
 import toolbox.exceptions.DataProcessException;
@@ -75,6 +69,7 @@ public class Globals {
 	
 	private static IStatisticsManager _mxStats= new MxStatisticsManager();
 	private static MxTmpFolderMonitor _mxTmpFolderCleaner= new MxTmpFolderMonitor();
+	private static UsersQuotasChecker _mxUsersQuotaChecker= new UsersQuotasChecker();
 	private static String _contextPath="";
 	
 	/**
@@ -255,7 +250,8 @@ public class Globals {
 			_mxStats.start();
 			// starting tmp-files cleaner
 			_mxTmpFolderCleaner.start();
-			
+			// starting users quotas checker
+			_mxUsersQuotaChecker.start();
 			log.info("MetaindeX connections init done");
 		}
 		
@@ -272,7 +268,7 @@ public class Globals {
 			_sqlConnector.close();
 			_mxStats.stop();
 			_mxTmpFolderCleaner.stop();
-			
+			_mxUsersQuotaChecker.stop();
 			log.info("MetaindeX connections closed");
 		
 	}

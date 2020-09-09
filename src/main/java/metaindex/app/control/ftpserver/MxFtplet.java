@@ -102,7 +102,10 @@ public class MxFtplet extends DefaultFtplet {
 				if (user==null
 						|| user.getUserCatalogAccessRights(_catalog.getId())==USER_CATALOG_ACCESSRIGHTS.NONE
 						// no ftp access for Read-Only users
-						|| user.getUserCatalogAccessRights(_catalog.getId())==USER_CATALOG_ACCESSRIGHTS.CATALOG_READ) {
+						|| user.getUserCatalogAccessRights(_catalog.getId())==USER_CATALOG_ACCESSRIGHTS.CATALOG_READ
+						// user or catalog disabled
+						|| user.isEnabled()==false
+						|| _catalog.isEnabled()==false) {
 					
 					session.write(new DefaultFtpReply(FtpReply.REPLY_550_REQUESTED_ACTION_NOT_TAKEN, 
 							"Unauthorized user '"+name+"' for catalog '"+_catalog.getName()+"'"));

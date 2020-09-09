@@ -41,6 +41,10 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 	public void setId(Integer id);
 	public void setName(String shortname);
 	
+	/** some constraints might lead to disable a catalog,
+	 *  for example if quotas have not been respected for a while */
+	public Boolean isEnabled();
+	
 	public Date getLastUpdate();
 	public void setLastUpdate(Date timetampDate);
 		

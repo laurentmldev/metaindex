@@ -294,6 +294,9 @@ CREATE TABLE `user_plans` (
   `plan_id` int(32) NOT NULL,
   `startDate` date,
   `endDate` date,
+  -- count how many quota warnings have been detected
+  -- user account can then be disabled once max allowed warnings has been reached
+  `nbQuotaWarnings` int(32) NOT NULL DEFAULT '0',
   `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 

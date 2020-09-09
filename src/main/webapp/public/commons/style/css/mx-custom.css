@@ -370,3 +370,18 @@ height:40px;
 	box-shadow:2px 4px 10px;
 	cursor:pointer;
 }
+
+.mx-btn-disabled {
+	background:grey;
+	color: #555;
+	border:none;
+	curser:none;
+	
+}
+
+.mx-tiny-warning {
+	color:#f44;
+	font-weight:bold;
+	/*background:grey;*/
+	
+}

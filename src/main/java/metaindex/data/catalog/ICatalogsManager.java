@@ -13,6 +13,7 @@ See full version of LICENSE in <https://fsf.org/>
 import java.util.List;
 import java.util.Map;
 
+import metaindex.data.userprofile.IUserProfileData;
 import toolbox.database.ILoadableFromDb;
 import toolbox.exceptions.DataProcessException;
 
@@ -21,5 +22,6 @@ public interface ICatalogsManager extends ILoadableFromDb {
 	ICatalog getCatalog(Integer catalogId);
 	ICatalog getCatalog(String catalogName);
 	List<ICatalog> getCatalogsList();
+	List<ICatalog> getOwnedCatalogsList(Integer ownerUserId);
 	void removeCatalog(Integer catalogId);
 }

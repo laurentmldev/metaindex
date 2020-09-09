@@ -15,21 +15,27 @@ import org.apache.commons.logging.LogFactory;
 
 import metaindex.app.beans.AMetaindexBean;
 import metaindex.app.beans.AMetaindexBean.BeanProcessResult;
-import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
 
     
 /**
- * Common Bean for all the 'Profile' JSP pages (profile,createProfile, editProfile).
+ * Bean for Catalogs list and overview page
  * @author Laurent ML
  */
-public class BeanProfile extends AMetaindexBean {  
+public class BeanCatalogsOverview extends AMetaindexBean {  
   
-	private static final long serialVersionUID = -8112077614648473484L;
-	private Log log = LogFactory.getLog(BeanProfile.class);
+	private static final long serialVersionUID = -1077822977888301466L;
+	private Log log = LogFactory.getLog(BeanCatalogsOverview.class);
 
 	
 	@Override
   	public String execute() throws Exception {
+		// ensure can access only if properly logged in
+		if (this.getCurrentUserProfile()==null 
+				|| this.getCurrentUserProfile().isEnabled()==false
+				|| this.getCurrentUserProfile().isLoggedIn()==false
+				) {
+			return BeanProcessResult.BeanProcess_ConstraintERROR.toString();
+		}
 		return BeanProcessResult.BeanProcess_SUCCESS.toString();
 	}
 	

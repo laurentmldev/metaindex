@@ -30,7 +30,7 @@ class PopulateUserProfileFromDb extends SQLPopulateStmt<IUserProfileData>   {
 			"select users.user_id,users.email,users.password, "
 			+"users.nickname,users.guilanguage_id,users.guitheme_id,role,users.lastUpdate,"
 			+" user_roles.lastUpdate,users.enabled,"
-			+" user_plans.plan_id, user_plans.startDate,user_plans.endDate,user_plans.lastUpdate"
+			+" user_plans.plan_id, user_plans.startDate,user_plans.endDate,user_plans.nbQuotaWarnings,user_plans.lastUpdate"
 			+" from users,user_roles,user_plans";
 
 	private Boolean _onlyIfTimestampChanged=false;
@@ -65,7 +65,7 @@ class PopulateUserProfileFromDb extends SQLPopulateStmt<IUserProfileData>   {
 		
 		Timestamp dbDateUsers = rs.getTimestamp(8);
 		Timestamp dbDateRoles = rs.getTimestamp(9);
-		Timestamp dbDatePlans = rs.getTimestamp(14);
+		Timestamp dbDatePlans = rs.getTimestamp(15);
 		Timestamp newerDbDate = dbDateUsers;
 		if (newerDbDate.before(dbDateRoles)) { newerDbDate=dbDateRoles; }
 		if (newerDbDate.before(dbDatePlans)) { newerDbDate=dbDatePlans; }
@@ -85,6 +85,7 @@ class PopulateUserProfileFromDb extends SQLPopulateStmt<IUserProfileData>   {
 		d.setPlanId(rs.getInt(11));
 		d.setPlanStartDate(rs.getDate(12));
 		d.setPlanEndDate(rs.getDate(13));
+		d.setPlanNbQuotaWarnings(rs.getInt(14));
 		
 		return d;
 	}

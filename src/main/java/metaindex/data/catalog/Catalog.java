@@ -184,12 +184,23 @@ public class Catalog implements ICatalog {
 	public Integer getOwnerId() { return _ownerId; }
 	@Override
 	public void setOwnerId(Integer creatorId) { _ownerId=creatorId; }
+	
 	public IUserProfileData getOwner() {
 		if (_curOwner!=null && _curOwner.getId().equals(getOwnerId())) { return _curOwner; }
 		_curOwner = Globals.Get().getUsersMgr().getUserById(getOwnerId());
 		return _curOwner;
 	}
-	
+	@Override
+	/**
+	 * current policy consist in considering a catalog disabled if its
+	 * owner is disabled.
+	 */
+	public Boolean isEnabled() {
+		IUserProfileData u = getOwner();
+		if (u!=null) { return u.isEnabled(); }
+		log.warn("isEnabled: unable to get owner of catalog "+getName()+", returned disabled by default.");
+		return false;
+	}
 	@Override 	
 	public Integer getFtpPort() {
 		return _ftpPort;

@@ -36,6 +36,7 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 	private String _planName;
 	private Integer _planId;
 	private Boolean _isUserCurrentCatalog=false;
+	private Boolean _isEnabled=false;
 	private String _itemThumbnailUrlField;
 	private List<String> _itemNameFields;
 	private String _thumbnailUrl;
@@ -90,6 +91,7 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 		this.setQuotaFtpDiscSpaceBytes(c.getQuotaFtpDiscSpaceBytes());
 		this.setDiscSpaceUseBytes(c.getDiscSpaceUseBytes());
 		this.setTimeFieldTermId(c.getTimeFieldTermId());
+		this.setEnabled(c.isEnabled());
 		if (u.getCurrentCatalog()==c) { this.setIsUserCurrentCatalog(true); }	
 		
 		// ignore terms for MX internal use (which start with "mx_")
@@ -279,5 +281,11 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 	}
 	public void setPlanId(Integer _planId) {
 		this._planId = _planId;
+	}
+	public Boolean getEnabled() {
+		return _isEnabled;
+	}
+	public void setEnabled(Boolean _isEnabled) {
+		this._isEnabled = _isEnabled;
 	}
 }

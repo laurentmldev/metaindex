@@ -50,17 +50,17 @@ public class SqlDbInterface  extends SQLDatabaseInterface<IUserProfileData>
 		return new PopulateUserProfileIdFromDb(list, getDataConnector());
 	}
 
-	public SQLWriteStmt<IUserProfileData> getUpdatePreferencesIntoDbStmt(List<IUserProfileData> data) throws DataProcessException {
-		return new UpdateUserPreferencesIntoDb(data, getDataConnector());
+	public SQLWriteStmt<IUserProfileData> getUpdateUserProfileIntoDbStmt(List<IUserProfileData> data) throws DataProcessException {
+		return new UpdateUserProfileIntoDb(data, getDataConnector());
 	}
 	
-	public SQLWriteStmt<IUserProfileData> getUpdatePreferencesIntoDbStmt(IUserProfileData data) throws DataProcessException {
+	public SQLWriteStmt<IUserProfileData> getUpdateUserProfileIntoDbStmt(IUserProfileData data) throws DataProcessException {
 		List<IUserProfileData> list = new ArrayList<>();
 		list.add(data);
-		return getUpdatePreferencesIntoDbStmt(list);
+		return getUpdateUserProfileIntoDbStmt(list);
 	}
 
-	public SQLWriteStmt<IUserProfileData> getUpdatePlanIntoDbStmt(IUserProfileData data) throws DataProcessException {
+	public SQLWriteStmt<IUserProfileData> getCreateOrUpdatePlanIntoDbStmt(IUserProfileData data) throws DataProcessException {
 		return new CreateOrUpdateUserPlan(data,data.getPlan(),getDataConnector());
 	}
 	public SQLWriteStmt<IUserProfileData> getUpdatePasswordIntoDbStmt(List<IUserProfileData> data) throws DataProcessException {

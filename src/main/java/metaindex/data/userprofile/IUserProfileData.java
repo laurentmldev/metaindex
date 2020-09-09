@@ -73,6 +73,7 @@ public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProc
     public IGuiTheme getGuiTheme();
     public Collection<IGuiTheme> getGuiThemes();
     
+    /** return the number of catalogs owned by the user */
     public Integer getCurNbCatalogsCreated();
 	public void setCurNbCatalogsCreated(Integer nbCatalogs);
 	
@@ -160,6 +161,12 @@ public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProc
 	public void setPlanId(Integer planId);
 	public IPlan getPlan();
 	public Date getPlanStartDate();
+	/**
+	 * count how many quota warnings have been detected.
+  	 * user account can then be disabled once max allowed warnings has been reached
+	 */
+	public Integer getPlanNbQuotaWarnings();
+	public void setPlanNbQuotaWarnings(Integer nbWarnings);
 	/** for GUI usage */
 	public String getPlanStartDateStr();
 	public void setPlanStartDate(Date planStartDate);
@@ -167,4 +174,7 @@ public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProc
 	/** for GUI usage */
 	public String getPlanEndDateStr(); 
 	public void setPlanEndDate(Date planEndDate);
+	
+	public List<ICatalog> getOwnedCatalogs();
+
 }

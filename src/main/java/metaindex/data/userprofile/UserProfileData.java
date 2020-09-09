@@ -98,7 +98,7 @@ public class UserProfileData implements IUserProfileData
 	
 	private Integer _autoRefreshPeriodSec=Catalog.AUTOREFRESH_PERIOD_SEC;
 	
-	private PeriodicProcessMonitor _dbAutoRefreshProcessing=null;
+	private PeriodicProcessMonitor _dbAutoRefreshProcessing=new UserProfilePeriodicDbReloader(this);
 	
 	private Boolean _enabled=false;
 	
@@ -107,8 +107,16 @@ public class UserProfileData implements IUserProfileData
 	private IPlan _curPlan;
 	private Date _planStartDate;
 	private Date _planEndDate;
+	private Integer _planNbQuotaWarnings=0;
 	
 
+	public UserProfileData() {
+		// auto refresh shall be active even if user is not logged in
+		// because this user might own catalogs used by others
+		// so changes in DB (typically plan or enabled-flag) shall 
+		// be detected even if the user itself is not logged-in
+		_dbAutoRefreshProcessing.start();
+	}
 	public Integer getPlanId() {
 		return _planId; 
 	}
@@ -164,11 +172,7 @@ public class UserProfileData implements IUserProfileData
 	    	if (!result) {
 	    		log.error("unable to update user details in statistics environment.");
     		}
-	    	
-	    	if (_dbAutoRefreshProcessing!=null) { _dbAutoRefreshProcessing.stopMonitoring(); }
-	    	_dbAutoRefreshProcessing=new UserProfilePeriodicDbReloader(this); 
-			_dbAutoRefreshProcessing.start();
-			this.releaseLock();
+	    	this.releaseLock();
 		} catch(InterruptedException e) {
 			this.releaseLock();
 			throw new DataProcessException("Unable to perform user login : "+e.getMessage(),e);
@@ -181,10 +185,6 @@ public class UserProfileData implements IUserProfileData
 	@Override
 	public void logOut() throws DataProcessException {
 		
-		// stop auto-refresh
-		if (_dbAutoRefreshProcessing!=null) {
-			_dbAutoRefreshProcessing.stopMonitoring();
-		}
 		// exit from current catalog if any
 		if (this.getCurrentCatalog()!=null) {
 			this.getCurrentCatalog().quit(this);
@@ -557,6 +557,7 @@ public class UserProfileData implements IUserProfileData
 
 	// ----- helpers about user profile
 	public void loadFullUserData() throws DataProcessException {
+		
 		// load user data from DB
 		Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface()
 				.getPopulateUserProfileFromDbStmt(this)
@@ -585,6 +586,10 @@ public class UserProfileData implements IUserProfileData
 
 	@Override
 	public void doPeriodicProcess() throws DataProcessException {
+		
+		// avoid periodic process on dummy or empty profile objects
+		if (getName().length()==0) { return; }
+		
 		Date prevCurDate = this.getLastUpdate();
 		Boolean onlyIfDbcontentsUpdated=true;
 		List<IUserProfileData> list = new ArrayList<>();
@@ -643,6 +648,7 @@ public class UserProfileData implements IUserProfileData
 				+"\n\t\t- quotaCatalogsCreated: "+this.getPlan().getQuotaCatalogsCreated()
 				+"\n\t\t- quotaNbDocsPerCatalog: "+this.getPlan().getQuotaNbDocsPerCatalog()
 				+"\n\t\t- quotaDiscPerCatalog: "+(this.getPlan().getQuotaDiscBytesPerCatalog()/1000000)+"MB"
+				+"\n\t- planNbQuotasWarnings: "+this.getPlanNbQuotaWarnings()
 				+"\n\t- catalogs rights: ";
 		if (this.getRole() == USER_ROLE.ROLE_ADMIN) {
 			str+=USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN.toString()+" for all";
@@ -665,5 +671,17 @@ public class UserProfileData implements IUserProfileData
 	}
 	@Override
 	public void setRemoteAddress(String addr) { _remoteAddr=addr; }
+	@Override
+	public Integer getPlanNbQuotaWarnings() {
+		return _planNbQuotaWarnings;
+	}
+	@Override
+	public void setPlanNbQuotaWarnings(Integer nbWarnings) {
+		_planNbQuotaWarnings=nbWarnings;		
+	}
+	@Override
+	public List<ICatalog> getOwnedCatalogs() {
+		return Globals.Get().getCatalogsMgr().getOwnedCatalogsList(getId());
+	}
 	
 }

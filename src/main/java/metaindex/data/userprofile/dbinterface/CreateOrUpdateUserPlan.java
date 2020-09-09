@@ -50,8 +50,8 @@ List<PreparedStatement> result = new ArrayList<PreparedStatement>();
 
 try {
 	result.add(this.getDataConnector().getConnection().prepareStatement(
-			"insert into user_plans (user_id,plan_id,startDate,endDate) values (?,?,?,?) "
-					+"ON DUPLICATE KEY UPDATE plan_id=?, startDate=?, endDate=?"));
+			"insert into user_plans (user_id,plan_id,startDate,endDate,nbQuotaWarnings) values (?,?,?,?,?) "
+					+"ON DUPLICATE KEY UPDATE plan_id=?, startDate=?, endDate=?, nbQuotaWarnings=?"));
 	
 } catch (SQLException e) { throw new DataProcessException(e); }
 
@@ -67,9 +67,12 @@ try {
 	stmt.setInt(2, _plan.getId());
 	stmt.setDate(3, new java.sql.Date(dataObject.getPlanStartDate().getTime()));
 	stmt.setDate(4, new java.sql.Date(dataObject.getPlanEndDate().getTime()));
-	stmt.setInt(5, _plan.getId());
-	stmt.setDate(6, new java.sql.Date(dataObject.getPlanStartDate().getTime()));
-	stmt.setDate(7, new java.sql.Date(dataObject.getPlanEndDate().getTime()));
+	stmt.setInt(5, dataObject.getPlanNbQuotaWarnings());
+	
+	stmt.setInt(6, _plan.getId());
+	stmt.setDate(7, new java.sql.Date(dataObject.getPlanStartDate().getTime()));
+	stmt.setDate(8, new java.sql.Date(dataObject.getPlanEndDate().getTime()));
+	stmt.setInt(9, dataObject.getPlanNbQuotaWarnings());
 	
 	stmt.addBatch();
 } catch (SQLException e) { throw new DataProcessException(e); }		

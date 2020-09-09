@@ -2,9 +2,10 @@
 
 v2.1.0:
 -------
+
+refresh users data even if not logged in or never logged in?
 #95 autonomous account creation 
-	- terms and Conditions and use of Cookies presentation
-		what happens to the data once the plan expired : keep it 3 months and then deleted?
+	- what happens to the data once the plan expired : keep it 3 months and then deleted?
 	
 #99 manage users access to catalogs
 	- create a catalog only if current plan allows it
@@ -12,10 +13,8 @@ v2.1.0:
 	- ask for access to a catalog : send email + notification to admins
 	
 #100 only catalog owner shall be able to delete a catalog	
-	rename creatorId into ownerUserId
 	
 
-	
 #97 adaptive policy (idle features?) when user plan gets outdated
   freeze extra catalogs if user down-gradded its plan?
   - when date is over-passed, 2 months warning then back down to default plan 
@@ -31,13 +30,17 @@ v2.1.0:
 
 #19 send email to users and admin when useful
 
-#55 welcome tour
+#55 tutorial videos on youtube
 
 available FTP ports when lots of catalogs
 
 implement tests for WS actions
 
-periodic tasks are broken after context reload
+periodic tasks are broken after context reload?
+
+improve fields layout when text is long
+
+create catalog: nice error msg if a catalog with same name already exist
 
 v2.1.1:
 -------
