@@ -45,8 +45,8 @@ public class UsersManager implements IUsersManager {
 						.findFirst()
 						.orElse(null);
 		
-		// if user could not be found, maybe it has been added
-		// in DB and contents need to be reloaded
+		// if user could not be found, maybe it is not loaded yet from DB
+		// so we give it a try
 		if (result==null) { 
 			try { 
 				log.info("User '"+name+"' not found, reloading users list from DB");
@@ -98,7 +98,9 @@ public class UsersManager implements IUsersManager {
 			List<IUserProfileData> loadedUsers=new ArrayList<>();
 			Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface().getPopulateUserProfileFromDbStmt(loadedUsers).execute();
 			for (IUserProfileData u : loadedUsers) {
-				_usersByName.put(u.getName(), u);
+				if (!_usersByName.containsKey(u.getName())) {
+					_usersByName.put(u.getName(), u);
+				}
 			}
 			_usersLock.release();
 		} catch (Exception e) {
