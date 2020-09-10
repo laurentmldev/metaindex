@@ -120,7 +120,7 @@ public class WsControllerCatalog extends AMxWSController {
     	IUserProfileData user = getUserProfile(headerAccessor);	    	
     	WsMsgCreateCatalog_answer answer = new WsMsgCreateCatalog_answer(requestMsg);
     	
-    	if (!this.userHasAdminAccess(user)) { 
+    	if (!this.userHasWriteAccess(user)) { 
     		answer.setRejectMessage(user.getText("globals.noAccessRights"));
 			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
 			return;         		
@@ -405,8 +405,8 @@ public class WsControllerCatalog extends AMxWSController {
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_catalog", answer);
     		return;
     	}
-    	
-    	if (!this.userHasAdminAccess(user,c)) { 
+    	// only catalog owner can delete it
+    	if (!c.getOwnerId().equals(user.getId())) { 
     		answer.setRejectMessage(user.getText("globals.noAccessRights"));
 			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_catalog", answer);
 			return;         		

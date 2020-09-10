@@ -34,7 +34,7 @@
 	
 	// button delete
 	let buttonDelete = newPopulatedCatalogDetails.querySelector("._button_delete_");		
-	if (mx_helpers_isCatalogAdmin(catalogCard.descr.userAccessRights)) { buttonDelete.delete_dbid=catalogCard.descr.id; }
+	if (catalogCard.descr.ownerId==<s:property value="currentUserProfile.id" />) { buttonDelete.delete_dbid=catalogCard.descr.id; }
 	else { buttonDelete.style.display='none'; }
 	
 	// nbdocs

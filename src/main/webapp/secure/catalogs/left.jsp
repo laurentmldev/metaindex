@@ -5,7 +5,7 @@
 
  <li id="leftbar_catalog_create" class="nav-item" style="display:none">
  
- <c:if test="${mxRole == 'ROLE_ADMIN' }">
+ <c:if test="${mxRole == 'ROLE_ADMIN' || mxRole == 'ROLE_USER'}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-fw fa-star"></i>
           <span><s:text name="Catalogs.createCatalog"></s:text></span>
