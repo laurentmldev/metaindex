@@ -153,5 +153,83 @@
   
  </script>
  
- 
+ <div class="tab-pane fade" id="nav-mapping" role="tabpanel" aria-labelledby="nav-mapping-tab">
+						
+						<table class="table table-striped" >
+						    <thead>
+						      <tr>
+						        <th style="min-width:5rem;"><s:text name="Catalogs.field"></s:text>						        	
+						        	 <span class="dropdown no-arrow mx-1" style="padding:1rem;">
+							              <a class="dropdown-toggle" href="#" id="createTermDropdown" 
+							              	role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							                <i class="fas fa-plus fa-fw" onclick="cleanCreateFieldDatatypesList();"></i>
+							                
+							              </a>
+							              <!-- Create Term form -->
+							              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow" 
+							              		aria-labelledby="createTermDropdown"
+							              		id="MxGui.details.createTerm">
+							               
+								              <div class="form-inline mr-auto w-auto navbar-search" >
+								                  <div class="input-group">
+								                    <input id="details.createTerm.name" type="text" class="form-control bg-light border-0 small" 
+								                    		style="min-width:200px;margin:0.2rem;"		
+								                    		onkeypress="if (event.which==13||event.keycode==13) {
+								                    			details_createTerm(
+										                       			document.getElementById('details.createTerm.name').value,
+										                       			document.getElementById('details.createTerm.datatype').value);
+								                    		}"
+								                    		placeholder="Term Name ..." aria-label="Filter" aria-describedby="basic-addon2"              			              		 
+								                    		aria-label="Create Term Name" aria-describedby="basic-addon2">
+								                    
+								                    <select id="details.createTerm.datatype"  class="form-control bg-light border-0 small" 
+								                    		style="min-width:200px;margin:0.2rem;"	
+								                    		onclick="event.stopPropagation();"	
+								                    		onkeypress="if (event.which==13||event.keycode==13) {
+								                    			details_createTerm(
+										                       			document.getElementById('details.createTerm.name').value,
+										                       			document.getElementById('details.createTerm.datatype').value);
+								                    		}"						                    		
+								                    		aria-label="Filter" aria-describedby="basic-addon2"              			              		 
+								                    		aria-label="Create Term Type" aria-describedby="basic-addon2">
+								                    		
+								                    		<!-- Options field by javascript (down this page) -->
+															
+								                    </select>	
+								                    <div class="input-group-append" style="margin:0.2rem">
+								                      <button class="btn btn-primary" type="button"
+								                       	onclick="details_createTerm(
+								                       			document.getElementById('details.createTerm.name').value,
+								                       			document.getElementById('details.createTerm.datatype').value);" >
+								                        <i class="fas fa-check fa-sm"></i>
+								                      </button>
+								                      <button class="btn btn-primary" type="button" >
+								                        <i class="fa fa-times fa-sm"></i>
+								                      </button>
+								                    </div>	                    
+								                  </div>
+								                </div>
+							           </div>
+							              
+							        </span>
+						        </th>
+						        <th><s:text name="Catalogs.field.type"></s:text></th>
+						        <th><s:text name="Catalogs.field.enumeration"></s:text></th>
+						        <th><s:text name="Catalogs.field.multi"></s:text></th>
+						        <th style="width:200rem"><s:text name="Catalogs.field.comments"></s:text></th>
+						        <!-- not functional yet <th>Delete</th>  -->						        
+						      </tr>
+						    </thead>
+						    <tbody class="_terms_insertspot_" >
+						      <tr class="_term_template_" style="display:none" >
+						        <td class="_term_name_" ></td>
+						        <td><span class="_term_type_"></span></td>						        
+						        <td><span class="_term_enum_"></span></td>
+						        <td><span class="_term_multi_"></span></td>
+						        <td><span class="_term_comments_" style="font-size:0.7rem"></span></td>
+						      </tr>						      
+						    </tbody>
+						  </table>
+						
+					</div>		
  

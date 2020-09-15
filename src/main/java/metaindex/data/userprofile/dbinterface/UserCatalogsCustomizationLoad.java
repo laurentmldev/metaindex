@@ -16,11 +16,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import metaindex.data.userprofile.IUserProfileData;
-import metaindex.data.userprofile.IUserProfileData.USER_CATALOG_ACCESSRIGHTS;
-import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
 import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLPopulateStmt;
-import toolbox.database.sql.SQLReadStreamStmt;
 import toolbox.exceptions.DataProcessException;
 
 class UserCatalogsCustomizationLoad extends SQLPopulateStmt<IUserProfileData>   {

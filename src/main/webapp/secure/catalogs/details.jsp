@@ -7,15 +7,6 @@
 <script type="text/javascript" >
  
  var _curCatalogDesc=null;
-
-</script>
-
- <s:include value="details_tab_overview.jsp" />
- <s:include value="details_tab_mapping.jsp" />
- <s:include value="details_tab_lexic.jsp" />
- <s:include value="details_tab_perspectives.jsp" />
- 
- <script type="text/javascript" >
   
  function details_getCatalogDetailsNode() {
 	 if (_curCatalogDesc==null) { return null; }
@@ -108,14 +99,17 @@
 	// from details_tab_perspectives.jsp
 	details_buildContents_perspectives(newPopulatedCatalogDetails,catalogCard);
 	
+	// users tab requires extra db requests and is refreshed only if user enters the tab
+	//
+	
 	_curCatalogDesc=catalogCard.descr;
 	details_selectCatalog(_curCatalogDesc.id);
-	
+		
 	return newPopulatedCatalogDetails;			 
  }
 
  function details_selectCatalog(catalogId) {
-	 MxApi.requestSelectCatalog(catalogId);
+	MxApi.requestSelectCatalog(catalogId);	
  } 
 
  function details_createCatalog(catalogName) {
@@ -137,9 +131,9 @@
 // remember which tab was open when a Gui refreshed is performed 
 var _curGuiActiveTabId=null;
 function details_memGui() {
-	 let guiDetailsTab_custompres = document.getElementById("nav-custompres-tab");
-	 if (guiDetailsTab_custompres.classList.contains("active")) {
-		 _curGuiActiveTabId="custompres";
+	 let guiDetailsTab_overview = document.getElementById("nav-overview-tab");
+	 if (guiDetailsTab_overview.classList.contains("active")) {
+		 _curGuiActiveTabId="overview";
 		 return; 
 	}
 	 
@@ -161,10 +155,10 @@ function details_memGui() {
 			 
 		 //console.log("setting active tab "+_curGuiActiveTabId);
 		 
-		 let guiDetailsTab_custompres = document.getElementById("nav-custompres-tab");
-		 guiDetailsTab_custompres.classList.remove("active");
-		 let guiDetailsContents_custompres = document.getElementById("nav-custompres");
-		 guiDetailsContents_custompres.classList.remove("active","show");
+		 let guiDetailsTab_overview = document.getElementById("nav-overview-tab");
+		 guiDetailsTab_overview.classList.remove("active");
+		 let guiDetailsContents_overview = document.getElementById("nav-overview");
+		 guiDetailsContents_overview.classList.remove("active","show");
 		 
 		 let guiDetailsTab_mapping = document.getElementById("nav-mapping-tab");
 		 guiDetailsTab_mapping.classList.remove("active");
@@ -186,6 +180,20 @@ function details_memGui() {
 	 
  }
 
+
+ function details_updateUsersTab() {
+ 	let isAdmin =mx_helpers_isCatalogAdmin(_curCatalogDesc.userAccessRights);	
+ 	let navtabs=document.getElementById("details_catalog_"+_curCatalogDesc.id);
+ 	if (navtabs!=null) {
+ 		let usersTab=navtabs.querySelector(".users-tab");
+ 		if (isAdmin==true) { usersTab.style.display="block"; }
+ 		else { usersTab.style.display="none"; }
+ 	}
+ }
+
+
+
+ 
  MxGuiDetails.setTitle("<s:text name="Catalogs.title" />");
  MxGuiDetails.setCurCatalogDescription=function(curCommDesc) { _curCatalogDesc=curCommDesc; }
  MxGuiDetails.getCurCatalogDescription=function() { return _curCatalogDesc; }
@@ -193,7 +201,7 @@ function details_memGui() {
  MxGuiDetails.getPerspectivesInsertSpot=function(detailsNode) { return detailsNode.querySelector('._details_perspectives_insertspot_'); }
  MxGuiDetails.memGui=details_memGui;
  MxGuiDetails.restoreGui=details_restoreGui;
- 
+ MxGuiDetails.updateUsersTab=details_updateUsersTab;
  MxGuiCards.extractName=function(objDescr) {
 	 if (objDescr["vocabulary"] != null) { return objDescr.vocabulary.name; }
 	 else { return objDescr.name; }
@@ -271,7 +279,10 @@ function details_memGui() {
 
 				<nav>
 					<div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-						<a class="nav-item nav-link active mx-tab-tiny-shadow " id="nav-custompres-tab" data-toggle="tab" href="#nav-custompres" role="tab" aria-controls="nav-custompres" aria-selected="true"><s:text name="Catalogs.overview"></s:text></a>
+						<a class="nav-item nav-link active mx-tab-tiny-shadow " id="nav-overview-tab" data-toggle="tab" 
+								href="#nav-overview" role="tab" aria-controls="nav-overview" aria-selected="true">
+								<s:text name="Catalogs.overview"></s:text>
+						</a>
 						<a class="nav-item nav-link mx-tab-tiny-shadow " id="nav-mapping-tab" data-toggle="tab" href="#nav-mapping" role="tab" aria-controls="nav-mapping" aria-selected="false"><s:text name="Catalogs.fields"></s:text>
 							<span title="S.O.S" 
 				                	onclick="event.stopPropagation();event.preventDefault();
@@ -293,204 +304,23 @@ function details_memGui() {
 				                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
 				             </span>
 						</a>
+						<a class="nav-item nav-link mx-tab-tiny-shadow users-tab" onclick="MxGuiCatalogUsersTab.updateUsersList();" 
+								id="nav-users-tab" data-toggle="tab" href="#nav-users" role="tab" aria-controls="nav-users" aria-selected="false"
+								style="display:none"><s:text name="Catalogs.users"></s:text>
+							<span title="S.O.S" 
+				                	onclick="event.stopPropagation();event.preventDefault();
+				                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.users.title" />','<s:text name="help.catalog.users.body" />')">
+				                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
+				             </span>
+						</a>
 					</div>
 				</nav>
 				<div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
-					<div class="tab-pane fade show active" id="nav-custompres" role="tabpanel" aria-labelledby="nav-custompres-tab">
-					   <table class="table table-striped">						    
-						    <tbody>
-						      <tr>
-						        <td  style="font-style:italic"><s:text name="Catalogs.overview.indexName" /></td>
-						        <td  style="font-style:italic" class="_index_name_"></td>						        
-						      </tr>						      
-						      <tr>
-						        <td  style="font-style:italic"><s:text name="Catalogs.overview.userAccessRights" /></td>
-						        <td  style="font-style:italic" class="_access_rights_"></td>						        
-						      </tr>
-						      <tr class="_quota_nb_docs_row_" >
-						        <td  style="font-style:italic"><s:text name="Catalogs.overview.quotaTitleNbDocs" /></td>
-						        <td  style="font-style:italic" class="_quota_nb_docs_"></td>
-						      </tr>
-						      <tr class="_quota_disc_space_row_">
-						        <td  style="font-style:italic"><s:text name="Catalogs.overview.quotaTitleDiscSpace" /></td>
-						        <td  style="font-style:italic" class="_quota_disc_space_"></td>
-						       </tr>
-						        
-						       <tr>
-						        <td ><s:text name="Catalogs.overview.thumbnailUrl" />
-						        	<span title="S.O.S" 
-						                	onclick="event.stopPropagation();event.preventDefault();
-						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.thumbnail_url.title" />','<s:text name="help.catalog.overview.thumbnail_url.body" />')">
-						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
-						             </span>
-						        </td>
-						        <td class="_thumbnail_url_"></td>						        
-						      </tr>
-						      
-						      <tr>
-						        <td><s:text name="Catalogs.overview.cardsTitles" />
-						        	<span class=""  title="S.O.S" 
-						                	onclick="event.stopPropagation();event.preventDefault();
-						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.cards_title.title" />','<s:text name="help.catalog.overview.cards_title.body" />')">
-						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
-						             </span>
-						        </td>
-						        <td><table><tr style="background:none;border:none;">
-						        					<td style="border:none;padding-left:0;padding-top:0;padding-bottom:0;" class="_items_name_fields_"></td>
-						        					<td style="border:none;padding-top:0;padding-bottom:0;" class="_items_name_fields_dropdown_"></td>
-						        			</tr>
-						        	</table>
-						        </td>						        
-						      </tr>
-						      <tr>
-						        <td ><s:text name="Catalogs.overview.cardsThumbnailField" />
-						        	<span class=""  title="S.O.S" 
-						                	onclick="event.stopPropagation();event.preventDefault();
-						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.cards_thumbnail.title" />','<s:text name="help.catalog.overview.cards_thumbnail.body" />')">
-						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
-						             </span>
-						        </td>
-						        <td class="_items_url_field_"></td>						        
-						      </tr>
-						      <tr>
-						        <td><s:text name="Catalogs.overview.perspectiveMatchField" />
-						        	<span class=""  title="S.O.S" 
-						                	onclick="event.stopPropagation();event.preventDefault();
-						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.detect_perspective_on_field.title" />','<s:text name="help.catalog.overview.detect_perspective_on_field.body" />')">
-						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
-						             </span>
-						        </td>
-						        <td class="_perspective_match_field_"></td>						        
-						      </tr>
-						       <tr>
-						        <td><s:text name="Catalogs.overview.timeField" />
-						        	<span class=""  title="S.O.S" 
-						                	onclick="event.stopPropagation();event.preventDefault();
-						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.kibana_timefield.title" />','<s:text name="help.catalog.overview.kibana_timefield.body" />')">
-						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
-						             </span>
-						        </td>
-						        <td class="_kibana_time_field_"></td>						        
-						      </tr>						        
-						      
-						      <tr title="<s:text name="globals.clickToCopyToClipboard"/>" class="_ftp_row_"
-						      	  onclick="copyToClipBoard(this.querySelector('._ftp_port_').innerHTML);
-						      		footer_showAlert(INFO, '<s:text name="globals.ftpPortCopiedToClipboard"/>');
-						      			" >
-						        <td style="font-style:italic" ><s:text name="Catalogs.overview.ftpPort" />
-						        	<span title="S.O.S" 
-						                	onclick="event.stopPropagation();event.preventDefault();
-						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.ftp.title" />','<s:text name="help.catalog.overview.ftp.body" />')">
-						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
-						             </span>
-						        </td>
-						        <td style="font-style:italic" class="_ftp_port_" ></td>						        
-						      </tr>
-						      	
-						      <tr>
-						        <td ><s:text name="Catalogs.overview.urlsPrefix" />
-						        	<span class=""  title="S.O.S" 
-						                	onclick="event.stopPropagation();event.preventDefault();
-						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.urls_prefix.title" />','<s:text name="help.catalog.overview.urls_prefix.body" />')">
-						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
-						             </span>
-						        </td>
-						        <td class="_url_prefix_"></td>						        
-						      </tr>		      
-						    </tbody>
-						  </table>						  						
-					</div>
-					<div class="tab-pane fade" id="nav-mapping" role="tabpanel" aria-labelledby="nav-mapping-tab">
-						
-						<table class="table table-striped" >
-						    <thead>
-						      <tr>
-						        <th style="min-width:5rem;"><s:text name="Catalogs.field"></s:text>						        	
-						        	 <span class="dropdown no-arrow mx-1" style="padding:1rem;">
-							              <a class="dropdown-toggle" href="#" id="createTermDropdown" 
-							              	role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							                <i class="fas fa-plus fa-fw" onclick="cleanCreateFieldDatatypesList();"></i>
-							                
-							              </a>
-							              <!-- Create Term form -->
-							              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow" 
-							              		aria-labelledby="createTermDropdown"
-							              		id="MxGui.details.createTerm">
-							               
-								              <div class="form-inline mr-auto w-auto navbar-search" >
-								                  <div class="input-group">
-								                    <input id="details.createTerm.name" type="text" class="form-control bg-light border-0 small" 
-								                    		style="min-width:200px;margin:0.2rem;"		
-								                    		onkeypress="if (event.which==13||event.keycode==13) {
-								                    			details_createTerm(
-										                       			document.getElementById('details.createTerm.name').value,
-										                       			document.getElementById('details.createTerm.datatype').value);
-								                    		}"
-								                    		placeholder="Term Name ..." aria-label="Filter" aria-describedby="basic-addon2"              			              		 
-								                    		aria-label="Create Term Name" aria-describedby="basic-addon2">
-								                    
-								                    <select id="details.createTerm.datatype"  class="form-control bg-light border-0 small" 
-								                    		style="min-width:200px;margin:0.2rem;"	
-								                    		onclick="event.stopPropagation();"	
-								                    		onkeypress="if (event.which==13||event.keycode==13) {
-								                    			details_createTerm(
-										                       			document.getElementById('details.createTerm.name').value,
-										                       			document.getElementById('details.createTerm.datatype').value);
-								                    		}"						                    		
-								                    		aria-label="Filter" aria-describedby="basic-addon2"              			              		 
-								                    		aria-label="Create Term Type" aria-describedby="basic-addon2">
-								                    		
-								                    		<!-- Options field by javascript (down this page) -->
-															
-								                    </select>	
-								                    <div class="input-group-append" style="margin:0.2rem">
-								                      <button class="btn btn-primary" type="button"
-								                       	onclick="details_createTerm(
-								                       			document.getElementById('details.createTerm.name').value,
-								                       			document.getElementById('details.createTerm.datatype').value);" >
-								                        <i class="fas fa-check fa-sm"></i>
-								                      </button>
-								                      <button class="btn btn-primary" type="button" >
-								                        <i class="fa fa-times fa-sm"></i>
-								                      </button>
-								                    </div>	                    
-								                  </div>
-								                </div>
-							           </div>
-							              
-							        </span>
-						        </th>
-						        <th><s:text name="Catalogs.field.type"></s:text></th>
-						        <th><s:text name="Catalogs.field.enumeration"></s:text></th>
-						        <th><s:text name="Catalogs.field.multi"></s:text></th>
-						        <th style="width:200rem"><s:text name="Catalogs.field.comments"></s:text></th>
-						        <!-- not functional yet <th>Delete</th>  -->						        
-						      </tr>
-						    </thead>
-						    <tbody class="_terms_insertspot_" >
-						      <tr class="_term_template_" style="display:none" >
-						        <td class="_term_name_" ></td>
-						        <td><span class="_term_type_"></span></td>						        
-						        <td><span class="_term_enum_"></span></td>
-						        <td><span class="_term_multi_"></span></td>
-						        <td><span class="_term_comments_" style="font-size:0.7rem"></span></td>
-						      </tr>						      
-						    </tbody>
-						  </table>
-						
-					</div>		
-					
-					
-					<div class="tab-pane fade _details_lexic_rootnode_" id="nav-lexic" role="tabpanel" aria-labelledby="nav-lexic-tab">
-
-					  						
-					</div>
-						
-					<div class="tab-pane fade _details_perspectives_insertspot_" id="nav-perspectives" role="tabpanel" aria-labelledby="nav-perspectives-tab">
-					  						  						
-					</div>
-					
-					
+					<s:include value="details_tab_overview.jsp" />
+					<s:include value="details_tab_mapping.jsp" />
+					<s:include value="details_tab_lexic.jsp" />
+					<s:include value="details_tab_perspectives.jsp" />	
+					<s:include value="details_tab_users.jsp" />					
 				</div>
 	
  </div>
@@ -508,5 +338,6 @@ function cleanCreateFieldDatatypesList() {
 		createTermTypeButton.appendChild(option);
 	}
 }
+
 </script>
  

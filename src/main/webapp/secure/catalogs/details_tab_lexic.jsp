@@ -139,6 +139,7 @@
 	
  </script>
  
+ <!--  --------Templates--------- -->
  <div  id="details_lexic" style="display:none">
 					  
 	    <nav>
@@ -168,3 +169,10 @@
 		</div>
 	</div>  		
 </div> 
+
+<!--  --------end of Templates--------- -->
+
+<div class="tab-pane fade _details_lexic_rootnode_" id="nav-lexic" role="tabpanel" aria-labelledby="nav-lexic-tab">
+
+					  						
+</div>

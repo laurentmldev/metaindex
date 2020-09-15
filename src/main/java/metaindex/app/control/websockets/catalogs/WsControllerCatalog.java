@@ -12,8 +12,10 @@ See full version of LICENSE in <https://fsf.org/>
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Semaphore;
 
 import org.apache.commons.logging.Log;
@@ -27,6 +29,7 @@ import org.springframework.stereotype.Controller;
 
 import metaindex.app.Globals;
 import metaindex.app.control.websockets.catalogs.messages.*;
+import metaindex.app.control.websockets.catalogs.messages.WsMsgCatalogUsers_answer.GuiCatalogUser;
 import metaindex.app.control.websockets.commons.AMxWSController;
 import metaindex.app.control.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
 import metaindex.app.periodic.statistics.catalog.CreateCatalogMxStat;
@@ -39,9 +42,11 @@ import metaindex.data.catalog.CatalogVocabularySet;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.catalog.dbinterface.CreateIndexIntoEsDbStmt.IndexAlreadyExistException;
 import metaindex.data.term.ICatalogTerm;
+import metaindex.data.userprofile.ICatalogUser;
+import metaindex.data.userprofile.ICatalogUser.USER_CATALOG_ACCESSRIGHTS;
 import metaindex.data.userprofile.IUserProfileData;
-import metaindex.data.userprofile.IUserProfileData.USER_CATALOG_ACCESSRIGHTS;
 import toolbox.utils.StrTools;
+import toolbox.utils.StreamHandler;
 
 @Controller
 public class WsControllerCatalog extends AMxWSController {
@@ -94,6 +99,140 @@ public class WsControllerCatalog extends AMxWSController {
     		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.get_catalogs"));
     		e.printStackTrace();
     	}
+    }
+
+    /**
+		catalog users are retrieved separatly from catalog itself,
+		because it requires more complex operations and potentially
+		several DB accesses
+	*/
+    @MessageMapping("/get_catalog_users")
+    @SubscribeMapping ( "/user/queue/catalog_users")
+    public void handleCatalogUsersRequest(SimpMessageHeaderAccessor headerAccessor, 
+    							WsMsgCatalogUsers_request requestMsg) throws Exception {
+
+    	WsMsgCatalogUsers_answer answer = new WsMsgCatalogUsers_answer(requestMsg); 
+    	IUserProfileData activeUser = getUserProfile(headerAccessor);	
+    	ICatalog c = activeUser.getCurrentCatalog();
+		if (c==null) {
+			answer.setRejectMessage("Current user catalog does not match request");
+			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_users", answer);
+			return;
+		}
+		if (!this.userHasWriteAccess(activeUser)) { 
+			answer.setRejectMessage(activeUser.getText("globals.noAccessRights"));
+			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_users", answer);
+			return;
+    	}
+		
+		// user shall be catalog admin to access details
+		// of people using it (i.e. nickname, *email* and access rights ...)
+		if (!activeUser.getUserCatalogAccessRights(c.getId()).equals(USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN)) {
+			answer.setRejectMessage(activeUser.getText("globals.noAccessRights"));
+			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_users", answer);
+			return;
+		}
+		
+		// first retrieve ids of users having access rights defined for this catalog
+		List<Integer> usersIds = new ArrayList<>();
+		Globals.Get().getDatabasesMgr().getCatalogDefDbInterface()
+			.getCatalogUsersIdsStmt(c).execute(new StreamHandler<Integer>(usersIds));
+		
+		List<GuiCatalogUser> result = new ArrayList<>();
+				
+		for (Integer userId : usersIds) {
+			IUserProfileData u = Globals.Get().getUsersMgr().getUserById(userId);
+			if (u==null) {
+				log.error("Unable to retrieve details of user '"+u.getId()+"' for catalog '"+c.getName()+"'");
+				continue;
+			}
+			// skip one-self and  owner of the catalog
+			if (u.getId().equals(c.getOwnerId())) { continue; }
+			if (u.getId().equals(activeUser.getId())) { continue; }
+			
+			// ignore disabled users
+			if (u.isEnabled()==false) { continue; }
+			USER_CATALOG_ACCESSRIGHTS access = u.getUserCatalogAccessRights(c.getId());
+			GuiCatalogUser userGuiDescr = new GuiCatalogUser();
+			userGuiDescr.setName(u.getName());
+			userGuiDescr.setNickname(u.getNickname());
+			userGuiDescr.setId(u.getId());
+			userGuiDescr.setCatalogId(c.getId());
+			userGuiDescr.setCatalogAccessRights(access);
+			result.add(userGuiDescr);
+		}
+		
+		answer.setIsSuccess(true);
+		answer.setUsers(result);
+		
+		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),
+												"/queue/catalog_users", 
+												answer);
+		
+    }
+
+
+    @MessageMapping("/set_catalog_user_access")
+    @SubscribeMapping ( "/user/queue/catalog_user_access")
+    public void handleCatalogSetUserAcccessRequest(SimpMessageHeaderAccessor headerAccessor, 
+    								WsMsgSetCatalogUserAccess_request requestMsg) throws Exception {
+
+    	WsMsgSetCatalogUserAccess_answer answer = new WsMsgSetCatalogUserAccess_answer(requestMsg); 
+    	IUserProfileData activeUser = getUserProfile(headerAccessor);	
+    	IUserProfileData targetUser = Globals.Get().getUsersMgr().getUserById(requestMsg.getUserId());
+    	if (activeUser==null) {
+    		log.error("No user matching hearderAccessor in WS set_catalog_user_access request, ingored.");
+    		return; 
+    	}
+    	if (targetUser==null) {
+    		log.error("No such target user matching requested WS operation set_catalog_user_access, ingored.");
+    		return; 
+    	}
+    	ICatalog c = activeUser.getCurrentCatalog();
+		if (c==null) {
+			answer.setRejectMessage("Current user has no catalog currently open");
+			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_user_access", answer);
+			return;
+		}
+		if (!c.getId().equals(requestMsg.getCatalogId())) {
+			answer.setRejectMessage(activeUser.getText("Current user catalog does not match request"));
+			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_user_access", answer);
+			return;
+		}
+		if (!this.userHasWriteAccess(activeUser)) { 
+			answer.setRejectMessage(activeUser.getText("globals.noAccessRights"));
+			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_user_access", answer);
+			return;
+    	}
+		
+		// user shall be catalog admin to access details
+		// of people using it (i.e. nickname, *email* and access rights ...)
+		if (!activeUser.getUserCatalogAccessRights(c.getId()).equals(USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN)) {
+			answer.setRejectMessage(activeUser.getText("globals.noAccessRights"));
+			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_user_access", answer);
+			return;
+		}
+		
+		// cannot change status of owner of the catalog
+		if (targetUser.getId().equals(c.getOwnerId())) {
+			answer.setRejectMessage(activeUser.getText("globals.noAccessRights"));
+			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_user_access", answer);
+			return;
+		}
+		
+		Boolean result = Globals.Get().getDatabasesMgr().getCatalogDefDbInterface()
+			.getSetCatalogUserAccessStmt(c,targetUser,requestMsg.getAccessRights()).execute();
+		if (result==false) {
+			answer.setRejectMessage("Unable to give access rights to users");
+			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_user_access", answer);
+			return;
+		}
+		
+		answer.setIsSuccess(true);				
+		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),
+												"/queue/catalog_user_access", 
+												answer);
+		
     }
     
     private Integer findAvailableFtpPort(Integer portRangeStart,Integer portRangeEnd) {

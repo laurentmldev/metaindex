@@ -22,21 +22,18 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.security.core.userdetails.User;
 
 import metaindex.app.Globals;
-import metaindex.app.beans.AMetaindexBean;
-import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.ICatalog;
+import metaindex.data.userprofile.ICatalogUser.USER_CATALOG_ACCESSRIGHTS;
 import metaindex.data.userprofile.IUserProfileData;
-import metaindex.data.userprofile.IUserProfileData.USER_CATALOG_ACCESSRIGHTS;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class CatalogDataAccessControlFilter implements Filter  {
    
-	private Log log = LogFactory.getLog(AMetaindexBean.class);
+	private Log log = LogFactory.getLog(CatalogDataAccessControlFilter.class);
 	
 	private String extractCatalogNameFromUri(String uri) {		
 		String catalogName=uri.replace(Globals.LOCAL_USERDATA_PATH_SUFFIX+"/", "").replaceAll("/.*", "");

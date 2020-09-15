@@ -1,12 +1,5 @@
 package metaindex.app.beans;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.servlet.http.HttpServletRequest;
 
 /*
 GNU GENERAL PUBLIC LICENSE
@@ -18,16 +11,16 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.ServletActionContext;
 
+import javax.servlet.http.HttpServletRequest;
+
 import metaindex.app.Globals;
 import metaindex.app.Globals.APPLICATION_STATUS;
-import metaindex.app.beans.AMetaindexBean.BeanProcessResult;
-import metaindex.app.beans.BeanSignup.AwaitingAccount;
 import metaindex.data.userprofile.IUserProfileData;
-import metaindex.data.userprofile.IUserProfileData.USER_CATALOG_ACCESSRIGHTS;
 import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
 import metaindex.data.userprofile.UserProfileData;
 import toolbox.exceptions.DataProcessException;

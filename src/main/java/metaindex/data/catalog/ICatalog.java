@@ -48,7 +48,8 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 	public Date getLastUpdate();
 	public void setLastUpdate(Date timetampDate);
 		
-	/// get UserId for whom created it
+	/// users
+	// get UserId for whom created it
 	public Integer getOwnerId();
 	public void setOwnerId(Integer ownerId);
 		

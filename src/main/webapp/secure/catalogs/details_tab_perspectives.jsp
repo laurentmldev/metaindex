@@ -38,7 +38,8 @@
  }		
 	
  </script>
- 
+
+<!--  --------Templates--------- -->
  
 <!-- Perspective Template -->  
 <!-- expected by commons/perspectives.jsp -->
@@ -64,10 +65,14 @@
         </tr></table>
 	</div>	
 	<div id="perspectiveBodyId" class="collapse _perspective_bodyid_" >	
-   		<div class="card-body mx-perspective-body-editing mx-perspective-body _perspective_body_" ></div>
-	</div>
+   		<div class="card-body mx-perspective-body-editing mx-perspective-body _perspective_body_" >
+		</div>
 	</div>
 </div>
+<!--  --------end of Templates--------- -->
 
-
- 
+<div class="tab-pane fade _details_perspectives_insertspot_" id="nav-perspectives" role="tabpanel" aria-labelledby="nav-perspectives-tab">
+					  						  						
+</div>
+					
+ 	

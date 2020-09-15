@@ -27,6 +27,7 @@
 		 footer_showAlert(ERROR, "Sorry, unable to enter catalog, please refresh current page and try again.");
 		 return;
 	 }
+	 MxGuiDetails.updateUsersTab();
 	 //console.log("selected catalog '"+msg.catalogId+"'");	 
  }
 
@@ -153,5 +154,23 @@ function handleNbCreatedCatalogs(profileData) {
 	
  }
 
+ function ws_handlers_retrieveCatalogUsers(catalogId,userSuccessCallback) {
+	 function successCallback(data) { userSuccessCallback(data); }
+	 function errorCallback(msg) { footer_showAlert(WARNING, "Catalog users could not be retrieved : "+msg); }
+		
+		MxApi.requestGetCatalogUsers({	"catalogId":catalogId,
+	 									"successCallback":successCallback,
+	 									"errorCallback":errorCallback
+	 									});
+ }
  
+ function ws_handlers_setCatalogUserAccess(catalogId,userId,accessRights,successCallback,errorCallback) {
+	 	
+		MxApi.requestSetCatalogUserAccess({	"catalogId":catalogId,
+												"userId":userId,
+												"accessRights":accessRights,
+			 									"successCallback":successCallback,
+			 									"errorCallback":errorCallback
+	 									});
+ }
 </script>

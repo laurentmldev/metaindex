@@ -18,14 +18,9 @@ import java.util.List;
 import metaindex.data.filter.IFilter;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.commons.globals.guitheme.IGuiTheme;
-import metaindex.data.commons.globals.plans.IPlan;
-import metaindex.app.control.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
-import metaindex.data.catalog.CatalogVocabularySet;
-import metaindex.data.catalog.ICatalog;
 import toolbox.exceptions.DataProcessException;
 import toolbox.patterns.observer.IObserver;
 import toolbox.utils.IPeriodicProcess;
-import toolbox.utils.IIdentifiable;
 import toolbox.utils.IProcessingTask;
 
 
@@ -34,28 +29,20 @@ import toolbox.utils.IProcessingTask;
  * Retrieve also String info of corresponding foreign keys (guilanguage and guitheme).
  * @author Laurent ML
  */
-public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProcessingTask>,IPeriodicProcess
+public interface IUserProfileData extends ICatalogUser,IPlanUser,IObserver<IProcessingTask>,IPeriodicProcess
 {
 	
 	public enum USER_ROLE { ROLE_ADMIN, ROLE_USER, ROLE_OBSERVER };
-	public enum USER_CATALOG_ACCESSRIGHTS { NONE, CATALOG_READ, CATALOG_EDIT, CATALOG_ADMIN };
+	public USER_ROLE getRole();
 	
 	public void setId(Integer id);
 	public void setName(String name);
-	public USER_ROLE getRole();
 	public void setRole(USER_ROLE role);
 	
-	/**
-	 * Say wether this used is enabled or not.
-	 * Typically used waiting for email confirmation.
-	 * @return
-	 */
-	public Boolean isEnabled();
 	public void setEnabled(Boolean enabled);
 	
-	public String getNickname();
-	public void setNickname(String nickname);
-    
+	public void setNickname(String nickName);
+	
 	public String getPassword();
     public void setPasswordAndEncrypt(String clearPassword);
     public void setEncryptedPassword(String passwordHash);
@@ -73,17 +60,12 @@ public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProc
     public IGuiTheme getGuiTheme();
     public Collection<IGuiTheme> getGuiThemes();
     
-    /** return the number of catalogs owned by the user */
-    public Integer getCurNbCatalogsCreated();
-	public void setCurNbCatalogsCreated(Integer nbCatalogs);
+    public void setCurNbCatalogsCreated(Integer nbCatalogs);
 	
 	/// load user data and associated roles
 	public void loadFullUserData() throws DataProcessException;
     // --------
     
-    public ICatalog getCurrentCatalog();
-    public void setCurrentCatalog(Integer catalogId);
-    public void quitCurrentCatalog() throws DataProcessException;
     
     public IFilter getCurrentFilter();
     public void setCurrentFilter(Integer filterId);
@@ -111,19 +93,12 @@ public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProc
 	public String getStatisticsDiscoverUrl();
 	
 	//-------- user access rights by catalog
-	public void clearUserCatalogsIds();
 	public void setUserCatalogAccessRights(Integer catalogId,USER_CATALOG_ACCESSRIGHTS accessRights);
-	public List<Integer> getUserCatalogsIds();
-	// User role overrides user catalog access rights
-	public USER_CATALOG_ACCESSRIGHTS getUserCatalogAccessRights(Integer catalogId);
-
+	
 	//-------- customization params by catalog
 	public void setUserCatalogKibanaIFrameHtml(Integer catalogId,String iFrameKibanaString);
 	public String getUserCatalogKibanaIFrameHtml(Integer catalogId);
 	public String getCurrentCatalogKibanaIFrameHtml();
-	
-	//----------
-	public CatalogVocabularySet getCatalogVocabulary();
 	
 	//----------
 	public void sendEmail(String subject, String body) throws DataProcessException;
@@ -134,14 +109,7 @@ public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProc
 	public void sendGuiWarningMessage(String msg);
 	public void sendGuiSuccessMessage(String msg);
 	public void sendGuiProgressMessage(Integer procId, String msg, Float pourcentage);	
-	public void sendGuiProgressMessage(Integer procId, String msg, Float pourcentage, Boolean active);	
-
-	
-	public void notifyCatalogContentsChanged(CATALOG_MODIF_TYPE modifType, 
-																Long nbImpactedItems);
-	public void notifyCatalogContentsChanged(CATALOG_MODIF_TYPE modifType, 
-								String impactedItemName, String impactDetails);
-		
+	public void sendGuiProgressMessage(Integer procId, String msg, Float pourcentage, Boolean active);			
 	
 	/** set date of latest operation concerning items of current catalog */
 	public void setItemsLastChangeDate(Date dateStr);
@@ -156,25 +124,5 @@ public interface IUserProfileData extends IIdentifiable<Integer>,IObserver<IProc
 	String getRemoteAddress();
 	void setRemoteAddress(String addr);	
 	
-	// plan info
-	public Integer getPlanId();
-	public void setPlanId(Integer planId);
-	public IPlan getPlan();
-	public Date getPlanStartDate();
-	/**
-	 * count how many quota warnings have been detected.
-  	 * user account can then be disabled once max allowed warnings has been reached
-	 */
-	public Integer getPlanNbQuotaWarnings();
-	public void setPlanNbQuotaWarnings(Integer nbWarnings);
-	/** for GUI usage */
-	public String getPlanStartDateStr();
-	public void setPlanStartDate(Date planStartDate);
-	public Date getPlanEndDate();
-	/** for GUI usage */
-	public String getPlanEndDateStr(); 
-	public void setPlanEndDate(Date planEndDate);
 	
-	public List<ICatalog> getOwnedCatalogs();
-
 }

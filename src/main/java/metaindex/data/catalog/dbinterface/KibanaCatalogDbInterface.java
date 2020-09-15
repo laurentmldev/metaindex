@@ -5,11 +5,9 @@ import java.util.List;
 
 import metaindex.app.Globals;
 import metaindex.data.catalog.ICatalog;
-import metaindex.data.term.ICatalogTerm;
+import metaindex.data.userprofile.ICatalogUser.USER_CATALOG_ACCESSRIGHTS;
 import metaindex.data.userprofile.IUserProfileData;
-import metaindex.data.userprofile.IUserProfileData.USER_CATALOG_ACCESSRIGHTS;
 import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
-import metaindex.data.userprofile.UserProfileData;
 import toolbox.database.kibana.KibanaConnector;
 import toolbox.database.kibana.KibanaConnector.KIBANA_PRIVILEGE;
 import toolbox.database.kibana.KibanaConnector.KIBANA_SPACE_FEATURE;

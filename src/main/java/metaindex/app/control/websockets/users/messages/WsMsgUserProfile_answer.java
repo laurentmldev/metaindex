@@ -5,9 +5,8 @@ import java.util.Map;
 
 import metaindex.app.control.websockets.commons.IWsMsg_answer;
 import metaindex.data.catalog.ICatalog;
+import metaindex.data.userprofile.ICatalogUser.USER_CATALOG_ACCESSRIGHTS;
 import metaindex.data.userprofile.IUserProfileData;
-import metaindex.data.userprofile.IUserProfileData.USER_CATALOG_ACCESSRIGHTS;
-import metaindex.data.userprofile.UserProfileData;
 import toolbox.utils.IIdentifiable;
 
 /*

@@ -11,19 +11,13 @@ See full version of LICENSE in <https://fsf.org/>
 */
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import metaindex.data.catalog.ICatalog;
-import metaindex.data.catalog.ICatalogCustomParams;
 import metaindex.data.userprofile.IUserProfileData;
-import metaindex.data.userprofile.IUserProfileData.USER_CATALOG_ACCESSRIGHTS;
-import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
 import toolbox.database.sql.SQLDataConnector;
-import toolbox.database.sql.SQLReadStreamStmt;
 import toolbox.database.sql.SQLWriteStmt;
 import toolbox.exceptions.DataProcessException;
 

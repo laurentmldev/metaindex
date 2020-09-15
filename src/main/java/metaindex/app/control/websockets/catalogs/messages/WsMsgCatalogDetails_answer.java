@@ -24,8 +24,9 @@ import metaindex.data.catalog.ICatalog;
 import metaindex.data.catalog.ICatalogCustomParams;
 import metaindex.data.perspective.ICatalogPerspective;
 import metaindex.data.term.ICatalogTerm;
+import metaindex.data.userprofile.ICatalogUser;
+import metaindex.data.userprofile.ICatalogUser.USER_CATALOG_ACCESSRIGHTS;
 import metaindex.data.userprofile.IUserProfileData;
-import metaindex.data.userprofile.IUserProfileData.USER_CATALOG_ACCESSRIGHTS;
 
 public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomParams  {
 		
@@ -98,8 +99,7 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 		for (ICatalogTerm catalogTerm : c.getTerms().values()) {
 			if (catalogTerm.getName().startsWith("mx_")) { continue; }
 			_terms.put(catalogTerm.getName(), catalogTerm);
-		}
-		
+		}		
 		
 	}	
 	@Override
@@ -287,5 +287,8 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 	}
 	public void setEnabled(Boolean _isEnabled) {
 		this._isEnabled = _isEnabled;
-	}
+	}	
 }
+// catalog users are retrieved separatly from catalog itself,
+// because it requires more complex operations and potentially
+// several DB accesses

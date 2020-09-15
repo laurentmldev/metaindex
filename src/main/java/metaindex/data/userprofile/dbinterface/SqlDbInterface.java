@@ -13,7 +13,6 @@ See full version of LICENSE in <https://fsf.org/>
 import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLDatabaseInterface;
 import toolbox.database.sql.SQLPopulateStmt;
-import toolbox.database.sql.SQLReadStreamStmt;
 import toolbox.database.sql.SQLWriteStmt;
 import toolbox.exceptions.DataProcessException;
 
@@ -21,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import metaindex.data.catalog.ICatalog;
-import metaindex.data.commons.globals.plans.IPlan;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
 

@@ -190,6 +190,7 @@ public class Catalog implements ICatalog {
 		_curOwner = Globals.Get().getUsersMgr().getUserById(getOwnerId());
 		return _curOwner;
 	}
+	
 	@Override
 	/**
 	 * current policy consist in considering a catalog disabled if its

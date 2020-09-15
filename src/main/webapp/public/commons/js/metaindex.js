@@ -146,6 +146,10 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	// Create term
 	myself._callback_CreateTerm=null;
 	myself._callback_CreateTerm_debug=false;
+
+	// Get Catalog Users
+	myself._callback_GetCatalogUsers=null;
+	myself._callback_GetCatalogUsers_debug=null;
 	
 	// Update Catalog Lexic Entry
 	myself._callback_SetCatalogLexicEntry=null;
@@ -220,7 +224,9 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			myself._stompClient.subscribe('/user/queue/created_catalog',myself._handleCreatedCatalogMsg);
 			myself._stompClient.subscribe('/user/queue/deleted_catalog',myself._handleDeletedCatalogMsg);
 			myself._stompClient.subscribe('/user/queue/catalog_customized',myself._handleCustomizedCatalogMsg);
-			myself._stompClient.subscribe('/user/queue/catalog_lexic_updated',myself._handleSetCatalogLexicResponseMsg);			
+			myself._stompClient.subscribe('/user/queue/catalog_lexic_updated',myself._handleSetCatalogLexicResponseMsg);
+			myself._stompClient.subscribe('/user/queue/catalog_users',myself._handleGetCatalogUsersMsg);
+			myself._stompClient.subscribe('/user/queue/catalog_user_access',myself._handleSetCatalogUserAccessMsg);
 			
 			// perspectives
 			myself._stompClient.subscribe('/user/queue/perspective_updated',myself._handleUpdatedPerspectiveMsg);
@@ -876,6 +882,104 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		}
 	}
 
+
+//------- Get Catalog Users--------
+			
+			this.requestGetCatalogUsersCallbacks=[];
+			
+			// dataObj { 
+			//	catalogId:xxx,
+			//	successCallback:xxx,
+			//	errorCallback:xxx
+			// }
+			this.requestGetCatalogUsers = function(dataObj) {
+				
+				var curRequestId=myself.requestGetCatalogUsersCallbacks.length;
+				myself.requestGetCatalogUsersCallbacks.push(dataObj);
+				
+				if (myself._callback_GetCatalogUsers_debug==true) {
+					console.log("MxAPI Requesting Catalog Users "+dataObj.catalogId);
+				}
+				
+				myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/get_catalog_users", {}, 
+										 JSON.stringify({"requestId" : curRequestId,
+											 			 "catalogId":dataObj.catalogId								 
+											 			}));			
+			}
+			
+			this._handleGetCatalogUsersMsg= function (mxCatalogUsersMsg) {
+				var decodedData=mxCatalogUsersMsg.body;
+				var parsedMsg = JSON.parse(decodedData);
+				
+				if (myself._callback_GetCatalogUsers_debug==true) {
+					console.log("MxAPI Received Catalog Users response\n"+decodedData);
+				}
+				
+				let requestId=parsedMsg.requestId;
+				let requestObj=myself.requestGetCatalogUsersCallbacks[requestId];
+				if (requestObj==null) { return; }
+				if (parsedMsg.isSuccess==true) { requestObj.successCallback(parsedMsg); }
+				else {
+					let errorMsg=parsedMsg.rejectMessage;
+					// ensure error message is not empty
+					// (otherwise can lead to some misbehaviour in user app (ex: x-editable) )
+					if (errorMsg==undefined) { errorMsg="get_catalog_users request refused by server, sorry." }
+					requestObj.errorCallback(errorMsg); 
+				}			
+			}
+
+
+//------- Set Catalog User Access-Rights--------
+			
+			this.requestSetCatalogUserAccessCallbacks=[];
+			
+			// dataObj { 
+			//  catalogId:xxx,
+			//  userId:xxx,
+			//  accessRights:xxx CATALOG_ADMIN|CATALOG_EDIT|CATALOG_READ|NONE,
+			//	successCallback:xxx,
+			//	errorCallback:xxx
+			// }
+			this.requestSetCatalogUserAccess = function(dataObj) {
+				
+				var curRequestId=myself.requestSetCatalogUserAccessCallbacks.length;
+				myself.requestSetCatalogUserAccessCallbacks.push(dataObj);
+				
+				if (myself._callback_SetCatalogUserAccess_debug==true) {
+					console.log("MxAPI Requesting Set Catalog User Access "+dataObj.catalogId);
+				}
+				
+				myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/set_catalog_user_access", {}, 
+										 JSON.stringify({"requestId" : curRequestId,
+											 			 "catalogId":dataObj.catalogId,
+											 			 "userId":dataObj.userId,
+											 			 "accessRights":dataObj.accessRights
+											 			}));			
+			}
+			
+			this._handleSetCatalogUserAccessMsg= function (mxCatalogUsersMsg) {
+				var decodedData=mxCatalogUsersMsg.body;
+				var parsedMsg = JSON.parse(decodedData);
+				
+				if (myself._callback_GetCatalogUsers_debug==true) {
+					console.log("MxAPI Received Set Catalog User Access response\n"+decodedData);
+				}
+				
+				let requestId=parsedMsg.requestId;
+				let requestObj=myself.requestSetCatalogUserAccessCallbacks[requestId];
+				if (requestObj==null) { return; }
+				if (parsedMsg.isSuccess==true) { requestObj.successCallback(); }
+				else {
+					let errorMsg=parsedMsg.rejectMessage;
+					// ensure error message is not empty
+					// (otherwise can lead to some misbehaviour in user app (ex: x-editable) )
+					if (errorMsg==undefined) { errorMsg="set_catalog_user_access request refused by server, sorry." }
+					requestObj.errorCallback(errorMsg); 
+				}			
+			}
+			
+			
+		
 //------- Delete Perspective Definition --------
 		
 		this.requestCatalogPerspectiveDeleteCallbacks=[];

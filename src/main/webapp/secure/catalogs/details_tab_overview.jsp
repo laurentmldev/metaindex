@@ -447,3 +447,107 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
  </script>
  
  
+ <div class="tab-pane fade show active" id="nav-overview" role="tabpanel" aria-labelledby="nav-overview-tab">
+					   <table class="table table-striped">						    
+						    <tbody>
+						      <tr>
+						        <td  style="font-style:italic"><s:text name="Catalogs.overview.indexName" /></td>
+						        <td  style="font-style:italic" class="_index_name_"></td>						        
+						      </tr>						      
+						      <tr>
+						        <td  style="font-style:italic"><s:text name="Catalogs.overview.userAccessRights" /></td>
+						        <td  style="font-style:italic" class="_access_rights_"></td>						        
+						      </tr>
+						      <tr class="_quota_nb_docs_row_" >
+						        <td  style="font-style:italic"><s:text name="Catalogs.overview.quotaTitleNbDocs" /></td>
+						        <td  style="font-style:italic" class="_quota_nb_docs_"></td>
+						      </tr>
+						      <tr class="_quota_disc_space_row_">
+						        <td  style="font-style:italic"><s:text name="Catalogs.overview.quotaTitleDiscSpace" /></td>
+						        <td  style="font-style:italic" class="_quota_disc_space_"></td>
+						       </tr>
+						        
+						       <tr>
+						        <td ><s:text name="Catalogs.overview.thumbnailUrl" />
+						        	<span title="S.O.S" 
+						                	onclick="event.stopPropagation();event.preventDefault();
+						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.thumbnail_url.title" />','<s:text name="help.catalog.overview.thumbnail_url.body" />')">
+						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
+						             </span>
+						        </td>
+						        <td class="_thumbnail_url_"></td>						        
+						      </tr>
+						      
+						      <tr>
+						        <td><s:text name="Catalogs.overview.cardsTitles" />
+						        	<span class=""  title="S.O.S" 
+						                	onclick="event.stopPropagation();event.preventDefault();
+						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.cards_title.title" />','<s:text name="help.catalog.overview.cards_title.body" />')">
+						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
+						             </span>
+						        </td>
+						        <td><table><tr style="background:none;border:none;">
+						        					<td style="border:none;padding-left:0;padding-top:0;padding-bottom:0;" class="_items_name_fields_"></td>
+						        					<td style="border:none;padding-top:0;padding-bottom:0;" class="_items_name_fields_dropdown_"></td>
+						        			</tr>
+						        	</table>
+						        </td>						        
+						      </tr>
+						      <tr>
+						        <td ><s:text name="Catalogs.overview.cardsThumbnailField" />
+						        	<span class=""  title="S.O.S" 
+						                	onclick="event.stopPropagation();event.preventDefault();
+						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.cards_thumbnail.title" />','<s:text name="help.catalog.overview.cards_thumbnail.body" />')">
+						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
+						             </span>
+						        </td>
+						        <td class="_items_url_field_"></td>						        
+						      </tr>
+						      <tr>
+						        <td><s:text name="Catalogs.overview.perspectiveMatchField" />
+						        	<span class=""  title="S.O.S" 
+						                	onclick="event.stopPropagation();event.preventDefault();
+						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.detect_perspective_on_field.title" />','<s:text name="help.catalog.overview.detect_perspective_on_field.body" />')">
+						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
+						             </span>
+						        </td>
+						        <td class="_perspective_match_field_"></td>						        
+						      </tr>
+						       <tr>
+						        <td><s:text name="Catalogs.overview.timeField" />
+						        	<span class=""  title="S.O.S" 
+						                	onclick="event.stopPropagation();event.preventDefault();
+						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.kibana_timefield.title" />','<s:text name="help.catalog.overview.kibana_timefield.body" />')">
+						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
+						             </span>
+						        </td>
+						        <td class="_kibana_time_field_"></td>						        
+						      </tr>						        
+						      
+						      <tr title="<s:text name="globals.clickToCopyToClipboard"/>" class="_ftp_row_"
+						      	  onclick="copyToClipBoard(this.querySelector('._ftp_port_').innerHTML);
+						      		footer_showAlert(INFO, '<s:text name="globals.ftpPortCopiedToClipboard"/>');
+						      			" >
+						        <td style="font-style:italic" ><s:text name="Catalogs.overview.ftpPort" />
+						        	<span title="S.O.S" 
+						                	onclick="event.stopPropagation();event.preventDefault();
+						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.ftp.title" />','<s:text name="help.catalog.overview.ftp.body" />')">
+						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
+						             </span>
+						        </td>
+						        <td style="font-style:italic" class="_ftp_port_" ></td>						        
+						      </tr>
+						      	
+						      <tr>
+						        <td ><s:text name="Catalogs.overview.urlsPrefix" />
+						        	<span class=""  title="S.O.S" 
+						                	onclick="event.stopPropagation();event.preventDefault();
+						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.urls_prefix.title" />','<s:text name="help.catalog.overview.urls_prefix.body" />')">
+						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
+						             </span>
+						        </td>
+						        <td class="_url_prefix_"></td>						        
+						      </tr>		      
+						    </tbody>
+						  </table>						  						
+					</div>

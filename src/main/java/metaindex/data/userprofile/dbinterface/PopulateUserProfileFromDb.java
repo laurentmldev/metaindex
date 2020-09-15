@@ -21,7 +21,6 @@ import metaindex.data.userprofile.UserProfileData;
 import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
 import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLPopulateStmt;
-import toolbox.database.sql.SQLReadStreamStmt;
 import toolbox.exceptions.DataProcessException;
 
 class PopulateUserProfileFromDb extends SQLPopulateStmt<IUserProfileData>   {

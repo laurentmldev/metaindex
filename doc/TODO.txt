@@ -3,8 +3,10 @@
 v2.1.0:
 -------
 
-	
-	
+only catalog admin shall be allowed to create a new field
+
+Référence de temps Kibana = '0' en mode Read-Only
+
 #99 manage users access to catalogs
 	- ask for access to a catalog : send email + notification to admins
 	
@@ -18,7 +20,7 @@ v2.1.0:
 #88 use scripted fields to get decades automatically computed
 #93 close GEXF window once generation started
 #40 when deleting a catalog, delete also associated userdata (with strong confirmation message)
-# include ELK disck space
+# include ELK disck space for quota calculation?
 	GET /_cat/indices?v
 	GET /_cluster/stats summarizes
 
