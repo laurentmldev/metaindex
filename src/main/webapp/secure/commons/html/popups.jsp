@@ -46,7 +46,7 @@
  
  </script>
 
-  <div class="modal _modal_root_" id="_commons_popups_blank_input_template_"
+  <div class="modal mx-modal _modal_root_" id="_commons_popups_blank_input_template_"
   	onkeypress="event.stopPropagation();
   		if (event.which==13||event.keycode==13) { this.querySelector('._button_close_').click(); }"
  	onkeydown="event.stopPropagation();" >
@@ -119,7 +119,7 @@
  }
 
  </script>
- <div class="modal _modal_root_" id="_commons_popups_dropdown_input_template_" 
+ <div class="modal mx-modal _modal_root_" id="_commons_popups_dropdown_input_template_" 
  	onkeypress="event.stopPropagation();
  				if (event.which==13||event.keycode==13) { this.querySelector('._button_ok_').click(); }
  				"
@@ -185,7 +185,7 @@
  
  </script>
 
-  <div class="modal _modal_root_" id="_commons_popups_text_input_template_"
+  <div class="modal mx-modal _modal_root_" id="_commons_popups_text_input_template_"
   	onkeypress="event.stopPropagation();
   		if (event.which==13||event.keycode==13) { this.querySelector('._button_ok_').click(); }"
  	onkeydown="event.stopPropagation();" >
@@ -670,7 +670,7 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFile
  
  </script>
 
-  <div class="modal _modal_root_" id="_commons_popups_multi_input_template_" 
+  <div class="modal mx-modal _modal_root_" id="_commons_popups_multi_input_template_" 
   	onkeypress="event.stopPropagation();  	
  		// when pressing enter
   		if (event.which==13||event.keycode==13) { 

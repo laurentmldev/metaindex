@@ -67,16 +67,18 @@ function updateCatalogsSearchList() {
 			let requestAccessButton=document.createElement("a");
 			requestAccessButton.classList=("_openBtn_ d-none d-sm-inline-block btn-big btn btn-sm btn-info shadow-sm");
 			requestAccessButton.href="#";
-			requestAccessButton.innerHTML="Send access request";
+			requestAccessButton.innerHTML="<s:text name="Catalogs.users.requestCatalogJoinSend"/>";
 			requestAccessButton.onclick=function(event) {
 				
 				successCallback=function() {
-					footer_showAlert(SUCCESS, "Your requst to join this catalog has been sent. "
-							+"You'll have to wait though that administrators assign you proper access level.");
+					footer_showAlert(SUCCESS, "<s:text name="Catalogs.users.requestingCatalogJoinSuccess"/>");
 				}
 				errorCallback=function(msg) {
-					footer_showAlert(ERROR, "Sorry, unable to join this catalog : "+msg);
+					footer_showAlert(ERROR, "<s:text name="Catalogs.users.requestingCatalogJoinFailure"/> : "+msg);
 				}
+				cataskForAccess.innerHTML="<s:text name="Catalogs.users.requestCatalogJoinSent" />";
+				cataskForAccess.style="font-style:italic";
+				footer_showAlert(INFO, "<s:text name="Catalogs.users.requestingCatalogJoin"/>");
 				ws_handlers_joinCatalog(catalodDesc.id,successCallback,errorCallback);
 			}
 			cataskForAccess.append(requestAccessButton);

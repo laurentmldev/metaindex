@@ -3,15 +3,21 @@
 v2.1.0:
 -------
 
-popup info/succes/error msg shall be over popup frames
+#101 import from Excel file
+
+#102 improve fields layout when text is long
+
+add a 'contact us' 
+
+add tempo when overflow attack seems possible
+
+rename 'perspective' into 'layout'
+
 only catalog admin shall be allowed to create a new field
 
 Référence de temps Kibana = '0' en mode Read-Only
 
-#97 adaptive policy (idle features?) when user plan gets outdated
-  freeze extra catalogs if user down-gradded its plan?
-  - when date is over-passed, 2 months warning then back down to default plan 
-  
+
 #98 ensure user cannot arm data from others via kibana
 #89 autonomous password reset
 #88 use scripted fields to get decades automatically computed
@@ -25,7 +31,6 @@ Référence de temps Kibana = '0' en mode Read-Only
 
 #55 tutorial videos on youtube
 
-#101 import from Excel file
 
 check amount of available FTP ports when lots of catalogs
 
@@ -33,7 +38,6 @@ implement tests for WS actions
 
 periodic tasks are broken after context reload?
 
-#102 improve fields layout when text is long
 
 create catalog: nice error msg if a catalog with same name already exist
 
@@ -129,6 +133,13 @@ Done:
 
 v2.1.0
 
+popup info/success/error msg shall be over popup frames
+
+#97 adaptive policy (idle features?) when user plan gets outdated
+  freeze extra catalogs if user down-gradded its plan?
+  - when date is over-passed, 2 months warning then back down to default plan 
+  
+  
 #99 manage users access to catalogs
 	- ask for access to a catalog : send email + notification to admins
 	

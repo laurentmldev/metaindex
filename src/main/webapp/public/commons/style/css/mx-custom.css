@@ -7,6 +7,10 @@
   transform: rotate(180deg);
 }
 
+/* needed otherwise modal is over the popup messages from footer */
+.mx-modal {
+	z-index:1000;
+}
 .maintenance {
 	font-size : 2rem;
 	color: orange;
