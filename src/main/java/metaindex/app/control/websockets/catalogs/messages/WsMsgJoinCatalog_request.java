@@ -10,18 +10,10 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
-public class WsMsgGetCatalogs_request  {
+public class WsMsgJoinCatalog_request  {
 		
-
-	private Integer _requestId=0;
-	// 0 means all catalogs for which user has minimum 'read' access rights
-	// -1 means all catalogs for which user has no access rights
-	private Integer _catalogId=0;
-	
-	public WsMsgGetCatalogs_request() {
-		
-		
-	}
+	private Integer _requestId;
+	private Integer _catalogId;
 
 	public Integer getCatalogId() {
 		return _catalogId;

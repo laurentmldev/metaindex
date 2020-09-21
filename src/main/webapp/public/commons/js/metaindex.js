@@ -76,7 +76,6 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	myself._callback_DeleteCatalog_debug=false;
 		
 	// Get Catalogs
-	myself._callback_Catalogs=null;
 	myself._callback_Catalogs_debug=false;
 	
 	// Select Catalog
@@ -223,6 +222,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			myself._stompClient.subscribe('/user/queue/catalog_selected',myself._handleSelectedCatalogMsg);
 			myself._stompClient.subscribe('/user/queue/created_catalog',myself._handleCreatedCatalogMsg);
 			myself._stompClient.subscribe('/user/queue/deleted_catalog',myself._handleDeletedCatalogMsg);
+			myself._stompClient.subscribe('/user/queue/join_catalog',myself._handleJoinCatalogMsg);
 			myself._stompClient.subscribe('/user/queue/catalog_customized',myself._handleCustomizedCatalogMsg);
 			myself._stompClient.subscribe('/user/queue/catalog_lexic_updated',myself._handleSetCatalogLexicResponseMsg);
 			myself._stompClient.subscribe('/user/queue/catalog_users',myself._handleGetCatalogUsersMsg);
@@ -822,39 +822,48 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		
 		
 //------- Catalogs List --------
-	this.subscribeToCatalogsList=function(callback_func,debug) {
-		debug=debug||false;
-		myself._callback_Catalogs_debug=debug;
-		myself._callback_Catalogs=callback_func;
-	}		
-	// @param catalogId requested catalog. If NULL, get all catalogs
-	this.requestCatalogs = function(catalogId) {
+		this.requestGetCatalogsCallbacks=[];
 		
-		if (catalogId==null) { catalogId=0; }
-		if (myself._callback_Catalogs_debug==true) {
-			console.log("MxAPI Requesting [Catalogs]");
-		}
+		// catalogId==0 -> retrieve all catalogs at least accessible 'read-only' for current user  
+		// catalogId==-1 -> retrieve all catalogs not accessible for current user
+		// catalogId>0 -> retrieve given catalog if accessible at least read-only for current user
 		
-		let jsonData = { 
-				 "catalogId" : catalogId,				 
-				};
+		// dataObj { 
+		//	catalogId:xxx,
+		//	successCallback:func(msg[]),
+		// }
+		this.requestGetCatalogs = function(dataObj) {
 			
-		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/get_catalogs", {}, JSON.stringify(jsonData));
-	}
-
-	this._handleCatalogsMsg= function (mxCatalogsMsg) {
-
-		//var decodedData=mxCatalogsMsg.body;
-		var decodedData=uncompressBase64(mxCatalogsMsg.body);
-		var parsedMsg = JSON.parse(decodedData);
-		
-		if (myself._callback_Catalogs_debug==true) {
-			console.log("MxAPI Received [Catalogs]\n"+decodedData);
+			var curRequestId=myself.requestGetCatalogsCallbacks.length;
+			myself.requestGetCatalogsCallbacks.push(dataObj);
+			
+			if (myself._callback_Catalogs_debug==true) {
+				console.log("MxAPI Requesting Catalogs "+dataObj.catalogId);
+			}
+			
+			myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/get_catalogs", {}, 
+									 JSON.stringify({"requestId" : curRequestId,
+										 			 "catalogId":dataObj.catalogId								 
+										 			}));			
 		}
-		if (myself._callback_Catalogs!=null) {
-			myself._callback_Catalogs(parsedMsg); 
+
+		this._handleCatalogsMsg= function (mxCatalogsMsg) {
+			var decodedData=uncompressBase64(mxCatalogsMsg.body);
+			var parsedMsg = JSON.parse(decodedData);
+			
+			
+			if (myself._callback_Catalogs_debug==true) {
+				console.log("MxAPI Received Catalogs response\n"+decodedData);
+			}
+			
+			if (parsedMsg.length==0) { return; }
+			let requestId=parsedMsg[0].requestId;
+			let requestObj=myself.requestGetCatalogsCallbacks[requestId];
+			
+			if (requestObj==null) { return; }
+			requestObj.successCallback(parsedMsg); 
+						
 		}
-	}
 	
 //------- Select Catalog --------	
 	this.subscribeToSelectedCatalog=function(callback_func,debug) {
@@ -1228,6 +1237,46 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 				requestObj.errorCallback(errorMsg); 
 			}		
 		}
+
+		
+//------- Join Catalog --------	
+	// contains error/success callback functions of each field update request
+	this.requestJoinCatalogCallbacks=[];
+	
+	// dataObj {
+	//   catalogId
+	//   successCallback (func)
+	//   errorCallback (func)(msg)
+	// }
+	this.requestJoinCatalog= function(dataObj) {
+		
+		var curRequestId=myself.requestJoinCatalogCallbacks.length;
+		myself.requestJoinCatalogCallbacks.push(dataObj);
+		
+		if (dataObj.catalogId==null || dataObj.catalogId=="") { dataObj.errorCallback("MxApi ERROR : field 'catalogId' is empty"); return; }
+		
+		var jsonStr = JSON.stringify({ 	"requestId" : curRequestId,
+										"catalogId" : dataObj.catalogId });
+		//console.log("sending new value : "+metadataStrValue);
+		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/join_catalog", {}, jsonStr);
+	}
+	
+	// each field update request is given with a callback to be executed
+	// in case of success or failure.
+	this._handleJoinCatalogMsg= function(joinCatalogResponseMsg) {
+		var parsedMsg = JSON.parse(joinCatalogResponseMsg.body);
+		let requestId=parsedMsg.requestId;
+		let requestObj=myself.requestJoinCatalogCallbacks[requestId];
+		if (requestObj==null) { return; }
+		if (parsedMsg.isSuccess==true) { requestObj.successCallback(); }
+		else {
+			let errorMsg=parsedMsg.rejectMessage;
+			// ensure error message is not empty
+			// (otherwise can lead to some mis behaviour in user app (ex: x-editable) )
+			if (errorMsg==undefined) { errorMsg="join-catalog refused by server, sorry." }
+			requestObj.errorCallback(errorMsg); 
+		}		
+	}
 
 
 	//------- CatalogItemSelect --------

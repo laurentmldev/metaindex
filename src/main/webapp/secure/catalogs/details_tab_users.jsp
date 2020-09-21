@@ -82,7 +82,7 @@
 
 <div class="tab-pane fade _details_users_insertspot_" id="nav-users" role="tabpanel" aria-labelledby="nav-users-tab">
 					  						  						
-	<table id="usersRolesTable" class="table table-stripped">
+	<table id="usersRolesTable" class="table table-striped">
 		
 	</table>
 </div>

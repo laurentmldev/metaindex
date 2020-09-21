@@ -33,7 +33,6 @@ function mx_ws_connect(mxHost,mxApiConnectionParams, onConnectFunc) {
 	// from metaindex.js	
 	MxApi = new MetaindexJSAPI(mxHost,mxApiConnectionParams);
 	
-	MxApi.subscribeToCatalogsList(handleMxWsCatalogs);
 	MxApi.subscribeToSelectedCatalog(handleMxWsSelectedCatalog);
 	MxApi.subscribeToCreatedCatalog(handleMxWsCreatedCatalog);
 	MxApi.subscribeToCreatedTerm(handleMxWsCreatedTerm);

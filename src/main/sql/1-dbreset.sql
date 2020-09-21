@@ -323,6 +323,7 @@ CREATE TABLE `user_catalogs_rights` (
 `user_catalogs_rights_id` int(32) NOT NULL,
   `user_id` int(32) NOT NULL,
   `catalog_id` int(32) NOT NULL,
+  /* enum used in ICatalogUser.java and details_tab_users.jsp */
   `access_rights` ENUM('NONE', 'CATALOG_ADMIN', 'CATALOG_EDIT','CATALOG_READ') NOT NULL,
   `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;

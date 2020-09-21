@@ -30,6 +30,7 @@ import metaindex.data.userprofile.IUserProfileData;
 
 public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomParams  {
 		
+	private Integer _requestId=0;
 	private Integer _id;
 	private String _name;
 	private String _ownerName;
@@ -66,6 +67,7 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 	@Override public String getRejectMessage() { return _rejectMessage; }
 	@Override public void setRejectMessage(String rejectMessage) { this._rejectMessage = rejectMessage; }
 
+	public WsMsgCatalogDetails_answer() {};
 	public WsMsgCatalogDetails_answer(ICatalog c, IUserProfileData u) {
 		IUserProfileData owner = Globals.Get().getUsersMgr().getUserById(c.getOwnerId());
 		this.setId(c.getId());
@@ -287,6 +289,12 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 	}
 	public void setEnabled(Boolean _isEnabled) {
 		this._isEnabled = _isEnabled;
+	}
+	public Integer getRequestId() {
+		return _requestId;
+	}
+	public void setRequestId(Integer _requestId) {
+		this._requestId = _requestId;
 	}	
 }
 // catalog users are retrieved separatly from catalog itself,

@@ -8,7 +8,7 @@
  
  function ws_handlers_refreshCatalogsGui() {
 	 MxGuiDetails.memGui();
-	 MxApi.requestCatalogs();	 
+	 MxApi.requestGetCatalogs({'catalogId':0, 'successCallback':handleMxWsCatalogs});	 
  }
  
  function onWsConnect(isConnected) {
@@ -17,7 +17,7 @@
 	}
 	else {
 		footer_showAlert(SUCCESS, "Connected to Metaindex server");
- 		MxApi.requestCatalogs();
+		MxApi.requestGetCatalogs({'catalogId':0, 'successCallback':handleMxWsCatalogs});
  		
 	}
  }
@@ -38,7 +38,7 @@
 		 return;
 	 }
 	 footer_showAlert(INFO, "Catalog created");
-	 MxApi.requestCatalogs();
+	 MxApi.requestGetCatalogs({'catalogId':0, 'successCallback':handleMxWsCatalogs});
  }
  function handleMxWsCreatedTerm(msg) {	 
 	 if (msg.isSuccess==false) {
@@ -171,6 +171,15 @@ function handleNbCreatedCatalogs(profileData) {
 												"accessRights":accessRights,
 			 									"successCallback":successCallback,
 			 									"errorCallback":errorCallback
+	 									});
+ }
+ 
+
+ function ws_handlers_joinCatalog(catalogId,successCallback,errorCallback) {
+	 	
+		MxApi.requestJoinCatalog({	"catalogId":catalogId,
+											"successCallback":successCallback,
+		 									"errorCallback":errorCallback
 	 									});
  }
 </script>

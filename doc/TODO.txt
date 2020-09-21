@@ -3,13 +3,10 @@
 v2.1.0:
 -------
 
+popup info/succes/error msg shall be over popup frames
 only catalog admin shall be allowed to create a new field
 
 Référence de temps Kibana = '0' en mode Read-Only
-
-#99 manage users access to catalogs
-	- ask for access to a catalog : send email + notification to admins
-	
 
 #97 adaptive policy (idle features?) when user plan gets outdated
   freeze extra catalogs if user down-gradded its plan?
@@ -132,6 +129,9 @@ Done:
 
 v2.1.0
 
+#99 manage users access to catalogs
+	- ask for access to a catalog : send email + notification to admins
+	
 #100 only catalog owner shall be able to delete a catalog	
 
 #99 manage users access to catalogs

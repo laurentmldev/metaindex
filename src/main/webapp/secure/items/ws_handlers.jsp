@@ -11,7 +11,7 @@
  var _size=NB_ITEMS_PER_REQUEST;
  
  function ws_handlers_refreshItemsGui() {
-	MxApi.requestCatalogs(<s:property value="currentCatalog.id"/>);
+	MxApi.requestGetCatalogs({'catalogId':<s:property value="currentCatalog.id"/>, 'successCallback':handleMxWsCatalogs});
 	ws_handlers_requestItemsSearch(MxGuiHeader.getCurrentSearchQuery());
  }
  
@@ -228,8 +228,8 @@ function ws_handlers_requestUpdateFilter(filterName,queryString) {
 
 function ws_handlers_requestUploadCsvFile(fileHandle,selectedCsvColsDef) {	
 	let finishCallback=function(e) {
-		console.log("requesting catalog update");
-		MxApi.requestCatalogs(<s:property value="currentCatalog.id"/>);
+		//console.log("requesting catalog update");		
+		MxApi.requestGetCatalogs({'catalogId':<s:property value="currentCatalog.id"/>, 'successCallback':handleMxWsCatalogs});
 	}
 	MxApi.requestUploadItemsFromCsv(fileHandle,selectedCsvColsDef,finishCallback);    
 }

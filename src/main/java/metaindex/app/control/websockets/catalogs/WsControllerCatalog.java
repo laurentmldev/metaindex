@@ -79,15 +79,28 @@ public class WsControllerCatalog extends AMxWSController {
     		Iterator<ICatalog> it = catalogs.iterator();
     		while (it.hasNext()) {
 	    		ICatalog curCatalog = it.next();
-	    		// request catalogId=0 == retrieve all catalogs (accessible to the user)
+	    		// request catalogId=0 == retrieve all catalogs not accessible to the user
 	    		if (requestMsg.getCatalogId().equals(0) 
 	    				|| requestMsg.getCatalogId().equals(curCatalog.getId())) {
 	    			if (user.getUserCatalogAccessRights(curCatalog.getId())!=USER_CATALOG_ACCESSRIGHTS.NONE)
 	    			{ 
-	    				answeredList.add(new WsMsgCatalogDetails_answer(curCatalog,user));	  
+	    				WsMsgCatalogDetails_answer curCatAnswer = new WsMsgCatalogDetails_answer(curCatalog,user);
+	    				curCatAnswer.setRequestId(requestMsg.getRequestId());
+	    				curCatAnswer.setIsSuccess(true);
+	    				answeredList.add(curCatAnswer);
 	    			} else if (!requestMsg.getCatalogId().equals(0)) {
 	    				user.sendGuiErrorMessage(user.getText("globals.noAccessRights"));
 	    				return;
+	    			}
+	    		}
+	    		// request catalogId=-1 == retrieve all catalogs not accessible to the user
+	    		else if (requestMsg.getCatalogId().equals(-1)) {
+	    			if (user.getUserCatalogAccessRights(curCatalog.getId())==USER_CATALOG_ACCESSRIGHTS.NONE)
+	    			{ 
+	    				WsMsgCatalogDetails_answer curCatAnswer = new WsMsgCatalogShortDetails_answer(curCatalog,user);
+	    				curCatAnswer.setRequestId(requestMsg.getRequestId());
+	    				curCatAnswer.setIsSuccess(true);
+	    				answeredList.add(curCatAnswer);
 	    			}
 	    		}
 			}    
@@ -232,6 +245,11 @@ public class WsControllerCatalog extends AMxWSController {
 		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),
 												"/queue/catalog_user_access", 
 												answer);
+		
+		if (targetUser.isLoggedIn()) {
+			targetUser.sendGuiInfoMessage(targetUser.getText("Catalogs.users.catalogAccessRightsChanged",
+														c.getName(),requestMsg.getAccessRights().toString()));
+		}
 		
     }
     
@@ -625,6 +643,87 @@ public class WsControllerCatalog extends AMxWSController {
 	    		answer.setRejectMessage("Unable to process delete_catalog '"+c.getName()+"' by '"+user.getName()+"'");
 	    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_catalog", answer);
 	    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.delete_catalog.sql"));
+	    		e.printStackTrace();
+	    		c.releaseLock();
+    		   		
+    	}    	
+    }
+
+
+    @MessageMapping("/join_catalog")
+    @SubscribeMapping ( "/user/queue/join_catalog")
+    public void handleJoinCatalogRequest(
+    					SimpMessageHeaderAccessor headerAccessor, 
+    					WsMsgJoinCatalog_request requestMsg) throws Exception {
+
+    	WsMsgJoinCatalog_answer answer = new WsMsgJoinCatalog_answer(requestMsg);
+    	IUserProfileData user = getUserProfile(headerAccessor);	
+    	
+    	if (user.isEnabled()==false || !user.isLoggedIn()) {
+    		answer.setRejectMessage("Current user is not allowed to send a join-catalog request");
+    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/join_catalog", answer);
+    		return;
+    	}
+    	
+    	ICatalog c = Globals.Get().getCatalogsMgr().getCatalog(requestMsg.getCatalogId());
+    	if (c==null) {
+    		answer.setRejectMessage("No such catalog, unable to process join-catalog request");
+    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/join_catalog", answer);
+    		return;
+    	}
+
+		if (!c.isEnabled()) {
+			answer.setRejectMessage("catalog is disabled, unable to process join-catalog request");
+    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/join_catalog", answer);
+    		return;
+		}
+		
+    	if (user.getUserCatalogAccessRights(c.getId())!=USER_CATALOG_ACCESSRIGHTS.NONE) {
+    		answer.setRejectMessage("user is already registered to this catalog, join-catalog request ignored");
+    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/join_catalog", answer);
+    		return;
+    	}
+    	
+		// send notification email to catalog owner
+		IUserProfileData catalogOwner = Globals.Get().getUsersMgr().getUserById(c.getOwnerId());
+		if (catalogOwner==null) {
+			answer.setRejectMessage("catalog has no valid owner user, unable to process join-catalog request");
+    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/join_catalog", answer);
+    		return;
+		}
+    	try {   
+    		
+    		// assign a 'NONE' access rights to this usert for the catalog
+    		// os that calalog admins can then see it in the users list and 
+    		// give hil proper access rights
+    		Boolean result = Globals.Get().getDatabasesMgr().getCatalogDefDbInterface()
+    				.getSetCatalogUserAccessStmt(c,user,USER_CATALOG_ACCESSRIGHTS.NONE).execute();
+			if (result==false) {
+				answer.setRejectMessage("Unable to give join given catalog.");
+				this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/join_catalog", answer);
+				return;
+			}
+			try {
+				catalogOwner.sendEmail(
+						catalogOwner.getText("Catalogs.users.email.joinRequest.title",
+																	user.getNickname(),
+																	c.getName()),
+						catalogOwner.getText("Catalogs.users.email.joinRequest.body",
+								catalogOwner.getNickname(),
+								user.getNickname(),
+								c.getName()));
+			} catch (Throwable e) {
+				answer.setRejectMessage("Unable to notify admins to give you access rights to this catalog.");
+				this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/join_catalog", answer);
+				return;
+			}
+	    	answer.setIsSuccess(true);    	
+	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/join_catalog", answer);
+	    			
+    	} catch (Exception e) {    					    	
+	    		answer.setIsSuccess(false);  
+	    		answer.setRejectMessage("Unable to process join_catalog request");
+	    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/join_catalog", answer);
 	    		e.printStackTrace();
 	    		c.releaseLock();
     		   		
