@@ -358,7 +358,7 @@ function xeditable_create_boolean_field(
  	<span class="_name_ mx-perspective-field-title" style="display:none;" ></span> 	 
  	<a href="#" class="_value_ editable editable-click mx-editable " 
  			 data-type="text" data-placement="right" data-title="<s:text name='global.enter_value'/>" 
- 			style="padding:0.2rem;" ></a>
+ 			style="padding:0.2rem;display:inline-block;max-width:100px;overflow:auto;" ></a>
  </div>
  
  
