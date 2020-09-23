@@ -621,7 +621,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		myself._callback_UploadCsv=callback_func;
 	}
 		
-	this.requestUploadItemsFromCsv = function(fileHandle,chosenFieldsMapping,finishCallback) {
+	this.requestUploadItemsFromCsv = function(csvRows,chosenFieldsMapping,finishCallback) {
 	 	
 		let jsonData = {};
 		jsonData.clientFileId=mx_csv_files_to_be_uploaded.length;		
@@ -629,60 +629,53 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		
 		// instantiate a new FileReader object to count total amount of items 
 		// t be created
-	    let reader = new FileReader();
-	    reader.onload = function (file_contents) 
-	    { 
-	    	let CSVrows = file_contents.target.result.split("\n");
-	    	let curLineNb=0;
-	    	
-	    	// count total nb entries
-	    	while (curLineNb<CSVrows.length) {
-	    		if (	   CSVrows[curLineNb].length>0 
-	    				&& CSVrows[curLineNb][0]!='#' 
-	    				&& !CSVrows[curLineNb].match(/^\s*$/)
-	    				&& !CSVrows[curLineNb].match(/^\s*#/)
-	    				&& curLineNb!=0 // ignore first line (header)
-	    				) {
-	    			nbItemsToBeCreated++;
-	    		}
-	    			
-	    		curLineNb++;	    		
-	    	}
-	    	jsonData.totalNbEntries=nbItemsToBeCreated;
-	    	jsonData.chosenFieldsMapping=chosenFieldsMapping;	    	
-	    	
-	    	// parse fields names and types
-	    	let fieldsDefStr=CSVrows[0];
-	    	fieldsDefStr=stripStr(fieldsDefStr.replace("#",""));	    	
+   
+    	let curLineNb=0;
+    	
+    	// count total nb entries
+    	while (curLineNb<csvRows.length) {
+    		if (	   csvRows[curLineNb].length>0 
+    				&& csvRows[curLineNb][0]!='#' 
+    				&& !csvRows[curLineNb].match(/^\s*$/)
+    				&& !csvRows[curLineNb].match(/^\s*#/)
+    				&& curLineNb!=0 // ignore first line (header)
+    				) {
+    			nbItemsToBeCreated++;
+    		}
+    			
+    		curLineNb++;	    		
+    	}
+    	jsonData.totalNbEntries=nbItemsToBeCreated;
+    	jsonData.chosenFieldsMapping=chosenFieldsMapping;	    	
+    	
+    	// parse fields names and types
+    	let fieldsDefStr=csvRows[0];
+    	fieldsDefStr=stripStr(fieldsDefStr.replace("#",""));	    	
 
-	    	let separator=";"
-	    	let fieldsDefsArray=fieldsDefStr.split(separator);
-	    	if (fieldsDefsArray.length==1) {
-	    		separator=",";
-	    		fieldsDefsArray=fieldsDefStr.split(separator);	    		
-	    	}
-	    	if (fieldsDefsArray.length==1) {
-	    		separator="\t";
-	    		fieldsDefsArray=fieldsDefStr.split(separator);	    		
-	    	}
+    	let separator=";"
+    	let fieldsDefsArray=fieldsDefStr.split(separator);
+    	if (fieldsDefsArray.length==1) {
+    		separator=",";
+    		fieldsDefsArray=fieldsDefStr.split(separator);	    		
+    	}
+    	if (fieldsDefsArray.length==1) {
+    		separator="\t";
+    		fieldsDefsArray=fieldsDefStr.split(separator);	    		
+    	}
 
-	    	jsonData.separator=separator;
-	    	
-	    	jsonData.csvColsList=[];	    	
-	    	for (curFieldIdx in fieldsDefsArray) {
-	    		let curField=fieldsDefsArray[curFieldIdx];	  
-	    		jsonData.csvColsList.push(stripStr(curField));
-	    	}
-	    	//console.log('### Sending file upload request : '+JSON.stringify(jsonData));
-	    	myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/upload_items_csv_request", {},JSON.stringify(jsonData));		
-	 		
-	    	jsonData.fileHandle=fileHandle;
-	    	mx_csv_files_to_be_uploaded[jsonData.clientFileId]=jsonData;
-	    	mx_csv_files_upload_finish_callback[jsonData.clientFileId]=finishCallback;
-	    }
-	    
-	    // load the file into an array buffer
-	    reader.readAsText(fileHandle.files[0]);		
+    	jsonData.separator=separator;
+    	
+    	jsonData.csvColsList=[];	    	
+    	for (curFieldIdx in fieldsDefsArray) {
+    		let curField=fieldsDefsArray[curFieldIdx];	  
+    		jsonData.csvColsList.push(stripStr(curField));
+    	}
+    	//console.log('### Sending file upload request : '+JSON.stringify(jsonData));
+    	myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/upload_items_csv_request", {},JSON.stringify(jsonData));		
+ 		
+    	jsonData.csvRows=csvRows;
+    	mx_csv_files_to_be_uploaded[jsonData.clientFileId]=jsonData;
+    	mx_csv_files_upload_finish_callback[jsonData.clientFileId]=finishCallback;	    		
 	}
 	
 	this._handleUploadItemsFromCsvAnswer=function(msg) {
@@ -696,58 +689,49 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			}
 		}
 
-		// instantiate a new FileReader object
-	    let reader = new FileReader();
-	    let fileIndex=parsedMsg.clientFileId;
+		let fileIndex=parsedMsg.clientFileId;
 	    //console.log("file index = "+fileIndex);
-	    let fileHandle=mx_csv_files_to_be_uploaded[fileIndex].fileHandle;
+	    let csvRows=mx_csv_files_to_be_uploaded[fileIndex].csvRows;
 	    let finishCallback=mx_csv_files_upload_finish_callback[fileIndex];
 	    //console.log("fileHandle="+fileHandle);
 	    //dumpStructure(mx_csv_files_to_be_uploaded);
 	    let serverProcessingTaskId=parsedMsg.processingTaskId;
 	    
-	    if (fileHandle==null) { return; }
+	    if (csvRows==null) { return; }
 	    //console.log("received file upload answer : file = "+fileHandle.value);
 	    
-	    reader.onload = function (file_contents) 
-	    { 
-	    	let CSVrows = file_contents.target.result.split("\n");
-	    	let curLineNb=0;
-	    	let curLinesWsBuffer=[];
-	    	
-	    	if (myself._callback_UploadCsv!=null) {
-				myself._callback_UploadCsv(parsedMsg); 
-			}
-	    	
-	    	while (curLineNb<CSVrows.length) {
-	    		// ignore first line (header)
-	    		if (curLineNb==0) { curLineNb++; continue; }
-	    		
-	    		curLinesWsBuffer.push(CSVrows[curLineNb]);
-	    		
-	    		if (curLineNb % MX_WS_UPLOAD_FILE_MAX_LINES==0 || curLineNb==CSVrows.length-1) {
-	    			//console.log("sending "+curLinesWsBuffer.length+" lines : "+curLinesWsBuffer);
-	    			//console.log(curLinesWsBuffer);
-	    			
-	    			let jsonData = { 
-	    				 "csvLines" : curLinesWsBuffer,
-						 "processingTaskId" : serverProcessingTaskId,
-						 "totalNbLines" : CSVrows.length,
-	    				};
-	    			
-	    			myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/upload_filter_file_contents", {},JSON.stringify(jsonData));
-	    			curLinesWsBuffer=[];
-	    		}
-	    		curLineNb++;	    		
-	    	}
-	    	
-	    	if (finishCallback!=null) { finishCallback(); }
-	    	
-	    }
-
-	    // load the file into an array buffer
-	    reader.readAsText(fileHandle.files[0]);
-	    
+    
+    	let curLineNb=0;
+    	let curLinesWsBuffer=[];
+    	
+    	if (myself._callback_UploadCsv!=null) {
+			myself._callback_UploadCsv(parsedMsg); 
+		}
+    	
+    	while (curLineNb<csvRows.length) {
+    		// ignore first line (header)
+    		if (curLineNb==0) { curLineNb++; continue; }
+    		
+    		curLinesWsBuffer.push(csvRows[curLineNb]);
+    		
+    		if (curLineNb % MX_WS_UPLOAD_FILE_MAX_LINES==0 || curLineNb==csvRows.length-1) {
+    			//console.log("sending "+curLinesWsBuffer.length+" lines : "+curLinesWsBuffer);
+    			//console.log(curLinesWsBuffer);
+    			
+    			let jsonData = { 
+    				 "csvLines" : curLinesWsBuffer,
+					 "processingTaskId" : serverProcessingTaskId,
+					 "totalNbLines" : csvRows.length,
+    				};
+    			
+    			myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/upload_filter_file_contents", {},JSON.stringify(jsonData));
+    			curLinesWsBuffer=[];
+    		}
+    		curLineNb++;	    		
+    	}
+    	
+    	if (finishCallback!=null) { finishCallback(); }
+    		    
 	}
 	
 

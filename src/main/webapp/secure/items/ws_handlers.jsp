@@ -226,12 +226,12 @@ function ws_handlers_requestUpdateFilter(filterName,queryString) {
 	MxApi.requestUpdateFilter(filterName,queryString);
 }
 
-function ws_handlers_requestUploadCsvFile(fileHandle,selectedCsvColsDef) {	
+function ws_handlers_requestUploadCsvFile(csvRows,selectedCsvColsDef) {	
 	let finishCallback=function(e) {
 		//console.log("requesting catalog update");		
 		MxApi.requestGetCatalogs({'catalogId':<s:property value="currentCatalog.id"/>, 'successCallback':handleMxWsCatalogs});
 	}
-	MxApi.requestUploadItemsFromCsv(fileHandle,selectedCsvColsDef,finishCallback);    
+	MxApi.requestUploadItemsFromCsv(csvRows,selectedCsvColsDef,finishCallback);    
 }
 
 function ws_handlers_requestDownloadCsvFile(selectedTermsList,query,selectedFiltersNames,sortByFieldName,reversedSortOrder) {

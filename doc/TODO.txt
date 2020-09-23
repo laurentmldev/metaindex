@@ -3,7 +3,6 @@
 v2.1.0:
 -------
 
-#101 import from Excel file
 
 #102 improve fields layout when text is long
 
@@ -132,6 +131,8 @@ Done:
 -----
 
 v2.1.0
+
+#101 import from Excel file
 
 popup info/success/error msg shall be over popup frames
 

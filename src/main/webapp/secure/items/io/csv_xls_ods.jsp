@@ -4,6 +4,9 @@
 
 <c:url value="/" var="mxurl"/>
 
+<script type="text/javascript" src="${mxurl}public/commons/deps/sheetjs/shim.js"></script>
+<script type="text/javascript" src="${mxurl}public/commons/deps/sheetjs/xlsx.js"></script>
+
 <script type="text/javascript">
 
 //showCsvPrevisu : build a line of the 'CSV-columns table'
@@ -67,66 +70,61 @@ function _getColTypeNode(csvColName,checkBox) {
 }
 
 // showCsvPrevisu : build CSV columns table
-function _buildCsvColumnsTable(fileHandle,nbEntriesNode,csvColsTable) {
-	
-	let reader = new FileReader();
-    reader.onload = function (file_contents) 
-    { 
-    	let CSVrows = file_contents.target.result.split("\n");
-    	let curLineNb=0;
-    	let nbEntries=0;
-    	
-    	// count total nb entries
-    	while (curLineNb<CSVrows.length) {
-    		if (	   CSVrows[curLineNb].length>0 
-    				&& CSVrows[curLineNb][0]!='#' 
-    				&& !CSVrows[curLineNb].match(/^\s*$/)
-    				&& !CSVrows[curLineNb].match(/^\s*#/)) {
-    			nbEntries++;
-    		}    			
-    		curLineNb++;	    		
-    	}
-    	nbEntriesNode.innerHTML=nbEntries;    	
- 	    
-    	// parse fields names and types
-    	let fieldsDefStr=CSVrows[0];
-    	fieldsDefStr=stripStr(fieldsDefStr.replace("#",""));
-    	let fieldsDefsArray=fieldsDefStr.split(';');
-    	if (fieldsDefsArray.length==1) { 
-    		fieldsDefsArray=fieldsDefStr.split(','); 
-    	}
-    	if (fieldsDefsArray.length==1) { 
-    		fieldsDefsArray=fieldsDefStr.split('\t'); 
-    	}
-    	
-    	for (curFieldIdx in fieldsDefsArray) {
-    		curField=fieldsDefsArray[curFieldIdx];	  
-    		let curFieldStr=stripStr(curField)    		
-    		
-    		let newRow=document.createElement("tr");
-    		
-    		// checkbox selected
-    		let colSelected=document.createElement("td");
-    		newRow.appendChild(colSelected);
-    		let checkBox=document.createElement("input");
-    		checkBox.type='checkbox';
-    		colSelected.appendChild(checkBox);
-    		
-    		// field Name
-    		let colName=document.createElement("td");
-    		newRow.appendChild(colName);
-    		colName.innerHTML=curFieldStr;
-    		
-    		// field type
-    		let colType=document.createElement("td");
-    		newRow.appendChild(colType);    		
-    		colTypeNode=_getColTypeNode(curFieldStr,checkBox);
-    		colType.appendChild(colTypeNode);
-    		    		
-    		csvColsTable.appendChild(newRow);
-    	}    	
-    }
-    reader.readAsText(fileHandle);
+function _buildCsvColumnsTable(CSVrows,nbEntriesNode,csvColsTable) {
+ 
+   	let curLineNb=0;
+   	let nbEntries=0;
+   	
+   	// count total nb entries
+   	while (curLineNb<CSVrows.length) {
+   		if (	   CSVrows[curLineNb].length>0 
+   				&& CSVrows[curLineNb][0]!='#' 
+   				&& !CSVrows[curLineNb].match(/^\s*$/)
+   				&& !CSVrows[curLineNb].match(/^\s*#/)) {
+   			nbEntries++;
+   		}    			
+   		curLineNb++;	    		
+   	}
+   	nbEntriesNode.innerHTML=nbEntries;    	
+	    
+   	// parse fields names and types
+   	let fieldsDefStr=CSVrows[0];
+   	fieldsDefStr=stripStr(fieldsDefStr.replace("#",""));
+   	let fieldsDefsArray=fieldsDefStr.split(';');
+   	if (fieldsDefsArray.length==1) { 
+   		fieldsDefsArray=fieldsDefStr.split(','); 
+   	}
+   	if (fieldsDefsArray.length==1) { 
+   		fieldsDefsArray=fieldsDefStr.split('\t'); 
+   	}
+   	
+   	for (curFieldIdx in fieldsDefsArray) {
+   		curField=fieldsDefsArray[curFieldIdx];	  
+   		let curFieldStr=stripStr(curField)    		
+   		
+   		let newRow=document.createElement("tr");
+   		
+   		// checkbox selected
+   		let colSelected=document.createElement("td");
+   		newRow.appendChild(colSelected);
+   		let checkBox=document.createElement("input");
+   		checkBox.type='checkbox';
+   		colSelected.appendChild(checkBox);
+   		
+   		// field Name
+   		let colName=document.createElement("td");
+   		newRow.appendChild(colName);
+   		colName.innerHTML=curFieldStr;
+   		
+   		// field type
+   		let colType=document.createElement("td");
+   		newRow.appendChild(colType);    		
+   		colTypeNode=_getColTypeNode(curFieldStr,checkBox);
+   		colType.appendChild(colTypeNode);
+   		    		
+   		csvColsTable.appendChild(newRow);
+   	}    	
+   
 }
 
 //showCsvPrevisu : get list and type/name of selected CSV fields for upload
@@ -145,29 +143,28 @@ function _getSelectedCsvColumnsDef(csvColsTable) {
 	return csvColsTermsMap;
 }
 
-MxGuiLeftBar.showCsvPrevisu=function(fileHandle) {
+function _showCsvPrevisu(CSVrows,fileNameTxt) {
 	// body
-	let previsuNode=document.getElementById('csv_contents_previsu_body').cloneNode(true);
+	let previsuNode=document.getElementById('datafile_contents_previsu_body').cloneNode(true);
 	previsuNode.style.display='block';
 	
 	let fileName=previsuNode.querySelector("._filename_");
-	fileName.innerHTML=fileHandle.files[0].name;
+	fileName.innerHTML=fileNameTxt;
 	let nbEntries=previsuNode.querySelector("._nbEntries_");
 	let csvColsTable=previsuNode.querySelector("._csv_columns_tbl_");
 	
-	_buildCsvColumnsTable(fileHandle.files[0],nbEntries,csvColsTable)
+	_buildCsvColumnsTable(CSVrows,nbEntries,csvColsTable)
 	
 	// footer
-	let previsuNodeFooter=document.getElementById('csv_contents_previsu_footer').cloneNode(true);
+	let previsuNodeFooter=document.getElementById('datafile_contents_previsu_footer').cloneNode(true);
 	previsuNodeFooter.style.display='block';
 	let uploadBtn=previsuNodeFooter.querySelector('._uploadBtn_');
 	uploadBtn.onclick=function() {
 		footer_showAlert(INFO,"<s:text name="global.pleasewait"/>",null,5000);
 		let selectedCsvColsDef = _getSelectedCsvColumnsDef(csvColsTable);
-		ws_handlers_requestUploadCsvFile(fileHandle,selectedCsvColsDef); 
+		ws_handlers_requestUploadCsvFile(CSVrows,selectedCsvColsDef); 
 		ws_handlers_refreshItemsGui();
-		MxGuiHeader.hideInfoModal();
-		
+		MxGuiHeader.hideInfoModal();		
 	}
 	
 	// show
@@ -175,6 +172,59 @@ MxGuiLeftBar.showCsvPrevisu=function(fileHandle) {
 	
 }
 
+
+function _handleCsvDataFile(fileHandle) {
+	var reader = new FileReader();
+	reader.onload = function (file_contents) {
+		let fileName = fileHandle.files[0].name;
+    	let CSVrows = file_contents.target.result.split("\n");    	
+    	_showCsvPrevisu(CSVrows,fileName);
+    }
+    reader.readAsText(fileHandle.files[0]);
+}
+
+
+
+function _handleExcelDataFile(fileHandle) {
+
+	var f = fileHandle.files[0];
+	var fileName=f.name;
+	
+	var reader = new FileReader();
+	reader.onload = function(e) {			
+		var data = e.target.result;
+		data = new Uint8Array(data);
+		var workbook = XLSX.read(data,{ type:'array'});		
+		let result = [];
+		if (workbook.SheetNames.length>1) {
+			alert('Sorry, only single-sheet Excel files are supported in current version');
+			return;
+		}
+		
+		workbook.SheetNames.forEach(function(sheetName) {
+			var csv = XLSX.utils.sheet_to_csv(workbook.Sheets[sheetName]);
+			if(csv.length){
+				_showCsvPrevisu(csv.split('\n'),fileName);
+			}
+		});						
+	};
+	reader.readAsArrayBuffer(f);
+	
+	
+}
+
+MxGuiLeftBar.handleDataFileToUpload=function(fileHandle) {
+	let fileName = fileHandle.files[0].name;
+	var csvRegex= /(\.txt|\.csv)$/;
+	var xlsRegex= /(\.xls|\.xlsx|\.ods|\.odt|\.xml)$/;
+	
+	if (csvRegex.test(fileName)) { _handleCsvDataFile(fileHandle); }
+	else if (xlsRegex.test(fileName)) { _handleExcelDataFile(fileHandle); }
+	else {
+		alert('this kind of file is not supported sorry');
+	}
+	
+}
 
 // ---------------- DOWNLOAD -----------------
 
@@ -258,7 +308,41 @@ MxGuiLeftBar.showDownloadCsvPrevisu=function() {
 }
 </script> 
 
- 	 	  <!-- Custom CSV FileDownload button -->
+ 	 	 
+ 		    			 
+		  <!-- Custom FileUpload button -->
+ 		  <label for="fileUpload"  id="datafile_upload_label" 
+ 		  	class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button"  >
+ 		  	<i class="fas fa-upload fa-sm text-white" style="margin-right:1em"></i><s:text name="Items.uploadItems.fromDataFile"></s:text>
+ 		  	 <span title="S.O.S" 
+	                	onclick="event.stopPropagation();event.preventDefault();
+	                			MxGuiHeader.showInfoModal('<s:text name="help.items.data_upload.title" />','<s:text name="help.items.data_upload.body" />')">
+	                   <i class="mx-help-icon far fa-question-circle" style="color:white"></i>    
+	          </span>
+ 		  </label>
+ 		  
+ 		  <div id="datafile_contents_previsu_body" style="display:none">
+ 		  		 <div><span class="_filename_"></span> : <span class="_nbEntries_"></span> entries</div>
+ 		  		 <table style="margin-top:1rem;" class="_csv_columns_tbl_">
+ 		  		 	<tr><th style="padding-right:1rem;min-width:2rem;"></th><th>Csv Column</th><th>Catalog Field</th></tr>
+ 		  		 </table>
+			</div>
+			<div id="datafile_contents_previsu_footer" style="display:none">
+ 		  		 <label class="_uploadBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button"  >
+ 		  				<i class="fas fa-upload fa-sm text-white" style="margin-right:1em"></i><s:text name="global.go"></s:text>
+ 		  		</label>
+			</div>
+ 		  <!-- not displayed but used for the file input -->
+ 		 <span style="display:none">	 		 	
+		 		 <input id="fileUpload" type="file"
+		 		  	accept=".csv,.txt,.xls,.xlsx,.ods,.odt,.xml"
+		 		  	name="formFile"  
+		 		  	onChange="MxGuiLeftBar.handleDataFileToUpload(this);" />				
+ 		  </span>
+ 		  
+	 		   
+	 		 
+	 	 <!-- Custom CSV FileDownload button -->
           <label id="csv_download_label"
  		  	class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button" 
  		  	onclick="MxGuiLeftBar.showDownloadCsvPrevisu();" >
@@ -287,37 +371,4 @@ MxGuiLeftBar.showDownloadCsvPrevisu=function() {
 		  </div>
  		 
  		  
- 		    			 
-		  <!-- Custom CSV FileUpload button -->
- 		  <label for="fileUpload"  id="csv_upload_label" 
- 		  	class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button"  >
- 		  	<i class="fas fa-upload fa-sm text-white" style="margin-right:1em"></i><s:text name="Items.uploadItems.fromCsv"></s:text>
- 		  	 <span title="S.O.S" 
-	                	onclick="event.stopPropagation();event.preventDefault();
-	                			MxGuiHeader.showInfoModal('<s:text name="help.items.csv_upload.title" />','<s:text name="help.items.csv_upload.body" />')">
-	                   <i class="mx-help-icon far fa-question-circle" style="color:white"></i>    
-	          </span>
- 		  </label>
- 		  
- 		  <div id="csv_contents_previsu_body" style="display:none">
- 		  		 <div><span class="_filename_"></span> : <span class="_nbEntries_"></span> entries</div>
- 		  		 <table style="margin-top:1rem;" class="_csv_columns_tbl_">
- 		  		 	<tr><th style="padding-right:1rem;min-width:2rem;"></th><th>Csv Column</th><th>Catalog Field</th></tr>
- 		  		 </table>
-			</div>
-			<div id="csv_contents_previsu_footer" style="display:none">
- 		  		 <label class="_uploadBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button"  >
- 		  				<i class="fas fa-upload fa-sm text-white" style="margin-right:1em"></i><s:text name="global.go"></s:text>
- 		  		</label>
-			</div>
- 		  <!-- not displayed but used for the file input -->
- 		 <span style="display:none">	 		 	
-		 		 <input id="fileUpload" type="file"
-		 		  	accept=".csv,.txt"
-		 		  	name="formFile"  
-		 		  	onChange="MxGuiLeftBar.showCsvPrevisu(this);" />				
- 		  </span>
- 		  
-	 		   
-	 		 
 

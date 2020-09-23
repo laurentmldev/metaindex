@@ -65,8 +65,7 @@
         </a>
         <div id="collapseCsv" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="mx-collapse py-2 collapse-inner rounded pt-4" style="overflow:auto">
-          	<s:include  value="io/csv.jsp" />
-	 		<hr/>
+	 		<s:include  value="io/csv_xls_ods.jsp" />
 	 		<s:include  value="io/gexf.jsp" />
           </div>
           
