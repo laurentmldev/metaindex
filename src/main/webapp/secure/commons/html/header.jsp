@@ -136,6 +136,11 @@
 	  return document.getElementById('MxGui.header.insertSpot');
   }
   
+
+  MxGuiHeader.addPopup=function(popupNode) { 
+	  MxGuiHeader.getInsertSpot().append(popupNode);
+  }
+  
   MxGuiHeader.showInfoModal=function(titleTxt,bodyTxt,footerTxt) {
 	  
 	  let title = document.getElementById("info_modal_title");

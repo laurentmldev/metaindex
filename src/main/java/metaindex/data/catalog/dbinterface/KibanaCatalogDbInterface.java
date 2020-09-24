@@ -3,6 +3,9 @@ package metaindex.data.catalog.dbinterface;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import metaindex.app.Globals;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.userprofile.ICatalogUser.USER_CATALOG_ACCESSRIGHTS;
@@ -26,7 +29,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 public class KibanaCatalogDbInterface  
 {
-	
+	private Log log = LogFactory.getLog(KibanaCatalogDbInterface.class);
 	public static String GetRORoleName(ICatalog c) { return c.getName()+"_RO"; }
 	public static String GetWRoleName(ICatalog c) { return c.getName()+"_W"; }
 	
@@ -162,6 +165,10 @@ public class KibanaCatalogDbInterface
 
 		for (Integer catId : activeUser.getUserCatalogsIds()) {
 			ICatalog c = Globals.Get().getCatalogsMgr().getCatalog(catId);
+			if (c==null) {
+				log.error("No such catalog for id "+catId+" : cannot add corresponding role to user "+activeUser.getId());
+				continue;
+			}
 			USER_CATALOG_ACCESSRIGHTS access = activeUser.getUserCatalogAccessRights(catId);
 			if (access==USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN || access==USER_CATALOG_ACCESSRIGHTS.CATALOG_EDIT) {
 				rolesList.add(GetWRoleName(c));

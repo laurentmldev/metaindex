@@ -3,12 +3,24 @@
 v2.1.0:
 -------
 
+if str is null -> error (no substr function)
+	// from KooiInc https://stackoverflow.com/questions/1199352/smart-way-to-truncate-long-strings 
+	 function truncate( str, n, useWordBoundary ){
+		  if (str.length <= n) { return str; }
+		  const subString = str.substr(0, n-1); // the original check
+		  return (useWordBoundary 
+		    ? subString.substr(0, subString.lastIndexOf(" ")) 
+		    : subString) + "&hellip;";
+		};
+	
+when no catalog is owned at all -> max owned catalogs reach warning is visible with empty numbers (' / ')
 
+auto-detect dev env for warning banner
 add a 'contact us' 
 add in users tab an help explaining how to add users
 add tempo when overflow attack seems possible
 
-rename 'perspective' into 'layout'
+rename 'perspective' into 'layout' ?
 
 only catalog admin shall be allowed to create a new field
 

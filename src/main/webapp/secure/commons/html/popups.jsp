@@ -82,7 +82,7 @@
   
 <script type="text/javascript" >
  // -------- Dropdown --------
- // choices : { value:xxx, text:xxx}
+ // choices : [ { value:xxx, text:xxx}, ... ]
  function _commons_popups_makeDropdownInputPopup(choices,title,onValidCallback) {
 	 let newPopup = document.getElementById("_commons_popups_dropdown_input_template_").cloneNode(true);
 	 newPopup.id="";	 
@@ -115,6 +115,7 @@
 	 okButton.onclick=function(event) { onValidCallback(inputNode.value); }
 	 
 	 newPopup.show=function() { newPopup.style.display="block"; }
+	 newPopup.hide=function() { newPopup.style.display="none"; }
 	 return newPopup;
  }
 

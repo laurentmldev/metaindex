@@ -184,6 +184,27 @@ function _handleCsvDataFile(fileHandle) {
 }
 
 
+function _showChooseCalcSheet(sheetNames,fileName,choiceCallback) {
+	
+	let choices = [];
+	
+	for (index in sheetNames) {
+		let curSheetName=sheetNames[index];
+		choices.push({'value':curSheetName, 'text':curSheetName});
+	}
+	function handleChoosenSheetName(chosenSheetName) {
+		let popup=document.getElementById("chooseCalcPopup");
+		popupChoice.id="";
+		popupChoice.hide();
+		choiceCallback(chosenSheetName,fileName);
+		
+	}
+	let popupChoice = MxGuiPopups.newDropdownInputPopup(choices,"Choose Sheet from your file",handleChoosenSheetName);	
+	popupChoice.id="chooseCalcPopup";
+	MxGuiHeader.addPopup(popupChoice);
+	popupChoice.show();	
+}
+
 
 function _handleExcelDataFile(fileHandle) {
 
@@ -196,17 +217,19 @@ function _handleExcelDataFile(fileHandle) {
 		data = new Uint8Array(data);
 		var workbook = XLSX.read(data,{ type:'array'});		
 		let result = [];
-		if (workbook.SheetNames.length>1) {
-			alert('Sorry, only single-sheet Excel files are supported in current version');
-			return;
-		}
-		
-		workbook.SheetNames.forEach(function(sheetName) {
+		function handleSheetContents(sheetName,fileName) {
 			var csv = XLSX.utils.sheet_to_csv(workbook.Sheets[sheetName]);
 			if(csv.length){
 				_showCsvPrevisu(csv.split('\n'),fileName);
 			}
-		});						
+		}
+		if (workbook.SheetNames.length>1) {
+			_showChooseCalcSheet(workbook.SheetNames,fileName,handleSheetContents);
+		}
+		else {
+			 handleSheetContents(workbook.SheetNames[0],fileName);
+		}
+						
 	};
 	reader.readAsArrayBuffer(f);
 	
@@ -225,6 +248,7 @@ MxGuiLeftBar.handleDataFileToUpload=function(fileHandle) {
 	}
 	
 }
+
 
 // ---------------- DOWNLOAD -----------------
 
@@ -301,10 +325,7 @@ MxGuiLeftBar.showDownloadCsvPrevisu=function() {
 	
 	
 	// show
-	MxGuiHeader.showInfoModal("<s:text name='Items.downloadItems.asCsv' />",previsuNode,previsuNodeFooter);
-	
-	
-	
+	MxGuiHeader.showInfoModal("<s:text name='Items.downloadItems.asCsv' />",previsuNode,previsuNodeFooter);	
 }
 </script> 
 
