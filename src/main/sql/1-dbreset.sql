@@ -350,7 +350,7 @@ CREATE TABLE `user_catalogs_customization` (
 --
 
 ALTER TABLE `catalogs`
- ADD PRIMARY KEY (`catalog_id`), ADD UNIQUE KEY `name` (`shortname`), ADD KEY `FK_COMMUNITIES_CREATOR_ID` (`creator_id`);
+ ADD PRIMARY KEY (`catalog_id`), ADD UNIQUE KEY `name` (`shortname`), ADD KEY `FK_COMMUNITIES_OWNER_ID` (`owner_id`);
 
 
 --
@@ -542,7 +542,7 @@ MODIFY `user_catalogs_customization_id` int(32) NOT NULL AUTO_INCREMENT,AUTO_INC
 -- Contraintes pour la table `catalogs`
 --
 ALTER TABLE `catalogs`
-ADD CONSTRAINT `C_FK_COMMUNITIES_CREATOR_ID` FOREIGN KEY (`creator_id`) REFERENCES `users` (`user_id`),
+ADD CONSTRAINT `C_FK_COMMUNITIES_OWNER_ID` FOREIGN KEY (`owner_id`) REFERENCES `users` (`user_id`),
 ADD CONSTRAINT `C_FK_CATALOGS_TIMEFIELD` FOREIGN KEY (`timeField_term_id`) REFERENCES `catalog_terms` (`catalog_term_id`) ON DELETE SET NULL;
 
 
