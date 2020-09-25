@@ -22,7 +22,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  *
- * @author doraemon
+ * @author doraemon / Laurent ML
  */
 public class GoogleMailSender implements IEmailSender {
    
@@ -39,12 +39,15 @@ public class GoogleMailSender implements IEmailSender {
      * @throws AddressException if the email address parse failed
      * @throws MessagingException if the connection is dead or not in the connected state or if the message is not a MimeMessage
      */
+	@Override
     public void send(final String username, final String password, String recipientEmail, String title, String message) throws AddressException, MessagingException {
-        sendHtml(username, password, recipientEmail, "", title, message);
+        sendHtml(username, password, recipientEmail, "", "", title, message);
     }
     
-    public void send(final String username, final String password, String recipientEmail, String ccEmail, String title, String message) throws AddressException, MessagingException {
-        sendHtml(username, password, recipientEmail, ccEmail, title, message);
+    @Override
+    public void send(final String username, final String password, String recipientEmail, 
+    							String ccEmail, String cciEmail, String title, String message) throws AddressException, MessagingException {
+        sendHtml(username, password, recipientEmail, ccEmail, cciEmail, title, message);
     }
 
     /**
@@ -59,7 +62,9 @@ public class GoogleMailSender implements IEmailSender {
      * @throws AddressException if the email address parse failed
      * @throws MessagingException if the connection is dead or not in the connected state or if the message is not a MimeMessage
      */
-    public void sendHtml(final String username, final String password, String recipientEmail, String ccEmail, String title, String htmlMessage) throws AddressException, MessagingException {
+    @Override
+    public void sendHtml(final String username, final String password, String recipientEmail, 
+    							String ccEmail, String cciEmail, String title, String htmlMessage) throws AddressException, MessagingException {
         
     	Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
         final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
@@ -95,7 +100,9 @@ public class GoogleMailSender implements IEmailSender {
         if (ccEmail.length() > 0) {
             msg.setRecipients(Message.RecipientType.CC, InternetAddress.parse(ccEmail, false));
         }
-
+        if (cciEmail.length() > 0) {
+            msg.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(cciEmail, false));
+        }
         msg.setSubject(title);
         Multipart multipart = new MimeMultipart( "alternative" );
 /*
