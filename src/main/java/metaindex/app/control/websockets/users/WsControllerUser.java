@@ -460,7 +460,19 @@ public class WsControllerUser extends AMxWSController {
     		
     		IPaymentInterface pi = null;
     		if (requestMsg.getPaymentMethod()==PAYMENT_METHOD.paypal) { pi = new PaypalPaymentInterfaceProprietary(); }
-    		else { pi = new SandboxPaymentInterface(); }
+    		else if (Globals.Get().isDevMode() && requestMsg.getPaymentMethod()==PAYMENT_METHOD.sandbox) {
+    			pi = new SandboxPaymentInterface(); 
+    		}
+    		else {
+    			PaymentLogging.logger.error(paymentEntry+"\t"+"status=NOT_CONFIRMED");
+    			answer.setRejectMessage("Payment method unsupported sorry.");
+    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_confirm_payment_answer", answer);
+    			
+    			user.sendEmailCCiAdmin(  user.getText("Profile.plans.email.purchaseNotConfirmed.title",requestMsg.getPaymentMethod().toString()), 
+										user.getText("Profile.plans.email.purchaseNotConfirmed.body",user.getNickname(),requestMsg.getTransactionId()));
+
+    			return;
+    		}
     		
     		Boolean paymentConfirmed = pi.confirmPayment(
     				requestMsg.getTransactionId(), 
@@ -472,7 +484,7 @@ public class WsControllerUser extends AMxWSController {
     			answer.setRejectMessage("No payment received (yet) for this transaction.");
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_confirm_payment_answer", answer);
     			
-    			user.sendEmailCCAdmin(  user.getText("Profile.plans.email.purchaseNotConfirmed.title",requestMsg.getPaymentMethod().toString()), 
+    			user.sendEmailCCiAdmin(  user.getText("Profile.plans.email.purchaseNotConfirmed.title",requestMsg.getPaymentMethod().toString()), 
 										user.getText("Profile.plans.email.purchaseNotConfirmed.body",user.getNickname(),requestMsg.getTransactionId()));
 
     			return;
@@ -484,7 +496,7 @@ public class WsControllerUser extends AMxWSController {
     			PaymentLogging.logger.error(paymentEntry+"\t"+"status=UNKNOWN_PLAN_ID");
     			log.error("User '"+user.getName()+"' purchased unknown plan '"+requestMsg.getPlanId()+"' (transactionId="+requestMsg.getTransactionId()+")");
     			
-    			user.sendEmailCCAdmin( user.getText("Profile.plans.email.purchaseNotFinalized.title",requestMsg.getPaymentMethod().toString()), 
+    			user.sendEmailCCiAdmin( user.getText("Profile.plans.email.purchaseNotFinalized.title",requestMsg.getPaymentMethod().toString()), 
 									   user.getText("Profile.plans.email.purchaseNotFinalized.body",user.getNickname(),requestMsg.getTransactionId()));
     			
     			return;
@@ -508,7 +520,7 @@ public class WsControllerUser extends AMxWSController {
 	    			answer.setRejectMessage(user.getText("Profile.plans.paymentOkButDBError"));
 	    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_confirm_payment_answer", answer);
 	    			
-	    			user.sendEmailCCAdmin( user.getText("Profile.plans.email.purchaseNotAppliedYet.title",requestMsg.getPaymentMethod().toString()), 
+	    			user.sendEmailCCiAdmin( user.getText("Profile.plans.email.purchaseNotAppliedYet.title",requestMsg.getPaymentMethod().toString()), 
 	    									user.getText("Profile.plans.email.purchaseNotAppliedYet.body",user.getNickname(),requestMsg.getTransactionId()));
 	    			return;
 	    		}
@@ -517,7 +529,7 @@ public class WsControllerUser extends AMxWSController {
     			answer.setRejectMessage(user.getText("Profile.plans.paymentOkButServerError"));
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_confirm_payment_answer", answer);
     			
-    			user.sendEmailCCAdmin( user.getText("Profile.plans.email.purchaseNotAppliedYet.title",requestMsg.getPaymentMethod().toString()), 
+    			user.sendEmailCCiAdmin( user.getText("Profile.plans.email.purchaseNotAppliedYet.title",requestMsg.getPaymentMethod().toString()), 
 						user.getText("Profile.plans.email.purchaseNotAppliedYet.body",user.getNickname(),requestMsg.getTransactionId()));
     			
     			return;
@@ -538,7 +550,7 @@ public class WsControllerUser extends AMxWSController {
     																requestMsg.getPlanId(),
     																awaitingTransactionData.getTotalCost()));
     		
-    		user.sendEmailCCAdmin( user.getText("Profile.plans.email.purchaseOk.title",plan.getName()), 
+    		user.sendEmailCCiAdmin( user.getText("Profile.plans.email.purchaseOk.title",plan.getName()), 
 					user.getText("Profile.plans.email.purchaseOk.body",user.getNickname(),
 																	   plan.getName(),
 																	   requestMsg.getTotalCost().toString(),
@@ -553,7 +565,7 @@ public class WsControllerUser extends AMxWSController {
 			e.printStackTrace();
 			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_plan_confirm_payment_answer"));
 			
-			user.sendEmailCCAdmin( user.getText("Profile.plans.email.purchaseNotFinalized.title",requestMsg.getPaymentMethod().toString()), 
+			user.sendEmailCCiAdmin( user.getText("Profile.plans.email.purchaseNotFinalized.title",requestMsg.getPaymentMethod().toString()), 
 					   user.getText("Profile.plans.email.purchaseNotFinalized.body",user.getNickname(),requestMsg.getTransactionId()));
 			return;    		
     	}

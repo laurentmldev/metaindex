@@ -114,22 +114,24 @@ public class BeanSignup extends AMetaindexBean {
 			_awaitingAccountsByEmail.put(newAccountWaitingForEmailConfirmation.email, 
 										 newAccountWaitingForEmailConfirmation);
 			
+			String confirmationLink="https://metaindex.fr:8443/metaindex/signup_confirmemail?" 
+					+"email="+newAccountWaitingForEmailConfirmation.email
+					+"&requestId="  
+					+newAccountWaitingForEmailConfirmation.randomRequestId;
 			String msgBodyHtml="<center>"
 					+"<h3>Hello "+this.getNickname()+",</h3><br/><br/>"
 					+"Thank you very much for your registration to MetaindeX. We hope you'll enjoy using it very much.<br/><br/>"
 					+"Please click "
-					+"<a href=\"https://metaindex.fr:8443/metaindex/signup_confirmemail?"
-						+"email="
-							+newAccountWaitingForEmailConfirmation.email
-						+"&requestId="
-							+newAccountWaitingForEmailConfirmation.randomRequestId+"\" >Here</a>"
+					+"<a href=\""+confirmationLink+"\" >Here</a>"
 					+" to finalize your account and you'll be done yeehaaa!<br/><br/>"					
 					;
 			
 			try {
+				
 				Globals.Get().sendEmail(getEmail(), 
 					"Account Confirmation", 
 					msgBodyHtml);				
+			
 			} catch (DataProcessException e) {
 				// tmp			
 				log.info("### sent email with req id "+newAccountWaitingForEmailConfirmation.randomRequestId);

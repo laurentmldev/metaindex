@@ -36,11 +36,19 @@
 	document.getElementById("show_profile_container").appendChild(popupNode);
 
 	if (plans_modal_addHeaderMenu!=null) { plans_modal_addHeaderMenu();	}
-	
+
 </script>
 
 
  <!-- Topbar -->
+ 
+ <c:if test="${mxDevMode == true}" >
+  	<nav class="navbar navbar-expand topbar static-top"
+  			style="background:orange;height:2rem;color:white;font-weight:bold;">
+  	Dev-Mode Active
+  	</nav>
+  </c:if>
+  
         <nav class="navbar navbar-expand navbar-light bg-white topbar mb-2 static-top shadow">
 		
           <!-- Sidebar Toggle (Topbar) -->

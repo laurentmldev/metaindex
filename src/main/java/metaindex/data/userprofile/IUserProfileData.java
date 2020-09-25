@@ -102,7 +102,7 @@ public interface IUserProfileData extends ICatalogUser,IPlanUser,IObserver<IProc
 	
 	//----------
 	public void sendEmail(String subject, String body) throws DataProcessException;
-	public void sendEmailCCAdmin(String subject, String body) throws DataProcessException;	
+	public void sendEmailCCiAdmin(String subject, String body) throws DataProcessException;	
 	public void sendGuiErrorMessage(String msg);
 	public void sendGuiErrorMessage(String msg,List<String> details);
 	public void sendGuiInfoMessage(String msg);

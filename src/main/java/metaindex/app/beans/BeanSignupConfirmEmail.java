@@ -16,10 +16,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.ServletActionContext;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 import javax.servlet.http.HttpServletRequest;
 
 import metaindex.app.Globals;
 import metaindex.app.Globals.APPLICATION_STATUS;
+import metaindex.app.control.websockets.users.PaymentLogging;
+import metaindex.data.commons.globals.plans.IPlansManager;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
 import metaindex.data.userprofile.UserProfileData;
@@ -93,7 +99,22 @@ public class BeanSignupConfirmEmail extends BeanSignup {
     			log.error("unable to assign role to new user '"+a.email+"'");
     			return BeanProcessResult.BeanProcess_ERROR.toString();    			
     		}
-    		    		
+    		   
+    		// assign default plan to user
+    		u.setPlanId(IPlansManager.DEFAULT_PLAN_ID);
+			u.setPlanStartDate(new Date());
+			//  set end-date one year later
+			Integer newPlanDurationYear = 1;
+			Calendar cal = new GregorianCalendar();
+			cal.setTime(u.getPlanStartDate());
+			cal.add(Calendar.YEAR,newPlanDurationYear);
+			cal.add(Calendar.DAY_OF_MONTH,-1);
+			u.setPlanEndDate(cal.getTime());       			
+    		result = Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface().getCreateOrUpdatePlanIntoDbStmt(u).execute();    		
+    		if (result==false) {
+    			log.error("unable to assign default plan to new user '"+a.email+"'");
+    			return BeanProcessResult.BeanProcess_ERROR.toString();
+    		}
 		} catch (Throwable e) {
   			e.printStackTrace();
   			return BeanProcessResult.BeanProcess_ERROR.toString();

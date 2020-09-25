@@ -11,16 +11,12 @@ See full version of LICENSE in <https://fsf.org/>
 */
 
 
-import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.struts2.ServletActionContext;
 
 import metaindex.app.Globals;
 import metaindex.app.Globals.APPLICATION_STATUS;
 import metaindex.data.userprofile.IUserProfileData;
-import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
-import metaindex.data.userprofile.UserProfileData;
 import toolbox.exceptions.DataProcessException;
 
     

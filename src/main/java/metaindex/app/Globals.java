@@ -49,6 +49,7 @@ import toolbox.database.kibana.KibanaConnector;
 import toolbox.database.sql.SQLDataConnector;
 import toolbox.exceptions.DataAccessException;
 import toolbox.exceptions.DataProcessException;
+import toolbox.utils.mailing.DummyMailSender;
 import toolbox.utils.mailing.GoogleMailSender;
 import toolbox.utils.mailing.IEmailSender;
 import toolbox.utils.statistics.IStatisticsManager;
@@ -112,7 +113,13 @@ public class Globals {
 	private final String DB_DATASOURCE_SQL = "dataSource";
 	
 	public enum APPLICATION_STATUS { STOPPED, RUNNING, FAILURE, MAINTENANCE };
-	private APPLICATION_STATUS _applicationStatus = APPLICATION_STATUS.STOPPED;	
+	private APPLICATION_STATUS _applicationStatus = APPLICATION_STATUS.STOPPED;
+	
+	// activacte specific features for development :
+	// - display warning banner
+	// - dump in logs the link for account confirmation rather than send an email
+	// - acceptation of dev 'dummy' payment method
+	private Boolean _devMode = false;
 	
 	private SQLDataConnector _sqlConnector;
 	private ElasticSearchConnector _esConnector;
@@ -163,26 +170,26 @@ public class Globals {
 			"</body>\n" + 
 			"</html>";
 	
-	public void sendEmail(String recipientEmail,String ccEmail, String subject, String msg) throws DataProcessException {
+	public void sendEmail(String recipientEmail,String ccEmail,String cciEmail, String subject, String msg) throws DataProcessException {
 		
 		if (msg.length()==0 || subject.length()==0) {
 			throw new DataProcessException("Cowardly refusing to send empty email (or with empty subject) to '"+recipientEmail+"'");
 		}
 		
-		try {			
+		try {					
 			_mailSender.send(GetMxProperty("mx.mailer.user"), 
-							 GetMxProperty("mx.mailer.password"), 
-							 recipientEmail, 
-							 ccEmail,
-							 MX_EMAIL_SUBJECT_PREFIX+" "+subject, 
-							 MX_EMAIL_HEADER+msg+MX_EMAIL_FOOTER);
-			
+						 GetMxProperty("mx.mailer.password"), 
+						 recipientEmail, 
+						 ccEmail,cciEmail,
+						 MX_EMAIL_SUBJECT_PREFIX+" "+subject, 
+						 MX_EMAIL_HEADER+msg+MX_EMAIL_FOOTER);
+		
 		} catch (MessagingException e) {
 			throw new DataProcessException("Unable to send email '"+subject+"' to '"+recipientEmail+"' : "+e.getMessage(),e);
 		}
 	}
 	public void sendEmail(String recipientEmail, String subject, String msg) throws DataProcessException {
-		sendEmail(recipientEmail,"",subject,msg);
+		sendEmail(recipientEmail,"","",subject,msg);
 	}
 	public void setWebappsFsPath(String contextPath) { 
 		_contextPath=contextPath; 
@@ -253,6 +260,10 @@ public class Globals {
 			// starting users quotas checker
 			_mxUsersQuotaChecker.start();
 			log.info("MetaindeX connections init done");
+			
+			if (isDevMode()) {
+				_mailSender=new DummyMailSender();
+			}
 		}
 		
 		
@@ -306,17 +317,21 @@ public class Globals {
 				|| _applicationStatus==APPLICATION_STATUS.STOPPED)
 				&& mxPropStatus.equals("MAINTENANCE")) {
 			_applicationStatus=APPLICATION_STATUS.MAINTENANCE;
-		}
+		}		
 		return _applicationStatus;
 	}
 	public void setApplicationStatus(APPLICATION_STATUS applicationStatus) {
 		_applicationStatus = applicationStatus;
 	}
 
+	public Boolean isDevMode() {
+		return new Boolean(GetMxProperty("mx.devmode"));
+	}
 	public String getDetailsStr() {
 
 		return   "\n	###### MetaindeX v"+Globals.GetMxProperty("mx.version")+"  ######"+"\n"
 				+"- mx.status="+Globals.GetMxProperty("mx.status")+"\n\n"
+				+"- mx.devmode="+isDevMode()+"\n\n"
 				+"- mx.host="+Globals.GetMxProperty("mx.host")+"\n"
 				+"- mx.protocol="+Globals.GetMxProperty("mx.protocol")+"\n"
 				+"- mx.port="+Globals.GetMxProperty("mx.port")+"\n"

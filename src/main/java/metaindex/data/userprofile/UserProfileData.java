@@ -480,8 +480,8 @@ public class UserProfileData implements IUserProfileData
 	}
 	
 	@Override
-	public void sendEmailCCAdmin(String subject, String body) throws DataProcessException {
-		Globals.Get().sendEmail(this.getName(),Globals.GetMxProperty("mx.mailer.admin_recipient"),subject, body);
+	public void sendEmailCCiAdmin(String subject, String body) throws DataProcessException {
+		Globals.Get().sendEmail(this.getName(),/*Cc*/"",/*Cci*/Globals.GetMxProperty("mx.mailer.admin_recipient"),subject, body);
 	}
 	
 	private void sendGuiMessage(MESSAGE_CRITICITY level, String msg, List<String> details) {

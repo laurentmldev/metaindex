@@ -5,11 +5,16 @@
 
 
 <!-- include Paypal payment method if found -->
-<%-- s:include value="./mx_payment_paypal_proprietary.jsp" /--%>
+
+<c:if test="${mxDevMode == false}" >
+<s:include value="./mx_payment_paypal_proprietary.jsp" />
+</c:if>
+
+<c:if test="${mxDevMode == true}" >
+
 
  <script type="text/javascript" >
-
-if (addCheckoutButton==null) {
+ 
 
 	function addCheckoutButton(containerId, transactionId, breakdownCheckout, successCallback,failureCallback) {
 
@@ -19,7 +24,7 @@ if (addCheckoutButton==null) {
 	 buttonGetIt.classList.add("btn");
 	 buttonGetIt.classList.add("btn-success");
 	 buttonGetIt.style["font-size"]="1.4rem";
-	 buttonGetIt.innerHTML="Sandbox Checkout";
+	 buttonGetIt.innerHTML="Checkout (test)";
 	 buttonGetIt.onclick=function(event) {
 		 footer_showAlert(INFO, "Using 'sandbox' payment interface");		 		
 		 successCallback("sandbox" /*payment partner*/, breakdownCheckout);
@@ -28,10 +33,7 @@ if (addCheckoutButton==null) {
 	 breakdownCheckout.transactionId=transactionId;
 	 breakdownCheckout.paymentMethod="sandbox";
 	 breakdownCheckout.paymentDetails="transactionId:"+transactionId;
-	 containerEl.append(buttonGetIt);
-	      
+	 containerEl.append(buttonGetIt);    
  }
- 
-}
-
-  </script>
+ </script>
+</c:if>
