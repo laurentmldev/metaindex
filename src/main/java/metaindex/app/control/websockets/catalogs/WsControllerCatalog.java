@@ -284,56 +284,64 @@ public class WsControllerCatalog extends AMxWSController {
     	}
     	
     	try {    		
+
+    		// need to ensure that a unique request for a free port and catalog name will be done at a time
+            // for the whole server
+            _GlobalCreateCatalogLock.acquire();
+            
+    		// check there is no such catalog already existing
     		ICatalog c  = Globals.Get().getCatalogsMgr().getCatalog(requestMsg.getCatalogName());
-	    	if (c==null) {
-	    		
-	    		// need to ensure that a unique request for a free port will be done at a time
-                // for the whole server
-                _GlobalCreateCatalogLock.acquire();
-                
-	    		c=new Catalog();
-	    		c.setName(requestMsg.getCatalogName());
-	    		
-	    		Integer ftpPortRangeLow = new Integer(Globals.GetMxProperty("mx.ftp.port.range_low"));
-                Integer ftpPortRangeHigh = new Integer(Globals.GetMxProperty("mx.ftp.port.range_high"));
-                
-                Integer availablePort = findAvailableFtpPort(ftpPortRangeLow,ftpPortRangeHigh);
-                if (availablePort==null) {
-                	answer.setRejectMessage("Unable to create catalog definition, no available port for userdata access");
-	    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
-	    			return;
-                }
-                c.setFtpPort(availablePort);
-                
-	    		Boolean result = Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getCreateIntoDefDbStmt(user,c).execute();
-	    		if (!result) {
-	    			answer.setRejectMessage("Unable to create catalog definition into SQL db");
-	    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
-	    			return;
-	    		}
-	    		Globals.Get().getCatalogsMgr().loadFromDb();	    		
-	    		c  = Globals.Get().getCatalogsMgr().getCatalog(requestMsg.getCatalogName());
-	    		user.setUserCatalogAccessRights(c.getId(), USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN);
-	    		result = Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface().getSetUserAccessRightsIntoDbStmt(user, c).execute();	    		
-	    		
-	    		if (!result) {
-	    			answer.setRejectMessage("Unable to give access rights to user");
-	    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
-	    		}
-	    		
-	    		// during loading of catalog from Db, services are started including FTP server
-	    		// so the port is taken and we can release the lock
-	    		_GlobalCreateCatalogLock.release();
-	            					    		
-	    	} else {
-	    		user.sendGuiWarningMessage("Reusing existing definition for catalog '"+c.getName()+"'");
+	    	if (c!=null) {
+	    		answer.setRejectMessage(user.getText("Catalogs.catalogNameAlreadyUsed",c.getName()));
+    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
+    			_GlobalCreateCatalogLock.release();
+    			return;
 	    	}
+    		
+    		c=new Catalog();
+    		c.setName(requestMsg.getCatalogName());
+    		
+    		Integer ftpPortRangeLow = new Integer(Globals.GetMxProperty("mx.ftp.port.range_low"));
+            Integer ftpPortRangeHigh = new Integer(Globals.GetMxProperty("mx.ftp.port.range_high"));
+            
+            Integer availablePort = findAvailableFtpPort(ftpPortRangeLow,ftpPortRangeHigh);
+            if (availablePort==null) {
+            	answer.setRejectMessage("Unable to create catalog definition, no available port for userdata access");
+    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
+    			_GlobalCreateCatalogLock.release();
+    			return;
+            }
+            c.setFtpPort(availablePort);
+            
+    		Boolean result = Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getCreateIntoDefDbStmt(user,c).execute();
+    		if (!result) {
+    			answer.setRejectMessage("Unable to create catalog definition into SQL db");
+    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
+    			_GlobalCreateCatalogLock.release();
+    			return;
+    		}
+    		Globals.Get().getCatalogsMgr().loadFromDb();	    		
+    		c  = Globals.Get().getCatalogsMgr().getCatalog(requestMsg.getCatalogName());
+    		user.setUserCatalogAccessRights(c.getId(), USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN);
+    		result = Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface().getSetUserAccessRightsIntoDbStmt(user, c).execute();	    		
+    		
+    		if (!result) {
+    			answer.setRejectMessage("Unable to give access rights to user");
+    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
+    			_GlobalCreateCatalogLock.release();
+    			return;
+    		}
+    		
+    		// during loading of catalog from Db, services are started including FTP server
+    		// so the port is taken and we can release the lock
+    		_GlobalCreateCatalogLock.release();
+	        
 	    	c  = Globals.Get().getCatalogsMgr().getCatalog(requestMsg.getCatalogName());
 	    	
 	    	try {
 	    		
 	    		// create index
-		    	Boolean result = Globals.Get().getDatabasesMgr().getCatalogContentsDbInterface().getCreateIndexIntoDocsDbStmt(c).execute();
+		    	result = Globals.Get().getDatabasesMgr().getCatalogContentsDbInterface().getCreateIndexIntoDocsDbStmt(c).execute();
 		    	if (!result) {
 		    		answer.setRejectMessage("Unable to create catalog index");
 	    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
@@ -401,7 +409,7 @@ public class WsControllerCatalog extends AMxWSController {
 			}
 			
 			// create Kibana space dedicated to this catalog
-	    	Boolean result =Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().createStatisticsSpace(user, c);
+	    	result =Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().createStatisticsSpace(user, c);
 	    	if (!result) {
 	    		answer.setRejectMessage("Unable to create catalog statistics space");
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);

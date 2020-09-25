@@ -99,7 +99,8 @@
 //refresh nb created catalogs
 function handleNbCreatedCatalogs(profileData) {
 	let curNbCatalogsCreated=profileData.curNbCatalogsCreated;
-	let maxNbCatalogsCreated=profileData.maxNbCatalogsCreated;		
+	let maxNbCatalogsCreated=profileData.maxNbCatalogsCreated;
+	
 	MxGuiLeftBar.updateNbCatalogsCreated(curNbCatalogsCreated,maxNbCatalogsCreated);
 }
 
@@ -124,7 +125,7 @@ function handleNbCreatedCatalogs(profileData) {
 		 newCurActiveCard.select(); 
 		 MxGuiDetails.restoreGui();
 	 }
-	 
+
 	 ws_handlers_getUserProfileData(<s:property value='currentUserProfile.id'/>,handleNbCreatedCatalogs);
   }
  

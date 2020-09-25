@@ -3,10 +3,11 @@
 v2.1.0:
 -------
 
+#89 autonomous password reset
 
-	
-when no catalog is owned at all -> max owned catalogs reach warning is visible with empty numbers (' / ')
+in users panel, unable to change access rights on first display, need to refresh page and then it works
 
+send notif email when your access rights to a catalog has been modified by an admin
 
 
 add a 'contact us' 
@@ -21,7 +22,7 @@ Référence de temps Kibana = '0' en mode Read-Only
 
 
 #98 ensure user cannot arm data from others via kibana
-#89 autonomous password reset
+
 			
 #88 use scripted fields to get decades automatically computed
 #93 close GEXF window once generation started
@@ -136,6 +137,7 @@ Done:
 
 v2.1.0
 
+#19 send email to users, Cci to admin when needed
 #89 devmode with warning banner, dummy payment and email sender	
 #102 improve fields layout when text is long
 
