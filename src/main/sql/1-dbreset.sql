@@ -411,7 +411,7 @@ ALTER TABLE `guithemes`
 ALTER TABLE `users`
  ADD PRIMARY KEY (`user_id`), 
  ADD UNIQUE KEY `email` (`email`), 
- ADD UNIQUE KEY `nickname` (`nickname`), 
+ ADD KEY `nickname` (`nickname`), 
  ADD KEY `FK_USERS_GUILANGUAGE_ID` (`guilanguage_id`), 
  ADD KEY `FK_USERS_GUITHEME_ID` (`guitheme_id`);
 
