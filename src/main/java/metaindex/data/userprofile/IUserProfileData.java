@@ -42,9 +42,9 @@ public interface IUserProfileData extends ICatalogUser,IPlanUser,IObserver<IProc
 	public void setEnabled(Boolean enabled);
 	
 	public void setNickname(String nickName);
-	
+	;
 	public String getPassword();
-    public void setPasswordAndEncrypt(String clearPassword);
+	public void setPasswordAndEncrypt(String clearPassword);
     public void setEncryptedPassword(String passwordHash);
     
     public Integer getGuiLanguageId();

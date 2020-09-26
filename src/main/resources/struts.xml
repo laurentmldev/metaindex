@@ -33,17 +33,27 @@
 		<action name="signup" class="metaindex.app.beans.BeanProfile">
 			<result name="BeanProcess_SUCCESS" >/public/signup.jsp</result>			
 		</action>
-		<action name="signupprocess" class="metaindex.app.beans.BeanSignup">
+		
+		
+		<action name="signupprocess" class="metaindex.app.beans.BeanSignupSendEmail">
 			<result name="BeanProcess_SUCCESS" >/public/signup_confirmemail.jsp</result>
 			<result name="emailalreadyinuse" >/public/signup.jsp?emailalreadyused</result>
 			<result name="newemailalreadywaiting" >/public/signup.jsp?newemailalreadywaiting</result>
-			<result name="BeanProcess_ERROR" >/public/signup.jsp?error</result>
-			  		
+			<result name="BeanProcess_ERROR" >/public/signup.jsp?error</result>			  		
 		</action>
 		<action name="signup_confirmemail" class="metaindex.app.beans.BeanSignupConfirmEmail">
-			<result name="BeanProcess_SUCCESS" >/public/signup_finalize.jsp</result>			
+			<result name="BeanProcess_SUCCESS" >/public/reset_password.jsp</result>			
 		</action>
-		<action name="resetpassword" class="metaindex.app.beans.BeanSetPassword">
+		<action name="resetpwdprocess" class="metaindex.app.beans.BeanResetPwdSendEmail">
+			<result name="BeanProcess_SUCCESS" >/public/resetpwd_confirmemail.jsp</result>
+			<result name="invaliduserid" >/public/login.jsp?error</result>
+			<result name="alreadywaiting" >/public/login.jsp?error</result>
+			<result name="BeanProcess_ERROR" >/public/login.jsp?error</result>			  		
+		</action>
+		<action name="resetpwd_confirmemail" class="metaindex.app.beans.BeanResetPwdConfirmEmail">
+			<result name="BeanProcess_SUCCESS" >/public/reset_password.jsp</result>			
+		</action>
+		<action name="resetpassword" class="metaindex.app.beans.BeanResetPwd">
 			<result name="BeanProcess_SUCCESS" >/public/login.jsp?passwordreset</result>			
 		</action>
 

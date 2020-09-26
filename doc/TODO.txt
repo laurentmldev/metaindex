@@ -4,7 +4,8 @@ v2.1.0:
 -------
 
 #89 autonomous password reset
-
+	- make more clear which form it is : login, create password, reset password, create account
+	
 in users panel, unable to change access rights on first display, need to refresh page and then it works
 
 send notif email when your access rights to a catalog has been modified by an admin

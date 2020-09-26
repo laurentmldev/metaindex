@@ -67,7 +67,7 @@ public class UserProfileData implements IUserProfileData
 	private String _wsSessionId = "";
 	private Integer _userId = 0;
 	private String _useremail = "";
-	private String _cryptedPassword = "";
+	private String _cryptedPassword = "";	
 	private String _nickname = "";
 	private boolean _isLoggedIn = false;
 	private USER_ROLE _role=USER_ROLE.ROLE_OBSERVER;
@@ -116,6 +116,9 @@ public class UserProfileData implements IUserProfileData
 		// so changes in DB (typically plan or enabled-flag) shall 
 		// be detected even if the user itself is not logged-in
 		_dbAutoRefreshProcessing.start();
+		
+		// will load corresponding translations map
+		this.setGuiLanguageId(DEFAULT_LANG_ID);
 	}
 	public Integer getPlanId() {
 		return _planId; 
@@ -254,8 +257,8 @@ public class UserProfileData implements IUserProfileData
 	@Override
     public void setPasswordAndEncrypt(String clearPassword) 
     { 
-    	BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-    	this._cryptedPassword = bCryptPasswordEncoder.encode(clearPassword); 
+		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+    	this._cryptedPassword = bCryptPasswordEncoder.encode(clearPassword);    	
 	}  
 	public void setEncryptedPassword(String password) {
 		this._cryptedPassword = password;
@@ -394,7 +397,7 @@ public class UserProfileData implements IUserProfileData
 	@Override 
 	public String getText(String textid, String... params) {
 		if (_curLanguageTranslations==null) {
-			log.error("trying to get Ttext from undefined language properties.");
+			log.error("trying to get text from undefined language properties.");
 			return textid;
 		}
 		String propertyStr = _curLanguageTranslations.getString(textid);
@@ -683,5 +686,6 @@ public class UserProfileData implements IUserProfileData
 	public List<ICatalog> getOwnedCatalogs() {
 		return Globals.Get().getCatalogsMgr().getOwnedCatalogsList(getId());
 	}
+
 	
 }

@@ -19,6 +19,7 @@ import org.apache.struts2.ServletActionContext;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -36,12 +37,11 @@ import toolbox.exceptions.DataProcessException;
  * Common Bean for all the 'Profile' JSP pages (profile,createProfile, editProfile).
  * @author Laurent ML
  */
-public class BeanSignupConfirmEmail extends BeanSignup {  
+public class BeanSignupConfirmEmail extends BeanSignupSendEmail {  
   	
 	private static final long serialVersionUID = 1L;
 	private Log log = LogFactory.getLog(BeanSignupConfirmEmail.class);
 
-	private Long _requestId=null;
   	
 	@Override
   	public void prepare() throws Exception { 
@@ -69,17 +69,19 @@ public class BeanSignupConfirmEmail extends BeanSignup {
 					throw new DataProcessException("application is not running, unable to create new account for now");								
 			}
 			
-			AwaitingAccount a = BeanSignup.GetAwaitingAccount(getEmail(),getRequestId());
+			BeanSignupSendEmail.AwaitingAccount a = getAwaitingAccount(getEmail(),getRequestId());
 			
 			if (a==null) { 
 				return BeanProcessResult.BeanProcess_ERROR.toString();
 			}
 			
+			clearAwaitingAccount(getEmail());
+			
 			// creating SQL entry for new user
 			// default password is dummy, will have to be reset by user
 			IUserProfileData u = new UserProfileData();
 			u.setName(a.email);
-			u.setNickname(a.nickname);
+			u.setNickname(a.properties.get("nickname").toString());
 			
     		Boolean result = Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface()
     														.getCreateUserIntoSqlDbStmt(u).execute();	    		    		
@@ -115,18 +117,17 @@ public class BeanSignupConfirmEmail extends BeanSignup {
     			log.error("unable to assign default plan to new user '"+a.email+"'");
     			return BeanProcessResult.BeanProcess_ERROR.toString();
     		}
+    		
+    		// prepare next step : reset password
+    		BeanResetPwd.SignalComingUserPasswdReset(u.getId());
+    		
 		} catch (Throwable e) {
   			e.printStackTrace();
   			return BeanProcessResult.BeanProcess_ERROR.toString();
   		} 
 		
+		
 		return BeanProcessResult.BeanProcess_SUCCESS.toString();
 	}
-	
-	public void setRequestId(Long requestId) {
-		_requestId=requestId;
-	}
-	public Long getRequestId() {
-		return _requestId;
-	}
+
 }  

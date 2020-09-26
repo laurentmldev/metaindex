@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="/struts-tags" prefix="s" %>  
 <c:url value="/" var="mxurl"/>
-<c:url value="/loginprocess" var="loginUrl"/>
+<c:url value="/signupprocess" var="signupUrl"/>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -15,7 +15,7 @@
   <meta name="author" content="">
 
   
-  <title>MetaindeX - Login</title>
+  <title>MetaindeX - <s:text name="passwordreset.emailsent.title" /></title>
   <link rel="icon" type="image/svg" href="public/commons/media/img/favicon.png">
   <!-- Custom fonts for this template-->
   <link href="${mxurl}public/commons/deps/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -32,12 +32,7 @@ onkeypress="if (event.which==13||event.keycode==13) {
 	}"
 	>
 
-<c:if test="${mxDevMode == true}" >
-  	<nav class="navbar navbar-expand topbar static-top"
-  			style="background:orange;height:2rem;color:white;font-weight:bold;">
-  	Dev-Mode Active
-  	</nav>
-  </c:if>
+
   <div class="container p-5" style="width:50%;">
 	
 	
@@ -51,6 +46,9 @@ onkeypress="if (event.which==13||event.keycode==13) {
             <div class="row" style="display:block;">            	
             	<div class="app-title" style="font-size:6vw;padding:0;margin:0;width:auto;">
 			 		<span class="scale-color-white">M</span><span class="app-title2 scale-color-white" style="color:white;">etainde</span><span class="scale-color-white">X</span>            		            			
+            		<div style="font-size:1rem;font-weight:normal;text-shadow:none;">
+            			<s:text name="passwordreset.emailsent.explanation" />            			
+            		</div>
             	</div>
             	 
             </div>
@@ -59,57 +57,10 @@ onkeypress="if (event.which==13||event.keycode==13) {
               
               <div class="col-lg-12">
                 <div class="p-2">
-           	<c:if test="${mxStatus == 'MAINTENANCE'}">
-           		<div class="maintenance"><p><s:text name="global.maintenance" /></p></div>
-           	</c:if>
-	
-           	<c:if test="${mxStatus == 'ACTIVE'}">
-           	
-                  <form id="loginform" class="user" action="${loginUrl}" method="post" >
-                  	<input type="hidden"  name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                  	
-                  	<div class="form-group">
-	                  	<c:if test="${param.error != null}"> <p><s:text name="session.loginerror" /></p></c:if>
-						<c:if test="${param.logout != null}"><p><s:text name="session.logoutmessage" /></p></c:if>
-						<c:if test="${param.expired != null}"><p><s:text name="session.expiredmessage" /></p></c:if>
-						<c:if test="${param.passwordreset != null}"><p><s:text name="session.passwordreset" /></p></c:if>
-					</div>
-					
-                    <div class="form-group">
-                      <input id="email" type="email" name='username' class="form-control form-control-user" aria-describedby="emailHelp" placeholder="Enter Email Address...">
-                    </div>
-                    <div class="form-group">
-                      <input type="password" name='password' class="form-control form-control-user" placeholder="<s:text name="session.password" />">
-                    </div>
-                    <!--div class="form-group">
-                      <div class="custom-control custom-checkbox small">
-                        <input type="checkbox" class="custom-control-input" id="customCheck">
-                        <label class="custom-control-label" for="customCheck">Remember Me</label>
-                      </div>
-                    </div-->
-                    <center>
-                    <a href="#" class="btn btn-primary btn-user btn-block scale" style="max-width:30%;" onclick="document.getElementById('loginform').submit();">
-                      Sign-in
-                    </a>
-  	                <hr/>
-                    <a href="#" class="btn  btn-user btn-block scale" style="max-width:50%;font-size:0.8rem;background:#eee" 
-                    	onclick="console.log('reset pwd for '+document.getElementById('email').innerHTML);
-                    			 window.location.href='resetpwdprocess?email='+document.getElementById('email').value;">
-                      <s:text name="passwordreset.emailsent.title" />
-                    </a>
-                    <hr/>
-                    <a href="#" class="btn  btn-user btn-block scale" style="max-width:50%;font-size:0.8rem;background:#eee" onclick="window.location.href='signup';">
-                      <s:text name="signup.createAccount" />
-                    </a>
-
-                    </center>
-                    <hr>                 
-                  </form>
-                 
-                 </c:if>
-                </div>
-                
-             
+		           	<c:if test="${mxStatus == 'MAINTENANCE'}">
+		           		<div class="maintenance"><p><s:text name="global.maintenance" /></p></div>
+		           	</c:if>			
+                </div>             
               </div>
             </div>
         

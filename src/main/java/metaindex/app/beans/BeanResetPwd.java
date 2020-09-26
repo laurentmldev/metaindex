@@ -1,5 +1,8 @@
 package metaindex.app.beans;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /*
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -20,24 +23,29 @@ import metaindex.data.userprofile.IUserProfileData;
 import toolbox.exceptions.DataProcessException;
 
     
-/**
- * Common Bean for all the 'Profile' JSP pages (profile,createProfile, editProfile).
+/** 
  * @author Laurent ML
  */
-public class BeanSetPassword extends BeanSignup {  
+public class BeanResetPwd extends BeanSignupSendEmail {  
   	
 	private static final long serialVersionUID = 1L;
 	private Log log = LogFactory.getLog(BeanSignupConfirmEmail.class);
 
-	private Long _requestId=null;
 	private String _clearPassword="";
+	
+	private static List<Integer> _expectedPasswordReset = new ArrayList<>();
   	
+	public static void SignalComingUserPasswdReset(Integer uid) { 
+		if (!_expectedPasswordReset.contains(uid)) {
+			_expectedPasswordReset.add(uid);
+		}
+	}
 	/**
 	 * Synchronized to ensure that it is not possible that 2 persons 
 	 * create at the same time an account with same email
 	 */
 	@Override
-  	synchronized public String execute() throws Exception {
+  	public String execute() throws Exception {
 		
 		try { 
 			
@@ -50,6 +58,12 @@ public class BeanSetPassword extends BeanSignup {
     			log.error("unable to reset password for user '"+getEmail()+"', no such user.");
     			return BeanProcessResult.BeanProcess_ERROR.toString();				
 			}
+			
+			if (!_expectedPasswordReset.contains(u.getId())) {
+				log.error("unexpected operation : reset password for user '"+getEmail()+"'.");
+    			return BeanProcessResult.BeanProcess_ERROR.toString();
+			}
+			_expectedPasswordReset.remove(u.getId());
 			
 			u.setName(getEmail());
 			Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface()
@@ -72,13 +86,6 @@ public class BeanSetPassword extends BeanSignup {
 		return BeanProcessResult.BeanProcess_SUCCESS.toString();
 	}
 	
-	public void setRequestId(Long requestId) {
-		_requestId=requestId;
-	}
-	public Long getRequestId() {
-		return _requestId;
-	}
-
 	public String getClearPassword() {
 		return _clearPassword;
 	}
