@@ -251,6 +251,12 @@ public class WsControllerCatalog extends AMxWSController {
 														c.getName(),requestMsg.getAccessRights().toString()));
 		}
 		
+		targetUser.sendEmail(targetUser.getText("Catalogs.users.catalogAccessRightsChanged.email.title",c.getName()), 
+							 targetUser.getText("Catalogs.users.catalogAccessRightsChanged.email.body",
+									 targetUser.getNickname(),
+									 c.getName(),
+									 requestMsg.getAccessRights().toString()));
+		
     }
     
     private Integer findAvailableFtpPort(Integer portRangeStart,Integer portRangeEnd) {

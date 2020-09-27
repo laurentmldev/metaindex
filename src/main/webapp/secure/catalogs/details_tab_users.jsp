@@ -63,6 +63,8 @@
 		 rights.append(editableAccessRightsNode);
 		 row.append(rights);
 	 }
+	 
+	 
 	 xeditable_finishEditableFields();
  }
  function _updateCatalogUsers() {

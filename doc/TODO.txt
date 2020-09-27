@@ -4,9 +4,9 @@ v2.1.0:
 -------
 
 	
-in users panel, unable to change access rights on first display, need to refresh page and then it works
+in users panel, unable to change access rights on first display, need to refresh page and then it works (TBC)
 
-send notif email when your access rights to a catalog has been modified by an admin
+
 
 
 add a 'contact us' 
@@ -160,6 +160,7 @@ popup info/success/error msg shall be over popup frames
 #99 manage users access to catalogs
 	- create a catalog only if current plan allows it
 	- access rights panel : accept or reject catalogs access requests
+	- send notif email when your access rights to a catalog has been modified by an admin
 	
 #95 autonomous account creation 
 	- terms and Conditions and use of Cookies presentation
