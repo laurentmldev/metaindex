@@ -27,7 +27,6 @@ import toolbox.exceptions.DataProcessException;
 
     
 /**
- * Common Bean for all the 'Profile' JSP pages (profile,createProfile, editProfile).
  * @author Laurent ML
  */
 public class BeanResetPwdSendEmail extends ABeanEmailConfirmedAction {  

@@ -33,7 +33,12 @@
 		<action name="signup" class="metaindex.app.beans.BeanProfile">
 			<result name="BeanProcess_SUCCESS" >/public/signup.jsp</result>			
 		</action>
-		
+		<action name="contactform" class="metaindex.app.beans.BeanProfile">
+			<result name="BeanProcess_SUCCESS" >/public/contactform.jsp</result>			
+		</action>
+		<action name="contactformprocess" class="metaindex.app.beans.BeanContactUs">
+			<result name="BeanProcess_SUCCESS" >/public/contactform-success.jsp</result>			
+		</action>
 		
 		<action name="signupprocess" class="metaindex.app.beans.BeanSignupSendEmail">
 			<result name="BeanProcess_SUCCESS" >/public/signup_confirmemail.jsp</result>

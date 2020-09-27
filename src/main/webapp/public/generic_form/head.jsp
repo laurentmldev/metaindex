@@ -13,7 +13,7 @@
   <meta name="author" content="">
 
   
-  <title>MetaindeX - <span id="pagetitle"></span></title>
+  <title>MetaindeX</title>
   <link rel="icon" type="image/svg" href="public/commons/media/img/favicon.png">
   <!-- Custom fonts for this template-->
   <link href="${mxurl}public/commons/deps/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">

@@ -101,6 +101,10 @@
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                   <s:text name="Profile.plans"></s:text>
                 </a>
+                <a id="contactUs" class="dropdown-item" href="contactform?email=<s:property value="currentUserProfile.name"/>&origin=" >
+                  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                  	<s:text name="contactform.title"></s:text>
+                </a>
                 <a class="dropdown-item" data-toggle="modal" data-target="#logoutModal">
                   <i class="fas fa-running fa-sm fa-fw mr-2 text-gray-400"></i>
                   <s:text name="Profile.logout"></s:text>
@@ -182,4 +186,6 @@
 	  document.getElementById("show_info_container").style.display='none';
 	 
   }
+  
+  document.getElementById('contactUs').href+=window.location.href;
   </script>

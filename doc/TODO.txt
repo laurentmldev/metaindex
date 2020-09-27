@@ -3,49 +3,40 @@
 v2.1.0:
 -------
 
-	
-in users panel, unable to change access rights on first display, need to refresh page and then it works (TBC)
-
-
-
-
-add a 'contact us' 
 add in users tab an help explaining how to add users
-add tempo when create account	
 
-rename 'perspective' into 'layout' ?
+add tempo when create account	
 
 only catalog admin shall be allowed to create a new field
 
 Référence de temps Kibana = '0' en mode Read-Only
 
-
 #98 ensure user cannot arm data from others via kibana
-
+		--> any user can delete spaces from somebody else
 			
-#88 use scripted fields to get decades automatically computed
+#88 use scripted fields to get decades automatically computed, or create decade sub-fields?
+
 #93 close GEXF window once generation started
+
 #40 when deleting a catalog, delete also associated userdata (with strong confirmation message)
-# include ELK disck space for quota calculation?
-	GET /_cat/indices?v
-	GET /_cluster/stats summarizes
-
-
 
 #55 tutorial videos on youtube
 
-
 check amount of available FTP ports when lots of catalogs
+
+v2.1.1:
+-------
 
 implement tests for WS actions
 
 periodic tasks are broken after context reload?
 
-
-create catalog: nice error msg if a catalog with same name already exist
-
-v2.1.1:
--------
+# include ELK disck space for quota calculation?
+	GET /_cat/indices?v
+	GET /_cluster/stats summarizes
+	
+in users panel, unable to change access rights on first display, need to refresh page and then it works (TBC)
+rename 'perspective' into 'layout' ?
 
 #103 what happens to the data once the plan expired : keep it 3 months and then deleted? 
 
@@ -135,6 +126,10 @@ Done:
 -----
 
 v2.1.0
+
+#104 add a 'contact us' 
+
+create catalog: nice error msg if a catalog with same name already exist
 
 #89 autonomous password reset
 	- make more clear which form it is : login, create password, reset password, create account
