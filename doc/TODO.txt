@@ -3,8 +3,6 @@
 v2.1.0:
 -------
 
-#89 autonomous password reset
-	- make more clear which form it is : login, create password, reset password, create account
 	
 in users panel, unable to change access rights on first display, need to refresh page and then it works
 
@@ -13,7 +11,7 @@ send notif email when your access rights to a catalog has been modified by an ad
 
 add a 'contact us' 
 add in users tab an help explaining how to add users
-add tempo when overflow attack seems possible
+add tempo when create account	
 
 rename 'perspective' into 'layout' ?
 
@@ -137,6 +135,9 @@ Done:
 -----
 
 v2.1.0
+
+#89 autonomous password reset
+	- make more clear which form it is : login, create password, reset password, create account
 
 #19 send email to users, Cci to admin when needed
 #89 devmode with warning banner, dummy payment and email sender	

@@ -60,7 +60,7 @@ public class BeanResetPwdConfirmEmail extends BeanResetPwdSendEmail {
 			
 			BeanResetPwdSendEmail.AwaitingAccount a = getAwaitingAccount(getEmail(),getRequestId());
 			
-			if (a==null) { 
+			if (a==null) {
 				return BeanProcessResult.BeanProcess_ERROR.toString();
 			}
 			
