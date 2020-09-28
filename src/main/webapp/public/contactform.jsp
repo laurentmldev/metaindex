@@ -61,7 +61,8 @@
 	  <input id="bigtext" type="text" class="form-control form-control-user"name="email" placeholder="" 
 					style="margin:1rem;padding:0.6rem;width:60%;"
 						value="<s:text name="contactform.emptyme" />" />
-						
+				
+				
 	  <a href="#" class="btn btn-primary btn-user btn-block scale" style="max-width:30%;" 
 	  	onclick="
 	  	
@@ -80,6 +81,12 @@
 	  			}
 	  	         else { document.getElementById('form').submit(); }">
                    <s:text name="contactform.send" />
+                 </a>
+                 
+        <a href="#" class="btn btn-primary btn-user btn-block scale" 
+        		style="max-width:30%;margin-top:1rem;padding:0.4rem;background:#999;border:none;" 
+	  	onclick="window.location.href='${param.origin}'">
+                   <s:text name="globals.goback" />
                  </a>
                  
                  </center>

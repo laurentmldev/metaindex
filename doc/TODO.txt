@@ -128,6 +128,8 @@ Done:
 v2.1.0
 
 #104 add a 'contact us' 
+	with 'cancel' button on the 'contact us' form
+	
 
 create catalog: nice error msg if a catalog with same name already exist
 
