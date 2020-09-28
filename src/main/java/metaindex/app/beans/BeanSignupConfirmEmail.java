@@ -74,6 +74,10 @@ public class BeanSignupConfirmEmail extends BeanSignupSendEmail {
 				return BeanProcessResult.BeanProcess_ERROR.toString();
 			}
 			
+			// try to limit hardcore overflow. 
+			// That might work since this method in synchronized
+			Thread.sleep(2000);
+
 			clearAwaitingAccount(getEmail());
 			
 			// creating SQL entry for new user

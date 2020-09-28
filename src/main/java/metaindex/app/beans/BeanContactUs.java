@@ -40,10 +40,10 @@ public class BeanContactUs extends BeanProfile {
 	private String _origin = "";
 	
 	/**
-	 * Synchronized to ensure that it is not possible to create together an account with same email
+	 * Synchronized to allow temporisation to be effective in case of floading attack
 	 */
 	@Override
-  	public String execute() throws Exception {
+  	public synchronized String execute() throws Exception {
 		
 		try { 
 			
@@ -64,8 +64,8 @@ public class BeanContactUs extends BeanProfile {
 						
 			try {
 				
-				// try to limit brut force attack
-				// dunno if this is really efficient ...	
+				// try to limit hardcore overflow. 
+				// That might work since this method in synchronized
 				Thread.sleep(2000);
 				
 				if (isAUser) {
@@ -101,16 +101,17 @@ public class BeanContactUs extends BeanProfile {
 		return _email;
 	}
 
-	public void setEmail(String _email) {
-		this._email = _email;
+	public void setEmail(String email) {
+		// don't why there is a ', ' appended at the end when received from form 
+		this._email = email.replaceAll(",\\s*$", "");
 	}
 
 	public String getMsg() {
 		return _msg;
 	}
 
-	public void setMsg(String _msg) {
-		this._msg = _msg;
+	public void setMsg(String msg) {
+		this._msg = msg;
 	}
 
 	public String getTopic() {

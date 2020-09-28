@@ -47,10 +47,11 @@ public class BeanResetPwdConfirmEmail extends BeanResetPwdSendEmail {
 		
 	}
 	/**
+	 * Synchronized to allow temporisation to be effective in case of floading attack
 	 * Ensure that a request has been seen before
 	 */
 	@Override
-  	public String execute() throws Exception {
+  	public synchronized String execute() throws Exception {
 		
 		try { 
 			
@@ -66,6 +67,10 @@ public class BeanResetPwdConfirmEmail extends BeanResetPwdSendEmail {
 			
 			clearAwaitingAccount(getEmail());
 			
+			// try to limit hardcore overflow. 
+			// That might work since this method in synchronized
+			Thread.sleep(2000);
+
 			IUserProfileData activeUser = Globals.Get().getUsersMgr().getUserByName(getEmail());
 			if (activeUser==null) {
 				return "invaliduserid";

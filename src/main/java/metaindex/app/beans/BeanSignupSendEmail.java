@@ -85,6 +85,10 @@ public class BeanSignupSendEmail extends ABeanEmailConfirmedAction {
 			
 			try {
 
+				// try to limit hardcore overflow. 
+				// That might work since this method in synchronized
+				Thread.sleep(2000);
+				
 				Globals.Get().sendEmail(getEmail(), 
 					"Account Confirmation", 
 					msgBodyHtml);				

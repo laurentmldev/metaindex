@@ -37,11 +37,13 @@ onkeypress="if (event.which==13||event.keycode==13) {
        
         <center>
         <a href="#" class="btn btn-primary btn-user btn-block scale" 
-        		style="max-width:30%;" onclick="document.getElementById('form').submit();">
+        		style="max-width:50%;background:#57a;border:none;color:white;padding:0.8rem" 
+        		 onclick="document.getElementById('form').submit();">
           <s:text name="signin.signin" />
         </a>
        <hr/>
-        <a href="#" class="btn  btn-user btn-block scale" style="max-width:30%;font-size:0.8rem;background:#afa;padding:0.2rem" 
+      
+        <a href="#" class="btn  btn-user btn-block scale" style="max-width:30%;font-size:0.8rem;background:#ec9;color:white;padding:0.2rem" 
         	onclick="if (document.getElementById('email').value=='') { 
         				alert('<s:text name="passwordreset.pleaseFillEmailInTheForm" />');
         			 	document.getElementById('email').focus();
@@ -51,12 +53,13 @@ onkeypress="if (event.which==13||event.keycode==13) {
         			 ">
           <s:text name="passwordreset.emailsent.title" />
         </a>
-        <hr/>
-        <a href="#" class="btn  btn-user btn-block scale" style="max-width:30%;font-size:0.8rem;background:#aaf;padding:0.2rem" 
+      
+        <a href="#" class="btn  btn-user btn-block scale" style="max-width:30%;font-size:0.8rem;background:#8d8;color:white;padding:0.2rem" 
         			onclick="window.location.href='signup';">
           <s:text name="signup.createAccount" />
         </a>
-
+      
+		<hr/>
         </center>
         
       </form>

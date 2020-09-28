@@ -10,7 +10,9 @@
 
 <body class=""
 
-	onload="createForm();"
+	onload="createForm();
+			if ('${param.email}' != '') { document.getElementById('email').style.display='none'; }			
+	       "
 	>
 	
 	
@@ -37,7 +39,7 @@
                 <center>
                 
                 
-               	<select id="topics" name="topics" style="padding-left:1rem;padding-right:1rem;">
+               	<select id="topics" name="topics" style="padding-left:1rem;padding-right:1rem;" value="info">
 				  <option value="info"><s:text name="contactform.topic.info" /></option>
 				  <option value="bug"><s:text name="contactform.topic.bug" /></option>
 				  <option value="other"><s:text name="contactform.topic.other" /></option>
@@ -46,8 +48,6 @@
 				<input id="email" type="email" class="form-control form-control-user"name="email" placeholder="email" 
 					style="margin:1rem;padding:0.6rem;width:60%;"
 						value="${param.email}"/>
-             
-             	
                  </center>
                </div>
                <div class="form-group">

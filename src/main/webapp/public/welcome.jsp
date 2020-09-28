@@ -71,17 +71,18 @@
         	 	   			 	
 	 	<div style="width:20vw"></div>
 	 	
-	 	<a href="signup"  
-	 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" style="background:green;border-color:white;margin-left:3rem;text-shadow:none;width:10vw"
-	 		>Join us!</a>
-	 		
+	 	
+	 	
 	 	<a href="contactform?origin=welcome"  
-	 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" style="background:green;border-color:white;margin-left:3rem;text-shadow:none;width:10vw"
-	 		>Contact Us</a>
-	 		
-	 	<div style="width:35vw"></div>	 	
-	 	<a href="loginform"  class="btn btn-sm btn-info mx_welcome_btn scale nav-item no-arrow " style="background:#777" >Sign In</a>
-	 			
+	 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" style="background:#bbb;border-color:white;margin-left:3rem;text-shadow:none;width:10vw"
+	 		>Contact Us</a>	 			 
+	 	<a href="signup"  
+	 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" style="background:#6c6;border-color:white;margin-left:8rem;text-shadow:none;width:20vw"
+	 		>Create account for free</a>
+	 	<a href="loginform"  class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" style="background:#bbb;border-color:white;margin-left:0.3rem;text-shadow:none;width:10vw" >
+	 		Sign In</a>
+	 	
+	 	<div style="width:3vw"></div>		
 	 </nav>
 	 		
   <div class="container" style="width:100%;"  >

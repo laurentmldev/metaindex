@@ -54,10 +54,10 @@ public class BeanResetPwdSendEmail extends ABeanEmailConfirmedAction {
 	}
 	
 	/**
-	 * Synchronized to ensure that it is not possible to create together an account with same email
+	 * Synchronized to allow temporisation to be effective in case of floading attack
 	 */
 	@Override
-  	public String execute() throws Exception {
+  	public synchronized String execute() throws Exception {
 		
 		try { 
 			
@@ -65,6 +65,10 @@ public class BeanResetPwdSendEmail extends ABeanEmailConfirmedAction {
 					throw new DataProcessException("application is not running, unable to create new account for now");								
 			}
 			
+			// try to limit hardcore overflow. 
+			// That might work since this method in synchronized
+			Thread.sleep(2000);
+
 			// get from current user session
 			IUserProfileData activeUser = Globals.Get().getUsersMgr().getUserByName(getEmail());
 			if (activeUser==null) {
