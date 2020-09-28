@@ -21,7 +21,7 @@
 <!-- End of Footer -->
 
 <div id="_mx_gui_alert_" class="alert fade show alert-dismissible" 
-	style="display:none;overflow:auto;max-height:30vh;"
+	style="display:none;overflow:auto;max-height:30vh;opacity:0.8"
 	onclick="clearInterval(this.timer);" >
 	  <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close" >×</a>
 	  <span class="_text_" data-toggle="collapse" data-target="" >alert message here</span>		  

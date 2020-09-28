@@ -3,9 +3,8 @@
 v2.1.0:
 -------
 
+
 add in users tab an help explaining how to add users
-
-
 
 only catalog admin shall be allowed to create a new field
 
@@ -141,6 +140,7 @@ create catalog: nice error msg if a catalog with same name already exist
 #102 improve fields layout when text is long
 
 #101 import from Excel file
+	drop zone for file upload
 
 popup info/success/error msg shall be over popup frames
 

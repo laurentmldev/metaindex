@@ -20,6 +20,7 @@
 
 
 <body id="page-top" 
+	
 	onkeypress="event.stopPropagation();	
 				if (event.originalTarget.parentNode.classList.contains('editable-input')) { return; }
 				
@@ -69,7 +70,8 @@
       <div id="details-wrapper">       
         <div id="cards-content-wrapper" class="container-fluid" >
           <s:include value="../commons/html/details-right.jsp"></s:include>
-          <div class="row"><div class="col-lg-12" >
+          <div class="row">
+            <div id="files-dropzone" class="col-lg-12" ondrop="dropFile(event);">
            	  
 	 		  <!-- current selection details -->
 	 		  <s:include value="../commons/html/details.jsp"></s:include>
@@ -123,52 +125,111 @@
   	 -->
   	 <s:property value="currentUserProfile.currentCatalogKibanaIFrameHtml" escapeHtml="false" />
   </div>
-  <script>
- 
-  let kibanaFrameParent=document.getElementById("kibana_frame_cont");
-  let kibanaFrame=kibanaFrameParent.querySelector("iframe");
   
-  if (kibanaFrame!=null) {
-	  kibanaFrame.id="kibana-iframe"
-	  kibanaFrame.width="";
-	  kibanaFrame.height="";
-	  kibanaFrame.style="margin-top:0.5rem;";
-	  kibanaFrame.classList.add("kibana-iframe");  
-	  MxGuiDetailsRightBar.addContents(kibanaFrame);
-  }
-  
-  let kibanaSetiFrame=document.getElementById("kibana_set_dashboard");
-  kibanaSetiFrame.style.display='block';
-  MxGuiDetailsRightBar.addContents(kibanaSetiFrame);
-  let iframePopup = MxGuiPopups.newTextInputPopup("Past Here Kibana Embedded iFrame Code","Set Kibana IFrame",
-		  	function(iframeCode) {
-	  		
-	  			let requestObj = {
-	  					userId:"<s:property value="currentUserProfile.id" />",
-	  					catalogId:"<s:property value="currentCatalog.id" />",
-	  					kibanaIFrame:iframeCode,
-	  					successCallback:function() { 
-	  						console.log("refreshed!"); 
-	  						redirectToPage("${mxUrl}/metaindex/Items"); 
-	  					},
-	  					errorCallback:function(msg) { console.log("Unable to set iframe : "+msg); }
-	  			}
-	  			MxApi.requestSetUserCatalogCustomization(requestObj);
-	  			
-	  		});
-  iframePopup.id="set_catalog_kibana_iframe_popup";
-  MxGuiDetailsRightBar.addContents(iframePopup);
+  <script type="text/javascript">
+  // called (if defined) from commons/html/head-onload.jsp
+  	function local_onload() {
+	  	enableFileDropzone();
+		enableKibanaFrame();
+  	}
+  </script>
+  <script type="text/javascript">
+//configure Kibana Frame
+  function enableKibanaFrame() {
+	  let kibanaFrameParent=document.getElementById("kibana_frame_cont");
+	  let kibanaFrame=kibanaFrameParent.querySelector("iframe");
 	  
-  if (kibanaFrame!=null) { MxGuiDetailsRightBar.addContents(kibanaFrame); }
-  else {
-	  let noIframeMsg = document.createElement("div");
-	  noIframeMsg.style="margin-top:2rem;padding:2rem;text-align:center;font-size:0.8rem"
-	  noIframeMsg.innerHTML="<s:text name="Items.noKibanaIframe" />";
-	  MxGuiDetailsRightBar.addContents(noIframeMsg);
+	  if (kibanaFrame!=null) {
+		  kibanaFrame.id="kibana-iframe"
+		  kibanaFrame.width="";
+		  kibanaFrame.height="";
+		  kibanaFrame.style="margin-top:0.5rem;";
+		  kibanaFrame.classList.add("kibana-iframe");  
+		  MxGuiDetailsRightBar.addContents(kibanaFrame);
+	  }
+	  
+	  let kibanaSetiFrame=document.getElementById("kibana_set_dashboard");
+	  kibanaSetiFrame.style.display='block';
+	  MxGuiDetailsRightBar.addContents(kibanaSetiFrame);
+	  let iframePopup = MxGuiPopups.newTextInputPopup("Past Here Kibana Embedded iFrame Code","Set Kibana IFrame",
+			  	function(iframeCode) {
+		  		
+		  			let requestObj = {
+		  					userId:"<s:property value="currentUserProfile.id" />",
+		  					catalogId:"<s:property value="currentCatalog.id" />",
+		  					kibanaIFrame:iframeCode,
+		  					successCallback:function() { 
+		  						console.log("refreshed!"); 
+		  						redirectToPage("${mxUrl}/metaindex/Items"); 
+		  					},
+		  					errorCallback:function(msg) { console.log("Unable to set iframe : "+msg); }
+		  			}
+		  			MxApi.requestSetUserCatalogCustomization(requestObj);
+		  			
+		  		});
+	  iframePopup.id="set_catalog_kibana_iframe_popup";
+	  MxGuiDetailsRightBar.addContents(iframePopup);
+		  
+	  if (kibanaFrame!=null) { MxGuiDetailsRightBar.addContents(kibanaFrame); }
+	  else {
+		  let noIframeMsg = document.createElement("div");
+		  noIframeMsg.style="margin-top:2rem;padding:2rem;text-align:center;font-size:0.8rem"
+		  noIframeMsg.innerHTML="<s:text name="Items.noKibanaIframe" />";
+		  MxGuiDetailsRightBar.addContents(noIframeMsg);
+	  }
+}
+  </script>
+ 
+ 
+ 
+  <script type="text/javascript">
+  //configure files drop-zone
+  function enableFileDropzone() {
+	  let fileDropZone=document.getElementById("files-dropzone");
+	  	  
+	  fileDropZone.ondragleave=function(e) {
+		  e.preventDefault();
+		  fileDropZone.classList.remove('dropzone-ondragover');
+	  }
+	  fileDropZone.ondragover=function(e) { 
+  		  e.preventDefault(); 
+		  fileDropZone.classList.add('dropzone-ondragover'); 
+	  }
+	  fileDropZone.ondragstart=function(e) { e.preventDefault(); }		  
+	  fileDropZone.ondragenter=function(e) { e.preventDefault(); }
+	  fileDropZone.ondragend=function(e) { e.preventDefault(); }
+	  fileDropZone.ondrop=function(ev) {
+		  ev.preventDefault();
+		  ev.stopPropagation();
+		  fileDropZone.classList.remove('dropzone-ondragover');
+		  
+		  // from https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/File_drag_and_drop
+		  if (ev.dataTransfer.items) {
+			  if (ev.dataTransfer.items.length>1) {
+				  alert("<s:text name="Items.uploadItems.onlyOneFileIsAllowed" />");
+				  return;
+			  }
+			  if (ev.dataTransfer.items[0].kind !== 'file') {
+				  alert("<s:text name="Items.uploadItems.notAFile" />");
+				  return;
+			  }
+			  
+		      let files = { files : [  ev.dataTransfer.items[0].getAsFile() ] }
+		      MxGuiLeftBar.handleDataFileToUpload(files);
+		      
+		  } else {
+			  if (ev.dataTransfer.files.length>1) {
+				  alert("<s:text name="Items.uploadItems.onlyOneFileIsAllowed" />");
+				  return;
+			  }
+			  MxGuiLeftBar.handleDataFileToUpload(ev.dataTransfer);			  	    
+		  }
+		  
+		  
+	  }
   }
   
   </script>
- 
 </body>
 
 </html>

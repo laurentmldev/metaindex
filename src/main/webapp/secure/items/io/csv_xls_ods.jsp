@@ -244,7 +244,7 @@ MxGuiLeftBar.handleDataFileToUpload=function(fileHandle) {
 	if (csvRegex.test(fileName)) { _handleCsvDataFile(fileHandle); }
 	else if (xlsRegex.test(fileName)) { _handleExcelDataFile(fileHandle); }
 	else {
-		alert('this kind of file is not supported sorry');
+		alert("<s:text name="Items.uploadItems.formatNotSupported"/>");
 	}
 	
 }

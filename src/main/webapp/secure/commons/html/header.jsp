@@ -98,11 +98,11 @@
                   <s:text name="Profile.preferences"></s:text>
                 </a>
                 <a class="dropdown-item" href="#" onclick="document.getElementById(MX_HEADER_PLANS_POPUP_ID).toggleShowHide();">
-                  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                  <i class="fas fa-euro-sign fa-sm fa-fw mr-2 text-gray-400"></i>
                   <s:text name="Profile.plans"></s:text>
                 </a>
                 <a id="contactUs" class="dropdown-item" href="contactform?email=<s:property value="currentUserProfile.name"/>&origin=" >
-                  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                  <i class="fas fa-envelope fa-sm fa-fw mr-2 text-gray-400"></i>
                   	<s:text name="contactform.title"></s:text>
                 </a>
                 <a class="dropdown-item" data-toggle="modal" data-target="#logoutModal">

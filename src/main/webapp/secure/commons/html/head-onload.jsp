@@ -17,6 +17,7 @@
 	  $.fn.editable.defaults.mode = 'popup';	
 	 });
 		
+	if (local_onload!=null) { local_onload(); }
  }
     
 </script>
