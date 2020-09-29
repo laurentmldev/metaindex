@@ -151,7 +151,7 @@ function _update_menus_list() {
 	}
 	
 	if (mx_helpers_isCatalogWritable(MxGuiDetails.getCurCatalogDescription().userAccessRights)!=true) {
-		csvUpload=document.getElementById("csv_upload_label");
+		csvUpload=document.getElementById("datafile_upload_label");
 		csvUpload.parentNode.removeChild(csvUpload);		
 	}	
 	var uploadItemsOp = document.getElementById("leftbar_items_csv_upload").cloneNode(true);

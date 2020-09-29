@@ -81,7 +81,13 @@
 	          <div id="MxGui.cards.insertspot" class="card-deck col-sm-2 " style="max-width:100%">          	
 					<!-- CARDS ARE INSERTED HERE -->
 	  		  </div>
-	
+			  <div id="empty-placeholder" style="color:#aaa;display:none;width:100%" ><center>
+				  <h5 style="margin-top:2rem;margin-bottom:3rem;"><s:text name="Items.catalogIsEmpty"/></h5>
+				  <div id="empty-placeholder-writable">
+					  <h6 style="margin-bottom:1rem;"><s:text name="Items.dragAndDropFile" /></h6>
+					  <img src="public/commons/media/img/excel.png" style="opacity:0.5;width:50%;margin-bottom:4rem;" />
+				  </div>
+			  </center></div>
 	   		 <s:include value="../commons/html/footer.jsp"></s:include>
 	   	   </div></div>
    		 
@@ -128,8 +134,7 @@
   
   <script type="text/javascript">
   // called (if defined) from commons/html/head-onload.jsp
-  	function local_onload() {
-	  	enableFileDropzone();
+  	function local_onload() {	  	
 		enableKibanaFrame();
   	}
   </script>
@@ -183,8 +188,11 @@
  
  
   <script type="text/javascript">
+  MxGuiMain={}
+  
+  
   //configure files drop-zone
-  function enableFileDropzone() {
+  MxGuiMain.enableFileDropzone=function() {
 	  let fileDropZone=document.getElementById("files-dropzone");
 	  	  
 	  fileDropZone.ondragleave=function(e) {
@@ -229,6 +237,32 @@
 	  }
   }
   
+  MxGuiMain.disableFileDropzone=function() {
+	  let fileDropZone=document.getElementById("files-dropzone");
+	  fileDropZone.classList.remove('dropzone-ondragover');
+	  fileDropZone.ondragleave=function(e) { e.preventDefault(); }
+	  fileDropZone.ondragover=function(e) { e.preventDefault(); }
+	  fileDropZone.ondragstart=function(e) { e.preventDefault(); }		  
+	  fileDropZone.ondragenter=function(e) { e.preventDefault(); }
+	  fileDropZone.ondragend=function(e) { e.preventDefault(); }
+	  fileDropZone.ondrop=function(ev) { e.preventDefault(); }
+		  
+  }
+  
+  
+  MxGuiMain.showTextEmptyCatalog=function(isCatalogWritable) {
+	  if (isCatalogWritable==null) { isCatalogWritable=false; }
+	  document.getElementById('empty-placeholder').style.display="block";
+	  if (isCatalogWritable) {
+		  document.getElementById('empty-placeholder-writable').style.display="block";
+	  } else {
+		  document.getElementById('empty-placeholder-writable').style.display="none";
+	  }
+  }
+            
+  MxGuiMain.hideTextEmptyCatalog=function() {
+	  document.getElementById('empty-placeholder').style.display="none";
+  }
   </script>
 </body>
 

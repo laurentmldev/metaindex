@@ -137,6 +137,17 @@
 function retrieveItemsError(msg) { footer_showAlert(ERROR, msg); }
 
 function retrieveItemsSuccess(itemsAnswerMsg) {
+	 
+	 let isCatalogWritable = mx_helpers_isCatalogWritable(MxGuiDetails.getCurCatalogDescription().userAccessRights);
+	 
+	 if (itemsAnswerMsg.totalItems==0) {
+		 MxGuiMain.showTextEmptyCatalog(isCatalogWritable);
+	 }
+	 else { MxGuiMain.hideTextEmptyCatalog();}
+	 
+	 if (isCatalogWritable) { MxGuiMain.enableFileDropzone(); }
+	 else { MxGuiMain.disableFileDropzone(); }
+	 
 	 MxGuiCards.deselectAll();	 
 	 MxGuiLeftBar.setNbMatchingItems(itemsAnswerMsg.totalHits);
 	 MxGuiDetails.setNbMatchingItems(itemsAnswerMsg.totalHits);
@@ -152,6 +163,7 @@ function retrieveItemsSuccess(itemsAnswerMsg) {
 	 if (itemsAnswerMsg.items.length==1) {
 		 MxGuiCards.selectNext();
 	 }
+	 
 }
 
 $(window).scroll(function() {
