@@ -389,3 +389,12 @@ height:40px;
 	/*background:grey;*/
 	
 }
+
+.mx-error-detail {
+	margin:1rem;
+	border:1px dashed grey;
+	color:#999;
+	font-family:'Courier New';
+	font-size:0.8rem;
+	padding:0.3rem;
+}

@@ -55,7 +55,7 @@ onkeypress="if (event.which==13||event.keycode==13) {
         </a>
       
         <a href="#" class="btn  btn-user btn-block scale" style="max-width:30%;font-size:0.8rem;background:#8d8;color:white;padding:0.2rem" 
-        			onclick="window.location.href='signup';">
+        			onclick="window.location.href='signup?origin=loginform';">
           <s:text name="signup.createAccount" />
         </a>
       

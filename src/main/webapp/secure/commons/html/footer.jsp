@@ -26,8 +26,9 @@
 	  <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close" >×</a>
 	  <span class="_text_" data-toggle="collapse" data-target="" >alert message here</span>		  
 	  <div class="container">
-		  <button type="button" style="display:none" class="btn btn-info _details_button_" data-toggle="collapse" data-target="">See Details</button>
-		  <div id="" class="_details_ collapse" style="font-size:0.5em"></div>
+		  <button type="button" style="display:none" class="btn btn-info _details_button_" >
+		  	<s:text name="Footer.msg.seeDetails" />
+		  </button>		  
 	  </div>
  </div>
 
@@ -71,17 +72,35 @@ function footer_showAlert(level, msg, details, timeToLiveMs) {
 	txtNode.setAttribute("data-target","#MxGui_alert_"+alertNb+"_details");
 	
 	if (details.length>0) {
-		let detailsButtonNode = newMsgNode.querySelector("._details_button_");
-		detailsButtonNode.setAttribute("data-target","#MxGui_alert_"+alertNb+"_details");
-		detailsButtonNode.style.display='block';
 		
-		let detailsNode = newMsgNode.querySelector("._details_");
-		detailsNode.id="MxGui_alert_"+alertNb+"_details";
-		detailsNode.innerHTML+="<ul>";
+		
+		
+		// build 'error details' modal
+		let plansPopupNode=MxGuiPopups.newBlankPopup("<s:text name="Footer.msg.detailsTitle" />",
+				"<s:text name="global.ok" />",
+				"80vw","80vh","rgba(255, 255, 255,0.7)");
+		let bodynode = plansPopupNode.querySelector(".modal-body");
+		
 		for (let i=0;i<details.length;i++) {
 			let curStr=details[i];
-			detailsNode.innerHTML+="<li>"+curStr+"</li>";			
-		}		
+			let curError = document.createElement("div");
+			curError.innerHTML=curStr;
+			curError.classList.add("mx-error-detail");
+			bodynode.append(curError);			
+		}
+		
+		
+		let detailsButtonNode = newMsgNode.querySelector("._details_button_");
+		//detailsButtonNode.setAttribute("data-target","#MxGui_alert_"+alertNb+"_details");
+		detailsButtonNode.style.display='block';
+		detailsButtonNode.onclick=function()
+		{		
+			let popupsContainer=document.getElementById("errors_popup_container");
+			clearNodeChildren(popupsContainer);
+			popupsContainer.appendChild(plansPopupNode);
+			plansPopupNode.toggleShowHide();
+			//MxGuiHeader.showInfoModal("Error Details",detailsNode,null,'50vw');
+		}
 	}
 	
 	guiMessagesInsertSpot.append(newMsgNode);

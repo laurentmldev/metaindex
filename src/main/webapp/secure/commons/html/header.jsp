@@ -24,6 +24,7 @@
 
 </div> 
 <div id="show_profile_container"></div>
+<div id="errors_popup_container"></div>
 <s:include value="profile_modal.jsp" />
 <s:include value="plans_modal_proprietary.jsp" />
 <script type="text/javascript">
@@ -153,7 +154,7 @@
 	  MxGuiHeader.getInsertSpot().append(popupNode);
   }
   
-  MxGuiHeader.showInfoModal=function(titleTxt,bodyTxt,footerTxt) {
+  MxGuiHeader.showInfoModal=function(titleTxt,bodyTxt,footerTxt,width) {
 	  
 	  let title = document.getElementById("info_modal_title");
 	  title.innerHTML=titleTxt;
@@ -172,6 +173,9 @@
 		  else { footer.appendChild(footerTxt); }
 	  }
 	  
+	  if (width!=null) {
+		  document.getElementById("show_info_container").style.width=width;
+	  }
 	  document.getElementById("show_info_container").style.opacity=0.0;
 	  document.getElementById("show_info_container").style.display='block';
 	  // need to give time to the transition to be loaded before applying property

@@ -76,7 +76,7 @@
 	 	<a href="contactform?origin=welcome"  
 	 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" style="background:#bbb;border-color:white;margin-left:3rem;text-shadow:none;width:10vw"
 	 		>Contact Us</a>	 			 
-	 	<a href="signup"  
+	 	<a href="signup?origin=welcome"  
 	 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" style="background:#6c6;border-color:white;margin-left:8rem;text-shadow:none;width:20vw"
 	 		>Create account for free</a>
 	 	<a href="loginform"  class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" style="background:#bbb;border-color:white;margin-left:0.3rem;text-shadow:none;width:10vw" >

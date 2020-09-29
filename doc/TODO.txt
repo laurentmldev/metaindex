@@ -3,7 +3,6 @@
 v2.1.0:
 -------
 
-go back button on the create account page
 
 #40 when deleting a catalog, delete also associated userdata (with strong confirmation message)
 
@@ -127,6 +126,10 @@ Done:
 -----
 
 v2.1.0
+
+go back button on the create account page
+
+errors in separate nicer popup
 
 #104 add a 'contact us' 
 	with 'cancel' button on the 'contact us' form

@@ -61,6 +61,11 @@ onkeypress="if (event.which==13||event.keycode==13) {
                    <s:text name="signup.create" />
                  </a>
                  
+       <a href="#" class="btn btn-primary btn-user btn-block scale" 
+        		style="max-width:30%;margin-top:1rem;padding:0.4rem;background:#999;border:none;" 
+	  	onclick="window.location.href='${param.origin}'">
+                   <s:text name="globals.goback" />
+                 </a>
                  </center>
                </div>
        </form>
