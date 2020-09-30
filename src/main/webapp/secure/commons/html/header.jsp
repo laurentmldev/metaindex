@@ -154,7 +154,7 @@
 	  MxGuiHeader.getInsertSpot().append(popupNode);
   }
   
-  MxGuiHeader.showInfoModal=function(titleTxt,bodyTxt,footerTxt,width) {
+  MxGuiHeader.showInfoModal=function(titleTxt,bodyTxt,footerTxt) {
 	  
 	  let title = document.getElementById("info_modal_title");
 	  title.innerHTML=titleTxt;
@@ -173,9 +173,6 @@
 		  else { footer.appendChild(footerTxt); }
 	  }
 	  
-	  if (width!=null) {
-		  document.getElementById("show_info_container").style.width=width;
-	  }
 	  document.getElementById("show_info_container").style.opacity=0.0;
 	  document.getElementById("show_info_container").style.display='block';
 	  // need to give time to the transition to be loaded before applying property
@@ -191,5 +188,42 @@
 	 
   }
   
+
+  MxGuiHeader.showInfoModalAlertConfirm=function(titleTxt,bodyTxt,yesText,noText,yesCallbackFunc)  {
+  	let footer=document.createElement("div");
+  	footer.style.width="100%";
+  	let center=document.createElement("center");
+  	footer.append(center);
+  	let footerConfirmButton=document.createElement("button");
+  	center.append(footerConfirmButton);
+  	footerConfirmButton.innerHTML=yesText;
+  	footerConfirmButton.classList.add('btn');
+  	footerConfirmButton.classList.add('btn-default');
+  	footerConfirmButton.classList.add('alert');
+  	footerConfirmButton.classList.add('btn-sm');
+  	footerConfirmButton.classList.add('mx-btn-red-alert');
+  	footerConfirmButton.style="margin:0;margin-right:2rem;height:3rem;";
+  	footerConfirmButton.onclick=function() {
+  		yesCallbackFunc(); 
+  		MxGuiHeader.hideInfoModal();
+  	}
+  	
+  	let footerCancelButton=document.createElement("button");
+  	center.append(footerCancelButton);
+  	footerCancelButton.innerHTML=noText;
+  	footerCancelButton.classList.add('btn');
+  	footerCancelButton.classList.add('btn-info');
+  	footerCancelButton.classList.add('btn-sm');
+  	footerCancelButton.style="margin:0;height:3rem;";
+  	footerCancelButton.onclick=function() { MxGuiHeader.hideInfoModal(); }
+  	
+  	
+  	MxGuiHeader.showInfoModal(titleTxt,bodyTxt,footer);
+  	
+
+  }
+
+  // update contact-us target with current location
+  // so that we can go back here if canceled by user
   document.getElementById('contactUs').href+=window.location.href;
   </script>

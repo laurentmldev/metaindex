@@ -1,5 +1,7 @@
 package metaindex.app.control.websockets.catalogs;
 
+import java.io.File;
+
 /*
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -18,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -599,6 +602,23 @@ public class WsControllerCatalog extends AMxWSController {
     		}
 	    	Globals.Get().getCatalogsMgr().removeCatalog(c.getId());
 	    	
+	    	
+	    	// delete drive space
+	    	try {
+	    		String localFs = c.getLocalFsFilesPath();
+	    		FileUtils.deleteDirectory(new File(localFs));
+	    	} catch(Exception e) {
+	    		answer.setRejectMessage("Unable to files from your catalog definition. MetaindeX team has been notified of the problem.");
+    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_catalog", answer);
+    			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.delete_catalog.delete_fs"));
+    			Globals.Get().sendEmail(Globals.GetMxProperty("mx.mailer.admin_recipient"), 
+    					"Error when deleting FS of catalog "+c.getName(), 
+    					"Dear admin,<br/><br/>The following error occured when "+user.getNickname()+ " (uid="+user.getId()+")"    					
+    					+" tried to delete its catalog "+c.getName()+":<br/><br/> "
+    					+e.getMessage());
+    			e.printStackTrace();    			    		
+	    	}
+	    	
 	    	// update user stats info, typically nb of catalogs created
 			IUserProfileData creator = Globals.Get().getUsersMgr().getUserById(c.getOwnerId());
 			if (creator!=null) { 
@@ -642,7 +662,8 @@ public class WsControllerCatalog extends AMxWSController {
 	    	
 			
 	    	// no need to explicitly delete index pattern, because it has defined as part of the space,
-	    	// and has been deleted by Kibana when deleting the space itself	    	
+	    	// and has been deleted by Kibana when deleting the space itself	  
+
 	    	user.setCurrentCatalog(0);
 	    	user.setUserCatalogAccessRights(c.getId(), null);
 	    	answer.setIsSuccess(kResult1&&kResult2);    	

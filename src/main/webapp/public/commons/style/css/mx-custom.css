@@ -398,3 +398,13 @@ height:40px;
 	font-size:0.8rem;
 	padding:0.3rem;
 }
+
+.mx-btn-red-alert {
+	background:#e99;
+	border:2px solid #911;
+	color:#911;
+}
+.mx-btn-red-alert:hover {
+	border:2px dashed #911;
+	
+}

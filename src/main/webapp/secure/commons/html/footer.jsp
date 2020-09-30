@@ -73,8 +73,6 @@ function footer_showAlert(level, msg, details, timeToLiveMs) {
 	
 	if (details.length>0) {
 		
-		
-		
 		// build 'error details' modal
 		let plansPopupNode=MxGuiPopups.newBlankPopup("<s:text name="Footer.msg.detailsTitle" />",
 				"<s:text name="global.ok" />",

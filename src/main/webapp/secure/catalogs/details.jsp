@@ -192,6 +192,18 @@ function details_memGui() {
  }
 
 
+function details_reconfirm_delete_catalog(catId) {
+	
+	function confirmAction() { ws_handlers_deleteCatalog(catId); }
+		
+	MxGuiHeader.showInfoModalAlertConfirm(
+			"<s:text name="Catalogs.deleteConfirmation.title" />",
+			"<s:text name="Catalogs.deleteConfirmation.body" />",
+			"<s:text name="Catalogs.deleteConfirmation.yes" />",
+			"<s:text name="Catalogs.deleteConfirmation.no" />",
+			confirmAction
+			);	
+}
 
  
  MxGuiDetails.setTitle("<s:text name="Catalogs.title" />");
@@ -266,7 +278,7 @@ function details_memGui() {
 		 		<button type="button" class="_button_delete_ btn btn-default btn-sm alert alert-danger" 	  		
 		 	  		data-toggle="confirmation"
 		 	  		delete_dbid=""
-		 			onConfirm="ws_handlers_deleteCatalog(this.delete_dbid);" onCancel=""
+		 			onConfirm="details_reconfirm_delete_catalog(this.delete_dbid);" onCancel=""
 		 			style="margin-left:1em;"><i class="fa fa-times" aria-hidden="true"></i> 
 		 			<s:text name="Catalogs.delete" />
 		 		</button>

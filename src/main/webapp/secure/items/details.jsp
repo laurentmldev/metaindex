@@ -169,7 +169,22 @@
 	return newItemDetails;			 
  }
  
- 
+ function details_reconfirm_deleteAllItems() {
+
+	 let confirmAction=function() { ws_handlers_deleteAllItems(); }
+		
+		MxGuiHeader.showInfoModalAlertConfirm(
+				"<s:text name="Items.deleteAllConfirmation.title" />",
+				"<s:text name="Items.deleteAllConfirmation.body.1" /> <b style='color:#e77'>"
+					+MxGuiDetails.getNbMatchingItems()+" "
+					+MxGuiDetails.getCurCatalogDescription().vocabulary["items"]+"</b><br/><br/>"
+					+"<s:text name="Items.deleteAllConfirmation.body.2" />",
+				"<s:text name="Items.deleteAllConfirmation.yes" />",
+				"<s:text name="Items.deleteAllConfirmation.no" />",
+				confirmAction
+				);
+	
+ }
 
 
  MxGuiDetails.setTitle("<s:property value='currentUserProfile.catalogVocabulary.itemsCap'/>");
@@ -281,7 +296,7 @@
  <button id="details.deleteAll.button" type="button" class="btn btn-default btn-sm alert alert-danger" 	  
  		style="display:none;margin-left:1rem;margin-right:1rem;"		
   		data-toggle="confirmation"
-  		onConfirm="ws_handlers_deleteAllItems();" 
+  		onConfirm="details_reconfirm_deleteAllItems();" 
   		onCancel="" ><i class="fa fa-times" aria-hidden="true"></i> 
 		<s:text name="Items.deleteAll" />
 	</button>

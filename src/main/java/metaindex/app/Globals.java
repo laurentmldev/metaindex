@@ -330,8 +330,8 @@ public class Globals {
 	public String getDetailsStr() {
 
 		return   "\n	###### MetaindeX v"+Globals.GetMxProperty("mx.version")+"  ######"+"\n"
-				+"- mx.status="+Globals.GetMxProperty("mx.status")+"\n\n"
-				+"- mx.devmode="+isDevMode()+"\n\n"
+				+"- mx.status="+Globals.GetMxProperty("mx.status")+"\n"
+				+"- mx.devmode="+isDevMode()+"\n"
 				+"- mx.host="+Globals.GetMxProperty("mx.host")+"\n"
 				+"- mx.protocol="+Globals.GetMxProperty("mx.protocol")+"\n"
 				+"- mx.port="+Globals.GetMxProperty("mx.port")+"\n"
