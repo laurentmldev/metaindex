@@ -83,7 +83,7 @@
 <!--  --------end of Templates--------- -->
 
 <div class="tab-pane fade _details_users_insertspot_" id="nav-users" role="tabpanel" aria-labelledby="nav-users-tab">
-					  						  						
+	<div style="margin-bottom:2rem;font-size:0.8rem"><s:text name="Catalogs.users.addUsers"/></div>  						  						
 	<table id="usersRolesTable" class="table table-striped">
 		
 	</table>

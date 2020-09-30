@@ -42,7 +42,12 @@
           <div id="MxGui.cards.insertspot" class="card-deck col-sm-2 " style="max-width:100%">          	
 				<!-- CARDS ARE INSERTED HERE -->
   		  </div><!-- End of cards insert spot -->
-
+		
+		  <div id="empty-placeholder" style="color:#aaa;width:100%" ><center>
+			  <h5 style="margin-top:2rem;margin-bottom:3rem;"><s:text name="Catalogs.empty"/></h5>			  
+			  <h6 style="margin-bottom:1rem;">&larr; <s:text name="Catalogs.emptyHowTo" /></h6>			  
+			  <img src="public/commons/media/img/mx-title.png" style="opacity:0.5;width:50%;margin-bottom:4rem;" />		  
+		  </center></div>
    		 <s:include value="../commons/html/footer.jsp"></s:include>
    		 
     	</div><!-- End of Cards Container -->
@@ -59,7 +64,18 @@
   </a>
   
   <s:include value="../commons/html/foot-meta.jsp" />
+  <script type="text/javascript">
 
+  MxGuiMain={}
+  MxGuiMain.showTextEmptyCatalog=function() {
+	  document.getElementById('empty-placeholder').style.display="block";	  
+  }
+            
+  MxGuiMain.hideTextEmptyCatalog=function() {
+	  document.getElementById('empty-placeholder').style.display="none";
+  }
+  
+	</script>
 </body>
 
 </html>

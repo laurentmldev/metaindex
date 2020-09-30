@@ -8,15 +8,15 @@
  
  function ws_handlers_refreshCatalogsGui() {
 	 MxGuiDetails.memGui();
-	 MxApi.requestGetCatalogs({'catalogId':0, 'successCallback':handleMxWsCatalogs});	 
+	 MxApi.requestGetCatalogs({'catalogId':0, 'successCallback':handleMxWsCatalogs});	 	 
  }
  
  function onWsConnect(isConnected) {
 	if (!isConnected) {
-		footer_showAlert(ERROR, "Unable to connect to Metaindex server, sorry");
+		footer_showAlert(ERROR, "<s:text name="global.unableToConnectToServer" />");
 	}
 	else {
-		footer_showAlert(SUCCESS, "Connected to Metaindex server");
+		footer_showAlert(SUCCESS, "<s:text name="global.connectedToServer" />");
 		MxApi.requestGetCatalogs({'catalogId':0, 'successCallback':handleMxWsCatalogs});
  		
 	}
@@ -24,7 +24,7 @@
  
  function handleMxWsSelectedCatalog(msg) { 
 	 if (msg.isSuccess==false) {
-		 footer_showAlert(ERROR, "Sorry, unable to enter catalog, please refresh current page and try again.");
+		 footer_showAlert(ERROR, "<s:text name="Catalogs.unableToEnterPleaseRefresh" />");
 		 return;
 	 }
 	 MxGuiDetails.updateUsersTab();
@@ -34,18 +34,18 @@
  function handleMxWsSelectedItem(msg) {}
  function handleMxWsCreatedCatalog(msg) {
 	 if (msg.isSuccess==false) {
-		 footer_showAlert(ERROR, "Sorry, unable to create catalog : "+msg.rejectMessage);
+		 footer_showAlert(ERROR, "<s:text name="Catalogs.unableToCreate" /> : "+msg.rejectMessage);
 		 return;
 	 }
-	 footer_showAlert(INFO, "Catalog created");
+	 footer_showAlert(INFO, "<s:text name="Catalogs.createdSuccessfully" />");
 	 MxApi.requestGetCatalogs({'catalogId':0, 'successCallback':handleMxWsCatalogs});
  }
  function handleMxWsCreatedTerm(msg) {	 
 	 if (msg.isSuccess==false) {
-		 footer_showAlert(ERROR, "Sorry, unable to add term : "+msg.rejectMessage);
+		 footer_showAlert(ERROR, "<s:text name="Catalogs.field.unableToCreateTerm" /> : "+msg.rejectMessage);
 		 return;
 	 }
-	 footer_showAlert(SUCCESS, "Term added!");	 	 
+	 footer_showAlert(SUCCESS, "<s:text name="Catalogs.field.termCreated" />");	 	 
  }
  function handleMxWsDeletedTerm(msg) {}
  function handleMxWsDeletedFilter(msg) {}
@@ -86,7 +86,7 @@
 		let userData=msgData.users[userId];
 		callbackFunc(userData);		
 	}
-	function errorCallback(msg) { footer_showAlert(WARNING, "Unable to retrieve data for user '"+userId+"' : "+msg); }
+	function errorCallback(msg) { footer_showAlert(WARNING, "<s:text name="Catalogs.unableToRetrieveUserData" /> '"+userId+"' : "+msg); }
 	
 	let usersIds=[];
 	usersIds.push(userId);
@@ -108,12 +108,15 @@ function handleNbCreatedCatalogs(profileData) {
  function handleMxWsCatalogs(msg) {
 	 
 	 if (msg.isSuccess==false) {
-		 footer_showAlert(ERROR, "Sorry, unable to retrieve catalogs info.");
+		 footer_showAlert(ERROR, "<s:text name="Catalogs.unableToRetrieveCatalogInfo" />");
 		 return;
 	 }
 	 //console.log(msg);
 	 let curActiveCard=MxGuiCards.getActiveCard();
-	 let newCurActiveCard=null;
+	 let newCurActiveCard=null;	 
+	 if (msg.length==0) { MxGuiMain.showTextEmptyCatalog(); }
+	 else { MxGuiMain.hideTextEmptyCatalog(); }
+	 
 	 
 	 MxGuiCards.clearCards();
 	 for (var i=0;i<msg.length;i++) {
@@ -143,10 +146,11 @@ function handleNbCreatedCatalogs(profileData) {
 	
 	function successCallback() {
 		MxGuiCards.deselectAll();
-		footer_showAlert(WARNING, "Catalog deleted");
+		footer_showAlert(WARNING, "<s:text name="Catalogs.catalogDeletedSuccessfully" />");
+		if (MxGuiCards.getNbCards()==1) { handleMxWsCatalogs([]); }
 		ws_handlers_refreshCatalogsGui();
 	}
-	function errorCallback(msg) { footer_showAlert(WARNING, "Catalog could not be deleted : "+msg); }
+	function errorCallback(msg) { footer_showAlert(WARNING, "<s:text name="Catalogs.unableToDeleteCatalog" /> : "+msg); }
 	
 	MxApi.requestDeleteCatalog({	"catalogId":catalogId,
  									"successCallback":successCallback,
@@ -157,7 +161,7 @@ function handleNbCreatedCatalogs(profileData) {
 
  function ws_handlers_retrieveCatalogUsers(catalogId,userSuccessCallback) {
 	 function successCallback(data) { userSuccessCallback(data); }
-	 function errorCallback(msg) { footer_showAlert(WARNING, "Catalog users could not be retrieved : "+msg); }
+	 function errorCallback(msg) { footer_showAlert(WARNING, "<s:text name="Catalogs.unableToRetrieveCatalogUsers" /> : "+msg); }
 		
 		MxApi.requestGetCatalogUsers({	"catalogId":catalogId,
 	 									"successCallback":successCallback,

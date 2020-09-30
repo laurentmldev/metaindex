@@ -17,10 +17,10 @@
  
  function onWsConnect(isConnected) {
 	if (!isConnected) {
-		footer_showAlert(ERROR, "Unable to connect to Metaindex server, sorry");
+		footer_showAlert(ERROR, "<s:text name="global.unableToConnectToServer" />");
 	}
 	else {
-		footer_showAlert(SUCCESS, "Connected to Metaindex server");
+		footer_showAlert(SUCCESS, "<s:text name="global.connectedToServer" />");
 		ws_handlers_refreshItemsGui();
 	}
  }

@@ -6,7 +6,7 @@
 <script type="text/javascript">
 
 function buildCatalogsSearchPopup(parentNode) {
-	let catalogsSearchPopupNode=MxGuiPopups.newBlankPopup("<s:text name="Catalogs.searchCatalog" />","<s:text name="global.cancel" />","80vw","90vh","rgba(255, 255, 255,1)");
+	let catalogsSearchPopupNode=MxGuiPopups.newBlankPopup("<s:text name="Catalogs.searchCatalog" />","<s:text name="global.ok" />","80vw","90vh","rgba(255, 255, 255,1)");
 	let bodynode = catalogsSearchPopupNode.querySelector(".modal-body");
 	
 	catalogsSearchPopupNode.id=MX_CATALOGS_SEARCH_POPUP_ID;
@@ -71,7 +71,7 @@ function updateCatalogsSearchList() {
 			requestAccessButton.onclick=function(event) {
 				
 				successCallback=function() {
-					footer_showAlert(SUCCESS, "<s:text name="Catalogs.users.requestingCatalogJoinSuccess"/>");
+					footer_showAlert(SUCCESS, "<s:text name="Catalogs.users.requestingCatalogJoinSuccess"/>",null,10000);
 				}
 				errorCallback=function(msg) {
 					footer_showAlert(ERROR, "<s:text name="Catalogs.users.requestingCatalogJoinFailure"/> : "+msg);

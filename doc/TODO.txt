@@ -3,15 +3,9 @@
 v2.1.0:
 -------
 
-#40 when deleting a catalog, delete also associated userdata (with strong confirmation message)
-
 #55 tutorial videos on youtube
 
 check amount of available FTP ports when lots of catalogs
-
-add in users tab an help explaining how to add users
-
-#105 only catalog admin shall be allowed to create a new field
 
 #106 add a "create field" shortcut in the "create item" form
 
@@ -27,6 +21,9 @@ Référence de temps Kibana = '0' en mode Read-Only
 
 v2.1.1:
 -------
+security: block user after x bad passwords ? then email confirm mandatory
+
+#105 only catalog admin shall be allowed to create a new field
 
 #88 use scripted fields to get decades automatically computed, or create decade sub-fields?
 
