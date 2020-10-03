@@ -35,7 +35,6 @@ function mx_ws_connect(mxHost,mxApiConnectionParams, onConnectFunc) {
 	
 	MxApi.subscribeToSelectedCatalog(handleMxWsSelectedCatalog);
 	MxApi.subscribeToCreatedCatalog(handleMxWsCreatedCatalog);
-	MxApi.subscribeToCreatedTerm(handleMxWsCreatedTerm);
 	MxApi.subscribeToDeletedTerm(handleMxWsDeletedTerm);
 	MxApi.subscribeToCatalogSelectedItem(handleMxWsSelectedItem);
 	MxApi.subscribeToDeletedFilter(handleMxWsDeletedFilter);

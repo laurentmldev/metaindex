@@ -336,20 +336,5 @@ function details_reconfirm_delete_catalog(catId) {
 				</div>
 	
  </div>
-<script type="text/javascript">
-
-function cleanCreateFieldDatatypesList() {
-	let createTermTypeButton = document.getElementById("details.createTerm.datatype");
-	clearNodeChildren(createTermTypeButton);
-	for (datatypeIdx in mx_helpers_FIELDS_DATATYPES) {
-		let datatype=mx_helpers_FIELDS_DATATYPES[datatypeIdx];			
-		let option = document.createElement("option");
-		option.id="details.createTerm.datatype."+datatype;
-		option.value=datatype;
-		option.innerHTML=datatype;	
-		createTermTypeButton.appendChild(option);
-	}
-}
-
-</script>
+ 
  

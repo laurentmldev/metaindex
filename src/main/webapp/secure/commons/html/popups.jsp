@@ -577,7 +577,8 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFile
 	 
 	 // header
 	 let titleNode=newPopup.querySelector("._title_");
-	 titleNode.innerHTML=title;
+	 if (typeof(title)=="object") { titleNode.append(title); }
+	 else { titleNode.innerHTML=title; }
 	 
 	 // body (each field)	 
 	 let fieldsInsertSpot=newPopup.querySelector("._fields_insertspot_");

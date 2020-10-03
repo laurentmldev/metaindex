@@ -40,13 +40,7 @@
 	 footer_showAlert(INFO, "<s:text name="Catalogs.createdSuccessfully" />");
 	 MxApi.requestGetCatalogs({'catalogId':0, 'successCallback':handleMxWsCatalogs});
  }
- function handleMxWsCreatedTerm(msg) {	 
-	 if (msg.isSuccess==false) {
-		 footer_showAlert(ERROR, "<s:text name="Catalogs.field.unableToCreateTerm" /> : "+msg.rejectMessage);
-		 return;
-	 }
-	 footer_showAlert(SUCCESS, "<s:text name="Catalogs.field.termCreated" />");	 	 
- }
+ 
  function handleMxWsDeletedTerm(msg) {}
  function handleMxWsDeletedFilter(msg) {}
  function handleMxWsUpdatedFilter(msg) {}
@@ -135,10 +129,6 @@ function handleNbCreatedCatalogs(profileData) {
 
  function ws_handlers_deleteTerm(termName) {
 	 MxApi.requestDeleteTerm(MxGuiDetails.getCurCatalogDescription().id,termName);	 
- }
- 
- function ws_handlers_createTerm(termName) {
-	 MxApi.requestCreateTerm(MxGuiDetails.getCurCatalogDescription().id,termName);	 
  }
  
 

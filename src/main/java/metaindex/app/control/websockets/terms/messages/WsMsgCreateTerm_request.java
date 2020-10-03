@@ -18,7 +18,8 @@ import metaindex.data.term.ICatalogTerm.TERM_DATATYPE;
 public class WsMsgCreateTerm_request extends WsMsgDeleteTerm_request {
 
 	private TERM_DATATYPE _termDatatype;
-	private Map<String,String> _complementaryInfoMap=new HashMap<>();	
+	private Map<String,String> _complementaryInfoMap=new HashMap<>();
+	private Integer _requestId;
 	
 	public TERM_DATATYPE getTermDatatype() {
 		return _termDatatype;
@@ -34,6 +35,14 @@ public class WsMsgCreateTerm_request extends WsMsgDeleteTerm_request {
 
 	public void setComplementaryInfoMap(Map<String,String> complementaryInfoMap) {
 		this._complementaryInfoMap = complementaryInfoMap;
+	}
+
+	public Integer getRequestId() {
+		return _requestId;
+	}
+
+	public void setRequestId(Integer requestId) {
+		this._requestId = requestId;
 	}
 	
 	

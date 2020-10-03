@@ -221,4 +221,50 @@ function mx_helpers_isObserver() {
 		|| "<s:property value="currentUserProfile.role"/>"=="ROLE_USER"
 		|| "<s:property value="currentUserProfile.role"/>"=="ROLE_OBSERVER";
 }
+
+
+
+/*
+ * 
+ *	function onSuccessCallback(createTermForm,termName,termType)
+ *	function onErrorCallback(msg)
+ *	function onCancelCallback(createTermForm)	
+ */
+function mx_helpers_buildCreateNewTermForm(onSuccessCallback,onErrorCallback) {
+	let createNewTermButton=document.createElement("a");
+	let createNewNode=document.createElement("div");
+	createNewNode.style.width="100%";
+		
+	let innerCancelCallback=function(formNode) {
+		createNewTermButton.style.display='block';
+		formNode.hide();		
+	}
+	let createTermForm=formCreateTerm.buildNewCreateTermForm(
+			"createTermForm",onSuccessCallback,onErrorCallback,innerCancelCallback)
+	createTermForm.hide();
+	createTermForm.style.opacity=0.7;
+	createTermForm.style["font-size"]="0.6rem";
+	createTermForm.border='1px solid grey';
+	createTermForm.style.margin="1.5rem";
+	createTermForm.updateDatatypes();
+	
+	
+	// add button to show the form
+	createNewTermButton.id="left_show_createterm_button";
+	createNewTermButton.href="#";
+	createNewTermButton.classList.add("btn");
+	createNewTermButton.classList.add("btn-user");
+	createNewTermButton.classList.add("btn-block");
+	createNewTermButton.style="width:100%;margin-top:1rem;font-size:0.8rem;background:#8d8;color:white;padding:0.2rem";
+	createNewTermButton.onclick=function(e) { 
+		createNewTermButton.style.display='none';
+		createTermForm.toggleShowHide();
+	}
+	createNewTermButton.innerHTML="<s:text name="Items.createNewTerm" />";
+	
+	createNewNode.append(createTermForm);
+	createNewNode.append(createNewTermButton);
+	
+	return createNewNode;
+}
   </script>

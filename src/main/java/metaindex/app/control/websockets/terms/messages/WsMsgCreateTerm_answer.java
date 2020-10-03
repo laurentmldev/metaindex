@@ -13,6 +13,7 @@ public class WsMsgCreateTerm_answer extends WsMsgCreateTerm_request  implements 
 
 	
 	public WsMsgCreateTerm_answer(WsMsgCreateTerm_request request) {
+		this.setRequestId(request.getRequestId());
 		this.setTermName(request.getTermName());
 		this.setCatalogId(request.getCatalogId());
 		this.setTermDatatype(request.getTermDatatype());

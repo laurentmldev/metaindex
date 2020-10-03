@@ -10,7 +10,7 @@
 <script type="text/javascript">
 
 //showCsvPrevisu : build a line of the 'CSV-columns table'
-function _getColTypeNode(csvColName,checkBox) {
+function _getColTypeNode(csvColName,checkBox,badTermName) {
 	let colTermNodeSelect=document.createElement("select");
 	colTermNodeSelect.onchange=function() { checkBox.checked=true; }
 	let found=false;
@@ -30,7 +30,7 @@ function _getColTypeNode(csvColName,checkBox) {
 	idChoiceNode.innerHTML="- ID -";
 	colTermNodeSelect.appendChild(idChoiceNode);
 	idChoiceNode.onclick=function() { checkBox.checked=true; }
-	if (csvColName=="_id") {
+	if (csvColName=="_id" || csvColName=="id") {
 		idChoiceNode.selected=true;
 		found=true;
 	}
@@ -42,20 +42,21 @@ function _getColTypeNode(csvColName,checkBox) {
 	if (found==false) { choiceIgnoreNode.selected=true; }
 	colTermNodeSelect.appendChild(choiceIgnoreNode);
 	
-	
-	for (datatypeIdx in mx_helpers_FIELDS_DATATYPES) {
-		let datatypeStr=mx_helpers_FIELDS_DATATYPES[datatypeIdx];
-		let choiceNode=document.createElement("option");
-		choiceNode.value="__new__"+datatypeStr;
-		choiceNode.innerHTML=datatypeStr+" (new)";
-		colTermNodeSelect.appendChild(choiceNode);
-		choiceNode.onclick=function() { checkBox.checked=true; }
-		
-		// use TINY_TEXT as default new data type
-		if (datatypeStr=="TINY_TEXT") {
-			checkBox.onclick=function() {
-				if (checkBox.checked==true) { choiceNode.selected=true; }
-				else { choiceIgnoreNode.selected=true; }
+	if (badTermName!=true) {
+		for (datatypeIdx in mx_helpers_FIELDS_DATATYPES) {
+			let datatypeStr=mx_helpers_FIELDS_DATATYPES[datatypeIdx];
+			let choiceNode=document.createElement("option");
+			choiceNode.value="__new__"+datatypeStr;
+			choiceNode.innerHTML="<s:text name="Items.uploadItems.newField" /> "+datatypeStr;
+			colTermNodeSelect.appendChild(choiceNode);
+			choiceNode.onclick=function() { checkBox.checked=true; }
+			
+			// use TINY_TEXT as default new data type
+			if (datatypeStr=="TINY_TEXT") {
+				checkBox.onclick=function() {
+					if (checkBox.checked==true) { choiceNode.selected=true; }
+					else { choiceIgnoreNode.selected=true; }
+				}
 			}
 		}
 	}
@@ -83,7 +84,7 @@ function _buildCsvColumnsTable(CSVrows,nbEntriesNode,csvColsTable) {
    				&& !CSVrows[curLineNb].match(/^\s*#/)) {
    			nbEntries++;
    		}    			
-   		curLineNb++;	    		
+   		curLineNb++;	    		   		
    	}
    	nbEntriesNode.innerHTML=nbEntries;    	
 	    
@@ -100,7 +101,11 @@ function _buildCsvColumnsTable(CSVrows,nbEntriesNode,csvColsTable) {
    	
    	for (curFieldIdx in fieldsDefsArray) {
    		curField=fieldsDefsArray[curFieldIdx];	  
-   		let curFieldStr=stripStr(curField)    		
+   		let curFieldStr=stripStr(curField)  
+   		let badTermName=false;
+   		if (!checkTermName(curFieldStr)) {   			
+   			badTermName=true;
+   		} 
    		
    		let newRow=document.createElement("tr");
    		
@@ -115,14 +120,36 @@ function _buildCsvColumnsTable(CSVrows,nbEntriesNode,csvColsTable) {
    		let colName=document.createElement("td");
    		newRow.appendChild(colName);
    		colName.innerHTML=curFieldStr;
+   		if (badTermName) { 
+   			colName.classList.add("alert-danger");
+   			let icon=document.createElement("i");
+			icon.classList.add("mx-help-icon");
+			icon.classList.add("far");
+			icon.classList.add("fa-question-circle");
+			icon.style.color="grey";
+			colName.append(icon);
+			icon.onclick=function(event) {
+   				
+   				let helpText=document.createElement("div");
+   				helpText.style["font-size"]="0.7rem";
+   				helpText.innerHTML="<s:text name="Catalogs.field.termSyntaxNotGood" /><br/><br/>"
+   								   +"<s:text name="Catalogs.field.termNameForInteroperability" />"
+   				
+   				colName.appendChild(helpText);
+   			
+   			}
+   		}
    		
    		// field type
    		let colType=document.createElement("td");
-   		newRow.appendChild(colType);    		
-   		colTypeNode=_getColTypeNode(curFieldStr,checkBox);
-   		colType.appendChild(colTypeNode);
-   		    		
-   		csvColsTable.appendChild(newRow);
+   		newRow.appendChild(colType);    		   		
+		
+			colTypeNode=_getColTypeNode(curFieldStr,checkBox,badTermName);
+	   		colType.appendChild(colTypeNode);
+		 
+		
+		csvColsTable.appendChild(newRow);
+   		
    	}    	
    
 }
@@ -177,7 +204,7 @@ function _handleCsvDataFile(fileHandle) {
 	var reader = new FileReader();
 	reader.onload = function (file_contents) {
 		let fileName = fileHandle.files[0].name;
-    	let CSVrows = file_contents.target.result.split("\n");    	
+    	let CSVrows = file_contents.target.result.split("\n");
     	_showCsvPrevisu(CSVrows,fileName);
     }
     reader.readAsText(fileHandle.files[0]);
@@ -220,6 +247,7 @@ function _handleExcelDataFile(fileHandle) {
 		function handleSheetContents(sheetName,fileName) {
 			var csv = XLSX.utils.sheet_to_csv(workbook.Sheets[sheetName]);
 			if(csv.length){
+				//console.log(csv);		    	
 				_showCsvPrevisu(csv.split('\n'),fileName);
 			}
 		}

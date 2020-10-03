@@ -45,8 +45,8 @@
 		
 		  <div id="empty-placeholder" style="color:#aaa;width:100%" ><center>
 			  <h5 style="margin-top:2rem;margin-bottom:3rem;"><s:text name="Catalogs.empty"/></h5>			  
-			  <h6 style="margin-bottom:1rem;">&larr; <s:text name="Catalogs.emptyHowTo" /></h6>			  
-			  <img src="public/commons/media/img/mx-title.png" style="opacity:0.5;width:50%;margin-bottom:4rem;" />		  
+			  <h6 style="margin-bottom:5rem;">&larr; <s:text name="Catalogs.emptyHowTo" /></h6>			  
+			  <img src="public/commons/media/img/mx-title-nb.png" style="opacity:0.5;width:50%;margin-bottom:4rem;" />		  
 		  </center></div>
    		 <s:include value="../commons/html/footer.jsp"></s:include>
    		 

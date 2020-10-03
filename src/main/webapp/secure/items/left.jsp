@@ -127,6 +127,7 @@
  	</div>
  </div>
 
+<s:include value="../commons/html/form_create_term.jsp"/>
 
 <script type="text/javascript" >
 
@@ -321,13 +322,33 @@ function _builCreateNewItemForm(catalogDescr) {
 		ws_handlers_createItem(catalogDescr,fieldsMap,onCreationSuccessCallback,onCreationFailureCallback);		
 	}
 	
-	let popupTitle="<s:text name="Items.createItem"></s:text> <s:property value='currentUserProfile.catalogVocabulary.itemCap'/>";
-	if (fieldsList.length==0) {
-		popupTitle+="<br/><span class='alert-warning' ><s:text name="Items.createItem.nofields"></s:text></span>"
+	let popupHeaderNode=document.createElement("div");
+	let popupTitleNode=document.createElement("div");
+	popupHeaderNode.append(popupTitleNode);
+	popupTitleNode.innerHTML="<s:text name="Items.createItem"></s:text> <s:property value='currentUserProfile.catalogVocabulary.itemCap'/>";
+	
+
+	// add create-new-term inline form	
+	function onSuccessCallback(createTermForm,termName,termType) {
+		// refresh and redisplay the 'create item' popup once term created
+		let innerSuccess=function(catalogDescr) {
+			handleMxWsCatalogs(catalogDescr);
+			document.getElementById("leftbar_item_create").querySelector('._modal_root_').toggleShowHide();
+		}
+		footer_showAlert(SUCCESS, "<s:text name="Catalogs.field.termCreated" />");
+		MxApi.requestGetCatalogs({'catalogId':catalogDescr.id, 'successCallback':innerSuccess});
+		
 	}
+	function onErrorCallback(msg) {
+		footer_showAlert(ERROR, "<s:text name="Catalogs.field.unableToCreateTerm" /> : "+msg);
+	}
+	let createNewTermButton= mx_helpers_buildCreateNewTermForm(onSuccessCallback,onErrorCallback);
+	popupHeaderNode.append(createNewTermButton);
+	
 	// create item modal
-	let createItemForm=MxGuiPopups.newMultiInputsPopup(popupTitle,
+	let createItemForm=MxGuiPopups.newMultiInputsPopup(popupHeaderNode,
 													fieldsList,onValidFormCallback);
+	createItemForm.id="createItemForm";
 	return createItemForm;
 }
 
@@ -336,6 +357,10 @@ MxGuiLeftBar.handleCatalogDetails=function(catalogDescr) {
 	
 	_update_menus_list();
 	let filtersInsertSpot=MxGuiLeftBar.getFiltersInsertSpot();
+	let currentForm=document.getElementById("createItemForm");
+	let showCreateItemPopup=false;
+	if (currentForm!=null && currentForm.style.display!="none") { showCreateItemPopup=true; }
+	
 	clearNodeChildren(filtersInsertSpot);
 	
 	// generate "create new item" form
@@ -344,6 +369,9 @@ MxGuiLeftBar.handleCatalogDetails=function(catalogDescr) {
 		let createItemForm=_builCreateNewItemForm(catalogDescr);
 		createNodeFormInsertSpot.appendChild(createItemForm);
 		
+		// tmp 
+		//cleanCreateFieldDatatypesList(document.getElementById("createTermForm"),onSuccessCallback,onErrorCallback,onClickCancelCallback);
+		if (showCreateItemPopup) { createItemForm.toggleShowHide();}
 	}
 	
 	

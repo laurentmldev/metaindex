@@ -143,7 +143,6 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	myself._callback_DeleteTerm_debug=false;
 	
 	// Create term
-	myself._callback_CreateTerm=null;
 	myself._callback_CreateTerm_debug=false;
 
 	// Get Catalog Users
@@ -1494,36 +1493,55 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	}
 		
 //------- Create Term --------
+	this.requestCreateTermCallbacks=[];
+	/*
 	this.subscribeToCreatedTerm=function(callback_func,debug) {
 		debug=debug||false;
 		myself._callback_CreateTerm_debug=debug;
 		myself._callback_CreateTerm=callback_func;
 	}
-	
-	// complementaryInfoMap: map containing complementary info, might be needed depending on created datatype
-	this.requestCreateTerm= function(catalogId,termName,termDatatype,complementaryInfoMap) {
+	*/
+	// dataObj:
+	// 		catalogId
+	//		termName
+	//		termDatatype
+	//		complementaryInfoMap: map containing complementary info, might be needed depending on created datatype
+	//  	successCallback (func)
+	//   	errorCallback (func(msg))
+	this.requestCreateTerm= function(dataObj) {
+		
+		var curRequestId=myself.requestCreateTermCallbacks.length;
+		myself.requestCreateTermCallbacks.push(dataObj);
+		
 		
 		if (myself._callback_CreateTerm_debug==true) {
-			console.log("MxAPI Sending Request Create Term : "+termName);
+			console.log("MxAPI Sending Request Create Term : "+dataObjtermName);
 		}
 		
 		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/create_term", {}, 
-				JSON.stringify({ 	"catalogId" : catalogId,
-									"termName" : termName,
-									"termDatatype" : termDatatype,
-									"complementaryInfoMap" : complementaryInfoMap
+				JSON.stringify({ 	"requestId" : curRequestId,
+									"catalogId" : dataObj.catalogId,
+									"termName" : dataObj.termName,
+									"termDatatype" : dataObj.termDatatype,
+									"complementaryInfoMap" : dataObj.complementaryInfoMap
 								}));
 	}
 
 	this._handleCreateTermResponseMsg= function(createTermResponseMsg) {
 		var parsedMsg = JSON.parse(createTermResponseMsg.body);
+		let requestId=parsedMsg.requestId;
 		
-		if (myself._callback_CreateTerm_debug==true) {
-			console.log("MxAPI Received Create Term\n"+decodedData);
-		}
-		if (myself._callback_CreateTerm!=null) {
-			myself._callback_CreateTerm(parsedMsg); 
-		}
+		//console.log("handling request create-filter answer "+requestId);
+		let requestObj=myself.requestCreateTermCallbacks[requestId];
+		if (requestObj==null) { return; }
+		if (parsedMsg.isSuccess==true) { requestObj.successCallback(); }
+		else {
+			let errorMsg=parsedMsg.rejectMessage;
+			// ensure error message is not empty
+			// (otherwise can lead to some misbehaviour in user app (ex: x-editable) )
+			if (errorMsg==undefined) { errorMsg="create-term refused by server, sorry." }
+			requestObj.errorCallback(errorMsg); 
+		}	
 	}
 		
 			

@@ -42,10 +42,24 @@
  	 });	 
 }
  
- 
  // function used by details.jsp:details_buildContents
  function details_buildContents_mapping(newPopulatedCatalogDetails,catalogCard) {
 	 
+	// Create New Term
+	 function details_successTermCreate() {
+		 footer_showAlert(SUCCESS, "<s:text name="Catalogs.field.termCreated" />");
+	 }
+	 function details_failedTermCreate(msg) {
+		 footer_showAlert(ERROR, "<s:text name="Catalogs.field.unableToCreateTerm" /> : "+msg);
+	 } 
+	 let createNewTermButton= mx_helpers_buildCreateNewTermForm(
+			 details_successTermCreate,details_failedTermCreate);
+	 createNewTermButton.style.width="30%";
+	 createNewTermButton.style["margin-bottom"]="0.3rem";
+	 createNewTermButton.style["margin-top"]="0";
+	 let createNewTermInsertspot = newPopulatedCatalogDetails.querySelector("._createNewterm_insertSpot_");
+	 createNewTermInsertspot.append(createNewTermButton);
+	
 	// Terms definition
 	let termsInsertspot = newPopulatedCatalogDetails.querySelector("._terms_insertspot_");
 	let termNodeTemplate = newPopulatedCatalogDetails.querySelector("._term_template_");
@@ -143,18 +157,15 @@
 		termsInsertspot.appendChild(newTermNode);
 	}
 		 
+	
  }
  
- function details_createTerm(termName,termDatatype) {
-	 
- 	MxApi.requestCreateTerm(_curCatalogDesc.id,termName,termDatatype);
-	  
- }
   
  </script>
  
+  <s:include value="../commons/html/form_create_term.jsp"/>
  <div class="tab-pane fade" id="nav-mapping" role="tabpanel" aria-labelledby="nav-mapping-tab">
-						
+						<div class="_createNewterm_insertSpot_"></div>
 						<table class="table table-striped" >
 						    <thead>
 						      <tr>
@@ -162,56 +173,12 @@
 						        	 <span class="dropdown no-arrow mx-1" style="padding:1rem;">
 							              <a class="dropdown-toggle" href="#" id="createTermDropdown" 
 							              	role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							                <i class="fas fa-plus fa-fw" onclick="cleanCreateFieldDatatypesList();"></i>
+							                <i class="fas fa-plus fa-fw" onclick="showCreateTermForm();"></i>
 							                
 							              </a>
-							              <!-- Create Term form -->
-							              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow" 
-							              		aria-labelledby="createTermDropdown"
-							              		id="MxGui.details.createTerm">
-							               
-								              <div class="form-inline mr-auto w-auto navbar-search" >
-								                  <div class="input-group">
-								                    <input id="details.createTerm.name" type="text" class="form-control bg-light border-0 small" 
-								                    		style="min-width:200px;margin:0.2rem;"		
-								                    		onkeypress="if (event.which==13||event.keycode==13) {
-								                    			details_createTerm(
-										                       			document.getElementById('details.createTerm.name').value,
-										                       			document.getElementById('details.createTerm.datatype').value);
-								                    		}"
-								                    		placeholder="Term Name ..." aria-label="Filter" aria-describedby="basic-addon2"              			              		 
-								                    		aria-label="Create Term Name" aria-describedby="basic-addon2">
-								                    
-								                    <select id="details.createTerm.datatype"  class="form-control bg-light border-0 small" 
-								                    		style="min-width:200px;margin:0.2rem;"	
-								                    		onclick="event.stopPropagation();"	
-								                    		onkeypress="if (event.which==13||event.keycode==13) {
-								                    			details_createTerm(
-										                       			document.getElementById('details.createTerm.name').value,
-										                       			document.getElementById('details.createTerm.datatype').value);
-								                    		}"						                    		
-								                    		aria-label="Filter" aria-describedby="basic-addon2"              			              		 
-								                    		aria-label="Create Term Type" aria-describedby="basic-addon2">
-								                    		
-								                    		<!-- Options field by javascript (down this page) -->
-															
-								                    </select>	
-								                    <div class="input-group-append" style="margin:0.2rem">
-								                      <button class="btn btn-primary" type="button"
-								                       	onclick="details_createTerm(
-								                       			document.getElementById('details.createTerm.name').value,
-								                       			document.getElementById('details.createTerm.datatype').value);" >
-								                        <i class="fas fa-check fa-sm"></i>
-								                      </button>
-								                      <button class="btn btn-primary" type="button" >
-								                        <i class="fa fa-times fa-sm"></i>
-								                      </button>
-								                    </div>	                    
-								                  </div>
-								                </div>
-							           </div>
 							              
 							        </span>
+							        <div id="createTermFormInsertSpot" ></div>
 						        </th>
 						        <th><s:text name="Catalogs.field.type"></s:text></th>
 						        <th><s:text name="Catalogs.field.enumeration"></s:text></th>
