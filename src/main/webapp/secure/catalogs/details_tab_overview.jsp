@@ -440,7 +440,19 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 					successCallbackKibanaTimeFieldChange);
 			kibanaTimeField.append(editableFieldTiemFieldNode);
 			
-		} else { kibanaTimeField.innerHTML=catalogCard.descr.timeFieldTermId; }
+		} else {
+			let termTranslation = "<s:text name="Catalogs.overview.lastUpdateTimestamp"/>";
+			if (catalogCard.descr.timeFieldTermId!=0) {
+				for (var termName in catalogCard.descr.terms) {
+					let termDescr = catalogCard.descr.terms[termName];
+					if (termDescr.id==catalogCard.descr.timeFieldTermId) {
+						termTranslation=mx_helpers_getTermName(termDescr, catalogCard.descr);
+						break;
+					}
+				}
+			}
+			kibanaTimeField.innerHTML=termTranslation;
+		}
 		 
  }
    

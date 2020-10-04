@@ -44,6 +44,7 @@ using classpath local versions for spring XSD, otherwise it does not work offlin
 		<concurrency-control max-sessions="3" error-if-maximum-exceeded="true" />
 	</session-management>
 	
+	
 </http>
 
   <authentication-manager>  
@@ -57,7 +58,8 @@ using classpath local versions for spring XSD, otherwise it does not work offlin
 		  			and users.user_id = user_roles.user_id and users.enabled=1"  />
        </authentication-provider>  
   </authentication-manager>  
-    
+   
+	   
   <websocket-message-broker>
 	
 	<intercept-message type="UNSUBSCRIBE" access="permitAll" />

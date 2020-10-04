@@ -48,6 +48,8 @@
 	    <property name="maxUploadSize" value="-1" />
 	</bean>
 	
+	<!--bean id="eventListenerBean" class="metaindex.app.session.MxHttpSessionEventListener" /-->
+	
 	<websocket:message-broker application-destination-prefix="/wsmxapp">
 		<websocket:transport message-size="655360"/>
 		<websocket:stomp-endpoint path="/wsmx">
@@ -61,6 +63,7 @@
 		
 	</websocket:message-broker>
 	
+
  </beans> 
  
  

@@ -6,6 +6,9 @@ import javax.servlet.http.HttpSessionEvent;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.security.core.session.SessionDestroyedEvent;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +18,7 @@ import toolbox.exceptions.DataProcessException;
 
 
 @Component
-public class MxHttpSessionEventListener  extends HttpSessionEventPublisher {
+public class MxHttpSessionEventListener  extends HttpSessionEventPublisher /* implements ApplicationListener<SessionDestroyedEvent> */{
 
 	private Log log = LogFactory.getLog(MxHttpSessionEventListener.class);
 	
@@ -24,7 +27,14 @@ public class MxHttpSessionEventListener  extends HttpSessionEventPublisher {
 	      super.sessionCreated(event);
 	      
 	   }
-
+/*
+	   @Override
+	   public void onApplicationEvent(SessionDestroyedEvent event) {
+	       log.error("session destroyed");
+	   }
+	   */
+	  
+	   
 	   @Override
 	   public void sessionDestroyed(HttpSessionEvent event) {
 	      
@@ -32,6 +42,7 @@ public class MxHttpSessionEventListener  extends HttpSessionEventPublisher {
 		  
 		  if (user != null) {
 			  try {
+				  user.sendGuiInfoMessage("Plop plop");
 				  user.sendGuiErrorMessage(user.getText("session.expired"));
 				  user.logOut(); 				  
 			  }
