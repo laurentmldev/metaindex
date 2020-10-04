@@ -252,7 +252,9 @@ public class UserProfileData implements IUserProfileData
      *  Only used for unit test 
      */
 	@Override
-    public String getPassword() { return _cryptedPassword; }
+    public String getPassword() {
+		return _cryptedPassword; 
+	}
     /** Encrypt and store password */
 	@Override
     public void setPasswordAndEncrypt(String clearPassword) 

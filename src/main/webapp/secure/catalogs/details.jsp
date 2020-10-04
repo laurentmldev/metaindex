@@ -112,12 +112,12 @@
 	MxApi.requestSelectCatalog(catalogId);	
  } 
 
+ var reCatalogName = /^[a-z][a-z0-9_]{3,}$/;
+	
  function details_createCatalog(catalogName) {
 	 if (catalogName==null) { catalogName=_curCatalogDesc.name; }
-	 if (catalogName.toLowerCase()!=catalogName
-			 || catalogName.replace(/[_a-z0-9]/g,'').length>0) {
-		 footer_showAlert(WARNING,"The catalog id shall only contain lower case letters (no accent), numbers or '_' (no space).<br/>"
-				 		+"Following characters are refused '"+catalogName.replace(/[_a-z0-9]/g,'')+"', please try again!");
+	 if (!reCatalogName.test(catalogName)) {
+		 footer_showAlert(WARNING,"<s:text name="Catalogs.create.nameSyntaxNotGood" />");
 		 return;
 	 }
 	 footer_showAlert(INFO,"<s:text name="global.pleasewait"/>",null,5000);
