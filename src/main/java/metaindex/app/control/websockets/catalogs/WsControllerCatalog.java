@@ -1,7 +1,5 @@
 package metaindex.app.control.websockets.catalogs;
 
-import java.io.File;
-
 /*
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -11,13 +9,13 @@ Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
 See full version of LICENSE in <https://fsf.org/>
 */
 
+
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Semaphore;
 
 import org.apache.commons.io.FileUtils;
@@ -45,7 +43,6 @@ import metaindex.data.catalog.CatalogVocabularySet;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.catalog.dbinterface.CreateIndexIntoEsDbStmt.IndexAlreadyExistException;
 import metaindex.data.term.ICatalogTerm;
-import metaindex.data.userprofile.ICatalogUser;
 import metaindex.data.userprofile.ICatalogUser.USER_CATALOG_ACCESSRIGHTS;
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.utils.StrTools;

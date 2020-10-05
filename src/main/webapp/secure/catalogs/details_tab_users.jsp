@@ -44,9 +44,11 @@
 			 			  ];
 		 
 		 let onchangeEditRightsCallback=function(pk,fieldName,newValue,successCallback, errorCallback) {
-			 
-			 let catalogId = "<s:property value="currentCatalog.id"/>";
-			 if (catalogId=="") { return; }
+			 let catalogId = MxGuiDetails.getCurCatalogDescription().id;
+			 if (catalogId=="") {
+				 console.log("ERROR: no catalog defined, unable to set user access rights");
+				 return; 
+			}
 			 ws_handlers_setCatalogUserAccess(catalogId, curUserData.id, newValue,successCallback,errorCallback);
 		 }
 		 let successEditRightsCallback=function(fieldName,newValue) {
@@ -64,8 +66,8 @@
 		 row.append(rights);
 	 }
 	 
+	 xeditable_finishEditableFields();	
 	 
-	 xeditable_finishEditableFields();
  }
  function _updateCatalogUsers() {
 	 let curCatalogId="<s:property value="currentCatalog.id"/>";

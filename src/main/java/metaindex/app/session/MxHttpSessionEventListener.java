@@ -42,7 +42,8 @@ public class MxHttpSessionEventListener  extends HttpSessionEventPublisher /* im
 		  
 		  if (user != null) {
 			  try {
-				  user.sendGuiInfoMessage("Plop plop");
+				  // does not work, seems that websockets connection is already closed
+				  // when this method is called?
 				  user.sendGuiErrorMessage(user.getText("session.expired"));
 				  user.logOut(); 				  
 			  }
