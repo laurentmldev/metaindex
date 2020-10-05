@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
 
 import metaindex.data.filter.IFilter;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
@@ -78,7 +79,8 @@ public interface IUserProfileData extends ICatalogUser,IPlanUser,IObserver<IProc
 	public void logOut() throws DataProcessException;
     
 	public String getHttpSessionId();
-	public void setHttpSessionId(String sId);
+	public HttpSession getHttpSession();
+	public void setHttpSession(HttpSession session);
 	
 	public String getWebsocketSessionId();
 	public void setWebsocketSessionId(String sId);

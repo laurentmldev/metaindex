@@ -31,9 +31,7 @@ v2.1.1:
 		--> any user can delete spaces from somebody else
 			
 
-
 session management:
-	- forward to login page when received a "session logout" WS msg
 	- security: block user after x bad passwords ? then email confirm mandatory
 	- handle (or block) severals sessions in parallel
 
@@ -141,6 +139,9 @@ Done:
 
 v2.1.0
 
+session management:
+	- forward to login page when received a "session logout" WS msg
+	
 users management setRole does not work on first server load
 
 do not send create catalog request if id is empty

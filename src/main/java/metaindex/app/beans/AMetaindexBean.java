@@ -15,6 +15,7 @@ package metaindex.app.beans;
 import java.util.Locale;
 import java.util.Collection;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -67,7 +68,7 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 			HttpServletRequest request=ServletActionContext.getRequest();
 			
 	  		if (_userProfileData==null) {
-	  			String sessionId=request.getSession().getId();
+	  			HttpSession session = request.getSession();	  			
 	  			
 	  			// if LOGGED-IN user : try to get user profile by name if already logged in
 	  			if (request.getUserPrincipal()!=null) {
@@ -104,7 +105,7 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 	  			
 	  			// if anonymous session : try to get user profile by session id
 	  			if (_userProfileData==null) {
-	  				_userProfileData=Globals.Get().getUsersMgr().getUserByHttpSessionId(sessionId);
+	  				_userProfileData=Globals.Get().getUsersMgr().getUserByHttpSessionId(session.getId());
 	  			}
 	  			
 	  			// full new user
@@ -112,8 +113,8 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 					_userProfileData = new UserProfileData();					
 				}
 											
-				if (_userProfileData.getHttpSessionId().length()==0) {
-  					_userProfileData.setHttpSessionId(sessionId);
+				if (_userProfileData.getHttpSession()==null) {
+  					_userProfileData.setHttpSession(session);
   					Globals.Get().getUsersMgr().registerUser(_userProfileData);  						  				
   				} 
 	  		} 

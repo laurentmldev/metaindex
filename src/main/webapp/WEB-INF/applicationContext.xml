@@ -56,14 +56,14 @@
 			<websocket:handshake-interceptors>
 	            <bean class="org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor"/>
 	        </websocket:handshake-interceptors>
-	        <websocket:sockjs session-cookie-needed="true" />			
+	        <websocket:sockjs session-cookie-needed="true" />
+	         			
 		</websocket:stomp-endpoint>
 		
 		<websocket:simple-broker prefix="/topic,/queue"/>
 		
 	</websocket:message-broker>
 	
-
  </beans> 
  
  

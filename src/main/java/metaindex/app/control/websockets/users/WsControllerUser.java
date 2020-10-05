@@ -31,6 +31,7 @@ import org.springframework.stereotype.Controller;
 
 import metaindex.app.Globals;
 import metaindex.app.control.websockets.users.messages.*;
+import metaindex.app.control.websockets.users.messages.WsMsgUserSessionStatus_answer.SESSION_STATUS;
 import metaindex.app.control.websockets.users.messages.WsUserGuiMessageText.MESSAGE_CRITICITY;
 import metaindex.app.control.websockets.catalogs.messages.WsMsgCatalogContentsChanged_answer;
 import metaindex.app.control.websockets.commons.AMxWSController;
@@ -78,7 +79,7 @@ public class WsControllerUser extends AMxWSController {
 	}
 	
 	private static List<WsMsgUpdateUserPlan_answer> _awaitingPaymentPlanUpdates = new java.util.concurrent.CopyOnWriteArrayList<>();
-		
+	
 	
     @MessageMapping("/register_request")
     @SubscribeMapping ("/user/queue/register_ack")
@@ -585,7 +586,13 @@ public class WsControllerUser extends AMxWSController {
 					new WsUserGuiMessageProgress(processingId,message,pourcentage,active));
     }
     
-    
+
+    @SendTo( "/user/queue/session_status")
+    public void sendSessionStatusExpired(IUserProfileData user) throws Exception {
+    	WsMsgUserSessionStatus_answer msg = new WsMsgUserSessionStatus_answer(SESSION_STATUS.EXPIRED);       	
+		this.messageSender.convertAndSendToUser(user.getName(),
+									"/queue/session_status", msg);        	
+    }
 
     @SendTo("/queue/catalog_contents_changed")
     public void sendBroadCastCatalogContentsChanged(IUserProfileData user, 

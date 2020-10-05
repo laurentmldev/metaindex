@@ -7,6 +7,7 @@
 <script  src="${mxurl}public/commons/deps/stomp.min.js"></script>
 <script src="${mxurl}public/commons/js/metaindex.js"></script>
 
+
 <!-- Pako for GZip inflate/deflate for big communication with server  -->
 <script src="${mxurl}public/commons/deps/pako.min.js"></script>
 
@@ -28,6 +29,18 @@ function handleMxWsHeartbeatEvent(event) {
 		// do nothing special
 	}
 } 
+
+function handleMxSessionStatusEvent(sessionStatus) {
+	if (sessionStatus=="EXPIRED") {
+		footer_showAlert(WARNING, "<s:text name="session.expired" />",null,999999999);
+		
+		let redirectToLoginDelayMs=2000;
+		let timer = setInterval(function() { 
+			clearInterval(timer); 
+			document.location.href="${mxurl}loginform?expired" 
+		}, redirectToLoginDelayMs);
+	}
+}
 function mx_ws_connect(mxHost,mxApiConnectionParams, onConnectFunc) {
 	
 	// from metaindex.js	
@@ -43,7 +56,7 @@ function mx_ws_connect(mxHost,mxApiConnectionParams, onConnectFunc) {
 	MxApi.subscribeToServerGuiMessages(handleMxWsServerGuiMessage);
 	MxApi.subscribeToCatalogContentsChanged(handleMxWsCatalogContentsChanged);
 	MxApi.subscribeToServerHeartBeatEvent(handleMxWsHeartbeatEvent);
-	
+	MxApi.subscribeToServerSessionStatusEvent(handleMxSessionStatusEvent);
 	MxApi.connect(onConnectFunc);
 }
 	

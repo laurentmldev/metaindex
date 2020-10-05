@@ -67,6 +67,11 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	myself._callback_ServerHeartbeatEvent=null;
 	myself._callback_ServerHeartbeatEvent_debug=false;
 		
+	// Server session status notif
+	myself._callback_ServerSessionStatusEvent=null;
+	myself._callback_ServerSessionStatusEvent_debug=false;
+		
+
 	// Create Catalog
 	myself._callback_CreateCatalog=null;	
 	myself._callback_CreateCatalog_debug=false;
@@ -264,6 +269,9 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			myself._stompClient.subscribe('/queue/catalog_contents_changed',myself._handleCatalogContentsChangedMsg);
 			// server heartbeat (broadcast)
 			myself._stompClient.subscribe('/queue/heartbeat',myself._handleServerHeartbeat);
+			// server session status
+			myself._stompClient.subscribe('/user/queue/session_status',myself._handleServerSessionStatus);
+			
 			
 			// register user
 			myself._sendRegisterRequest();
@@ -340,6 +348,27 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 				
 	}
 
+//------- Server Session Status notif --------	
+	this.subscribeToServerSessionStatusEvent=function(callback_func,debug) {
+		debug=debug||false;
+		myself._callback_ServerSessionStatusEvent_debug=debug;
+		myself._callback_ServerSessionStatusEvent=callback_func;
+	}
+	
+	
+	this._handleServerSessionStatus= function (mxServerSessionStatusMsg) {
+		var parsedMsg = JSON.parse(mxServerSessionStatusMsg.body);
+			
+		if (myself._callback_ServerHeartbeatEvent_debug==true) {
+			console.log("MxAPI Received [Server Session Status] : '"+parsedMsg.sessionStatus+"'");
+		}
+		if (myself._callback_ServerSessionStatusEvent!=null) {
+			myself._callback_ServerSessionStatusEvent(parsedMsg.sessionStatus);
+		}
+		
+		
+				
+	}
 //------- Register User --------	
 	this._sendRegisterRequest = function() {
 		

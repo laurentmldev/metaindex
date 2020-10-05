@@ -230,8 +230,9 @@ public class Catalog implements ICatalog {
 			if (_ftpServer!=null) { _ftpServer.setUser(p, true); }
 			if (!_loggedUsersIds.containsKey(p.getId()) ) {
 				_loggedUsersIds.put(p.getId(),p);
-				log.info("Catalog "+this.getName()+" added user '"+p.getName()+"' sessionId="+p.getHttpSessionId()
-																			+". Total: "+_loggedUsersIds.size()+" users.");
+				log.info("Catalog "+this.getName()+" added user '"
+							+p.getName()+"' sessionId="+p.getHttpSessionId()
+							+". Total: "+_loggedUsersIds.size()+" users.");
 			}
 			_loggedUsersLock.release();
 		} catch (Exception e) { _loggedUsersLock.release(); e.printStackTrace(); }

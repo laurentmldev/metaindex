@@ -106,7 +106,6 @@ public class AMxWSController {
 				throw new DataProcessException("No such user '"+headerAccessor.getUser().getName()+"' found (sessionId="+httpSessionId+").");
 			}
 			user.quitCurrentCatalog();
-			user.setHttpSessionId(httpSessionId);
 		}
 		if (!user.isLoggedIn()) {
 			throw new DataProcessException("User '"+headerAccessor.getUser().getName()+"' is not currently logged in, operation refused.");

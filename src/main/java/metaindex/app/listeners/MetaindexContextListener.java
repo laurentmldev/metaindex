@@ -1,7 +1,6 @@
 package metaindex.app.listeners;
 
 
-import java.util.List;
 
 /*
 GNU GENERAL PUBLIC LICENSE
@@ -13,6 +12,8 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
+
+import java.util.List;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -43,21 +44,10 @@ public class MetaindexContextListener implements ServletContextListener{
 	 
     @Override
     public void contextDestroyed(ServletContextEvent event) {   
-    	
+    	// websocket connections already stopped when this method is called
+    	// so we cannot send a notification message to users
     	log.info("Shuting down MetaindeX context ...");
     	
-    	try {
-    		List<IUserProfileData> users = Globals.Get().getUsersMgr().getUsersList();
-    		for (IUserProfileData u : users) {
-    			// does not work ... ?!
-    			if (u.isLoggedIn()) {
-    				u.sendGuiWarningMessage(u.getText("globals.systemShutdown"));
-    			}
-    		}
-    	}
-		catch (Throwable t) {
-			log.error("Unable to send shutdown notification to all users : "+t.getMessage());
-		}    	
     	
     	List<ICatalog> catalogs = Globals.Get().getCatalogsMgr().getCatalogsList();
     	for (ICatalog c : catalogs) {

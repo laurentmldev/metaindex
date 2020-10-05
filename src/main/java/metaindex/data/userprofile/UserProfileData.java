@@ -1,8 +1,5 @@
 package metaindex.data.userprofile;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
 /*
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -13,6 +10,8 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -21,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
+
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -63,7 +64,7 @@ public class UserProfileData implements IUserProfileData
 	
 
 	private String _remoteAddr="";			
-	private String _httpSessionId = "";
+	private HttpSession _httpSession = null;
 	private String _wsSessionId = "";
 	private Integer _userId = 0;
 	private String _useremail = "";
@@ -218,13 +219,23 @@ public class UserProfileData implements IUserProfileData
 	}
 	
 	@Override
-	public boolean isLoggedIn() { return _isLoggedIn; }
+	public boolean isLoggedIn() { return _isLoggedIn && _httpSession!=null; }
 	
 	@Override
-	public String getHttpSessionId() { return _httpSessionId; };
+	public HttpSession getHttpSession() { return _httpSession; };
 	
 	@Override
-	public void setHttpSessionId(String sId) { _httpSessionId = sId; }
+	public String getHttpSessionId() { 
+		if (_httpSession==null) { return ""; }
+		return _httpSession.getId();
+	}
+	@Override
+	public void setHttpSession(HttpSession session) {
+		if (_httpSession!=null && _httpSession!=session) {
+			_httpSession.invalidate();
+		}
+		_httpSession = session; 
+	}
 	
 	@Override
 	public String getWebsocketSessionId() { return _wsSessionId; };
@@ -613,7 +624,27 @@ public class UserProfileData implements IUserProfileData
 	    		log.error("unable to update user details in statistics environment.");
     		}
 		}
-			 
+		
+		// check also for HttpSession timeout
+		// not so clear to do it together with DB-changes monitoring, but convenient 
+		checkHttpSessionTimeout();
+ 			 
+	}
+	private static final Integer SESSION_EXPIRED_NOTIFY_TRESHOLD_SEC=15;
+	private void checkHttpSessionTimeout() {
+		if (getHttpSession()!=null) {
+			long lastActivationDate = getHttpSession().getLastAccessedTime();
+			long currTime = System.currentTimeMillis();
+			long expiryDelayMs = lastActivationDate + this.getHttpSession().getMaxInactiveInterval()*1000 - currTime;
+			
+			if (expiryDelayMs<SESSION_EXPIRED_NOTIFY_TRESHOLD_SEC*1000) {
+				try {
+					WsControllerUser.UsersWsController.sendSessionStatusExpired(this);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	@Override
