@@ -3,7 +3,7 @@
 v2.1.0:
 -------
 
-traduction fr de "filter xxx deleted"
+sort by family_name created by CSV import :  ELK error
 
 add in search help text how to search for empty field
 
@@ -140,6 +140,8 @@ Done:
 -----
 
 v2.1.0
+
+traduction fr de "filter xxx deleted"
 
 session management:
 	- forward to login page when received a "session logout" WS msg

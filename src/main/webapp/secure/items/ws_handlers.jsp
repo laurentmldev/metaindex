@@ -46,7 +46,7 @@
 		 return;
 	 }
 	// GUI refreshed on 'CatalogContentsChanged' message received appart
-	 footer_showAlert(WARNING, "Filter '"+msg.filterName+"' deleted.");
+	 footer_showAlert(WARNING, "<s:text name="Items.filters.deleted" /> : '"+msg.filterName+"'");
 	 filtersInsertSpot=MxGuiLeftBar.getFiltersInsertSpot();
 	 for (var curFilter=filtersInsertSpot.firstChild;curFilter!==null;curFilter=curFilter.nextElementSibling) {		
 		if (typeof(curFilter)!='object') { continue; }
@@ -62,7 +62,8 @@
  	if (msg.modifType==MxApi.CATALOG_MODIF_TYPE.DOCS_LIST) {
 		 if (msg.userNickname!="<s:property value='currentUserProfile.nickname'/>") {
 			 footer_showAlert(INFO, 
-					 msg.userNickname+" changed catalog with "+msg.nbImpactedDocs+" document(s). <a href='Items'>Click to Refresh</a>",
+					  msg.userNickname+" <s:text name="Items.CatalogContentsChangedNotif.part1" /> "
+					 		+msg.nbImpactedDocs+" <s:text name="Items.CatalogContentsChangedNotif.part2" />",
 					 null,
 					 5000);
 		 } else {
@@ -79,11 +80,12 @@
 			 
 			 if (msg.nbImpactedDocs==1) {
 			 	footer_showAlert(INFO, 
-			 				msg.userNickname+" changed contents of document \""+msg.impactedDocName+"\" : "+msg.impactDetails,
+			 				msg.userNickname+" <s:text name="Items.ItemContentsChangedNotif" /> \""+msg.impactedDocName+"\" : "+msg.impactDetails,
 			 				null,
 			 				5000);
 			 } else {
-				 footer_showAlert(INFO, msg.userNickname+" changed contents of "+msg.nbImpactedDocs+" document(s)");
+				 footer_showAlert(INFO, msg.userNickname+" <s:text name="Items.ItemsContentsChangedNotif.part1" /> "
+						 			 +msg.nbImpactedDocs+" <s:text name="Items.ItemsContentsChangedNotif.part2" />");
 			 }
 		 } else { /*ws_handlers_refreshItemsGui();*/ }
 	 }
@@ -212,7 +214,7 @@ function ws_handlers_requestItemsSearch(query,selectedFiltersNames,sortByFieldNa
 function ws_handlers_requestCreateFilter(filterName, query) {
 		
 	let successCallback=function() { 
-		footer_showAlert(SUCCESS, "Filter '"+filterName+"' created.");
+		footer_showAlert(SUCCESS, "<s:text name="Items.filters.deleted" /> : "+filterName);
 		filterDescr={ "name":filterName,"query":query};
 		let newFilter=MxGuiLeftBar.buildNewFilter(filterDescr);
 		filtersInsertSpot=MxGuiLeftBar.getFiltersInsertSpot();
@@ -220,7 +222,7 @@ function ws_handlers_requestCreateFilter(filterName, query) {
 		newFilter.select();
 	}	
 	let errorCallback=function(errorMsg) { 
-		footer_showAlert(ERROR, "Could not create filter '"+filterName+"' : "+errorMsg);
+		footer_showAlert(ERROR, "<s:text name="Items.filters.notAdded" /> '"+filterName+"' : "+errorMsg);
 	}
 	
 	MxApi.requestCreateFilter({ "filterName":filterName,
