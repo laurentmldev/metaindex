@@ -117,14 +117,17 @@ formCreateTerm.buildNewCreateTermForm=function(rootNodeId,onSuccessCallback,onEr
 	
 	newForm.updateDatatypes=function() { _updateDatatypes(newForm); }
 	
-	var reTermName = /^[a-zA-Z][a-zA-Z0-9_]{2,}$/;
-	newForm.checkTermName=function(termName) {
-		if (termName.length==0) { return false; }
-		if (termName=="id" || termName=="_id") { return true; }
-		return reTermName.test(termName);	
-	}
-	
+	newForm.checkTermName=form_create_term.checkTermName;
 	return newForm;
+}
+
+form_create_term={};
+
+var reTermName = /^[a-zA-Z][a-zA-Z0-9_]{2,}$/;
+form_create_term.checkTermName=function(termName) {
+	if (termName.length==0) { return false; }
+	if (termName=="id" || termName=="_id") { return true; }
+	return reTermName.test(termName);	
 }
 
 

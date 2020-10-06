@@ -3,7 +3,9 @@
 v2.1.0:
 -------
 
+traduction fr de "filter xxx deleted"
 
+add in search help text how to search for empty field
 
 clarify use of 'term' VS 'field'
 
