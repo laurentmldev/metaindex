@@ -4,8 +4,6 @@ v2.1.0:
 -------
 
 
-add in search help text how to search for empty field
-
 clarify use of 'term' VS 'field'
 
 when creating catalog, set default name to all languages
@@ -139,6 +137,8 @@ Done:
 -----
 
 v2.1.0
+
+add in search help text how to search for empty field
 
 sort by textfield does not work
 
