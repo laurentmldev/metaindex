@@ -42,6 +42,7 @@ import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.CatalogVocabularySet;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.catalog.dbinterface.CreateIndexIntoEsDbStmt.IndexAlreadyExistException;
+import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.userprofile.ICatalogUser.USER_CATALOG_ACCESSRIGHTS;
 import metaindex.data.userprofile.IUserProfileData;
@@ -382,26 +383,29 @@ public class WsControllerCatalog extends AMxWSController {
 			}
 			
 			// create default voc in DB
-	    	CatalogVocabularySet voc = c.getVocabulary(user.getGuiLanguageShortname());    	
-	    	if (voc==null) {
-	    		log.error("No '"+user.getGuiLanguageShortname()
-	    						+"' vocabulary for new catalog "+c.getName()+", unable to customize the catalog name");
+			for (IGuiLanguage guiLang : Globals.Get().getGuiLanguagesMgr().getGuiLanguages() ) {
+				CatalogVocabularySet voc = c.getVocabulary(guiLang.getShortname());   	
+		    	if (voc==null) {
+		    		log.error("No '"+user.getGuiLanguageShortname()
+		    						+"' vocabulary for new catalog "+c.getName()+", unable to customize the catalog name");
 
-	    	} else {
-		    	try {   
-		    		c.acquireLock();
-		    		CatalogVocabularySet vocClone=new CatalogVocabularySet(voc);
-		    		vocClone.setName(StrTools.Capitalize(c.getName().replaceAll("_", " ")));		    		
-			    	Globals.Get().getDatabasesMgr().getCatalogVocDbInterface().getWriteIntoDbStmt(vocClone).execute();
-			    	c.releaseLock();
-		    	} catch (Exception e) 
-		    	{    		
-		    		e.printStackTrace();
-		    		c.releaseLock();
-		    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_catalog.create_vocabulary"));
+		    	} else {
+			    	try {   
+			    		c.acquireLock();
+			    		CatalogVocabularySet vocClone=new CatalogVocabularySet(voc);
+			    		vocClone.setName(StrTools.Capitalize(c.getName().replaceAll("_", " ")));		    		
+				    	Globals.Get().getDatabasesMgr().getCatalogVocDbInterface().getWriteIntoDbStmt(vocClone).execute();
+				    	c.releaseLock();
+			    	} catch (Exception e) 
+			    	{    		
+			    		e.printStackTrace();
+			    		c.releaseLock();
+			    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_catalog.create_vocabulary"));
+			    	}
 		    	}
-	    	}
-	    	
+
+			}
+				    	
 			c.loadStatsFromDb();	    	
 			c.loadMappingFromDb();	
 			c.loadVocabulariesFromDb();
