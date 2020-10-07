@@ -220,7 +220,7 @@ MxGuiLeftBar.setNbMatchingItems=function(nbMatchingItems) {
 	 nbMatchNode.innerHTML=nbMatchingItems;	 
 }
 
-function _left_build_newitem_form_field_desc(termId,fieldName,termDesc,catalogDesc) {
+function _left_build_newitem_form_field_desc(termId,termDesc,catalogDesc) {
 	
 	let langName=catalogDesc.vocabulary.guiLanguageShortName;
 	let fieldFormDef={ 	id:"form_newitem_"+termId, 
@@ -272,8 +272,8 @@ function _builCreateNewItemForm(catalogDescr) {
 		let curFieldTermDescCopy=JSON.parse(JSON.stringify(catalogDescr.terms[curFieldName]));
 		// if field is actually not a fieldName but a custom separator, we ignore it
 		if (curFieldName[0]=='"') { continue; }		
-		curFieldTermDescCopy.addedInForm=true;		
-		let curFieldFormDef =_left_build_newitem_form_field_desc(curFieldName/*id*/,curFieldName/*user text*/,curFieldTermDescCopy,catalogDescr)
+		curFieldTermDescCopy.addedInForm=true;
+		let curFieldFormDef =_left_build_newitem_form_field_desc(curFieldName/*id*/,curFieldTermDescCopy,catalogDescr)
 		
 		fieldsList.push(curFieldFormDef);		
 	}

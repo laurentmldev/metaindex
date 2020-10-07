@@ -107,7 +107,7 @@ function _buildCsvColumnsTable(CSVrows,nbEntriesNode,csvColsTable,onColsSelectio
    		curField=fieldsDefsArray[curFieldIdx];	  
    		let curFieldStr=stripStr(curField)  
    		let badTermName=false;
-   		if (!form_create_term.checkTermName(curFieldStr)) {   			
+   		if (!formCreateTerm.checkTermName(curFieldStr)) {   			
    			badTermName=true;
    		} 
    		

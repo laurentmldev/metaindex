@@ -227,10 +227,15 @@ function mx_helpers_isObserver() {
 /*
  * 
  *	function onSuccessCallback(createTermForm,termName,termType)
- *	function onErrorCallback(msg)
- *	function onCancelCallback(createTermForm)	
+ *	function onErrorCallback(msg) (optional)	
  */
 function mx_helpers_buildCreateNewTermForm(onSuccessCallback,onErrorCallback) {
+	
+	if (onErrorCallback==null) { 
+		onErrorCallback=function(msg) {		
+			footer_showAlert(ERROR, "<s:text name="Catalogs.field.unableToCreateTerm" /> : "+msg);
+		}
+	}
 	let createNewTermButton=document.createElement("a");
 	let createNewNode=document.createElement("div");
 	createNewNode.style.width="100%";

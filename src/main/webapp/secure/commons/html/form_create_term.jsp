@@ -14,10 +14,16 @@
                   <input  type="text" class="form-control bg-light border-0 small _details_createTerm_name_" 
                   		style="min-width:200px;margin:0.2rem;"		
                   		onclick="event.stopPropagation();"
-                  		onkeypress="if (event.which==13||event.keycode==13) {
-                  			event.stopPropagation();                  			
-                  			this.parentNode.querySelector('._create_term_form_ok_button_').onclick(event);
-                  		}"
+                  		onkeypress="
+                  			event.stopPropagation();   
+                  			
+                  			if (event.which==13||event.keycode==13) {
+                  				this.parentNode.querySelector('._create_term_form_ok_button_').onclick(event);
+                  			}
+                  			"
+                  		onkeydown="
+                  			event.stopPropagation();                     			
+                  			"
                   		placeholder="Term Name ..."               			              		 
                   		>
                   
@@ -117,14 +123,13 @@ formCreateTerm.buildNewCreateTermForm=function(rootNodeId,onSuccessCallback,onEr
 	
 	newForm.updateDatatypes=function() { _updateDatatypes(newForm); }
 	
-	newForm.checkTermName=form_create_term.checkTermName;
+	newForm.checkTermName=formCreateTerm.checkTermName;
 	return newForm;
 }
 
-form_create_term={};
 
 var reTermName = /^[a-zA-Z][a-zA-Z0-9_]{2,}$/;
-form_create_term.checkTermName=function(termName) {
+formCreateTerm.checkTermName=function(termName) {
 	if (termName.length==0) { return false; }
 	if (termName=="id" || termName=="_id") { return true; }
 	return reTermName.test(termName);	

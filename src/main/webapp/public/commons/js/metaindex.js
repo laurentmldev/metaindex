@@ -1387,7 +1387,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	this.requestFieldValueUpdateCallbacks=[];
 	
 	// dataObj {
-	//   itemDescr
+	//   id (item id)
 	//   fieldName
 	//   fieldValue
 	//   successCallback (func)

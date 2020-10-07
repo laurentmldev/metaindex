@@ -8,7 +8,6 @@
     }
   </style>
   
- <s:include value="./details_editable_fields.jsp"></s:include>
  <s:include value="../commons/html/perspective/perspective.jsp" />
  <script type="text/javascript" >
 
@@ -20,8 +19,8 @@
  var _curEditMode="readonly"; //edit|readonly
  
  
- function details_switchEditMode() {
-	 if (_curEditMode=="readonly") { _curEditMode="edit"; }
+ function details_switchEditMode(toEditMode) {
+	 if (_curEditMode=="readonly" || toEditMode==true) { _curEditMode="edit"; }
 	 else { _curEditMode="readonly"; }
 	 
 	 MxGuiDetails.redraw();
@@ -70,7 +69,71 @@
 	 }
 	 return basicPerspective;
  }
- 
+ function _doAddNewField(docId,fieldName) {
+	 let successFunc=function() {
+			
+			footer_showAlert(SUCCESS, "<s:text name="Items.fieldAddPleaseWait" />",null,1500);
+			// give time to database to update contents before refreshing GUI
+			let timer = setInterval(function() { 
+				clearInterval(timer);
+				let query="_id:"+docId;
+				MxGuiHeader.setCurrentSearchQuery(query);
+				ws_handlers_requestItemsSearch(query);
+				MxGuiDetails.switchEditMode(true); // force to be in edit mode
+			}, 1500);
+			
+		};
+		let errorFunc=function(msg) { footer_showAlert(ERROR, "<s:text name="Items.unableToAddField" /> : "+msg); };
+		MxApi.requestFieldValueUpdate({
+				"id":docId,"fieldName":fieldName,"fieldValue":"",
+				"successCallback":successFunc,"errorCallback":errorFunc});
+ }
+ function _buildAddFieldList(insertspot,docId) {
+	 
+
+		let addFieldChoice=document.createElement("div");
+		addFieldChoice.classList.add("mx-popup-choice-list");
+		addFieldChoice.innerHTML="* <s:text name="Items.createNewTerm" /> *";
+		addFieldChoice.onclick=function(event) {
+			event.stopPropagation();
+			event.preventDefault();
+			
+			let onSuccessCallback=function(formNode,termName,termDatatype) {
+				let onSuccessCallback2=function(catalogDescr) { 
+					handleMxWsCatalogs(catalogDescr);
+					_doAddNewField(docId,termName);
+				}
+				footer_showAlert(SUCCESS, "<s:text name="Catalogs.field.termCreated" />");
+				MxApi.requestGetCatalogs({'catalogId':MxGuiDetails.getCurCatalogDescription().id, 
+										  'successCallback':onSuccessCallback2});				 
+			};
+			let onErrorCallback=function(msg) { footer_showAlert(ERROR, "<s:text name="Items.unableToAddField" /> : "+msg); };			
+			let createTermForm = formCreateTerm.buildNewCreateTermForm( "inlineAddNewTermForm_"+docId,onSuccessCallback,onErrorCallback);
+			addFieldChoice.append(createTermForm);
+			addFieldChoice.parentNode.insertBefore(createTermForm, addFieldChoice.nextSibling);
+			createTermForm.updateDatatypes();
+			createTermForm.show();
+			
+		}
+		insertspot.append(addFieldChoice);
+		
+	 let sortedTermsNames = Object.keys(MxGuiDetails.getCurCatalogDescription().terms).sort();
+		for (var i=0;i<sortedTermsNames.length;i++) {
+			let curFieldName=sortedTermsNames[i];
+			let termDesc=MxGuiDetails.getCurCatalogDescription().terms[curFieldName];
+			let curFieldId=termDesc.id;
+			let addFieldChoice=document.createElement("div");
+			addFieldChoice.classList.add("mx-popup-choice-list");
+			addFieldChoice.innerHTML=mx_helpers_getTermName(termDesc, MxGuiDetails.getCurCatalogDescription());
+			addFieldChoice.onclick=function(event) {
+				_doAddNewField(docId,curFieldName);
+			}
+			insertspot.append(addFieldChoice);					
+		}
+		
+		
+		
+}
 //called from commons/details/details_populate() function
  function details_buildContents(itemCard) {
 		
@@ -92,6 +155,15 @@
 	let perspectiveSelector = newItemDetails.querySelector("._perspectives_select_");
 	let sortedPerspectivesNames = Object.keys(MxGuiDetails.getCurCatalogDescription().perspectives).sort();		 
 	
+	// add field
+	let addFieldMenu=newItemDetails.querySelector("._add_field_menu_");
+	if (!mx_helpers_isCatalogWritable(MxGuiDetails.getCurCatalogDescription().userAccessRights)) { 
+		addFieldMenu.style.display='none'; 
+	} else {
+		let addFieldListInsertspot = newItemDetails.querySelector("._add_field_list_insertspot_");
+		_buildAddFieldList(addFieldListInsertspot,itemCard.descr.id);	
+	}
+	
 	let perspectiveDetectionField=MxGuiDetails.getCurCatalogDescription().perspectiveMatchField;
 	_currentPerspectiveName=null;
 	for (pIdx in sortedPerspectivesNames) {
@@ -104,13 +176,13 @@
 		
 		let newOption=document.createElement("option");
 		newOption.setAttribute("value",pName);
-		newOption.innerHTML=pName;
+		newOption.innerHTML="<s:text name="Items.perspective"/>: "+pName;
 		perspectiveSelector.appendChild(newOption);
 	}
 	
 	let newOption=document.createElement("option");
 	newOption.setAttribute("value",_details_DEFAULT_PERSPECTIVE_NAME);
-	newOption.innerHTML=_details_DEFAULT_PERSPECTIVE_NAME;
+	newOption.innerHTML="<s:text name="Items.perspective"/>: <s:text name="Items.defaultPerspective"/>";
 	perspectiveSelector.appendChild(newOption);
 	
 	// if current item does not contain the perpective-detection-field, then we use default perspective
@@ -231,10 +303,40 @@
  			<button type="button" class="btn btn-default btn-sm editable-cancel alert alert-info"
  			style="margin:0.2em;"
  			onclick="_curItemCard.click();_curItemCard=null;" >
- 				<i class="fa fa-times" aria-hidden="true"></i>
- 				 
+ 				<i class="fa fa-times" aria-hidden="true"></i> 				 
  			</button>
  		
+ 		   
+	  	 <!-- Add Field  -->
+	    <div class="_add_field_menu_ dropdown no-arrow mx-1" style="padding-left:1em;vertical-align:center;">
+	           <button type="button" id="addFieldDropdown" class=" btn btn-default btn-sm alert alert-success" 	  		
+			 	  		style="margin-left:1em;margin-bottom:0;font-size:0.7rem;"
+			 	  		role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
+			 			<s:text name="Items.addField" />
+			 		</button>
+              <!--a class="dropdown-toggle" href="#" id="addFieldDropdown" 
+              	role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <s:text name="Items.addField" />                
+              </a-->
+              <!-- Dropdown - Actions -->
+              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow  animated--grow-in" 
+              		aria-labelledby="addFieldDropdown"
+              		style="position:relative;margin-top:5rem;margin-left:2rem;height:50%;">
+	                <h6 class="dropdown-header" style="height:2rem;font-size:0.7rem"><s:text name="Items.addField" /></h6>
+	                <div class="_add_field_list_insertspot_" style="width:100%;max-height:7rem;overflow:auto;">
+	               </div>
+	         </div>
+	             
+          </div>
+		  <button type="button" class="_button_switch_mode_ btn btn-default btn-sm alert alert-info" 	  		
+			 	  		onclick="details_switchEditMode();"
+			 			style="margin-left:1em;margin-bottom:0;font-size:0.7rem;"> 
+			 			<s:text name='Items.editmode' />
+			 		</button>
+			 		
+			
+			 	
+ 		   	<!-- other actions -->
  			<div class="dropdown no-arrow mx-1" style="padding-left:1em;vertical-align:center;">
               <a class="dropdown-toggle" href="#" id="actionsDropdown" 
               	role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -245,27 +347,27 @@
               <div class="dropdown-list dropdown-menu dropdown-menu-right shadow  animated--grow-in" 
               		aria-labelledby="actionsDropdown"
               		id="details.itemsactions.insertspot"
-              		style="position:relative;margin-top:10rem;margin-left:2rem;">
-                <h6 class="dropdown-header" ><s:text name='Items.actions'/></h6>
-               
-                <select  style="margin:0.5rem;width:80%;" class="form-control bg-light border-0 small _perspectives_select_" ></select>
-                
-                <button type="button" class="_button_switch_mode_ btn btn-default btn-sm alert alert-info" 	  		
-		 	  		onclick="details_switchEditMode();"
-		 			style="margin-left:1em;margin-bottom:0;"> 
-		 			<s:text name='Items.editmode' />
-		 		</button>
-		 		<hr style="margin:0.5rem;"/>
-		 		<button type="button" class="_button_delete_ btn btn-default btn-sm alert alert-danger" 	  		
-		 	  		data-toggle="confirmation"
-		 	  		delete_dbid=""
-		 			onConfirm="ws_handlers_deleteItem(this.delete_dbid);" onCancel=""
-		 			style="margin-left:1em;"><i class="fa fa-times" aria-hidden="true"></i> 
-		 			<s:text name="Items.delete" />
-		 		</button>
-              </div>
+              		style="position:relative;margin-top:10rem;margin-left:2rem;font-size:0.7rem">
+	                <h6 class="dropdown-header" ><s:text name='Items.actions'/></h6>
+	                
+	                <select  style="margin:0.5rem;width:80%;font-size:0.7rem;" 
+			 			class="form-control bg-light border-0 small _perspectives_select_" >
+			 		</select>
+	                
+	                <button type="button" class="_button_delete_ btn btn-default btn-sm alert alert-danger" 	  		
+			 	  		data-toggle="confirmation"
+			 	  		delete_dbid=""
+			 			onConfirm="ws_handlers_deleteItem(this.delete_dbid);" onCancel=""
+			 			style="margin-left:1em;font-size:0.7rem;"> 
+			 			<s:text name="Items.delete" />
+			 		</button>
+			 
+			
+	           </div>
+	             
           </div>
 		
+	        
 	
 	<ul class="navbar-nav ml-auto" >
 	  <div>
@@ -287,7 +389,7 @@
 	 
  	</nav><!-- end of header cards deck -->
  	
- 	<div class="_fields_insertspot_" ></div>
+ 	<div class="_fields_insertspot_" style="min-height:10rem;"></div>
  			
  </div><!-- end of details container -->
  

@@ -405,6 +405,17 @@ height:40px;
 	color:#911;
 }
 .mx-btn-red-alert:hover {
-	border:2px dashed #911;
-	
+	border:2px dashed #911;	
+}
+
+.mx-popup-choice-list {
+	width:100%;
+	height:2rem;
+	padding-left:3rem;
+	padding-top:0.3rem;
+}
+.mx-popup-choice-list:hover {
+	font-weight:bold;
+	background:#eee;
+	cursor:pointer;
 }
