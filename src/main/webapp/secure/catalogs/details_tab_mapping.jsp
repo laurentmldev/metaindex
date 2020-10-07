@@ -169,17 +169,7 @@
 						<table class="table table-striped" >
 						    <thead>
 						      <tr>
-						        <th style="min-width:5rem;"><s:text name="Catalogs.field"></s:text>						        	
-						        	 <span class="dropdown no-arrow mx-1" style="padding:1rem;">
-							              <a class="dropdown-toggle" href="#" id="createTermDropdown" 
-							              	role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							                <i class="fas fa-plus fa-fw" onclick="showCreateTermForm();"></i>
-							                
-							              </a>
-							              
-							        </span>
-							        <div id="createTermFormInsertSpot" ></div>
-						        </th>
+						        <th style="min-width:5rem;"><s:text name="Catalogs.field"></s:text></th>
 						        <th><s:text name="Catalogs.field.type"></s:text></th>
 						        <th><s:text name="Catalogs.field.enumeration"></s:text></th>
 						        <th><s:text name="Catalogs.field.multi"></s:text></th>

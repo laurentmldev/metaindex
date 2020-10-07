@@ -103,7 +103,7 @@ class GetItemsStreamFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 			String sortFieldName=curSort.getFirst();			
 			TERM_DATATYPE fieldType = c.getTerms().get(sortFieldName).getDatatype();
 			if (ICatalogTerm.getRawDatatype(fieldType).equals(RAW_DATATYPE.Ttext)) {
-				curSort.setFirst(sortFieldName+=".raw");
+				curSort.setFirst(sortFieldName+=".keyword");
 			}			
 		}
 		
