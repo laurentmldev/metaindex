@@ -17,11 +17,19 @@
  var _details_current_default_perspective=_details_DEFAULT_PERSPECTIVE_NAME;
  var _currentPerspectiveName=null;
  var _curEditMode="readonly"; //edit|readonly
+ var _curEditModeButton=null;
  
  
  function details_switchEditMode(toEditMode) {
-	 if (_curEditMode=="readonly" || toEditMode==true) { _curEditMode="edit"; }
-	 else { _curEditMode="readonly"; }
+	 if (_curEditMode=="readonly" || toEditMode==true) { 
+		 _curEditMode="edit";
+		 _curEditModeButton.classList.add("mx-button-active-editmode");
+	 }
+	 else { 
+		 _curEditMode="readonly";
+		 _curEditModeButton.classList.remove("mx-button-active-editmode");
+	 }
+	 
 	 
 	 MxGuiDetails.redraw();
  }
@@ -88,8 +96,9 @@
 				"id":docId,"fieldName":fieldName,"fieldValue":"",
 				"successCallback":successFunc,"errorCallback":errorFunc});
  }
- function _buildAddFieldList(insertspot,docId) {
+ function _buildAddFieldList(insertspot,itemDesc) {
 	 
+	 	let docId=itemDesc.id;
 
 		let addFieldChoice=document.createElement("div");
 		addFieldChoice.classList.add("mx-popup-choice-list");
@@ -112,6 +121,7 @@
 			addFieldChoice.append(createTermForm);
 			addFieldChoice.parentNode.insertBefore(createTermForm, addFieldChoice.nextSibling);
 			createTermForm.updateDatatypes();
+			createTermForm.style.padding="0.3em";
 			createTermForm.show();
 			
 		}
@@ -120,6 +130,7 @@
 	 let sortedTermsNames = Object.keys(MxGuiDetails.getCurCatalogDescription().terms).sort();
 		for (var i=0;i<sortedTermsNames.length;i++) {
 			let curFieldName=sortedTermsNames[i];
+			if (itemDesc.fieldsList.includes(curFieldName)) { continue; } 
 			let termDesc=MxGuiDetails.getCurCatalogDescription().terms[curFieldName];
 			let curFieldId=termDesc.id;
 			let addFieldChoice=document.createElement("div");
@@ -149,6 +160,7 @@
 	
 	// button editMode
 	let buttonEditMode = newItemDetails.querySelector("._button_switch_mode_");
+	_curEditModeButton=buttonEditMode;
 	if (!mx_helpers_isCatalogWritable(MxGuiDetails.getCurCatalogDescription().userAccessRights)) { buttonEditMode.style.display='none'; }
 	
 	// perspective selector
@@ -161,7 +173,7 @@
 		addFieldMenu.style.display='none'; 
 	} else {
 		let addFieldListInsertspot = newItemDetails.querySelector("._add_field_list_insertspot_");
-		_buildAddFieldList(addFieldListInsertspot,itemCard.descr.id);	
+		_buildAddFieldList(addFieldListInsertspot,itemCard.descr);	
 	}
 	
 	let perspectiveDetectionField=MxGuiDetails.getCurCatalogDescription().perspectiveMatchField;
@@ -321,7 +333,7 @@
               <!-- Dropdown - Actions -->
               <div class="dropdown-list dropdown-menu dropdown-menu-right shadow  animated--grow-in" 
               		aria-labelledby="addFieldDropdown"
-              		style="position:relative;margin-top:5rem;margin-left:2rem;height:50%;">
+              		style="position:relative;margin-top:5rem;margin-left:2rem;height:50%;min-height:200px;">
 	                <h6 class="dropdown-header" style="height:2rem;font-size:0.7rem"><s:text name="Items.addField" /></h6>
 	                <div class="_add_field_list_insertspot_" style="width:100%;max-height:7rem;overflow:auto;">
 	               </div>

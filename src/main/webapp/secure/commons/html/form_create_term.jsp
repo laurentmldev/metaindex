@@ -24,7 +24,7 @@
                   		onkeydown="
                   			event.stopPropagation();                     			
                   			"
-                  		placeholder="Term Name ..."               			              		 
+                  		placeholder="<s:text name="global.Name" />"               			              		 
                   		>
                   
                   <select   class="form-control bg-light border-0 small _details_createTerm_datatype_" 

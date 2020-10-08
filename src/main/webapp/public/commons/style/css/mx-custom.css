@@ -339,6 +339,13 @@ height:40px;
 	width:80%;
 }
 
+.mx-button-active-editmode {
+	border:2px solid orange;
+	color:#338;
+	box-shadow:2px 2px 3px #eedca7;
+	/*background:orange;*/
+}
+
 .mx-help-icon {
 	padding:0.4rem;	
 }
