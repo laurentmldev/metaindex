@@ -426,7 +426,9 @@ function _commons_perspective_buildEditableReferenceTerm(catalogDesc,tabIdx,sect
    <legend class="mx-perspective-field-legend">
    		<table>
    		<tr><td class="_legend_" ></td></tr>   		
-   		<tr><td><input style="display:none" type="text" placeholder="Filter ..."  title="Quick Filter Displayed List" class="small _fastsearch_" ></tr>
+   		<tr><td><input style="display:none" type="text" placeholder="<s:text name="Items.filterThat" /> ..."  
+   										title="Quick Filter Displayed List" class="small _fastsearch_" >
+   		</tr>
    		</table>
    	</legend>
    

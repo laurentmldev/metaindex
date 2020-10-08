@@ -374,6 +374,6 @@ function xeditable_create_boolean_field(
   <button onclick="this.parentNode.querySelector('._options_').classList.toggle('show');" 
   		class="editable editable-click editable-open mx-editable mx_dyndropdown_btn _current_value_"  ></button>
   <div  class="mx_dyndropdown_content _options_">
-    <input type="text" class="mx_dyndropdown_searchinput _search_input_" placeholder="Search..."  onkeyup="filterDynamicDropdownFunction(parentNode.parentNode)">  
+    <input type="text" class="mx_dyndropdown_searchinput _search_input_" placeholder="<s:text name="global.search" /> ..."  onkeyup="filterDynamicDropdownFunction(parentNode.parentNode)">  
   </div>
 </div> 
