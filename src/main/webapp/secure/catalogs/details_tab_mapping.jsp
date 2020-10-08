@@ -54,7 +54,7 @@
 	 } 
 	 let createNewTermButton= mx_helpers_buildCreateNewTermForm(
 			 details_successTermCreate,details_failedTermCreate);
-	 createNewTermButton.style.width="30%";
+	 createNewTermButton.style.width="max-content";
 	 createNewTermButton.style["margin-bottom"]="0.3rem";
 	 createNewTermButton.style["margin-top"]="0";
 	 let createNewTermInsertspot = newPopulatedCatalogDetails.querySelector("._createNewterm_insertSpot_");

@@ -140,6 +140,13 @@ function retrieveItemsError(msg) { footer_showAlert(ERROR, msg); }
 
 function retrieveItemsSuccess(itemsAnswerMsg) {
 	 
+	// ensure we have received catalog info before displaying item
+	if (MxGuiDetails.getCurCatalogDescription()==null) {
+		let timer=setInterval(function() { 
+						clearInterval(timer);
+						retrieveItemsSuccess(itemsAnswerMsg);
+					}, 200);
+	}
 	 let isCatalogWritable = mx_helpers_isCatalogWritable(MxGuiDetails.getCurCatalogDescription().userAccessRights);
 	 
 	 if (itemsAnswerMsg.totalItems==0) {

@@ -250,7 +250,7 @@ function mx_helpers_buildCreateNewTermForm(onSuccessCallback,onErrorCallback) {
 	createTermForm.style.opacity=0.7;
 	createTermForm.style["font-size"]="0.6rem";
 	createTermForm.border='1px solid grey';
-	createTermForm.style.margin="1.5rem";
+	createTermForm.style.margin="1.5rem";	
 	createTermForm.updateDatatypes();
 	
 	

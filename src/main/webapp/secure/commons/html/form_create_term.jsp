@@ -12,7 +12,7 @@
             <div class="form-inline mr-auto w-auto navbar-search" >
                 <div class="input-group">
                   <input  type="text" class="form-control bg-light border-0 small _details_createTerm_name_" 
-                  		style="min-width:200px;margin:0.2rem;"		
+                  		style="min-width:50px;margin:0.2rem;font-size:0.7rem;"		
                   		onclick="event.stopPropagation();"
                   		onkeypress="
                   			event.stopPropagation();   
@@ -26,9 +26,9 @@
                   			"
                   		placeholder="<s:text name="global.Name" />"               			              		 
                   		>
-                  
+                  <br/> 
                   <select   class="form-control bg-light border-0 small _details_createTerm_datatype_" 
-                  		style="min-width:200px;margin:0.2rem;"	
+                  		style="min-width:50px;margin:0.2rem;font-size:0.7rem;"	
                   		onclick="event.stopPropagation();"	
                   		onkeypress="if (event.which==13||event.keycode==13) {
                   			event.stopPropagation();
@@ -41,10 +41,11 @@
                   </select>	
                   <div class="input-group-append" style="margin:0.2rem">
                     <button class="btn btn-primary _create_term_form_ok_button_" type="button"
-                     	onclick="" >
+                     	onclick="" style="font-size:0.7rem;">
                       <i class="fas fa-check fa-sm"></i>
                     </button>
-                    <button class="btn btn-primary _create_term_form_cancel_button_" type="button" >
+                    <button class="btn btn-primary _create_term_form_cancel_button_" 
+                    	type="button" style="font-size:0.7rem;" >
                       <i class="fa fa-times fa-sm"></i>
                     </button>
                   </div>	                    
