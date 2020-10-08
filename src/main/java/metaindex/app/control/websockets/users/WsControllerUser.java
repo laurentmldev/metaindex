@@ -60,6 +60,7 @@ public class WsControllerUser extends AMxWSController {
 	private Log log = LogFactory.getLog(WsControllerUser.class);
 		
 	public static final Integer NB_DAYS_PLAN_DISCOUNT=182;// approx. half a year
+	public static final Integer NB_TRIES_FOR_PAYMENT_CONFIRMATION=5;
 	
 	// list to be coherent with metaindex.js API equivalent
 	public enum CATALOG_MODIF_TYPE { 	CATALOGS_LIST, 
@@ -460,7 +461,11 @@ public class WsControllerUser extends AMxWSController {
     				;
     		
     		IPaymentInterface pi = null;
-    		if (requestMsg.getPaymentMethod()==PAYMENT_METHOD.paypal) { pi = new PaypalPaymentInterfaceProprietary(); }
+    		if (requestMsg.getPaymentMethod()==PAYMENT_METHOD.paypal) 
+    		{ 
+    			pi = new PaypalPaymentInterfaceProprietary(Globals.GetMxProperty("mx.payment.login"),
+    						 							   Globals.GetMxProperty("mx.payment.password")); 
+    		}
     		else if (Globals.Get().isDevMode() && requestMsg.getPaymentMethod()==PAYMENT_METHOD.sandbox) {
     			pi = new SandboxPaymentInterface(); 
     		}
@@ -475,11 +480,22 @@ public class WsControllerUser extends AMxWSController {
     			return;
     		}
     		
-    		Boolean paymentConfirmed = pi.confirmPayment(
-    				requestMsg.getTransactionId(), 
-    				awaitingTransactionData.getTotalCost(),
-    				requestMsg.getPaymentDetails());
-    		    		
+    		// given time for payment to be available in paypal DB
+    		// so retry several time
+    		Boolean paymentConfirmed = false;
+    		for (Integer nbTry=0;nbTry<NB_TRIES_FOR_PAYMENT_CONFIRMATION;nbTry++) {
+    			
+    			if (nbTry>0) { Thread.sleep(2000); }
+    			paymentConfirmed = pi.confirmPayment(
+        				requestMsg.getTransactionId(), 
+        				awaitingTransactionData.getTotalCost(),
+        				requestMsg.getPaymentDetails());
+    			
+    			if (paymentConfirmed) { break; }
+    			if (nbTry<NB_TRIES_FOR_PAYMENT_CONFIRMATION) {user.sendGuiInfoMessage(user.getText("Profile.plans.noPaymentReceivedYet")); }
+    			       		
+    		}
+    		    		    		
     		if (!paymentConfirmed) {
     			PaymentLogging.logger.error(paymentEntry+"\t"+"status=NOT_CONFIRMED");
     			answer.setRejectMessage("No payment received (yet) for this transaction.");

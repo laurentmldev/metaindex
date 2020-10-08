@@ -21,6 +21,7 @@
 	 let containerEl = document.getElementById(containerId);
 	 
 	 let buttonGetIt = document.createElement("BUTTON");
+	 buttonGetIt.classList.add("btn-big");
 	 buttonGetIt.classList.add("btn");
 	 buttonGetIt.classList.add("btn-success");
 	 buttonGetIt.style["font-size"]="1.4rem";

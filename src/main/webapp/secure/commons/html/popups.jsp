@@ -68,7 +68,7 @@
         
         <!-- Modal footer -->
         <div class="modal-footer">
-        	<button class="_button_close_ btn btn-info" >
+        	<button class="_button_close_ btn-big btn btn-info" >
 				<i class="fa fa-check fa-sm text-grey-50"></i>
 		 	</button>
           
