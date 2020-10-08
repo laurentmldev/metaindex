@@ -122,7 +122,7 @@
     </a>       	  
   	<a class="btn btn-primary"  href="#" style="margin-top:0.1rem;margin-bottom:0.1rem;"
   		onclick="document.getElementById('set_catalog_kibana_iframe_popup').style.display='block';">
-          <i class="fas fa-code" style="font-size:1.4rem;" title="Set Kibana iFrame"></i>
+          <i class="fas fa-code" style="font-size:1.4rem;" title="<s:text name="Items.setKibanaIFrame" />"></i>
     </a>
   </div>
   <div id="kibana_frame_cont" style="display:none" >
@@ -156,7 +156,8 @@
 	  let kibanaSetiFrame=document.getElementById("kibana_set_dashboard");
 	  kibanaSetiFrame.style.display='block';
 	  MxGuiDetailsRightBar.addContents(kibanaSetiFrame);
-	  let iframePopup = MxGuiPopups.newTextInputPopup("Past Here Kibana Embedded iFrame Code","Set Kibana IFrame",
+	  let iframePopup = MxGuiPopups.newTextInputPopup("<s:text name="Items.pastHereKibanaIFrame" />",
+			  											"<s:text name="Items.setKibanaIFrame" />",
 			  	function(iframeCode) {
 		  		
 		  			let requestObj = {
