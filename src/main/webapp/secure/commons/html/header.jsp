@@ -8,7 +8,13 @@
  	<META HTTP-EQUIV="Refresh" CONTENT="0;URL=https://metaindex.fr:8443/metaindex/loginform?expired">
  </c:if>
 
-<div id="show_info_container"  style="display:none;opacity:0.0;transition: opacity 100ms ease-in-out 100ms;">
+<div id="show_info_container"  style="display:none;opacity:0.0;transition: opacity 100ms ease-in-out 100ms;"
+	onkeydown="event.stopPropagation();
+  			// when pressing escape, close modal
+  			console.log('plop');
+  			if (event.which==27||event.keycode==27) {
+  				MxGuiHeader.hideInfoModal();
+  			}">
 	 <div  id="info_modal" class="modal" style="display:block;z-index:1000;background:#fffa;">
 		  <div id="info_dialog" class="modal-dialog" style="min-width:30vw;display:block;position:absolute;margin-top:20vh;margin-left:60vh;max-height:80vh;">		  	 
 		     <div class="modal-content">		     

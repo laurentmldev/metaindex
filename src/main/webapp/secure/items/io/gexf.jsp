@@ -114,7 +114,7 @@ MxGuiLeftBar.showDownloadGexfPrevisu=function() {
 
  	 	  <!-- Custom gexf FileDownload button -->
           <label id="gexf_download_label"
- 		  	class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button" 
+ 		  	class="_openBtn_ d-none d-sm-inline-block btn-big btn btn-info shadow-sm mx-left-button" 
  		  	onclick="MxGuiLeftBar.showDownloadGexfPrevisu();" >
  		  	<i class="fas fa-download fa-sm text-white" style="margin-right:1em"></i><s:text name="Items.downloadItems.asGexf"></s:text>
  		  	 <span title="S.O.S" 
@@ -134,7 +134,7 @@ MxGuiLeftBar.showDownloadGexfPrevisu=function() {
 		  	</div> 		  			 		  		 
 		  </div>
 		  <div id="gexf_contents_previsu_download_footer" style="display:none">
- 		  		 <label class="_downloadBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button"  >
+ 		  		 <label class="_downloadBtn_ d-none d-sm-inline-block btn-big btn btn-info shadow-sm mx-left-button"  >
  		  				<i class="fas fa-download fa-sm text-white" style="margin-right:1em"></i><s:text name="Items.downloadItems.generateGexf"></s:text>
  		  		</label>
 		  </div>

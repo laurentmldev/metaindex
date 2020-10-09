@@ -10,7 +10,6 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -46,22 +45,24 @@ public class CsvDumper<T extends IFieldValueMapObject> extends AStreamHandler<T>
 		super(u,name,expectedNbActions,timestamp,targetFileName,
 						"Items.serverside.gencsvprocess.progress");
 		
-		this.setCsvColumnsList(csvColumnsList);
-		
-	}
-	@Override
-	public void beforeFirst() {
+		this.setCsvColumnsList(csvColumnsList);		
 
 		try {
 			_outputstream = new FileOutputStream(this.getTargetFileName());
-		} catch (FileNotFoundException e1) {
+			String headerLine="#_id";
+			for (String csvCol : this.getCsvColumnsList()) { headerLine+=this.getSeparator()+csvCol; }
+			_linesToWrite.add(headerLine);
+			flush();
+		} catch (IOException e1) {
 			e1.printStackTrace();
 			this.abort();
 			return;
 		}
-		String headerLine="#_id";
-		for (String csvCol : this.getCsvColumnsList()) { headerLine+=this.getSeparator()+csvCol; }
-		_linesToWrite.add(headerLine);
+	}
+	@Override
+	public void beforeFirst() {
+
+		
 	}
 	
 	@Override
@@ -102,6 +103,7 @@ public class CsvDumper<T extends IFieldValueMapObject> extends AStreamHandler<T>
 	@Override
 	public void afterLast() throws IOException {
 		_outputstream.close();
+		
 	}
 	
 

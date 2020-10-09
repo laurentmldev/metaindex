@@ -48,8 +48,12 @@
 
   <div class="modal mx-modal _modal_root_" id="_commons_popups_blank_input_template_"
   	onkeypress="event.stopPropagation();
-  		if (event.which==13||event.keycode==13) { this.querySelector('._button_close_').click(); }"
- 	onkeydown="event.stopPropagation();" >
+  		if (event.which==13||event.keycode==13) { this.querySelector('._button_close_').click(); this.style.display='none'; }"
+ 	onkeydown="event.stopPropagation();
+  			// when pressing escape, close modal
+  			if (event.which==27||event.keycode==27) {
+  				this.style.display='none';
+  			}" >
     <div class="modal-dialog">
       <div class="modal-content">
       
@@ -92,7 +96,7 @@
 	 inputNode.onkeypress=function(event) {
 								 if (event.which==13||event.keycode==13) {
 										event.preventDefault();event.stopPropagation(); 
-										onValidCallback(inputNode.value);					
+										onValidCallback(inputNode.value);											
 								 }
 							 };
 	 inputNode.title=title;
@@ -122,9 +126,14 @@
  </script>
  <div class="modal mx-modal _modal_root_" id="_commons_popups_dropdown_input_template_" 
  	onkeypress="event.stopPropagation();
- 				if (event.which==13||event.keycode==13) { this.querySelector('._button_ok_').click(); }
+ 				if (event.which==13||event.keycode==13) { this.querySelector('._button_ok_').click(); this.style.display='none';}
  				"
- 	onkeydown="event.stopPropagation();">
+ 	onkeydown="event.stopPropagation();
+  			// when pressing escape, close modal
+  			if (event.which==27||event.keycode==27) {
+  				this.style.display='none';
+  			}"
+  			>
    <div class="modal-dialog">
      <div class="modal-content">
      
@@ -178,9 +187,10 @@
 	 
 	 // ok button
 	 let okButton=newPopup.querySelector("._button_ok_");
-	 okButton.onclick=function(event) { onValidCallback(inputNode.value); }
+	 okButton.onclick=function(event) { onValidCallback(inputNode.value); newPopup.hide();  }
 	 
 	 newPopup.show=function() { newPopup.style.display="block"; }
+	 newPopup.hide=function() { newPopup.style.display="none"; }
 	 return newPopup;
  }
  
@@ -188,8 +198,12 @@
 
   <div class="modal mx-modal _modal_root_" id="_commons_popups_text_input_template_"
   	onkeypress="event.stopPropagation();
-  		if (event.which==13||event.keycode==13) { this.querySelector('._button_ok_').click(); }"
- 	onkeydown="event.stopPropagation();" >
+  		if (event.which==13||event.keycode==13) { this.querySelector('._button_ok_').click(); this.style.display='none'; }"
+ 	onkeydown="event.stopPropagation();
+  			// when pressing escape, close modal
+  			if (event.which==27||event.keycode==27) {
+  				this.style.display='none';
+  			}" >
     <div class="modal-dialog">
       <div class="modal-content">
       
@@ -682,6 +696,7 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFile
  				 curFormNode.onchange();
  			 }
   			this.querySelector('._button_ok_').click(); 
+  			this.style.display='none';
   		}"
  	onkeydown="event.stopPropagation();
   			// when pressing escape, close modal

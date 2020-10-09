@@ -338,7 +338,9 @@ height:40px;
 	font-size:0.75rem;
 	width:80%;
 }
-
+.mx-left-button:hover {
+	cursor:pointer;
+}
 .mx-button-active-editmode {
 	border:2px solid orange;
 	color:#338;

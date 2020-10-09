@@ -183,7 +183,7 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
     	    		
     	    		if (result==false) {
     	    			answer.setIsSuccess(false);    	    			
-    	        		answer.setRejectMessage("unable to create new terms '"+newTermsList+"'.");
+    	        		answer.setRejectMessage(user.getText("Items.serverside.uploadItems.unableToAutomaticallyCreateTerm"));
     	        		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/upload_items_csv_response", answer);	
     	        		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_term.refused_by_server"));
     	        		return;
@@ -200,7 +200,8 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
     		    		// Refresh Kibana index-pattern so that new term is available for statistics
     		        	Boolean rst = Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().refreshStatisticsIndexPattern(user, c);
     		        	if (rst==false) {
-    		        		answer.setRejectMessage("Unable to update index-pattern in Kibana for current catalog '"+c.getName()+"'");
+    		        		answer.setRejectMessage(user.getText("Items.serverside.uploadItems.unableToImportItems"));
+    		        		log.error("Unable to update index-pattern in Kibana for current catalog '"+c.getName()+"'");    		        		
     		        		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_term.kibana"));
     		        	}
 
@@ -213,8 +214,10 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
     	    		
     	    	} catch (ESDataProcessException e) {
     	    		e.printStackTrace();
-    	    		answer.setIsSuccess(false);    	    			
-	        		answer.setRejectMessage("unable to create new terms '"+newTermsList+"' : "+e.getMessage());
+    	    		answer.setIsSuccess(false);
+    	    		log.error("unable to create new terms '"+newTermsList+"' : "+e.getMessage());
+    	    		e.printStackTrace();
+	        		answer.setRejectMessage(user.getText("Items.serverside.uploadItems.unableToAutomaticallyCreateTerm"));
 	        		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/upload_items_csv_response", answer);    	    		
     	    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_term.elasticsearch"));
     	    		return;

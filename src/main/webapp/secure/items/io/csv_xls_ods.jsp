@@ -50,7 +50,7 @@ function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeF
 			let datatypeStr=mx_helpers_FIELDS_DATATYPES[datatypeIdx];
 			let choiceNode=document.createElement("option");
 			choiceNode.value="__new__"+datatypeStr;
-			choiceNode.innerHTML="* <s:text name="Items.uploadItems.newField" /> "+datatypeStr+" *";
+			choiceNode.innerHTML="<s:text name="Items.uploadItems.newField" /> "+datatypeStr;
 			colTermNodeSelect.appendChild(choiceNode);
 			choiceNode.onclick=function() { checkBox.checked=true; onColsSelectionsChangeFunc(); }
 			
@@ -187,8 +187,9 @@ function _showCsvPrevisu(CSVrows,fileNameTxt) {
 	
 	let labelWarningIdChangeDocuments = previsuNodeFooter.querySelector("._warning_update_id_");
 	let labelWarningNoIdSelected = previsuNodeFooter.querySelector("._warning_update_noid_");
+	let selectedCsvColsDef = null;
 	function onColsSelectionsChangeFunc() {
-		let selectedCsvColsDef = _getSelectedCsvColumnsDef(csvColsTable);
+		selectedCsvColsDef = _getSelectedCsvColumnsDef(csvColsTable);
 		let isIdSelected=false;
 		for (csvColName in selectedCsvColsDef) {
 			if (selectedCsvColsDef[csvColName]=="_id") {
@@ -386,7 +387,7 @@ MxGuiLeftBar.showDownloadCsvPrevisu=function() {
  		    			 
 		  <!-- Custom FileUpload button -->
  		  <label for="fileUpload"  id="datafile_upload_label" 
- 		  	class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button"  >
+ 		  	class="_openBtn_ d-none d-sm-inline-block  btn-big btn btn-info shadow-sm mx-left-button"  >
  		  	<i class="fas fa-upload fa-sm text-white" style="margin-right:1em"></i><s:text name="Items.uploadItems.fromDataFile"></s:text>
  		  	 <span title="S.O.S" 
 	                	onclick="event.stopPropagation();event.preventDefault();
@@ -409,7 +410,7 @@ MxGuiLeftBar.showDownloadCsvPrevisu=function() {
 				<div class="_warning_update_noid_" style="margin-bottom:1rem;font-size:0.8rem;display:'none'">
 					<s:text name="Items.uploadItems.warningNotOverridingContents"/>
 				</div>
- 		  		 <label class="_uploadBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button"  >
+ 		  		 <label class="_uploadBtn_ d-none d-sm-inline-block btn-big btn btn-info shadow-sm mx-left-button"  >
  		  				<i class="fas fa-upload fa-sm text-white" style="margin-right:1em"></i><s:text name="global.go"></s:text>
  		  		</label>
 			</div>
@@ -425,7 +426,7 @@ MxGuiLeftBar.showDownloadCsvPrevisu=function() {
 	 		 
 	 	 <!-- Custom CSV FileDownload button -->
           <label id="csv_download_label"
- 		  	class="_openBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button" 
+ 		  	class="_openBtn_ d-none d-sm-inline-block btn-big btn btn-info shadow-sm mx-left-button" 
  		  	onclick="MxGuiLeftBar.showDownloadCsvPrevisu();" >
  		  	<i class="fas fa-download fa-sm text-white" style="margin-right:1em"></i><s:text name="Items.downloadItems.asCsv"></s:text>
  		  	 <span title="S.O.S" 
@@ -446,7 +447,7 @@ MxGuiLeftBar.showDownloadCsvPrevisu=function() {
 		  		 </table>
 		  </div>
 		  <div id="csv_contents_previsu_download_footer" style="display:none">
- 		  		 <label class="_downloadBtn_ d-none d-sm-inline-block btn btn-sm btn-info shadow-sm mx-left-button"  >
+ 		  		 <label class="_downloadBtn_ d-none d-sm-inline-block btn-big btn btn-info shadow-sm mx-left-button"  >
  		  				<i class="fas fa-download fa-sm text-white" style="margin-right:1em"></i><s:text name="Items.downloadItems.generate"></s:text>
  		  		</label>
 		  </div>

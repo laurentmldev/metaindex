@@ -31,7 +31,9 @@ import metaindex.data.filter.IFilter;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.app.Globals;
 import metaindex.app.control.websockets.items.messages.*;
+import metaindex.app.periodic.statistics.items.GexfDownloadMxStat;
 import metaindex.app.periodic.statistics.items.GraphDownloadMxStat;
+import metaindex.app.periodic.statistics.user.ErrorOccuredMxStat;
 import metaindex.app.control.websockets.commons.AMxWSController;
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.database.IDbSearchResult.SORTING_ORDER;
@@ -141,6 +143,7 @@ public class WsControllerItemsGraphDownload extends AMxWSController {
     		Globals.GetStatsMgr().handleStatItem(new GraphDownloadMxStat(user,user.getCurrentCatalog()));
     		
     		log.info("generated GEXF file '"+targetFileBasename+"' ("+answer.getGraphFileSizeMB()+"MB)");
+    		Globals.GetStatsMgr().handleStatItem(new GexfDownloadMxStat(user,curCatalog));
 	    } catch (DataProcessException | MessagingException | IOException e) 
 		{
 			log.error("Unable to process download_items_graph_file from '"+headerAccessor.getUser().getName()+"' : "+e);
