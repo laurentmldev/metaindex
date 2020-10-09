@@ -22,7 +22,7 @@ FTP ports:
 	- check it is unique within DB
 	- check amount of available FTP ports when lots of catalogs
 
-
+stats for user and plans operations
 
 #55 tutorial videos on youtube
 

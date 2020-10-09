@@ -83,7 +83,7 @@ public class WsControllerTerm extends AMxWSController {
     	try {
     		ICatalog c = Globals.Get().getCatalogsMgr().getCatalog(requestMsg.getCatalogId());
     		if (c==null) {
-    			sendTermUpdateErrorAnswer(user,this.messageSender,answer,"No such catalog");
+    			sendTermUpdateErrorAnswer(user,this.messageSender,answer,user.getText("Catalogs.catalogUnknown"));
     			return;
     		}
     		if (!this.userHasWriteAccess(user,c)) { 
@@ -94,7 +94,7 @@ public class WsControllerTerm extends AMxWSController {
     		
     		ICatalogTerm existingTerm = c.getTerms().get(requestMsg.getTermName());
     		if (existingTerm==null) {
-    			sendTermUpdateErrorAnswer(user,this.messageSender,answer,"No such term");
+    			sendTermUpdateErrorAnswer(user,this.messageSender,answer,user.getText("Catalogs.field.noSuchField",requestMsg.getTermName()));
     			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_term.no_such_term"));
     			return;    			
     		}
@@ -110,7 +110,7 @@ public class WsControllerTerm extends AMxWSController {
 							    		
     		
     		if (!isSuccess) {
-    			sendTermUpdateErrorAnswer(user,this.messageSender,answer,"Server operation refused");
+    			sendTermUpdateErrorAnswer(user,this.messageSender,answer,user.getText("Catalogs.field.updateTermOperationRefused",existingTerm.getName()));
     			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_term.refused_by_server"));
     			return;   
     		}
@@ -153,7 +153,7 @@ public class WsControllerTerm extends AMxWSController {
     	
     	ICatalogTerm term = c.getTerms().get(requestMsg.getTermName());
     	if (term!=null) {    		
-    		answer.setRejectMessage("term '"+requestMsg.getTermName()+"' already exist in catalog.");
+    		answer.setRejectMessage(user.getText("Catalogs.field.alreadyExistInCatalog",requestMsg.getTermName()));
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_term", answer);
     		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_term.already_exists"));
     		return;
@@ -167,7 +167,7 @@ public class WsControllerTerm extends AMxWSController {
     					.createIntoDbStmt(c,term).execute();
     		
     		if (result==false) {
-        		answer.setRejectMessage("unable to create term '"+requestMsg.getTermName()+"'.");
+        		answer.setRejectMessage(user.getText("Catalogs.field.unableToCreateTerm"));
         		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_term", answer);	
         		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_term.refused_by_server"));
         		return;
@@ -176,14 +176,15 @@ public class WsControllerTerm extends AMxWSController {
     		answer.setIsSuccess(true);
     		
     	} catch (ESDataProcessException e) {
+    		log.error("Unable to create new term (ELK exception) : "+e.getMessage());
     		e.printStackTrace();
-    		user.sendGuiErrorMessage("Sorry unable to create term : "+e.getMessage());
+    		user.sendGuiErrorMessage(user.getText("Catalogs.field.unableToCreateTerm"));
     		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_term.elasticsearch"));
     		return;
     	}
     	catch (SQLDataProcessException e) {
     		// most probably term description already exist
-    		answer.setRejectMessage("term description failed, try to refresh you page please : "+e.getMessage());
+    		answer.setRejectMessage(user.getText("Catalogs.field.unableToCreateTerm")+" : "+e.getMessage());
     		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_term.sql"));
     		// no return here, we still want to refresh contents (field could still be added into ES db)
     	}
@@ -208,14 +209,14 @@ public class WsControllerTerm extends AMxWSController {
 		// Refresh Kibana index-pattern so that new term is available for statistics
     	Boolean rst = Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().refreshStatisticsIndexPattern(user, c);
     	if (rst==false) {
-    		answer.setRejectMessage("Unable to update index-pattern in Kibana for current catalog '"+c.getName()+"'");
+    		answer.setRejectMessage(user.getText("Catalogs.field.unableToCreateTermInKibana",term.getName()));
     		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_term.kibana"));
     	}
 		
     }
     
     /**
-     * NOT YET FUNCTIONAL
+     * NOT FUNCTIONAL (need ELK re-indexing)
      * @param headerAccessor
      * @param requestMsg
      * @throws Exception
@@ -275,7 +276,7 @@ public class WsControllerTerm extends AMxWSController {
     	
     	if (c==null || !c.getId().equals(requestMsg.getCatalogId())) {
     		// return failure notif (default status of answer is 'failed')
-    		answer.setRejectMessage("Current user catalog does not match request");
+    		answer.setRejectMessage(user.getText("Profile.server.fieldLexicUpdateRefused"));
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/term_lexic_updated", answer);
     		return;
     	}
@@ -286,7 +287,7 @@ public class WsControllerTerm extends AMxWSController {
     	ICatalogTerm t =c.getTerms().get(requestMsg.getTermName());
     	if (t==null) {
     		// return failure notif (default status of answer is 'failed')
-    		answer.setRejectMessage("Current user catalog does contain requested term");
+    		answer.setRejectMessage(user.getText("Catalogs.field.noSuchField"));
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/term_lexic_updated", answer);
     		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_term_lexic.no_such_term"));
     		return;
@@ -305,7 +306,7 @@ public class WsControllerTerm extends AMxWSController {
         	if (t.getId()==0) {
         		Boolean result = Globals.Get().getDatabasesMgr().getTermsDbInterface().createIntoDbStmt(c, t).execute();
     	    	if (!result) {
-    	    		answer.setRejectMessage("Unable to create term description prior to uptading its lexic");
+    	    		answer.setRejectMessage(user.getText("Catalogs.field.updateTermOperationRefused",t.getName())+" (1)");
         			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/term_lexic_updated", answer);
         			c.releaseLock();
         			return;
@@ -317,7 +318,7 @@ public class WsControllerTerm extends AMxWSController {
         	
 	    	Boolean result = Globals.Get().getDatabasesMgr().getTermsDbInterface().getCreateOrUpdateVocabularyIntoDbStmt(voc).execute();
 	    	if (!result) {
-	    		answer.setRejectMessage("Unable to update term translation");
+	    		answer.setRejectMessage(user.getText("Catalogs.field.updateTermOperationRefused",t.getName())+" (2)");
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/term_lexic_updated", answer);
     			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_term_lexic.refused_by_server"));
     			c.releaseLock();
@@ -331,7 +332,9 @@ public class WsControllerTerm extends AMxWSController {
     	} catch (Exception e) 
     	{    		
     		answer.setIsSuccess(false);  
-    		answer.setRejectMessage("Unable to process term_lexic_updated from '"+user.getName()+"' : "+e.getMessage());
+    		log.error("Error while updating term lexic : "+e.getMessage());
+    		e.printStackTrace();
+    		answer.setRejectMessage(user.getText("Catalogs.field.updateTermOperationRefused",t.getName())+" (3)");
 	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/term_lexic_updated", answer);
 	    	Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_term_lexic.server_error"));
     		e.printStackTrace();

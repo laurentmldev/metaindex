@@ -50,7 +50,7 @@ public class WsControllerPerspective extends AMxWSController {
     	
     	if (c==null || !c.getId().equals(requestMsg.getCatalogId())) {
     		// return failure notif (default status of answer is 'failed')
-    		answer.setRejectMessage("Current user catalog does not match request");
+    		answer.setRejectMessage(user.getText("Catalogs.catalogUnknown"));
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/perspective_updated", answer);
     		return;
     	}
@@ -63,7 +63,7 @@ public class WsControllerPerspective extends AMxWSController {
 	    	
 	    	Boolean result = Globals.Get().getDatabasesMgr().getPerspectivesDbInterface().getUpdatePerspectiveIntoDbStmt(user, c, requestMsg.getJsonDef()).execute();	    	
 	    	if (!result) {
-	    		answer.setRejectMessage("Unable to update perspective");
+	    		answer.setRejectMessage(user.getText("Catalogs.perspectives.unableToUpdate")+" (1)");
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/perspective_updated", answer);
     			c.releaseLock();
     			return;
@@ -76,9 +76,10 @@ public class WsControllerPerspective extends AMxWSController {
     	} catch (Exception e) 
     	{    		
     		answer.setIsSuccess(false);  
-    		answer.setRejectMessage("Unable to process update_perspective from '"+user.getName()+"' : "+e.getMessage());
-	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/perspective_updated", answer);
+    		log.error("Unable to process update_perspective from '"+user.getName()+"' : "+e.getMessage());
     		e.printStackTrace();
+    		answer.setRejectMessage(user.getText("Catalogs.perspectives.unableToUpdate")+ " (2");
+	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/perspective_updated", answer);    		
     		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_perspective"));
     		c.releaseLock();
     	}
@@ -99,7 +100,7 @@ public class WsControllerPerspective extends AMxWSController {
     	
     	if (c==null || !c.getId().equals(requestMsg.getCatalogId())) {
     		// return failure notif (default status of answer is 'failed')
-    		answer.setRejectMessage("Current user catalog does not match request");
+    		answer.setRejectMessage(user.getText("Catalogs.catalogUnknown"));
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/perspective_deleted", answer);
     		return;
     	}
@@ -112,7 +113,7 @@ public class WsControllerPerspective extends AMxWSController {
 	    	
 	    	Boolean result = Globals.Get().getDatabasesMgr().getPerspectivesDbInterface().getDeletePerspectiveFromDbStmt(user, c, requestMsg.getPerspectiveId()).execute();	    	
 	    	if (!result) {
-	    		answer.setRejectMessage("Unable to delete perspective");
+	    		answer.setRejectMessage(user.getText("Catalogs.perspectives.unableToDelete")+" (1)");
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/perspective_deleted", answer);
     			c.releaseLock();
     			return;
@@ -125,9 +126,11 @@ public class WsControllerPerspective extends AMxWSController {
     	} catch (Exception e) 
     	{    		
     		answer.setIsSuccess(false);  
-    		answer.setRejectMessage("Unable to process delete_perspective from '"+user.getName()+"' : "+e.getMessage());
-	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/perspective_deleted", answer);
+    		log.error("Unable to process delete_perspective from '"+user.getName()+"' : "+e.getMessage());
     		e.printStackTrace();
+    		answer.setRejectMessage(user.getText("Catalogs.perspectives.unableToDelete")+" (2)");
+	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/perspective_deleted", answer);
+    		
     		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.delete_perspective"));
     		c.releaseLock();
     	}

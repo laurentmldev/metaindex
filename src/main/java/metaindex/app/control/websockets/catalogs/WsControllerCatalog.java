@@ -129,7 +129,7 @@ public class WsControllerCatalog extends AMxWSController {
     	IUserProfileData activeUser = getUserProfile(headerAccessor);	
     	ICatalog c = activeUser.getCurrentCatalog();
 		if (c==null) {
-			answer.setRejectMessage("Current user catalog does not match request");
+			answer.setRejectMessage(activeUser.getText("Catalogs.catalogUnknown"));
 			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_users", answer);
 			return;
 		}
@@ -204,12 +204,12 @@ public class WsControllerCatalog extends AMxWSController {
     	}
     	ICatalog c = activeUser.getCurrentCatalog();
 		if (c==null) {
-			answer.setRejectMessage("Current user has no catalog currently open");
+			answer.setRejectMessage(activeUser.getText("Catalogs.noCatalogSelected"));
 			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_user_access", answer);
 			return;
 		}
 		if (!c.getId().equals(requestMsg.getCatalogId())) {
-			answer.setRejectMessage(activeUser.getText("Current user catalog does not match request"));
+			answer.setRejectMessage(activeUser.getText(activeUser.getText("Catalogs.catalogUnknown")));
 			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_user_access", answer);
 			return;
 		}
@@ -313,7 +313,12 @@ public class WsControllerCatalog extends AMxWSController {
             
             Integer availablePort = findAvailableFtpPort(ftpPortRangeLow,ftpPortRangeHigh);
             if (availablePort==null) {
-            	answer.setRejectMessage("Unable to create catalog definition, no available port for userdata access");
+            	answer.setRejectMessage(user.getText("Catalogs.cannotCreateNoAvailableFtpPort"));
+            	log.error("ERROR: no more FTP port available for creating new catalog");
+            	Globals.Get().sendEmail(Globals.GetMxProperty("mx.mailer.admin_recipient"), 
+            					"No more FTP port available", 
+            					"User '"+user.getNickname()+"' ("+user.getId()+") tried to create a new catalog '"+c.getName()+"',"
+            					+" but could not because there is no more FTP port available");
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
     			_GlobalCreateCatalogLock.release();
     			return;
@@ -322,7 +327,8 @@ public class WsControllerCatalog extends AMxWSController {
             
     		Boolean result = Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getCreateIntoDefDbStmt(user,c).execute();
     		if (!result) {
-    			answer.setRejectMessage("Unable to create catalog definition into SQL db");
+    			answer.setRejectMessage(user.getText("Catalogs.cannotCreate")+" (1)");
+    			log.error("Unable to create catalog into SQL DB for user "+user.getId());
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
     			_GlobalCreateCatalogLock.release();
     			return;
@@ -333,7 +339,8 @@ public class WsControllerCatalog extends AMxWSController {
     		result = Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface().getSetUserAccessRightsIntoDbStmt(user, c).execute();	    		
     		
     		if (!result) {
-    			answer.setRejectMessage("Unable to give access rights to user");
+    			log.error("Unable to give access to user "+user.getId()+" for its new catalog");
+    			answer.setRejectMessage(user.getText("Catalogs.cannotCreate")+" (2)");
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
     			_GlobalCreateCatalogLock.release();
     			return;
@@ -350,7 +357,8 @@ public class WsControllerCatalog extends AMxWSController {
 	    		// create index
 		    	result = Globals.Get().getDatabasesMgr().getCatalogContentsDbInterface().getCreateIndexIntoDocsDbStmt(c).execute();
 		    	if (!result) {
-		    		answer.setRejectMessage("Unable to create catalog index");
+		    		log.error("Unable to create catalog index for user "+user.getId()+" new catalog");
+	    			answer.setRejectMessage(user.getText("Catalogs.cannotCreate")+" (3)");
 	    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
 	    			return;
 	    		}
@@ -377,7 +385,8 @@ public class WsControllerCatalog extends AMxWSController {
 					.createIntoESDbStmt(c,mxFields).execute();						    				
 			if (!isSuccess) {
 				answer.setIsSuccess(false);  
-	    		answer.setRejectMessage("Unable to process create_catalog from '"+user.getName()+"' : unable to create default internal fields");
+				log.error("Unable to create default internal fields for user "+user.getId()+" new catalog");
+    			answer.setRejectMessage(user.getText("Catalogs.cannotCreate")+" (4)");    			
 	    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);    		
 	    		return;   
 			}
@@ -418,31 +427,33 @@ public class WsControllerCatalog extends AMxWSController {
 					.execute();
 			}
 			
+			user.sendGuiInfoMessage(user.getText("Catalogs.creatingKibanaSpace"));	    	
 			// create Kibana space dedicated to this catalog
 	    	result =Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().createStatisticsSpace(user, c);
 	    	if (!result) {
-	    		answer.setRejectMessage("Unable to create catalog statistics space");
+	    		
+	    		log.error("Unable to create Kibana space for user "+user.getId()+" new catalog "+c.getName());
+    			answer.setRejectMessage(user.getText("Catalogs.cannotCreate")+" (5)");
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
     			return;
     		}
-	    	user.sendGuiInfoMessage("Created Kibana space for "+c.getName());
 	    	// create index-pattern for catalog's space
 	    	result =Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().createStatisticsIndexPattern(user, c);
 	    	if (!result) {
-	    		answer.setRejectMessage("Unable to create statistics index-pattern");
+	    		log.error("Unable to create Kibana index for user "+user.getId()+" new catalog "+c.getName());
+    			answer.setRejectMessage(user.getText("Catalogs.cannotCreate")+" (6)");
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
     			return;
     		}
-	    	user.sendGuiInfoMessage("Created Kibana index-pattern for "+c.getName());
 	    	
 	    	// create RO and W roles
 	    	result =Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().createCatalogStatisticsRoles(user, c);
 	    	if (!result) {
-	    		answer.setRejectMessage("Unable to create catalog statistics roles");
+	    		log.error("Unable to create Kibana roles for user "+user.getId()+" new catalog "+c.getName());
+    			answer.setRejectMessage(user.getText("Catalogs.cannotCreate")+" (7)");
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
     			return;
     		}
-	    	user.sendGuiInfoMessage("Created Kibana roles for accessing "+c.getName());
 	    	// assign W role to active user is done by the monitoring task over user contents in SQL DB
 	    	// @see UserProfileData.doPeriodicProcess() function
 	    	
@@ -455,8 +466,10 @@ public class WsControllerCatalog extends AMxWSController {
     	} catch (Exception e) 
     	{
     		answer.setIsSuccess(false);  
-    		answer.setRejectMessage("Unable to process create_catalog from '"+user.getName()+"' : "+e.getMessage());
-    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);    
+    		log.error("Exception while create user "+user.getId()+" new catalog : "+e.getMessage());
+    		e.printStackTrace();
+			answer.setRejectMessage(user.getText("Catalogs.cannotCreate")+" (8)");
+			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);    
     		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_catalog"));
     		e.printStackTrace();
     		_GlobalCreateCatalogLock.release();
@@ -475,7 +488,7 @@ public class WsControllerCatalog extends AMxWSController {
     	    	
     	if (c==null) {
     		// return failure notif (default status of answer is 'failed')
-    		answer.setRejectMessage("Current user catalog does not match request");
+    		answer.setRejectMessage(user.getText("Catalogs.catalogUnknown"));
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_selected", answer);
     		return;
     	}
@@ -512,7 +525,7 @@ public class WsControllerCatalog extends AMxWSController {
     	
     	if (c==null || !c.getId().equals(requestMsg.getId())) {
     		// return failure notif (default status of answer is 'failed')
-    		answer.setRejectMessage("Current user catalog does not match request");
+    		answer.setRejectMessage(user.getText("Catalogs.catalogUnknown"));
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_customized", answer);
     		return;
     	}
@@ -530,7 +543,8 @@ public class WsControllerCatalog extends AMxWSController {
 	    	requestMsg.setName(c.getName());	    	
 	    	Boolean result = Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getUpdateIntoDefDbStmt(user, requestMsg).execute();
 	    	if (!result) {
-	    		answer.setRejectMessage("Unable to update catalog custom parameters");
+	    		answer.setRejectMessage(user.getText("Catalogs.cannotUpdateCustomParams")+" (1)");
+	    		log.error("ERROR: could not update custom params for catalog "+c.getName()+" by user "+user.getId());
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_customized", answer);
     			c.releaseLock();
     			return;
@@ -544,8 +558,10 @@ public class WsControllerCatalog extends AMxWSController {
 	    	// update Kibana timafield if needed
 	    	if (updateKibanaTimeField==true) {
 	    		result =Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().updateStatisticsTimeField(user, c);
-		    	if (!result) {		    		
-		    		user.sendGuiWarningMessage("Unable to update Kibana timefield to '"+c.getTimeFieldRawName()+"'");
+		    	if (!result) {
+		    		answer.setRejectMessage(user.getText("Catalogs.cannotUpdateCustomParams")+" (2)");
+		    		log.error("ERROR: could not update Kibana timefield for catalog "+c.getName()+" by user "+user.getId());	    			
+		    		user.sendGuiWarningMessage(user.getText("Catalogs.cannotUpdateCustomParams"));
 	    			return;
 	    		} else {
 	    			user.sendGuiSuccessMessage(user.getText("Catalogs.overview.lastUpdateTimestamp.updated", c.getTimeFieldRawName(),c.getName()));
@@ -554,7 +570,9 @@ public class WsControllerCatalog extends AMxWSController {
     	} catch (Exception e) 
     	{    		
     		answer.setIsSuccess(false);  
-    		answer.setRejectMessage("Unable to process customize_catalog from '"+user.getName()+"' : "+e.getMessage());
+    		answer.setRejectMessage(user.getText("Catalogs.cannotUpdateCustomParams")+" (3)");
+    		log.error("Exception while updating catalog custom params : "+e.getMessage());
+    		e.printStackTrace();
 	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_customized", answer);
 	    	Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.customize_catalog"));
     		e.printStackTrace();
@@ -576,7 +594,7 @@ public class WsControllerCatalog extends AMxWSController {
     	
     	if (c==null || !c.getId().equals(requestMsg.getCatalogId())) {
     		// return failure notif (default status of answer is 'failed')
-    		answer.setRejectMessage("Current user catalog does not match request");
+    		answer.setRejectMessage(user.getText("Catalogs.catalogUnknown"));
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_catalog", answer);
     		return;
     	}
@@ -778,7 +796,7 @@ public class WsControllerCatalog extends AMxWSController {
     	
     	if (c==null || !c.getId().equals(requestMsg.getCatalogId())) {
     		// return failure notif (default status of answer is 'failed')
-    		answer.setRejectMessage("Current user catalog does not match request");
+    		answer.setRejectMessage(user.getText("Catalogs.catalogUnknown"));
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_lexic_updated", answer);
     		return;
     	}

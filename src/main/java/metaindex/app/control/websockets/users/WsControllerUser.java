@@ -102,6 +102,7 @@ public class WsControllerUser extends AMxWSController {
     	} catch (DataProcessException e) 
     	{
     		log.error("Unable to register '"+headerAccessor.getUser().getName()+"' on websockets API : "+e);  
+    		e.printStackTrace();
     		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.register_request"));
     	}
     }
@@ -123,7 +124,7 @@ public class WsControllerUser extends AMxWSController {
     		for (Integer userId : requestMsg.getUsersIds()) {
 	    		IUserProfileData requestedUser = Globals.Get().getUsersMgr().getUserById(userId);
 	    		if (requestedUser==null) {
-	    			answer.setRejectMessage("no such user : "+userId);
+	    			answer.setRejectMessage(user.getText("Profile.server.noSuchUser",userId.toString()));
 	    			answer.setIsSuccess(false);
 	    			messageSender.convertAndSendToUser(	headerAccessor.getUser().getName(), 
 	    					"/queue/users_profiles", answer); 
@@ -139,7 +140,8 @@ public class WsControllerUser extends AMxWSController {
 	    	
     	} catch (DataProcessException e) 
     	{
-    		log.error("Unable to register '"+headerAccessor.getUser().getName()+"' on websockets API : "+e);  
+    		log.error("Unable to retrieve users profiles : "+e);  
+    		e.printStackTrace();
     		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.register_request"));
     	}
     }
@@ -185,7 +187,7 @@ public class WsControllerUser extends AMxWSController {
     		
     		Boolean result = Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface().getSetUserCatalogCustomizationIntoDbStmt(tmpUserData, c).execute();
     		if (result==false) {
-    			answer.setRejectMessage("Update operation refused, sorry.");
+    			answer.setRejectMessage(user.getText("Profile.server.userUpdateRefused"));
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/user_catalogcusto_set", answer);
     			return;
     		}
@@ -197,9 +199,10 @@ public class WsControllerUser extends AMxWSController {
     		
     	} catch (DataProcessException e) 
     	{
-    		answer.setRejectMessage("Update operation failed : "+e.getMessage());
+    		answer.setRejectMessage(user.getText("Profile.server.userUpdateRefused"));
+    		log.error("unable to update user custom data : "+e.getMessage());
+    		e.printStackTrace();
 			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/user_catalogcusto_set", answer);
-			e.printStackTrace();
 			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.set_user_catalogcusto"));
 			return;    		
     	}
@@ -232,7 +235,7 @@ public class WsControllerUser extends AMxWSController {
     		Boolean result = Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface().getUpdateUserProfileIntoDbStmt(tmpUserData).execute();
     		
     		if (result==false) {
-    			answer.setRejectMessage("Update operation refused, sorry.");
+    			answer.setRejectMessage(user.getText("Profile.server.userUpdateRefused"));
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/user_preferences_set", answer);
     			return;
     		}
@@ -244,9 +247,10 @@ public class WsControllerUser extends AMxWSController {
     		
     	} catch (DataProcessException e) 
     	{
-    		answer.setRejectMessage("Update operation failed : "+e.getMessage());
+    		answer.setRejectMessage(user.getText("Profile.server.userUpdateRefused"));
+    		log.error("unable to update user preferences data : "+e.getMessage());
+    		e.printStackTrace();
 			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/user_preferences_set", answer);
-			e.printStackTrace();
 			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.set_user_preferences"));
 			return;    		
     	}
@@ -395,7 +399,7 @@ public class WsControllerUser extends AMxWSController {
     		String transactionId = requestMsg.getUserId()+"-"+requestMsg.getPlanId()+"-"+timestampFormat.format(new Date());
     		answer.setTransactionId(transactionId);
     		if (buildPlanUpdateCheckoutDetails(user,requestMsg,answer)==false) {
-    			answer.setRejectMessage("Could not properly compute transaction for your request, sorry. Please contact support team.");
+    			answer.setRejectMessage(user.getText("Profile.plans.couldNotComputeTransaction"));
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_answer", answer);
     			return;
     		}
@@ -412,10 +416,11 @@ public class WsControllerUser extends AMxWSController {
     		
     	} catch (DataProcessException e) 
     	{
-    		answer.setRejectMessage("Update operation failed : "+e.getMessage());
+    		answer.setRejectMessage(user.getText("Profile.plans.couldNotComputeTransaction"));
 			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_answer", answer);
+			log.error("unable to prepare user plan purchase : "+e.getMessage());
 			e.printStackTrace();
-			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.set_user_preferences"));
+			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_plan_request"));
 			return;    		
     	}
     }
@@ -471,7 +476,7 @@ public class WsControllerUser extends AMxWSController {
     		}
     		else {
     			PaymentLogging.logger.error(paymentEntry+"\t"+"status=NOT_CONFIRMED");
-    			answer.setRejectMessage("Payment method unsupported sorry.");
+    			answer.setRejectMessage(user.getText("Profile.plans.paymentMethodUnsupported",requestMsg.getPaymentMethod().toString()));
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_confirm_payment_answer", answer);
     			
     			user.sendEmailCCiAdmin(  user.getText("Profile.plans.email.purchaseNotConfirmed.title",requestMsg.getPaymentMethod().toString()), 
@@ -485,7 +490,7 @@ public class WsControllerUser extends AMxWSController {
     		Boolean paymentConfirmed = false;
     		for (Integer nbTry=0;nbTry<NB_TRIES_FOR_PAYMENT_CONFIRMATION;nbTry++) {
     			
-    			if (nbTry>0) { Thread.sleep(2000); }
+    			if (nbTry>0) { Thread.sleep(3000); }
     			paymentConfirmed = pi.confirmPayment(
         				requestMsg.getTransactionId(), 
         				awaitingTransactionData.getTotalCost(),
@@ -498,7 +503,7 @@ public class WsControllerUser extends AMxWSController {
     		    		    		
     		if (!paymentConfirmed) {
     			PaymentLogging.logger.error(paymentEntry+"\t"+"status=NOT_CONFIRMED");
-    			answer.setRejectMessage("No payment received (yet) for this transaction.");
+    			answer.setRejectMessage(user.getText("Profile.plans.noPaymentReceived"));
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_confirm_payment_answer", answer);
     			
     			user.sendEmailCCiAdmin(  user.getText("Profile.plans.email.purchaseNotConfirmed.title",requestMsg.getPaymentMethod().toString()), 
@@ -577,8 +582,9 @@ public class WsControllerUser extends AMxWSController {
 
     	} catch (DataProcessException e) 
     	{
-    		answer.setRejectMessage("Update operation failed : "+e.getMessage());
+    		answer.setRejectMessage(user.getText("Profile.plans.planUpdateFailed"));
 			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_confirm_payment_answer", answer);
+			log.error("Unable to finalize plan purchase : "+e.getMessage());
 			e.printStackTrace();
 			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_plan_confirm_payment_answer"));
 			

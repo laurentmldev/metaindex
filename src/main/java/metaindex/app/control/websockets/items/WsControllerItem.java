@@ -175,7 +175,9 @@ public class WsControllerItem extends AMxWSController {
     	{
     		answer.setIsSuccess(false);
     		answer.setSize(-1);
-    		answer.setRejectMessage(user.getText("Items.server.DbErrorOccured",e.getMessage()));
+    		log.error("DataProcessException while retrieving items : "+e.getMessage());
+    		e.printStackTrace();
+    		answer.setRejectMessage(user.getText("Items.server.DbErrorOccured"));
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/items", 
 					getCompressedRawString(answer));    
     		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.get_catalog_items.db_error"));
@@ -183,7 +185,9 @@ public class WsControllerItem extends AMxWSController {
     	{
     		answer.setIsSuccess(false);
     		answer.setSize(-1);
-    		answer.setRejectMessage(user.getText("Items.server.ErrorOccured",e.getMessage()));
+    		log.error("Exception while retrieving items : "+e.getMessage());
+    		e.printStackTrace();    		
+    		answer.setRejectMessage(user.getText("Items.server.ErrorOccured"));
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/items", 
 					getCompressedRawString(answer));
     		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.get_catalog_items.server_error"));
@@ -291,6 +295,8 @@ public class WsControllerItem extends AMxWSController {
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),
     												"/queue/field_value", 
 													getRawString(answer));
+    		log.error("Exception while updating field value : "+e.getMessage());
+    		e.printStackTrace();
     		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_field_value.server_error"));
     		c.releaseLock();
     	}
@@ -391,10 +397,12 @@ public class WsControllerItem extends AMxWSController {
     		
     	} catch (DataProcessException e) 
     	{
+    		log.error("DataProcessException while deleting items by query : "+e.getMessage());
     		e.printStackTrace();
     		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.delete_items_by_query.processing_error"));
     	}  catch (Exception e) 
     	{
+    		log.error("Exception while deleting items by query : "+e.getMessage());
     		e.printStackTrace();
     		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.delete_items_by_query.server_error"));
     	}
@@ -413,7 +421,7 @@ public class WsControllerItem extends AMxWSController {
 		ICatalog c = user.getCurrentCatalog();
     	if (c==null || !c.getId().equals(requestMsg.getCatalogId())) {
     		// return failure notif (default status of answer is 'failed')
-    		answer.setRejectMessage("Current user catalog does not match request");
+    		answer.setRejectMessage(user.getText("Catalogs.catalogUnknown"));
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_item", answer);
     		return;
     	}
@@ -458,7 +466,7 @@ public class WsControllerItem extends AMxWSController {
 	    		}
 	    	}
 	    	if (undefinedKeysStr.length()>0) {
-	    		answer.setRejectMessage("Unable to create item, following fields are not defined in catalog : "+undefinedKeysStr);
+	    		answer.setRejectMessage(user.getText("Items.server.unableToCreateItemMissingFields")+undefinedKeysStr);
 	    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_item", answer);
 	    		c.releaseLock();
 	    		return;
@@ -486,9 +494,10 @@ public class WsControllerItem extends AMxWSController {
 		} 
 		catch (DataProcessException | InterruptedException e) { 	    	
 			procTask.abort();
-			answer.setRejectMessage("Unable to create item : "+e.getMessage());
-			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_item", answer);
+			log.error("Exception while creating new item "+e.getMessage());
 			e.printStackTrace();
+			answer.setRejectMessage(user.getText("Items.server.unableToCreateItem"));
+			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_item", answer);
 			Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_item"));
     		c.releaseLock(); 			
  		}   
