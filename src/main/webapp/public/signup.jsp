@@ -40,20 +40,19 @@ onkeypress="if (event.which==13||event.keycode==13) {
                <div class="form-group" style="width:100%;">
                <center>
                	
-               	<div id="termsBody" style="font-size:0.8rem;display:none;max-height:15vh;overflow:auto;padding-bottom:3rem;text-align:left;" >
-               		<s:text name="signup.termsAndCondition.body" />	                    	
+               	<div id="termsBody" style="padding-bottom:1rem;margin-bottom:1rem;border-bottom:1px dotted grey;border-top:1px dotted grey;font-size:0.8rem;display:block;max-height:15vh;overflow:auto;padding-bottom:3rem;text-align:left;" >
+               		<s:text name="signup.termsAndCondition.body" />	   
+               		
+ 					<table style="margin-left:20%;margin-bottom:1rem;" ><tr>
+                  		<td><input id="termsCheckbox" type="checkbox" name='acceptTermsAndConditions' class="form-control form-control-user" /></td>
+                  		<td style="padding-left:0.5rem;">
+                  			<span style="font-weight:bold;font-size:1rem;"><s:text name="signup.accept" /> <s:text name="signup.termsAndCondition" /></span>                  			
+                  		</td>
+	  					</tr></table>                 	
                	</div>
                	
                	 
-               	 <table ><tr>
-                  		<td><input id="termsCheckbox" type="checkbox" name='acceptTermsAndConditions' class="form-control form-control-user" /></td>
-                  		<td style="padding-left:0.5rem;">
-                  			<s:text name="signup.accept" />
-                  			<a href="#" style="color:#57e" onclick="document.getElementById('termsBody').style.display='block';">
-                  				<s:text name="signup.termsAndCondition" />
-                  				</a>
-                  		</td>
-	  </tr></table>
+               	
 	  
 	  <a href="#" class="btn btn-primary btn-user btn-block scale" style="max-width:30%;" 
 	  	onclick="if (document.getElementById('termsCheckbox').checked==false) { alert('<s:text name="signup.pleaseAcceptTerms"/>'); }
@@ -70,6 +69,7 @@ onkeypress="if (event.which==13||event.keycode==13) {
                </div>
        </form>
  </div>
+ 
  
  <script type="text/javascript">
  function createForm() {
