@@ -132,7 +132,7 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 				setSessionGuiTheme(getCurrentUserProfile().getGuiTheme().getShortname(),request);
 				
 				if (this.getCurrentUserProfile().getCurrentCatalog()!=null) {
-							request.getSession().setAttribute(CURRENT_COMMUNITY_SESSION_ATT, 
+							request.getSession(false).setAttribute(CURRENT_COMMUNITY_SESSION_ATT, 
 							this.getCurrentUserProfile().getCurrentCatalog());
 				}
 			}			
@@ -149,7 +149,7 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
   	}
   	
   	protected void setSessionGuiTheme(String themeShort, HttpServletRequest request) {
-  		request.getSession().setAttribute(GUITHEME_SESSION_ATT, themeShort);
+  		request.getSession(false).setAttribute(GUITHEME_SESSION_ATT, themeShort);
   	}
   	
   	protected void setSessionLanguage(String languageShort, ActionContext ctx) {
@@ -176,7 +176,10 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 		}
 		return _userProfileData;
 	}
-	
+	// might be needed for proper URL
+	public String getPaymentLogin() {
+		return Globals.GetMxProperty("mx.payment.login");
+	}
 	public ICatalog getCurrentCatalog() {	
 		return _userProfileData.getCurrentCatalog();
 	}

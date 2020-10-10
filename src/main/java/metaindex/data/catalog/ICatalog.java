@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.apache.ftpserver.ftplet.FtpException;
 
+import metaindex.app.control.ftpserver.CatalogFtpServer;
 import metaindex.data.filter.IFilter;
 import metaindex.data.perspective.ICatalogPerspective;
 import metaindex.data.term.ICatalogTerm;
@@ -52,7 +53,9 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 	// get UserId for whom created it
 	public Integer getOwnerId();
 	public void setOwnerId(Integer ownerId);
-		
+	/** return all users having an 'access right' entry for this catalog, even if this right is NONE */
+	public List<IUserProfileData> getUsers() throws DataProcessException;
+	
 	/// flag saying whether DB instance could be done for this catalog
 	public Boolean isDbIndexFound(); 
 	public void setDbIndexFound(Boolean dbIndexFound);		
@@ -87,6 +90,7 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 	public String getLocalFsFilesPath();
 	public String getFilesBaseUrl();
 	public void setFtpPort(Integer port);
+	public CatalogFtpServer getFtpServer();
 	
 	
 	// Perspectives

@@ -598,14 +598,24 @@ public class UserProfileData implements IUserProfileData
 		Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface()
 				.createOrUpdateCatalogStatisticsUser(this);
     	
+		// refresh and propagate data where needed
+		doPeriodicProcess();
 	}
 
+	private void registerToFtpServers(List<Integer> userCatalogsIds) {
+		for (Integer catId : userCatalogsIds) {
+    		ICatalog c = Globals.Get().getCatalogsMgr().getCatalog(catId);
+    		c.getFtpServer().setUser(this,this.isEnabled());	    		
+    	}
+	}
+	
 	@Override
 	public void doPeriodicProcess() throws DataProcessException {
 		
 		// avoid periodic process on dummy or empty profile objects
 		if (getName().length()==0) { return; }
 		
+		List<Integer> userCatalogsIds = this.getUserCatalogsIds();
 		Date prevCurDate = this.getLastUpdate();
 		Boolean onlyIfDbcontentsUpdated=true;
 		List<IUserProfileData> list = new ArrayList<>();
@@ -615,34 +625,43 @@ public class UserProfileData implements IUserProfileData
 		
 		// detect if contents actually changed
 		if (this.getLastUpdate().after(prevCurDate)) { 
-			log.info(this.getDetailsStr());
 			// catalogs access rights might have changed
-			// so we update roles in Kibana env. if
+			// so we update roles in Kibana env. and FTP server
 			
 			Boolean result =Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().createOrUpdateCatalogStatisticsUser(this);
 	    	if (!result) {
 	    		log.error("unable to update user details in statistics environment.");
     		}
+	    	
+	    	registerToFtpServers(userCatalogsIds);
+	    		
+	    	log.info(this.getDetailsStr());
+	    			
 		}
 		
 		// check also for HttpSession timeout
-		// not so clear to do it together with DB-changes monitoring, but convenient 
+		// not very clear to do it here together with DB-changes monitoring, but convenient 
 		checkHttpSessionTimeout();
  			 
 	}
 	private static final Integer SESSION_EXPIRED_NOTIFY_TRESHOLD_SEC=15;
 	private void checkHttpSessionTimeout() {
 		if (getHttpSession()!=null) {
-			long lastActivationDate = getHttpSession().getLastAccessedTime();
-			long currTime = System.currentTimeMillis();
-			long expiryDelayMs = lastActivationDate + this.getHttpSession().getMaxInactiveInterval()*1000 - currTime;
-			
-			if (expiryDelayMs<SESSION_EXPIRED_NOTIFY_TRESHOLD_SEC*1000) {
-				try {
-					WsControllerUser.UsersWsController.sendSessionStatusExpired(this);
-				} catch (Exception e) {
-					e.printStackTrace();
+			try {
+				long lastActivationDate = getHttpSession().getLastAccessedTime();
+				long currTime = System.currentTimeMillis();
+				long expiryDelayMs = lastActivationDate + this.getHttpSession().getMaxInactiveInterval()*1000 - currTime;
+				
+				if (expiryDelayMs<SESSION_EXPIRED_NOTIFY_TRESHOLD_SEC*1000) {
+					try {
+						WsControllerUser.UsersWsController.sendSessionStatusExpired(this);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
+			// session invalid
+			} catch (IllegalStateException e) {
+				// nothing special to do there, session is not valid anyway
 			}
 		}
 	}

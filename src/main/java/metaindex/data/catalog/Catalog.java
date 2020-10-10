@@ -29,6 +29,7 @@ import org.apache.ftpserver.ftplet.FtpException;
 import metaindex.data.filter.IFilter;
 import metaindex.app.Globals;
 import metaindex.app.control.ftpserver.CatalogFtpServer;
+import metaindex.app.control.websockets.catalogs.messages.WsMsgCatalogUsers_answer.GuiCatalogUser;
 import metaindex.app.periodic.db.CatalogPeriodicDbReloader;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.commons.globals.plans.IPlan;
@@ -36,10 +37,12 @@ import metaindex.data.perspective.ICatalogPerspective;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
 import metaindex.data.term.TermVocabularySet;
+import metaindex.data.userprofile.ICatalogUser.USER_CATALOG_ACCESSRIGHTS;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.UserProfileData;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.PeriodicProcessMonitor;
+import toolbox.utils.StreamHandler;
 import toolbox.utils.filetools.FileSystemUtils;
 
 public class Catalog implements ICatalog {
@@ -123,17 +126,26 @@ public class Catalog implements ICatalog {
 
 	}
 	
+	@Override
+	public CatalogFtpServer getFtpServer() { return _ftpServer; };
+	
 	private void startFtpServer() throws DataProcessException {
-		if (_ftpServer==null) { _ftpServer=new CatalogFtpServer(this); }
-		try { _ftpServer.start(); }
+		if (getFtpServer()==null) { _ftpServer=new CatalogFtpServer(this); }
+		try { 
+			getFtpServer().start();
+			for (IUserProfileData u : getUsers()) {
+				u.loadFullUserData();
+				getFtpServer().setUser(u, u.isEnabled());
+			}			
+		}
 		catch (FtpException e) { 
 			throw new DataProcessException
 				("Unable to start FTP server for catalog "+this.getName()+" : "+e.getMessage(),e); 
 		}
 	}
 	private void stopFtpServer() throws DataProcessException {
-		if (_ftpServer==null) { return; }
-		try { _ftpServer.stop(); }
+		if (getFtpServer()==null) { return; }
+		try { getFtpServer().stop(); }
 		catch (FtpException e) { 
 			throw new DataProcessException
 				("Unable to stop FTP server for catalog "+this.getName()+" : "+e.getMessage(),e); 
@@ -191,6 +203,25 @@ public class Catalog implements ICatalog {
 		return _curOwner;
 	}
 	
+	public List<IUserProfileData> getUsers() throws DataProcessException {
+		
+		// first retrieve ids of users having access rights defined for this catalog or being admin
+		List<Integer> usersIds = new ArrayList<>();
+		Globals.Get().getDatabasesMgr().getCatalogDefDbInterface()
+			.getCatalogUsersIdsStmt(this).execute(new StreamHandler<Integer>(usersIds));
+		
+		List<IUserProfileData> result = new ArrayList<>();
+				
+		for (Integer userId : usersIds) {
+			IUserProfileData u = Globals.Get().getUsersMgr().getUserById(userId);
+			if (u==null) {
+				log.error("Unable to retrieve details of user '"+userId+"' for catalog '"+this.getName()+"'");
+				continue;
+			}
+			result.add(u);
+		}
+		return result;
+	}
 	@Override
 	/**
 	 * current policy consist in considering a catalog disabled if its
@@ -226,8 +257,7 @@ public class Catalog implements ICatalog {
 	@Override
 	public void enter(IUserProfileData p) throws DataProcessException {
 		try {
-			_loggedUsersLock.acquire();		
-			if (_ftpServer!=null) { _ftpServer.setUser(p, true); }
+			_loggedUsersLock.acquire();					
 			if (!_loggedUsersIds.containsKey(p.getId()) ) {
 				_loggedUsersIds.put(p.getId(),p);
 				log.info("Catalog "+this.getName()+" added user '"
@@ -265,7 +295,7 @@ public class Catalog implements ICatalog {
 			IUserProfileData u = Globals.Get().getUsersMgr().getUserById(userId);
 			u.setCurrentCatalog(0);
 			this.quit(u);
-			if (_ftpServer!=null) { _ftpServer.setUser(u, false); }
+			if (getFtpServer()!=null) { getFtpServer().setUser(u, false); }
 			u.sendGuiWarningMessage("You have been exited from catalog '"+this.getName()
 										+"' after an action of '"+activeUser.getNickname()+"'");
 		}
@@ -698,7 +728,7 @@ public class Catalog implements ICatalog {
 		
 		try {
 			this.acquireLock();
-			if (_ftpServer!=null && !this.getFtpPort().equals(_ftpServer.getPort())) {
+			if (getFtpServer()!=null && !this.getFtpPort().equals(getFtpServer().getPort())) {
 				stopFtpServer();
 				startFtpServer();
 			}

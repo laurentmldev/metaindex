@@ -67,6 +67,19 @@ public class UsersManager implements IUsersManager {
 		for (IUserProfileData user : _usersByName.values()) {
 			if (user.getId().equals(userId)) { return user; }			
 		}
+		// if user could not be found, maybe it is not loaded yet from DB
+		// so we give it a try
+		 
+		try { 
+			log.info("User '"+userId+"' not found, reloading users list from DB");
+			loadFromDb();
+			return _usersByName.values().stream()
+					.filter(p -> p.getId().equals(userId))
+					.findFirst()
+					.orElse(null);
+		} 
+		catch (DataProcessException e) { e.printStackTrace(); }
+	
 		return null;
 	}
 	

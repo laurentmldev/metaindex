@@ -70,8 +70,9 @@ public class CatalogFtpServer {
         newUser.setHomeDirectory(_catalog.getLocalFsFilesPath());
                 
         List<Authority> authorities = new ArrayList<Authority>();
-        if (p.getUserCatalogAccessRights(_catalog.getId()).equals(USER_CATALOG_ACCESSRIGHTS.CATALOG_EDIT)
-        	|| p.getUserCatalogAccessRights(_catalog.getId()).equals(USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN) ){
+        USER_CATALOG_ACCESSRIGHTS accessRights = p.getUserCatalogAccessRights(_catalog.getId());
+        if (accessRights.equals(USER_CATALOG_ACCESSRIGHTS.CATALOG_EDIT)
+        	|| accessRights.equals(USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN) ){
         		authorities.add(new WritePermission());
         		newUser.setEnabled(enabled);
     	} else {
@@ -81,7 +82,7 @@ public class CatalogFtpServer {
         newUser.setAuthorities(authorities);
         //Save the user to the user list on the file-system
         try { 
-        	log.debug("Activated user "+p.getName());
+        	log.info("Setting user "+p.getName()+" as "+accessRights+" for FTP access to catalog "+_catalog.getName());
         	_serverFactory.getUserManager().save(newUser); 
         } catch (FtpException e) { e.printStackTrace(); }
                 

@@ -147,19 +147,10 @@ public class WsControllerCatalog extends AMxWSController {
 			return;
 		}
 		
-		// first retrieve ids of users having access rights defined for this catalog
-		List<Integer> usersIds = new ArrayList<>();
-		Globals.Get().getDatabasesMgr().getCatalogDefDbInterface()
-			.getCatalogUsersIdsStmt(c).execute(new StreamHandler<Integer>(usersIds));
-		
+		List<IUserProfileData> users = c.getUsers();
 		List<GuiCatalogUser> result = new ArrayList<>();
 				
-		for (Integer userId : usersIds) {
-			IUserProfileData u = Globals.Get().getUsersMgr().getUserById(userId);
-			if (u==null) {
-				log.error("Unable to retrieve details of user '"+u.getId()+"' for catalog '"+c.getName()+"'");
-				continue;
-			}
+		for (IUserProfileData u : users) {
 			// skip one-self and  owner of the catalog
 			if (u.getId().equals(c.getOwnerId())) { continue; }
 			if (u.getId().equals(activeUser.getId())) { continue; }
@@ -241,6 +232,9 @@ public class WsControllerCatalog extends AMxWSController {
 			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_user_access", answer);
 			return;
 		}
+		
+		// update in system is done via periodic monitoring of DB which will detect changes
+		// and propagate where needed (typically FTP server and Kibana)
 		
 		answer.setIsSuccess(true);				
 		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),
