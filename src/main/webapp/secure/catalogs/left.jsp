@@ -22,7 +22,7 @@
             <h6 class="collapse-header"><s:text name="Catalogs.new_catalog" /></h6>
                     <center>
                    <a 	id="leftbar_catalog_nbCreatedCatalogs" 
-                   		class="btn-big btn btn-sm btn-warning shadow-sm" 
+                   		class="btn btn-sm btn-warning shadow-sm" 
                    		style="font-size:0.8rem;margin-bottom:1rem;color:white;display:none"
                    		>
 						<s:text name="Catalogs.left.maxNbCatalogsCreatedReached" /> 

@@ -53,6 +53,49 @@ public class CatalogsManager implements ICatalogsManager {
 		return c;
 	}
 
+	private void loadFromDb(ICatalog c) {
+		// loading catalogs contents
+		// do it one by one rather than grouped, so that we can load as many valid catalogs as we can
+		// and identify easily which ones failed
+		try {
+			// reuse exiting catalog instance if alreay loaded
+			if (!_catalogsById.containsKey(c.getId())) { _catalogsById.put(c.getId(),c); }
+			else { c=_catalogsById.get(c.getId()); }
+			c.loadStatsFromDb();
+			c.loadMappingFromDb();
+			c.setDbIndexFound(true);
+		} catch (Exception e) {
+			log.warn("Unable to load ElasticSearch index for catalog "+c.getName());
+			c.setDbIndexFound(false);				
+		}
+		try {
+			c.loadVocabulariesFromDb();
+			c.loadTermsFromDb();
+			c.loadTermsVocabularyFromDb();
+			c.loadPerspectivesFromdb();				
+		} catch (Exception e) {
+			log.error("Error occured while loading definitions of catalog "+c.getName());
+			e.printStackTrace();
+		}
+		try {
+			c.startServices();
+		} catch (Exception e) {
+			log.error("Error occured while services of catalog "+c.getName());
+			e.printStackTrace();
+		}
+	}
+	
+	@Override 
+	public void loadFromDb(String catalogName) throws DataProcessException {
+		List<ICatalog> loadedCatalogs = new ArrayList<>();						
+		Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getPopulateFromDefDbStmt(loadedCatalogs).execute();
+		for (ICatalog c : loadedCatalogs) { 
+			if (c.getName().equals(catalogName)) { 
+				loadFromDb(c); 
+				break;
+			}
+		}
+	}
 	@Override
 	public void loadFromDb() throws DataProcessException {
 		
@@ -62,37 +105,7 @@ public class CatalogsManager implements ICatalogsManager {
 		// Loading filters definition		
 		Globals.Get().getDatabasesMgr().getFiltersDbInterface().getPopulateFilterFromDbStmt(loadedCatalogs).execute();
 		
-		for (ICatalog c : loadedCatalogs) {			
-			// loading catalogs contents
-			// do it one by one rather than grouped, so that we can load as many valid catalogs as we can
-			// and identify easily which ones failed
-			try {
-				// reuse exiting catalog instance if alreay loaded
-				if (!_catalogsById.containsKey(c.getId())) { _catalogsById.put(c.getId(),c); }
-				else { c=_catalogsById.get(c.getId()); }
-				c.loadStatsFromDb();
-				c.loadMappingFromDb();
-				c.setDbIndexFound(true);
-			} catch (Exception e) {
-				log.warn("Unable to load ElasticSearch index for catalog "+c.getName());
-				c.setDbIndexFound(false);				
-			}
-			try {
-				c.loadVocabulariesFromDb();
-				c.loadTermsFromDb();
-				c.loadTermsVocabularyFromDb();
-				c.loadPerspectivesFromdb();				
-			} catch (Exception e) {
-				log.error("Error occured while loading definitions of catalog "+c.getName());
-				e.printStackTrace();
-			}
-			try {
-				c.startServices();
-			} catch (Exception e) {
-				log.error("Error occured while services of catalog "+c.getName());
-				e.printStackTrace();
-			}
-		}
+		for (ICatalog c : loadedCatalogs) { loadFromDb(c); }
 	}
 	
 	@Override

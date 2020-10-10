@@ -46,6 +46,7 @@ import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.userprofile.ICatalogUser.USER_CATALOG_ACCESSRIGHTS;
 import metaindex.data.userprofile.IUserProfileData;
+import toolbox.exceptions.DataProcessException;
 import toolbox.utils.StrTools;
 import toolbox.utils.StreamHandler;
 
@@ -259,12 +260,19 @@ public class WsControllerCatalog extends AMxWSController {
     	Integer curPort=portRangeStart;
     	while (curPort<=portRangeEnd) {
             try {
-                    ServerSocket s = new ServerSocket(curPort);
-                    s.close();
-                    return curPort;
-            } catch (IOException e) {
+            	// check it is not used by another catalog
+            	List<Integer> catalogIds = new ArrayList<>();
+        		Globals.Get().getDatabasesMgr().getCatalogDefDbInterface()
+        			.getCatalogIdFromFtpPortStmt(curPort).execute(new StreamHandler<Integer>(catalogIds));
+        		if (catalogIds.size()!=0) { throw new DataProcessException(""); }
+        		
+        		// check if another application does not already use this port on the system
+                ServerSocket s = new ServerSocket(curPort);
+                s.close();
+                return curPort;
+            } catch (IOException | DataProcessException e) {
             	curPort++;
-            }            
+            }                          
     	}
     	
     	return null;
@@ -302,12 +310,13 @@ public class WsControllerCatalog extends AMxWSController {
     		c=new Catalog();
     		c.setName(requestMsg.getCatalogName());
     		
+    		// try to determine free abailable FTP port within given range
     		Integer ftpPortRangeLow = new Integer(Globals.GetMxProperty("mx.ftp.port.range_low"));
             Integer ftpPortRangeHigh = new Integer(Globals.GetMxProperty("mx.ftp.port.range_high"));
             
             Integer availablePort = findAvailableFtpPort(ftpPortRangeLow,ftpPortRangeHigh);
             if (availablePort==null) {
-            	answer.setRejectMessage(user.getText("Catalogs.cannotCreateNoAvailableFtpPort"));
+            	answer.setRejectMessage(user.getText("Catalogs.maxNbTotalCatalogsReach"));
             	log.error("ERROR: no more FTP port available for creating new catalog");
             	Globals.Get().sendEmail(Globals.GetMxProperty("mx.mailer.admin_recipient"), 
             					"No more FTP port available", 
@@ -327,7 +336,7 @@ public class WsControllerCatalog extends AMxWSController {
     			_GlobalCreateCatalogLock.release();
     			return;
     		}
-    		Globals.Get().getCatalogsMgr().loadFromDb();	    		
+    		Globals.Get().getCatalogsMgr().loadFromDb(requestMsg.getCatalogName());	    		
     		c  = Globals.Get().getCatalogsMgr().getCatalog(requestMsg.getCatalogName());
     		user.setUserCatalogAccessRights(c.getId(), USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN);
     		result = Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface().getSetUserAccessRightsIntoDbStmt(user, c).execute();	    		

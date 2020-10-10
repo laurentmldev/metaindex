@@ -605,7 +605,13 @@ public class UserProfileData implements IUserProfileData
 	private void registerToFtpServers(List<Integer> userCatalogsIds) {
 		for (Integer catId : userCatalogsIds) {
     		ICatalog c = Globals.Get().getCatalogsMgr().getCatalog(catId);
-    		c.getFtpServer().setUser(this,this.isEnabled());	    		
+    		// maybe catalog has been deleted inbetween
+    		//
+    		// or FtpServer not yet created, and
+    		// maybe at next call to periodic process
+    		// the FtpServer will have been created    		
+    		if (c==null || c.getFtpServer()==null) { continue; }
+			c.getFtpServer().setUser(this,this.isEnabled());
     	}
 	}
 	

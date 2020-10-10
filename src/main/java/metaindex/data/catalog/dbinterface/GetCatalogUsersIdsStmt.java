@@ -38,7 +38,8 @@ class GetCatalogUsersIdsStmt extends SQLReadStreamStmt<Integer>   {
 	public static final String SQL_REQUEST = 
 			"select DISTINCT users.user_id "
 			+" from users,user_roles,user_catalogs_rights"
-			+" where user_roles.role='ROLE_ADMIN' or (user_roles.role='ROLE_USER'  and users.user_id=user_roles.user_id and users.user_id=user_catalogs_rights.user_id)";
+			+" where (user_roles.role='ROLE_ADMIN' and users.user_id=user_roles.user_id ) "
+			+" or	 (user_roles.role='ROLE_USER'  and users.user_id=user_roles.user_id and users.user_id=user_catalogs_rights.user_id ";
 	
 	ICatalog _data;
 	
@@ -57,7 +58,7 @@ class GetCatalogUsersIdsStmt extends SQLReadStreamStmt<Integer>   {
 
 	@Override
 	public String buildSqlQuery()  {				
-		String sql = SQL_REQUEST+" and user_catalogs_rights.catalog_id="+_data.getId();		
+		String sql = SQL_REQUEST+" and user_catalogs_rights.catalog_id="+_data.getId()+ ")";		
 		return sql;
 	}
 					
