@@ -48,8 +48,7 @@
 	</script>
 </head>
 
-<body class="" style="background-color:#f5f5f5;background-image:none;"
-	onload="carousel();" >
+<body class="mx-public-form" onload="carousel();" >
 
 <c:if test="${mxDevMode == true}" >
   	<nav class="navbar navbar-expand topbar static-top"

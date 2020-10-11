@@ -13,7 +13,7 @@
   </c:if>
   
 
-  <div class="container p-5" style="width:50%;">
+  <div class="container" style="width:50%;">
 	
 	
     <!-- Outer Row -->

@@ -8,10 +8,7 @@
 
 <s:include value="generic_form/head.jsp" />
 
-<body class=""
-
-	onload="createForm();"
-	>
+<body  class="mx-public-form" onload="createForm();" >
 	
 	
 <s:include value="generic_form/body.jsp" />

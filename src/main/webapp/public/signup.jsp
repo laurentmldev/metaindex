@@ -8,7 +8,7 @@
 
 <s:include value="generic_form/head.jsp" />
 
-<body class=""
+<body  class="mx-public-form"
 onkeypress="if (event.which==13||event.keycode==13) {
 		document.getElementById('form').submit();
 	}"
@@ -32,15 +32,18 @@ onkeypress="if (event.which==13||event.keycode==13) {
 </div>
 
                <div class="form-group">
-                 <input type="email" name='email' class="form-control form-control-user" aria-describedby="emailHelp" placeholder="Email address" required>
+                 <input type="email" name='email' class="form-control form-control-user" 
+                 	style="background:#f5f5f5" aria-describedby="emailHelp" placeholder="Email address" required>
                </div>
                <div class="form-group">
-                 <input type="text" name='nickname' class="form-control form-control-user" placeholder="Nickname" required>
+                 <input type="text" name='nickname' class="form-control form-control-user" 
+                  style="background:#f5f5f5" placeholder="Nickname" required>
                </div>
                <div class="form-group" style="width:100%;">
                <center>
                	
-               	<div id="termsBody" style="padding-bottom:1rem;margin-bottom:1rem;border-bottom:1px dotted grey;border-top:1px dotted grey;font-size:0.8rem;display:block;max-height:15vh;overflow:auto;padding-bottom:3rem;text-align:left;" >
+               	<div id="termsBody" 
+               		style="padding-left:0.2rem;padding-right:0.2rem;padding-bottom:1rem;margin-bottom:1rem;border-bottom:1px dotted grey;border-top:1px dotted grey;font-size:0.8rem;display:block;max-height:15vh;overflow:auto;padding-bottom:3rem;text-align:left;background:#f5f5f5" >
                		<s:text name="signup.termsAndCondition.body" />	   
                		
  					<table style="margin-left:20%;margin-bottom:1rem;" ><tr>

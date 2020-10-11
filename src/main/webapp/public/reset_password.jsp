@@ -8,7 +8,7 @@
 <s:include value="generic_form/head.jsp" />
 
 
-<body class=""
+<body  class="mx-public-form"
 onkeypress="if (event.which==13||event.keycode==13) {
 		document.getElementById('form').submit();
 	}"
@@ -87,6 +87,7 @@ onkeypress="if (event.which==13||event.keycode==13) {
                       		placeholder="<s:text name="session.password" />"
                       		 title="<s:text name="passwordreset.complexity" />"
                       		 onkeyup="checkForm();"
+                      		 style="background:#f5f5f5"
                       		 >
                     </div>
                     <div class="form-group">
@@ -94,6 +95,7 @@ onkeypress="if (event.which==13||event.keycode==13) {
                       		placeholder="<s:text name="session.password.confirm" />"
                       		title="<s:text name="passwordreset.matching" />" 
                       		onkeyup="checkForm();"
+                      		style="background:#f5f5f5"
                       		>
                     </div>
                     

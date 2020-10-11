@@ -8,7 +8,7 @@
 
 <s:include value="generic_form/head.jsp" />
 
-<body class=""
+<body  class="mx-public-form"
 onkeypress="if (event.which==13||event.keycode==13) {
 		document.getElementById('form').submit();
 	}"
@@ -18,22 +18,26 @@ onkeypress="if (event.which==13||event.keycode==13) {
 <s:include value="generic_form/body.jsp" />
  
  <div id="contents" style="display:none" >
- 	<center><h5><s:text name="signin.enterCredentials" /></h5></center>
+ 	
  	
   <form id="form" class="user" action="${loginUrl}" method="post" >
           <input type="hidden"  name="${_csrf.parameterName}" value="${_csrf.token}"/>
  	<div class="form-group">
-		<c:if test="${param.error != null}"> <p><s:text name="session.loginerror" /></p></c:if>
-		<c:if test="${param.logout != null}"><p><s:text name="session.logoutmessage" /></p></c:if>
-		<c:if test="${param.expired != null}"><p><s:text name="session.expiredmessage" /></p></c:if>
-		<c:if test="${param.passwordreset != null}"><p><s:text name="session.passwordreset" /></p></c:if>
+		<c:if test="${param.error != null}"> <p class="alert-danger p-2" ><s:text name="session.loginerror" /></p></c:if>
+		<c:if test="${param.logout != null}"><p class="alert-info p-2" ><s:text name="session.logoutmessage" /></p></c:if>
+		<c:if test="${param.expired != null}"><p class="alert-warning p-2"><s:text name="session.expiredmessage" /></p></c:if>
+		<c:if test="${param.passwordreset != null}"><p class="alert-success p-2" ><s:text name="session.passwordreset" /></p></c:if>
 	</div>
 
+<center><h5><s:text name="signin.enterCredentials" /></h5></center>
+ 
         <div class="form-group">
-	        <input id="email" type="email" name='username' class="form-control form-control-user" aria-describedby="emailHelp" placeholder="Enter Email Address...">
+	        <input id="email" type="email" name='username' style="background:#f5f5f5" class="form-control form-control-user" 
+	        	aria-describedby="emailHelp" placeholder="<s:text name="session.email" />">
          </div>
         <div class="form-group">
-            <input type="password" name='password' class="form-control form-control-user" placeholder="<s:text name="session.password" />">
+            <input type="password" name='password' style="background:#f5f5f5" class="form-control form-control-user" 
+            	placeholder="<s:text name="session.password" />">
         </div>
        
         <center>
@@ -43,8 +47,9 @@ onkeypress="if (event.which==13||event.keycode==13) {
           <s:text name="signin.signin" />
         </a>
        <hr/>
-      
-        <a href="#" class="btn  btn-user btn-block scale" style="max-width:30%;font-size:0.8rem;background:#ec9;color:white;padding:0.2rem" 
+      <table style="width:100%"><tr>
+      <td style="width:50%;"><center>
+        <a href="#" class="btn  btn-user btn-block scale" style="max-width:70%;font-size:0.8rem;background:#ec9;color:white;padding:0.2rem" 
         	onclick="if (document.getElementById('email').value=='') { 
         				alert('<s:text name="passwordreset.pleaseFillEmailInTheForm" />');
         			 	document.getElementById('email').focus();
@@ -54,12 +59,14 @@ onkeypress="if (event.which==13||event.keycode==13) {
         			 ">
           <s:text name="passwordreset.emailsent.title" />
         </a>
-      
-        <a href="#" class="btn  btn-user btn-block scale" style="max-width:30%;font-size:0.8rem;background:#8d8;color:white;padding:0.2rem" 
+      </center></td style="width:50%">
+      <td><center>
+        <a href="#" class="btn  btn-user btn-block scale" style="max-width:70%;font-size:0.8rem;background:#8d8;color:white;padding:0.2rem" 
         			onclick="window.location.href='signup?origin=loginform';">
           <s:text name="signup.createAccount" />
         </a>
-      
+      </center></td>  
+     </tr></table>
       <table><tr>
       		<td><a onclick="window.location.href=URL_add_parameter(location.href, 'language', 'en');"><img src="${mxurl}public/commons/media/img/flags/UK.png" class="mx-lang-flag scale" /></a></td>
       		<td><a onclick="window.location.href=URL_add_parameter(location.href, 'language', 'fr');"><img src="${mxurl}public/commons/media/img/flags/France.png" class="mx-lang-flag scale"/></a></td>

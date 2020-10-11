@@ -438,3 +438,7 @@ height:40px;
 	background:#eee;
 	cursor:pointer;
 }
+.mx-public-form {
+	 background-color:#f5f5f5;
+	 background-image:none;
+}

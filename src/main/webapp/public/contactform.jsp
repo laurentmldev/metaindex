@@ -8,7 +8,7 @@
 
 <s:include value="generic_form/head.jsp" />
 
-<body class=""
+<body  class="mx-public-form"
 
 	onload="createForm();
 			if ('${param.email}' != '') { document.getElementById('email').style.display='none'; }			
@@ -45,21 +45,21 @@
 				  <option value="other"><s:text name="contactform.topic.other" /></option>
 				</select>
 				
-				<input id="email" type="email" class="form-control form-control-user"name="email" placeholder="email" 
-					style="margin:1rem;padding:0.6rem;width:60%;"
+				<input id="email" type="email" class="form-control form-control-user"name="email" placeholder="<s:text name="session.email" />" 
+					style="margin:1rem;padding:0.6rem;width:60%;background:#f5f5f5"
 						value="${param.email}"/>
                  </center>
                </div>
                <div class="form-group">
-                 <textarea id="msg" name='msg' class="form-control form-control-user" placeholder="Your text ..." 
-                 	rows="5" style="border-radius:5px;padding:0.4rem;"></textarea>
+                 <textarea id="msg" name='msg' class="form-control form-control-user" placeholder="<s:text name="contactform.yourtext" /> ..." 
+                 	rows="5" style="border-radius:5px;padding:0.4rem;background:f5f5f5"></textarea>
                </div>
                <div class="form-group" style="width:100%;">
                <center>
                	
 	  
-	  <input id="bigtext" type="text" class="form-control form-control-user"name="email" placeholder="" 
-					style="margin:1rem;padding:0.6rem;width:60%;"
+	  <input id="bigtext" type="text" class="form-control form-control-user" name="very_important" placeholder="" 
+					style="margin:1rem;padding:0.6rem;width:60%;background:#f5f5f5"
 						value="<s:text name="contactform.emptyme" />" />
 				
 				

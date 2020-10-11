@@ -8,7 +8,7 @@
 
 <s:include value="generic_form/head.jsp" />
 
-<body class=""
+<body  class="mx-public-form"
 onkeypress="if (event.which==13||event.keycode==13) {
 		document.getElementById('form').submit();
 	}"
