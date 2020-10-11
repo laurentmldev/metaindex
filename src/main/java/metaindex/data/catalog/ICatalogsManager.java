@@ -24,4 +24,5 @@ public interface ICatalogsManager extends ILoadableFromDb {
 	List<ICatalog> getCatalogsList();
 	List<ICatalog> getOwnedCatalogsList(Integer ownerUserId);
 	void removeCatalog(Integer catalogId);
+	public void loadFromDb(String catalogName) throws DataProcessException;
 }
