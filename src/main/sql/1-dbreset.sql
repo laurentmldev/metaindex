@@ -207,8 +207,7 @@ CREATE TABLE `guilanguages` (
 
 INSERT INTO `guilanguages` (`guilanguage_id`, `name`, `shortname`, `lastUpdate`) VALUES
 (1, 'English', 'EN', '2016-02-21 21:15:19'),
-(2, 'Français', 'FR', '2016-02-21 21:15:19'),
-(3, 'Español', 'SP', '2016-02-21 21:15:19');
+(2, 'Français', 'FR', '2016-02-21 21:15:19');
 
 -- --------------------------------------------------------
 
@@ -228,9 +227,9 @@ CREATE TABLE `guithemes` (
 --
 
 INSERT INTO `guithemes` (`guitheme_id`, `name`, `shortname`, `lastUpdate`) VALUES
-(1, 'Silver Stone', 'silver', '2016-02-21 21:15:19'),
-(2, 'Green Earth', 'greenearth', '2016-02-21 21:15:19'),
-(3, 'Deep Blue', 'deepblue', '2016-02-21 21:15:19');
+(1, 'Horace Silver', 'silver', '2016-02-21 21:15:19'),
+(2, 'On Green Dolphin Street', 'greenearth', '2016-02-21 21:15:19'),
+(3, 'Blue Bossa', 'deepblue', '2016-02-21 21:15:19');
 
 -- --------------------------------------------------------
 
