@@ -27,7 +27,7 @@
   <!-- Custom styles for this template-->
   <s:include value="/public/commons/style/style_global.jsp" />  							 
 
-	
+<s:include value="/public/commons/js/helpers.jsp" />
 	<script>
 	
 	var slideIndex = 0;
@@ -44,7 +44,7 @@
 	  x[slideIndex-1].style.display = "block";
 	  setTimeout(carousel, 5000); // Change image every 3 seconds
 	}
-	
+
 	</script>
 </head>
 
@@ -61,65 +61,71 @@
 	 <nav class="navbar navbar-expand navbar-light bg-white topbar static-top mx_welcome_navbar" 
 	 		style="background:#aaa;height:5rem">
 	 	
-	 	
-	 	
-			 	<div class="app-title" style="font-size:4vw;padding:0;margin:0;width:auto;">
-			 		<span class="scale-color-white">M</span><span class="app-title2 scale-color-white" style="color:white;">etainde</span><span class="scale-color-white">X</span>            		            			
+	 		 	
+            	<div>
+            		<table style="margin-left:1rem;width:10vw;"><tr>
+            		<td><a onclick="window.location.href=URL_add_parameter(location.href, 'language', 'en');"><img src="${mxurl}public/commons/media/img/flags/UK.png" class="mx-lang-flag scale" /></a></td>
+            		<td><a onclick="window.location.href=URL_add_parameter(location.href, 'language', 'fr');"><img src="${mxurl}public/commons/media/img/flags/France.png" class="mx-lang-flag scale"/></a></td>
+            		</tr></table>
             	</div>
-            
           
-        	 	   			 	
-	 	<div style="width:20vw"></div>
+        		<div class="app-title" style="font-size:4vw;padding:0;margin:0;width:60vw;text-align:center;">
+			 		<span class="scale-color-white">M</span><span class="app-title2 scale-color-white" style="color:white;">etainde</span><span class="scale-color-white">X</span>            		            			
+            	</div>	 	   			 	
 	 	
 	 	
 	 	
-	 	<a href="contactform?origin=welcome"  
-	 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" style="background:#bbb;border-color:white;margin-left:3rem;text-shadow:none;width:10vw"
-	 		>Contact Us</a>	 			 
-	 	<a href="signup?origin=welcome"  
-	 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" style="background:#6c6;border-color:white;margin-left:8rem;text-shadow:none;width:20vw"
-	 		>Create account for free</a>
-	 	<a href="loginform"  class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" style="background:#bbb;border-color:white;margin-left:0.3rem;text-shadow:none;width:10vw" >
-	 		Sign In</a>
-	 	
-	 	<div style="width:3vw"></div>		
+	 	<div><table><tr>
+		 	<td><a href="contactform?origin=welcome"  
+		 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" 
+		 		style="background:#bbb;border-color:white;text-shadow:none;width:10vw"
+		 		><s:text name="contactform.title" /></a>	 
+		 		</td><td>			 	 	
+		 	<a href="loginform"  class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" 
+		 		style="background:#bbb;border-color:white;margin-left:0.3rem;text-shadow:none;width:10vw" >
+		 		<s:text name="signin.signin" /></a>
+		 	</td>
+	 	</tr></table></div>
+	 			
 	 </nav>
 	 		
   <div class="container" style="width:100%;"  >
     
     <div class="row justify-content-center"  >
-     	 	<div style="text-align:left;padding-left:10rem;font-size:1rem;text-shadow:none;padding-top:1rem;">						
-				MetaindeX is an <b>OpenSource</b> Cataloging app thought for easy and powerful data management, especially for humanities studies and research
+    	<center>
+     	 	<div class="app-title" style="text-align:center;font-weight:bold;padding-bottom:1rem;font-size:2rem;text-shadow:none;">						
+				<s:text name="welcome.generalPresentation" />
 				</div>
-           <div class="" style="padding:0;margin-top:2rem;font-size:2.2vw;text-align:center;font-weight:bold;">
-			We're very excited to announce the very first official release!<br/>
-			<span style="font-size:1.6rem;">
-			We try to grow smoothly, so ask for your free account  
-			<a href="mailto:laurentmlcontact-metaindex@yahoo.fr?subject=Join Metaindex&body=Hi, I'd like to become a MetaindeX User! Could create an account for me and explain a bit more how to use it ? Thanks! :)"  
-	 		 style="color:#77d"
-	 		>Here</a></span> 
-			</div>
-			<div style="text-align:left;padding-left:7rem;font-size:1.3rem;text-shadow:none;padding-top:0;font-weight:bold">
-            	<ul class="app-title" style="text-align:left;padding-left:6rem;font-size:1.1rem;text-shadow:none;padding-top:0;">
-            		<li style="list-style-type:'\2713';padding-left:1rem;">Inject data from Excel or OpenRefine</li>
-					<li style="list-style-type:'\2713';padding-left:1rem;">Work offline thanks to our powerful CSV import/export module</li>
-					<li style="list-style-type:'\2713';padding-left:1rem;">Store your corpus associated files (images, documents,...)</li>
-					<li style="list-style-type:'\2713';padding-left:1rem;">Explore and filter with a fast and powerful query language</li>
-					<li style="list-style-type:'\2713';padding-left:1rem;">Build great statistical charts and find correlations</li>
-					<li style="list-style-type:'\2713';padding-left:1rem;">Export to Gephi and explore data connections and graphs</li>
-					<li style="list-style-type:'\2713';padding-left:1rem;">Think as a team and work together on the same contents</li>
+           
+			<div style="text-align:left;font-size:1rem;text-shadow:none;padding:0;margin:0;font-weight:bold">
+            	<ul class="app-title" style="text-align:left;padding-left:6rem;font-size:1rem;text-shadow:none;padding-top:0;">
+	            	<li style="list-style-type:'';margin-bottom:1rem;padding-bottom:0;text-align:center;">
+	            		<a href="signup?origin=welcome"  
+					 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" 
+					 		style="font-size:1.2rem;background:#6c6;border-color:white;margin-left:0.3rem;text-shadow:none;width:20vw"
+					 		><s:text name="signup.createYourAccount" /></a>
+	            	</li>
+            		<li style="list-style-type:'\2713';padding-left:1rem;"><s:text name="welcome.features.injectdata" /></li>
+					<li style="list-style-type:'\2713';padding-left:1rem;"><s:text name="welcome.feature.workOffline" /></li>
+					<li style="list-style-type:'\2713';padding-left:1rem;"><s:text name="welcome.features.storeCorpus" /></li>
+					<li style="list-style-type:'\2713';padding-left:1rem;"><s:text name="welcome.features.explore" /></li>
+					<li style="list-style-type:'\2713';padding-left:1rem;"><s:text name="welcome.features.statistics" /></li>			
+					<li style="list-style-type:'\2713';padding-left:1rem;"><s:text name="welcome.features.graphs" /></li>
+					<li style="list-style-type:'\2713';padding-left:1rem;"><s:text name="welcome.features.teamWork" /></li>
 				</ul>	
-				</div>       
-			<div style="margin-top:1rem;margin-bottom:3rem;">   <center>     	
+				</div>     
+			  
+			  	
+			<div style="margin-bottom:3rem;">       	
 	        	<img class="mx_welcome_screenshot w3-animate-opacity" src="public/commons/media/img/screenshots/stats.png">	        	
 	        	<img class="mx_welcome_screenshot w3-animate-opacity" src="public/commons/media/img/screenshots/cards1.png">				
-        	</center></div>
+        	</div>
         	
-	
+	   </center>
 	  
 	</div>
         	
-
+<%-- 
         <div style="padding-left:6rem;padding-right:6rem;" ><center>
     		 	
   			<div id="features-list"  >  
@@ -258,6 +264,8 @@
 	  		<i>Jakob H</i>.
 	  	</div>
 	  </center></div>
+	  
+	  --%>
  <footer class="sticky-footer bg-white">
         <div class="container my-auto">
           <div class="mx-copyright text-center my-auto">

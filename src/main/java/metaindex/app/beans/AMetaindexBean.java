@@ -48,6 +48,7 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 	
 	protected static final String CURRENT_COMMUNITY_SESSION_ATT="current_catalog";
 	protected static final String GUITHEME_SESSION_ATT="current_guitheme";
+	protected static final String GUILANGUAGE_SESSION_ATT="current_guilanguage";
 
 	private static final long serialVersionUID = 1084021485104376111L;
 	private Log log = LogFactory.getLog(AMetaindexBean.class);
@@ -58,6 +59,8 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 	@Override
   	public void prepare() throws Exception {
 		
+		
+		
 		try { 
 			
 			if (Globals.Get().getApplicationStatus()==APPLICATION_STATUS.STOPPED) {
@@ -66,9 +69,15 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 			}
 			
 			HttpServletRequest request=ServletActionContext.getRequest();
+			HttpSession session = request.getSession();
+			
+			// handle URL parameters if any
+			String languageShorname = request.getParameter("language");
+			if (request.getParameter("language")!=null) { setSessionLanguage(	request.getParameter("language"),request,ActionContext.getContext()); }
+			
 			
 	  		if (_userProfileData==null) {
-	  			HttpSession session = request.getSession();	  			
+	  				  			
 	  			
 	  			// if LOGGED-IN user : try to get user profile by name if already logged in
 	  			if (request.getUserPrincipal()!=null) {
@@ -126,7 +135,7 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 				// load all user data from DB
 				getCurrentUserProfile().loadFullUserData();				
 				
-				setSessionLanguage(	getCurrentUserProfile().getGuiLanguage().getShortname(),
+				setSessionLanguage(	getCurrentUserProfile().getGuiLanguage().getShortname(),request,
 									ActionContext.getContext());
 				
 				setSessionGuiTheme(getCurrentUserProfile().getGuiTheme().getShortname(),request);
@@ -135,7 +144,13 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 							request.getSession(false).setAttribute(CURRENT_COMMUNITY_SESSION_ATT, 
 							this.getCurrentUserProfile().getCurrentCatalog());
 				}
-			}			
+			} else {
+				if (session.getAttribute(GUILANGUAGE_SESSION_ATT)!=null) {
+					setSessionLanguage(	session.getAttribute(GUILANGUAGE_SESSION_ATT).toString(),
+										request,
+										ActionContext.getContext());
+				}
+			}
 			
 		} catch (Throwable e) {
   			Globals.Get().setApplicationStatus(APPLICATION_STATUS.FAILURE);
@@ -152,10 +167,10 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
   		request.getSession(false).setAttribute(GUITHEME_SESSION_ATT, themeShort);
   	}
   	
-  	protected void setSessionLanguage(String languageShort, ActionContext ctx) {
+  	protected void setSessionLanguage(String languageShort, HttpServletRequest request, ActionContext ctx) {
+  		request.getSession(false).setAttribute(GUILANGUAGE_SESSION_ATT, languageShort);
   		if (ctx != null) { 
-  			String curLangShortname = getCurrentUserProfile().getGuiLanguage().getShortname();
-  			ctx.setLocale( new Locale(curLangShortname));   			
+  			ctx.setLocale( new Locale(languageShort));   			
   		}
   	}
   	

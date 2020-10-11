@@ -243,7 +243,7 @@ height:40px;
 }
 
 .mx_welcome_screenshot {
-	max-width:40vw;
+	max-width:30vw;
 	height:auto;
 }
 .mx_welcome_card_ul li {
@@ -346,6 +346,16 @@ height:40px;
 	color:#338;
 	box-shadow:2px 2px 3px #eedca7;
 	/*background:orange;*/
+}
+
+.mx-lang-flag {
+	height:20px;
+	border-radius:20px;
+	margin:0.5rem;"
+}
+.mx-lang-flag:hover {
+	box-shadow:2px 2px 3px #888;
+	cursor:pointer;	
 }
 
 .mx-help-icon {

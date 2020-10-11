@@ -14,11 +14,12 @@ onkeypress="if (event.which==13||event.keycode==13) {
 	}"
 	onload="createForm();"
 	>
-	
+<s:include value="/public/commons/js/helpers.jsp" />
 <s:include value="generic_form/body.jsp" />
  
  <div id="contents" style="display:none" >
- 	<center><h3><s:text name="signin.enterCredentials" /></h3></center>
+ 	<center><h5><s:text name="signin.enterCredentials" /></h5></center>
+ 	
   <form id="form" class="user" action="${loginUrl}" method="post" >
           <input type="hidden"  name="${_csrf.parameterName}" value="${_csrf.token}"/>
  	<div class="form-group">
@@ -59,6 +60,10 @@ onkeypress="if (event.which==13||event.keycode==13) {
           <s:text name="signup.createAccount" />
         </a>
       
+      <table><tr>
+      		<td><a onclick="window.location.href=URL_add_parameter(location.href, 'language', 'en');"><img src="${mxurl}public/commons/media/img/flags/UK.png" class="mx-lang-flag scale" /></a></td>
+      		<td><a onclick="window.location.href=URL_add_parameter(location.href, 'language', 'fr');"><img src="${mxurl}public/commons/media/img/flags/France.png" class="mx-lang-flag scale"/></a></td>
+  		</tr></table>
 		<hr/>
         </center>
         
