@@ -9,11 +9,23 @@
 
 <script type="text/javascript">
 
+
+
 //showCsvPrevisu : build a line of the 'CSV-columns table'
-function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeFunc) {
+function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeFunc,isExcelFile) {
+	
+	let typeCol=document.createElement("div");
 	let colTermNodeSelect=document.createElement("select");
+	typeCol.append(colTermNodeSelect);
+	
+	let commentZone=document.createElement("div");
+	commentZone.style["font-size"]="0.8rem";
+	commentZone.classList.add("alert-warning");
+	typeCol.append(commentZone);
+	
 	colTermNodeSelect.onchange=function() { checkBox.checked=true; onColsSelectionsChangeFunc(); }
 	let found=false;
+	let alertExcelDates=false;
 	
 	let choiceIgnoreNode=document.createElement("option");
 	choiceIgnoreNode.value="ignore";
@@ -29,7 +41,7 @@ function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeF
 		choiceNode.innerHTML=mx_helpers_getTermName(MxGuiHeader.getCurCatalogDescr().terms[termName],MxGuiHeader.getCurCatalogDescr());
 		if (termName==csvColName) { 
 			choiceNode.selected=true;
-			found=true;
+			found=true;			
 		}		
 		colTermNodeSelect.appendChild(choiceNode);
 	}
@@ -50,7 +62,7 @@ function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeF
 			let datatypeStr=mx_helpers_FIELDS_DATATYPES[datatypeIdx];
 			let choiceNode=document.createElement("option");
 			choiceNode.value="__new__"+datatypeStr;
-			choiceNode.innerHTML="<s:text name="Items.uploadItems.newField" /> "+datatypeStr;
+			choiceNode.innerHTML="<s:text name="Items.uploadItems.newField" />: "+datatypeStr;
 			colTermNodeSelect.appendChild(choiceNode);
 			choiceNode.onclick=function() { checkBox.checked=true; onColsSelectionsChangeFunc(); }
 			
@@ -62,6 +74,18 @@ function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeF
 					onColsSelectionsChangeFunc();
 				}
 			}
+			
+			if (datatypeStr=="DATE") { 
+				let basicFunc=choiceNode.onclick;
+				choiceNode.onclick=function() {
+					basicFunc();
+					//alert('Using Dates in Excel file alert');
+					let warningExcelDateNode=document.createElement("div");
+					warningExcelDateNode.innerHTML="<s:text name="Items.uploadItems.warningDatesWithExcel" />";
+					commentZone.append(warningExcelDateNode);
+				}
+			}
+				
 		}
 	}
 	
@@ -71,11 +95,11 @@ function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeF
 	checkBox.getTermName=function() { return colTermNodeSelect.value; }
 	checkBox.classList.add("_csvColCheck_");	
 	
-	return colTermNodeSelect;
+	return typeCol;
 }
 
 // showCsvPrevisu : build CSV columns table
-function _buildCsvColumnsTable(CSVrows,nbEntriesNode,csvColsTable,onColsSelectionsChangeFunc) {
+function _buildCsvColumnsTable(CSVrows,nbEntriesNode,csvColsTable,onColsSelectionsChangeFunc,isExcelFile) {
  
    	let curLineNb=0;
    	let nbEntries=0;
@@ -147,7 +171,7 @@ function _buildCsvColumnsTable(CSVrows,nbEntriesNode,csvColsTable,onColsSelectio
    		// field type
    		let colType=document.createElement("td");
    		newRow.appendChild(colType);    		   				
-		colTypeNode=_getColTypeNode(curFieldStr,checkBox,badTermName,onColsSelectionsChangeFunc);
+		colTypeNode=_getColTypeNode(curFieldStr,checkBox,badTermName,onColsSelectionsChangeFunc,isExcelFile);
    		colType.appendChild(colTypeNode);
 	 	
 		csvColsTable.appendChild(newRow);
@@ -172,7 +196,7 @@ function _getSelectedCsvColumnsDef(csvColsTable) {
 	return csvColsTermsMap;
 }
 
-function _showCsvPrevisu(CSVrows,fileNameTxt) {
+function _showCsvPrevisu(CSVrows,fileNameTxt,isExcelFile) {
 	
 	let previsuNode=document.getElementById('datafile_contents_previsu_body').cloneNode(true);
 	let previsuNodeFooter=document.getElementById('datafile_contents_previsu_footer').cloneNode(true);
@@ -207,7 +231,7 @@ function _showCsvPrevisu(CSVrows,fileNameTxt) {
 
 	}
 	
-	_buildCsvColumnsTable(CSVrows,nbEntries,csvColsTable,onColsSelectionsChangeFunc)
+	_buildCsvColumnsTable(CSVrows,nbEntries,csvColsTable,onColsSelectionsChangeFunc,isExcelFile)
 	onColsSelectionsChangeFunc();
 	
 	// footer
@@ -231,7 +255,7 @@ function _handleCsvDataFile(fileHandle) {
 	reader.onload = function (file_contents) {
 		let fileName = fileHandle.files[0].name;
     	let CSVrows = file_contents.target.result.split("\n");
-    	_showCsvPrevisu(CSVrows,fileName);
+    	_showCsvPrevisu(CSVrows,fileName,false);
     }
     reader.readAsText(fileHandle.files[0]);
 }
@@ -268,13 +292,21 @@ function _handleExcelDataFile(fileHandle) {
 	reader.onload = function(e) {			
 		var data = e.target.result;
 		data = new Uint8Array(data);
-		var workbook = XLSX.read(data,{ type:'array'});		
+		var workbook = XLSX.read(data,
+				{
+			  type: 'array',
+			  cellDates: true,
+			  cellNF: false,
+			  cellText: false
+			}
+		);
+				
 		let result = [];
 		function handleSheetContents(sheetName,fileName) {
-			var csv = XLSX.utils.sheet_to_csv(workbook.Sheets[sheetName]);
+			var csv = XLSX.utils.sheet_to_csv(workbook.Sheets[sheetName], {raw:false});
 			if(csv.length){
 				//console.log(csv);		    	
-				_showCsvPrevisu(csv.split('\n'),fileName);
+				_showCsvPrevisu(csv.split('\n'),fileName,true);
 			}
 		}
 		if (workbook.SheetNames.length>1) {
