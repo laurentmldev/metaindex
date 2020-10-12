@@ -75,7 +75,7 @@ function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeF
 				}
 			}
 			
-			if (datatypeStr=="DATE") { 
+			if (datatypeStr=="DATE" && isExcelFile==true) { 
 				let basicFunc=choiceNode.onclick;
 				choiceNode.onclick=function() {
 					basicFunc();
@@ -303,10 +303,11 @@ function _handleExcelDataFile(fileHandle) {
 				
 		let result = [];
 		function handleSheetContents(sheetName,fileName) {
+			let isExcelFile=fileName.match(/\.xlsx?$/)!=null;
 			var csv = XLSX.utils.sheet_to_csv(workbook.Sheets[sheetName], {raw:false});
 			if(csv.length){
 				//console.log(csv);		    	
-				_showCsvPrevisu(csv.split('\n'),fileName,true);
+				_showCsvPrevisu(csv.split('\n'),fileName,isExcelFile);
 			}
 		}
 		if (workbook.SheetNames.length>1) {
