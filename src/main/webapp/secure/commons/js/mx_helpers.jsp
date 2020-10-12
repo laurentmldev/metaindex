@@ -6,6 +6,9 @@
  <script type="text/javascript" >
  
  
+ var SUPPORTED_BROWSER_NAME="Firefox";
+ var SUPPORTED_BROWSER_VERSION=81;
+ 
   function clearNodeChildren(node) {
 	var rangeItems = document.createRange();
 	rangeItems.selectNodeContents(node);
@@ -21,6 +24,32 @@
   	
   }
   
+  // from https://stackoverflow.com/questions/5916900/how-can-you-detect-the-version-of-a-browser
+	function getBrowserInfo()
+	{
+	    var N= navigator.appName, ua= navigator.userAgent, tem;
+	    var M= ua.match(/(opera|chrome|safari|firefox|msie|trident)\/?\s*(\.?\d+(\.\d+)*)/i);
+	    if(M && (tem= ua.match(/version\/([\.\d]+)/i))!= null) {M[2]=tem[1];}
+	    M= M? [M[1], M[2]]: [N, navigator.appVersion,'-?'];
+	    
+	    return { navigator:M[0], version:M[1] };	    
+	}
+	
+  function checkBrowser() {
+	  
+	  let browserInfo = getBrowserInfo();
+	  console.log("browserInfo.navigator="+browserInfo.navigator+" browserInfo.version="+browserInfo.version);
+	  if (browserInfo.navigator!=SUPPORTED_BROWSER_NAME || browserInfo.version<SUPPORTED_BROWSER_VERSION) {
+		  let text="<s:text name="global.warnBrowserVersion.1" /> "+browserInfo.navigator+" v"+browserInfo.version+"<br/><br/>"
+		  		+"<s:text name="global.warnBrowserVersion.2" /> "+SUPPORTED_BROWSER_NAME+" v"+SUPPORTED_BROWSER_VERSION+"<br/><br/>"
+		  		+"<s:text name="global.warnBrowserVersion.3" />";
+		  ;
+		  MxGuiHeader.showInfoModal("<s:text name="global.warnBrowserVersion.title" />",text);
+		  
+	  }
+	  
+	  return false;
+  }
   function bgTransit(node,transitbgcolor) {
 	  if (transitbgcolor==null) { transitbgcolor="yellow"; }
 	  let bgColor = $(node).css('background-color');      

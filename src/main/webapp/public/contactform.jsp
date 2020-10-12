@@ -34,9 +34,9 @@
           <input type="hidden"  name="${_csrf.parameterName}" value="${_csrf.token}"/>
           <input type="hidden"  name="origin" value="${param.origin}"/>
              	
-             
-               <div class="form-group">
-                <center>
+             <center>
+               <div class="form-group" style="width:100%">
+                
                 
                 
                	<select id="topics" name="topics" style="padding-left:1rem;padding-right:1rem;" value="info">
@@ -45,21 +45,22 @@
 				  <option value="other"><s:text name="contactform.topic.other" /></option>
 				</select>
 				
-				<input id="email" type="email" class="form-control form-control-user"name="email" placeholder="<s:text name="session.email" />" 
-					style="margin:1rem;padding:0.6rem;width:60%;background:#f5f5f5"
+				<input id="email" type="email" class="form-control form-control-user mx_welcome_input"name="email" placeholder="<s:text name="session.email" />" 
+					style="margin:1rem;padding:0.6rem;"
 						value="${param.email}"/>
-                 </center>
+                 
                </div>
                <div class="form-group">
-                 <textarea id="msg" name='msg' class="form-control form-control-user" placeholder="<s:text name="contactform.yourtext" /> ..." 
-                 	rows="5" style="border-radius:5px;padding:0.4rem;background:f5f5f5"></textarea>
+                 <textarea id="msg" name='msg' class="form-control form-control-user mx_welcome_input" placeholder="<s:text name="contactform.yourtext" /> ..." 
+                 	rows="5" style="padding:0.4rem;"></textarea>
                </div>
+               </center>
                <div class="form-group" style="width:100%;">
                <center>
                	
 	  
-	  <input id="bigtext" type="text" class="form-control form-control-user" name="very_important" placeholder="" 
-					style="margin:1rem;padding:0.6rem;width:60%;background:#f5f5f5"
+	  <input id="bigtext" type="text" class="form-control form-control-user mx_welcome_input" name="very_important" placeholder="" 
+					style="margin:1rem;padding:0.6rem;"
 						value="<s:text name="contactform.emptyme" />" />
 				
 				

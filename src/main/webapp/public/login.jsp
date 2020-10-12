@@ -29,18 +29,18 @@ onkeypress="if (event.which==13||event.keycode==13) {
 		<c:if test="${param.passwordreset != null}"><p class="alert-success p-2" ><s:text name="session.passwordreset" /></p></c:if>
 	</div>
 
-<center><h5><s:text name="signin.enterCredentials" /></h5></center>
- 
+<center>
+		<h5><s:text name="signin.enterCredentials" /></h5>
         <div class="form-group">
-	        <input id="email" type="email" name='username' style="background:#f5f5f5" class="form-control form-control-user" 
-	        	aria-describedby="emailHelp" placeholder="<s:text name="session.email" />">
+	        <input id="email" type="email" name='username' class="form-control form-control-user mx_welcome_input" 
+	        	aria-describedby="emailHelp" placeholder="<s:text name="Profile.email" />">
          </div>
         <div class="form-group">
-            <input type="password" name='password' style="background:#f5f5f5" class="form-control form-control-user" 
+            <input type="password" name='password' style="background:#f5f5f5" class="form-control form-control-user  mx_welcome_input" 
             	placeholder="<s:text name="session.password" />">
         </div>
        
-        <center>
+        
         <a href="#" class="btn btn-primary btn-user btn-block scale" 
         		style="max-width:50%;background:#57a;border:none;color:white;padding:0.8rem" 
         		 onclick="document.getElementById('form').submit();">

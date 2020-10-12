@@ -20,8 +20,9 @@ onkeypress="if (event.which==13||event.keycode==13) {
  <div id="contents" style="display:none" >
  	<center><h3><s:text name="signup.createYourAccount" /></h3></center>
 	<form id="form" class="user" action="${signupUrl}" method="post" >
+	
           <input type="hidden"  name="${_csrf.parameterName}" value="${_csrf.token}"/>
-             	<div class="form-group">
+            <div class="form-group">
               	<c:if test="${param.emailalreadyused != null}"> <p>This email is already used, please try another one.</p></c:if>
               	<c:if test="${param.newemailalreadywaiting != null}"> <p>This email is already waiting confirmation. 
               			Please check your 'spams' mail folder if you did not received yet the confirmation instructions.
@@ -32,13 +33,16 @@ onkeypress="if (event.which==13||event.keycode==13) {
 </div>
 
                <div class="form-group">
-                 <input type="email" name='email' class="form-control form-control-user" 
-                 	style="background:#f5f5f5" aria-describedby="emailHelp" placeholder="Email address" required>
+               <center>
+                 <input type="email" name='email' class="form-control form-control-user mx_welcome_input" 
+                 	aria-describedby="emailHelp" placeholder="<s:text name="Profile.email" />" required>
+                 	</center>
                </div>
-               <div class="form-group">
-                 <input type="text" name='nickname' class="form-control form-control-user" 
-                  style="background:#f5f5f5" placeholder="Nickname" required>
-               </div>
+               <div class="form-group"><center>
+                 <input type="text" name='nickname' class="form-control form-control-user mx_welcome_input" 
+                  	 placeholder="<s:text name="Profile.nickname" />" required>
+               </center></div>
+               
                <div class="form-group" style="width:100%;">
                <center>
                	
@@ -56,20 +60,25 @@ onkeypress="if (event.which==13||event.keycode==13) {
                	
                	 
                	
-	  
-	  <a href="#" class="btn btn-primary btn-user btn-block scale" style="max-width:30%;" 
-	  	onclick="if (document.getElementById('termsCheckbox').checked==false) { alert('<s:text name="signup.pleaseAcceptTerms"/>'); }
-	  	         else { document.getElementById('form').submit(); }">
-                   <s:text name="signup.create" />
-                 </a>
-                 
-       <a href="#" class="btn btn-primary btn-user btn-block scale" 
-        		style="max-width:30%;margin-top:1rem;padding:0.4rem;background:#999;border:none;" 
-	  	onclick="window.location.href='${param.origin}'">
-                   <s:text name="globals.goback" />
-                 </a>
-                 </center>
-               </div>
+	  <table style="width:100%"><tr>
+	  <td style="width:50%"><center>           
+	       <a href="#" class="btn btn-primary btn-user btn-block scale" 
+	        		style="max-width:40%;height:3rem;background:#999;border:none;padding:0;padding:0;padding-top:0.8rem;" 
+		  	onclick="window.location.href='${param.origin}'">
+	                   <s:text name="globals.goback" />
+	                 </a>
+      </center> </td>
+	  <td style="width:50%"><center>
+		  <a href="#" class="btn btn-primary btn-user btn-block scale" style="height:3rem;max-width:70%;padding:0;padding-top:0.8rem;background:#6c6;color:white;border:none" 
+		  	onclick="if (document.getElementById('termsCheckbox').checked==false) { alert('<s:text name="signup.pleaseAcceptTerms"/>'); }
+		  	         else { document.getElementById('form').submit(); }">
+	                   <s:text name="signup.create" />
+	                 </a>
+	     </center> </td>
+       </tr></table>
+	                 </center>
+	               </div>
+	   
        </form>
  </div>
  

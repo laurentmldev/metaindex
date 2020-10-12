@@ -15,7 +15,9 @@
   <s:include value="../commons/html/head-onload.jsp" />
 </head>
 
-<body id="page-top" onload="websocketsStartup();">
+
+<body id="page-top" 
+	onload="checkBrowser(); websocketsStartup();">
 
   <!-- Page Wrapper -->
   <div id="wrapper">
@@ -74,6 +76,8 @@
   MxGuiMain.hideTextEmptyCatalog=function() {
 	  document.getElementById('empty-placeholder').style.display="none";
   }
+  
+
   
 	</script>
 </body>

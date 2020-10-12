@@ -199,6 +199,11 @@ height:40px;
 	font-weight:bold;
 }
 
+.mx_welcome_input {
+	background:#f5f5f5;
+	border-radius:5px !important;
+	width:75%;
+}
 .mx_welcome_card_body {
 	font-size:0.9rem;
 	/*
