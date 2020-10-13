@@ -174,7 +174,14 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
   		}
   	}
   	
-
+  	protected String getSessionLanguage(HttpServletRequest request) {
+  		if (request.getSession(false)==null || request.getSession(false).getAttribute(GUILANGUAGE_SESSION_ATT)==null) {
+  			return UserProfileData.DEFAULT_LANG_ID.toString();
+  		}
+  		return request.getSession(false).getAttribute(GUILANGUAGE_SESSION_ATT).toString();
+  		
+  	}
+  	
 	public IUserProfileData getCurrentUserProfile() {
 		if (_userProfileData!=null && !_userProfileData.isLoggedIn()
 				&& ServletActionContext.getRequest()!=null 

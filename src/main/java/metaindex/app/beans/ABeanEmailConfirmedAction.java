@@ -26,6 +26,7 @@ import metaindex.app.Globals;
 import metaindex.app.Globals.APPLICATION_STATUS;
 import metaindex.app.beans.AMetaindexBean.BeanProcessResult;
 import metaindex.data.userprofile.IUserProfileData;
+import metaindex.data.userprofile.UserProfileData;
 import toolbox.exceptions.DataProcessException;
 
     

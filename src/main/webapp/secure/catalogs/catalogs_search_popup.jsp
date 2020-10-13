@@ -33,11 +33,11 @@ function updateCatalogsSearchList() {
 	headerRow.append(id);
 	
 	let name=document.createElement("th");
-	name.innerHTML="Name";
+	name.innerHTML="<s:text name="global.name" />";
 	headerRow.append(name);
 	
 	let desc=document.createElement("th");
-	desc.innerHTML="Description";
+	desc.innerHTML="<s:text name="global.Description" />";
 	headerRow.append(desc);
 	
 	let askForAccess=document.createElement("th");

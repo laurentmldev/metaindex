@@ -38,13 +38,33 @@
   function checkBrowser() {
 	  
 	  let browserInfo = getBrowserInfo();
+	  /*
+	  <a href="#" class="btn btn-primary btn-user btn-block scale" 
+  		style="max-width:40%;height:3rem;background:#999;border:none;padding:0;padding:0;padding-top:0.8rem;" 
+	onclick="window.location.href='${param.origin}'">
+             <s:text name="globals.goback" />
+           </a>
+           */
+      let footerContents=document.createElement("div");
+      footerContents.style.width="100%";
+      let center=document.createElement("center");
+      footerContents.append(center);
+      
+	  let footerOkButton=document.createElement("a");
+	  center.append(footerOkButton);
+	  footerOkButton.href="#";
+	  footerOkButton.classList="btn btn-primary btn-user btn-block scale";
+	  footerOkButton.onclick=function() { MxGuiHeader.hideInfoModal(); };
+	  footerOkButton.style["max-width"]="30%";
+	  footerOkButton.innerHTML="<s:text name="global.ok" />";
+	  
 	  console.log("browserInfo.navigator="+browserInfo.navigator+" browserInfo.version="+browserInfo.version);
 	  if (browserInfo.navigator!=SUPPORTED_BROWSER_NAME || browserInfo.version<SUPPORTED_BROWSER_VERSION) {
 		  let text="<s:text name="global.warnBrowserVersion.1" /> "+browserInfo.navigator+" v"+browserInfo.version+"<br/><br/>"
 		  		+"<s:text name="global.warnBrowserVersion.2" /> "+SUPPORTED_BROWSER_NAME+" v"+SUPPORTED_BROWSER_VERSION+"<br/><br/>"
 		  		+"<s:text name="global.warnBrowserVersion.3" />";
 		  ;
-		  MxGuiHeader.showInfoModal("<s:text name="global.warnBrowserVersion.title" />",text);
+		  MxGuiHeader.showInfoModal("<s:text name="global.warnBrowserVersion.title" />",text,footerContents);
 		  
 	  }
 	  

@@ -14,12 +14,16 @@ See full version of LICENSE in <https://fsf.org/>
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.struts2.ServletActionContext;
 
 import metaindex.app.Globals;
 import metaindex.app.Globals.APPLICATION_STATUS;
 import metaindex.data.userprofile.IUserProfileData;
+import metaindex.data.userprofile.UserProfileData;
 import toolbox.exceptions.DataProcessException;
 
     
@@ -66,23 +70,22 @@ public class BeanSignupSendEmail extends ABeanEmailConfirmedAction {
 			if (awaitingAccountExists(getEmail())) {
 				return "newemailalreadywaiting";
 			}
+			IUserProfileData tmpUser = new UserProfileData();
+			String languageShortname =getSessionLanguage(ServletActionContext.getRequest());
+			if (languageShortname!=null) {
+				Integer guiLanguageId = Globals.Get().getGuiLanguagesMgr().getGuiLanguage(languageShortname.toUpperCase()).getId();
+				tmpUser.setGuiLanguageId(guiLanguageId);
+			}
 			
 			AwaitingAccount newAccountWaitingForEmailConfirmation = new AwaitingAccount(getEmail());
 			newAccountWaitingForEmailConfirmation.properties.put("nickname",getNickname());
+			newAccountWaitingForEmailConfirmation.properties.put("guilanguageid",tmpUser.getGuiLanguageId());
 			addAwaitingAccount(newAccountWaitingForEmailConfirmation);
 			
 			String confirmationLink="https://metaindex.fr:8443/metaindex/signup_confirmemail?" 
 					+"email="+newAccountWaitingForEmailConfirmation.email
 					+"&requestId="  
 					+newAccountWaitingForEmailConfirmation.randomRequestId;
-			String msgBodyHtml="<center>"
-					+"<h3>Hello "+this.getNickname()+",</h3><br/><br/>"
-					+"Thank you very much for your registration to MetaindeX. We hope you'll enjoy using it very much.<br/><br/>"
-					+"Please click "
-					+"<a href=\""+confirmationLink+"\" >Here</a>"
-					+" to finalize your account and you'll be done yeehaaa!<br/><br/>"					
-					;
-			
 			try {
 
 				// try to limit hardcore overflow. 
@@ -90,8 +93,8 @@ public class BeanSignupSendEmail extends ABeanEmailConfirmedAction {
 				Thread.sleep(2000);
 				
 				Globals.Get().sendEmail(getEmail(), 
-					"Account Confirmation", 
-					msgBodyHtml);				
+						tmpUser.getText("signup.registration.email.title"),
+						tmpUser.getText("signup.registration.email.body",getNickname(),confirmationLink));				
 			
 			} catch (DataProcessException e) {
 				getAwaitingAccountsByEmailMap().remove(newAccountWaitingForEmailConfirmation.email);

@@ -85,7 +85,7 @@ public class BeanSignupConfirmEmail extends BeanSignupSendEmail {
 			IUserProfileData u = new UserProfileData();
 			u.setName(a.email);
 			u.setNickname(a.properties.get("nickname").toString());
-			
+			u.setGuiLanguageId((Integer)a.properties.get("guilanguageid"));
     		Boolean result = Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface()
     														.getCreateUserIntoSqlDbStmt(u).execute();	    		    		
     		if (!result) {

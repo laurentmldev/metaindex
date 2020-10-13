@@ -59,8 +59,8 @@ public class UserProfileData implements IUserProfileData
 	
 	private PropertiesConfiguration _curLanguageTranslations=null;
 	
-	public final static int DEFAULT_LANG_ID=1;
-	public final static int DEFAULT_GUITHEME_ID=1;
+	public final static Integer DEFAULT_LANG_ID=1;
+	public final static Integer DEFAULT_GUITHEME_ID=1;
 	
 
 	private String _remoteAddr="";			
@@ -414,7 +414,8 @@ public class UserProfileData implements IUserProfileData
 			return textid;
 		}
 		String propertyStr = _curLanguageTranslations.getString(textid);
-		if (propertyStr==null) { return textid+" "+params; }
+		if (propertyStr==null) { return textid; }
+		
 		// replacement of inner params if any
 		for (Integer i=0;i<params.length;i++) {
 			String curParamStr=params[i];

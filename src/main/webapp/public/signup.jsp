@@ -6,11 +6,12 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<s:include value="/public/commons/js/helpers.jsp" />
 <s:include value="generic_form/head.jsp" />
 
 <body  class="mx-public-form"
 onkeypress="if (event.which==13||event.keycode==13) {
-		document.getElementById('form').submit();
+	checkAndSendForm();
 	}"
 	onload="createForm();"
 	>
@@ -23,23 +24,21 @@ onkeypress="if (event.which==13||event.keycode==13) {
 	
           <input type="hidden"  name="${_csrf.parameterName}" value="${_csrf.token}"/>
             <div class="form-group">
-              	<c:if test="${param.emailalreadyused != null}"> <p>This email is already used, please try another one.</p></c:if>
-              	<c:if test="${param.newemailalreadywaiting != null}"> <p>This email is already waiting confirmation. 
-              			Please check your 'spams' mail folder if you did not received yet the confirmation instructions.
+              	<c:if test="${param.emailalreadyused != null}"> <p class="alert-danger"><s:text name="signup.emailNotAvailable" /></p></c:if>
+              	<c:if test="${param.newemailalreadywaiting != null}"> <p class="alert-warning"><s:text name="signup.emailAlreadyAwaiting" />
               			</p>
-              	</c:if>	                  	
-              	<c:if test="${param.error != null}"> <p>Woops sorry something wrong occured on server side, please retry in a few moments.</p></c:if>
+              	</c:if>	                  	              	
 	
 </div>
 
                <div class="form-group">
                <center>
-                 <input type="email" name='email' class="form-control form-control-user mx_welcome_input" 
+                 <input type="email" id="email" name='email' class="form-control form-control-user mx_welcome_input" 
                  	aria-describedby="emailHelp" placeholder="<s:text name="Profile.email" />" required>
                  	</center>
                </div>
                <div class="form-group"><center>
-                 <input type="text" name='nickname' class="form-control form-control-user mx_welcome_input" 
+                 <input type="text" id="nickname" name='nickname' class="form-control form-control-user mx_welcome_input" 
                   	 placeholder="<s:text name="Profile.nickname" />" required>
                </center></div>
                
@@ -70,12 +69,18 @@ onkeypress="if (event.which==13||event.keycode==13) {
       </center> </td>
 	  <td style="width:50%"><center>
 		  <a href="#" class="btn btn-primary btn-user btn-block scale" style="height:3rem;max-width:70%;padding:0;padding-top:0.8rem;background:#6c6;color:white;border:none" 
-		  	onclick="if (document.getElementById('termsCheckbox').checked==false) { alert('<s:text name="signup.pleaseAcceptTerms"/>'); }
-		  	         else { document.getElementById('form').submit(); }">
+		  	onclick="checkAndSendForm();">
 	                   <s:text name="signup.create" />
 	                 </a>
 	     </center> </td>
-       </tr></table>
+       </tr>
+       <tr><td colspan=2><center>
+       	 <table><tr>
+      		<td><a onclick="window.location.href=URL_add_parameter(location.href, 'language', 'en');"><img src="${mxurl}public/commons/media/img/flags/UK.png" class="mx-lang-flag scale" /></a></td>
+      		<td><a onclick="window.location.href=URL_add_parameter(location.href, 'language', 'fr');"><img src="${mxurl}public/commons/media/img/flags/France.png" class="mx-lang-flag scale"/></a></td>
+  		</tr></table></center></td>
+       </tr>
+       </table>
 	                 </center>
 	               </div>
 	   
@@ -84,6 +89,13 @@ onkeypress="if (event.which==13||event.keycode==13) {
  
  
  <script type="text/javascript">
+ 
+ function checkAndSendForm() {
+	 if (document.getElementById('email').value.length==0) { alert('<s:text name="signup.pleaseGiveEmail"/>'); document.getElementById('email').focus(); }
+	 else if (document.getElementById('nickname').value.length==0) { alert('<s:text name="signup.pleaseGiveNickname"/>'); document.getElementById('nickname').focus(); }
+     else if (document.getElementById('termsCheckbox').checked==false) { alert('<s:text name="signup.pleaseAcceptTerms"/>');document.getElementById('termsCheckbox').focus(); }
+     else { document.getElementById('form').submit(); }
+ }
  function createForm() {
 		let formInsertSpot=document.getElementById('contentsInsertSpot');
 		let formContents=document.getElementById('contents');

@@ -82,22 +82,20 @@ onkeypress="if (event.which==13||event.keycode==13) {
 					</div>
 					
                     
-                    <div class="form-group">
+                    <div class="form-group"><center>
                       <input id="pwd1" type="password" name='clearPassword' class="form-control form-control-user mx_welcome_input" 
                       		placeholder="<s:text name="session.password" />"
                       		 title="<s:text name="passwordreset.complexity" />"
                       		 onkeyup="checkForm();"
-                      		 style="background:#f5f5f5"
                       		 >
-                    </div>
-                    <div class="form-group">
+                    </center></div>
+                    <div class="form-group"><center>
                       <input id="pwd2" type="password" name='password_confirm' class="form-control form-control-user mx_welcome_input" 
                       		placeholder="<s:text name="session.password.confirm" />"
                       		title="<s:text name="passwordreset.matching" />" 
                       		onkeyup="checkForm();"
-                      		style="background:#f5f5f5"
                       		>
-                    </div>
+                    </center></div>
                     
                     <center>
                     <a href="#" class="btn btn-primary btn-user btn-block scale" style="max-width:30%;" 
