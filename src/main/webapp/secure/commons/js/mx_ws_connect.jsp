@@ -29,7 +29,34 @@ function handleMxWsHeartbeatEvent(event) {
 		// do nothing special
 	}
 } 
-
+var upstreamLight=document.getElementById("upstream_light");
+var upstreamTimer=null;
+var downstreamLight=document.getElementById("downstream_light");
+var downstreamTimer=null;
+var BLINK_PERIOD_MS=100;
+var BLACK_PERIOD_MS=10;
+function _blink(light,timer) {
+	if (timer!=null) { clearInterval(timer); }
+	light.style.display='none';
+	timer = setInterval(function() { 
+		clearInterval(timer);
+		light.style.display='block';
+		timer= setInterval(function() { 
+			clearInterval(timer);
+			light.style.display='none';			 
+		}, BLINK_PERIOD_MS);		 
+	}, BLACK_PERIOD_MS);
+}
+function handleNetworEvent(direction) {
+	if (downstreamLight==null) { downstreamLight=document.getElementById("downstream_light"); }
+	if (upstreamLight==null) { upstreamLight=document.getElementById("upstream_light"); }
+	
+	if (direction==MX_DOWNSTREAM_MSG) {
+		_blink(downstreamLight,downstreamTimer);
+	} else {
+		_blink(upstreamLight,upstreamTimer);
+	} 
+}
 function handleMxSessionStatusEvent(sessionStatus) {
 	if (sessionStatus=="EXPIRED") {
 		footer_showAlert(WARNING, "<s:text name="session.expired" />",null,999999999);
@@ -46,6 +73,7 @@ function mx_ws_connect(mxHost,mxApiConnectionParams, onConnectFunc) {
 	// from metaindex.js	
 	MxApi = new MetaindexJSAPI(mxHost,mxApiConnectionParams);
 	
+	MxApi.subscribeToNetworkEvents(handleNetworEvent);
 	MxApi.subscribeToSelectedCatalog(handleMxWsSelectedCatalog);
 	MxApi.subscribeToCreatedCatalog(handleMxWsCreatedCatalog);
 	MxApi.subscribeToDeletedTerm(handleMxWsDeletedTerm);

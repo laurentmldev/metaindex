@@ -10,7 +10,7 @@
       <!-- Sidebar - Brand -->
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="Catalogs">
               
-        <div id="leftbar.uptitle" class="sidebar-brand-text mx-3" style="padding-bottom:0;padding-top:1rem;">MetaindeX</div>
+        <div id="leftbar.uptitle" class="sidebar-brand-text mx-3" style="padding-bottom:0;padding-top:1rem;">MetaindeX</div>        
       </a>
 
      
@@ -41,8 +41,17 @@
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
       </div>
 
-	<div class="sidebar-brand-text counter-text app-title " style="text-align:center;width:100%;color:#ccc;font-size:0.8rem;padding:0;margin:0">MetaindeX</div>
+	<div class="sidebar-brand-text counter-text app-title " 
+		style="text-align:center;width:100%;color:#ccc;font-size:0.8rem;padding:0;margin:0;line-height:0.5;">
+		MetaindeX
+		<div style="width:100%"><center> <table><tr>
+        	<td style="width:10px"><span id="upstream_light" style="display:none;color:#0f0;font-size:2rem;margin:0;padding:0;text-shadow:none;">&middot;</span></td>
+        	<td style="width:10px"><span id="downstream_light" style="display:none;color:#f00;font-size:2rem;margin:0;padding:0;text-shadow:none;">&middot;</span></td>
+        </tr></table></center></div>
+	</div>
+	
     </ul>
+   
     <!-- End of Sidebar -->
     
      <div id="progressbar-template" class="progress mx-progress " style="display:none; margin:1em;">

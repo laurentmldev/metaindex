@@ -25,6 +25,9 @@ var MX_WS_UPLOAD_FILE_MAX_LINES = 500;
 var MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE = 10000;
 var MX_WS_UPLOAD_FILE_SEND_PERIOD_MS = 5;
 
+var MX_DOWNSTREAM_MSG="down";
+var MX_UPSTREAM_MSG="up";
+
 if (!window.WebSocket) { alert('ERROR: WebSockets are not supported in this browser. This feature is required to run Metaindex Javascript API'); }
 
 if (window.Prototype) {
@@ -50,6 +53,10 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	myself.MX_WS_ENDPOINT="/wsmx";
 	myself.MX_WS_APP_PREFIX="/wsmxapp";	
 	myself._callback_onConnect=null;
+	
+	// invoked each time a msg is sent or received
+	// eventType: MX_DOWNSTREAM_MSG|MX_UPSTREAM_MSG
+	myself._callback_NetworkEvent=function(eventType) {};
 	
 	// Set user preferences
 	myself._callback_SetUserPreferences=null;	
@@ -279,7 +286,12 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		}
 		myself._stompClient.connect(header, connectionCallback);
 	}
-	
+
+	//------ network msg callaback
+	// function takes one argument : MX_DOWNSTREAM_MSG|MX_UPSTREAM_MSG
+	this.subscribeToNetworkEvents=function(callback_func) {
+		myself._callback_NetworkEvent=callback_func;
+	}
 //------- Messages from Server --------	
 	this.subscribeToServerGuiMessages=function(callback_func,debug) {
 		debug=debug||false;
@@ -288,6 +300,8 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	}
 	
 	this._handleGuiMsgFromServer= function (mxServerMsg) {
+		
+		myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 		var parsedMsg = JSON.parse(mxServerMsg.body)
 		
 		if (myself._callback_ServerMessages_debug==true) {
@@ -315,6 +329,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	
 	
 	this._handleServerHeartbeat= function (mxServerHeartbeatMsg) {
+		myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 		lastHeartbeatDate=new Date();		
 		var parsedMsg = JSON.parse(mxServerHeartbeatMsg.body);
 		if (parsedMsg.applicationStatus!=curApplicationStatus) {
@@ -357,6 +372,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	
 	
 	this._handleServerSessionStatus= function (mxServerSessionStatusMsg) {
+		myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 		var parsedMsg = JSON.parse(mxServerSessionStatusMsg.body);
 			
 		if (myself._callback_ServerHeartbeatEvent_debug==true) {
@@ -378,6 +394,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	}
 	
 	this._handleRegisterAckMsg= function (mxRegisterAckMsg) {
+		myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 		var parsedMsg = JSON.parse(mxRegisterAckMsg.body)
 		if (parsedMsg.registrationStatus==true) {
 			console.log("Metaindex API opened!");
@@ -410,7 +427,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		if (myself._callback_SetUserPreferences_debug==true) {
 			console.log("MxAPI Requesting Set User Preferences");
 		}
-		
+		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/set_user_preferences", {}, 
 								 JSON.stringify({"requestId" : curRequestId,
 									 			 "userId":dataObj.userId,
@@ -421,6 +438,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	}
 	
 	this._handleSetUserPreferencesMsg= function (responseMsg) {
+		myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 		var decodedData=responseMsg.body;
 		var parsedMsg = JSON.parse(decodedData);
 		
@@ -464,6 +482,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			console.log("MxAPI Requesting Set User Catalog Customization");
 		}
 		
+		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/set_user_catalogcusto", {}, 
 								 JSON.stringify({"requestId" : curRequestId,
 									 			 "userId":dataObj.userId,
@@ -473,6 +492,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	}
 	
 	this._handleSetUserCatalogCustoMsg = function (responseMsg) {
+		myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 		var decodedData=responseMsg.body;
 		var parsedMsg = JSON.parse(decodedData);
 		
@@ -512,6 +532,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 				console.log("MxAPI Requesting Get User Profiles ");
 			}
 			
+			myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 			myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/users_profiles", {}, 
 									 JSON.stringify({"requestId" : curRequestId,
 										 			 "usersIds":dataObj.usersIds,
@@ -519,6 +540,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		}
 		
 		this._handleGetUsersProfilesMsg = function (responseMsg) {
+			myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 			var decodedData=responseMsg.body;
 			var parsedMsg = JSON.parse(decodedData);
 			
@@ -557,7 +579,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			}	
 			
 			this._handleCatalogContentsChangedMsg= function (mxCatalogContentsChangedMsg) {
-				
+				myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 				var parsedMsg = JSON.parse(mxCatalogContentsChangedMsg.body);
 				if (myself._callback_CatalogContentsChanged_debug==true) {
 					console.log("MxAPI Received [CatalogContentsChanged]\n"+mxCatalogContentsChangedMsg.body);
@@ -597,7 +619,9 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		myself.requestCsvDownloadsCallbacks.push(dataObj);
 		dataObj.requestId=curRequestId;
 		
+		
     	//console.log('### Sending download request : '+JSON.stringify(jsonData));
+		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
     	myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/download_items_csv_request", {},JSON.stringify(dataObj));		
 
 	}
@@ -609,7 +633,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	}
 	
 	this._handleDownloadItemsCsvAnswer=function(msg) {
-		
+		myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 		var parsedMsg = JSON.parse(msg.body);
 		
 		if (myself._callback_DownloadCsv_debug==true) {
@@ -699,6 +723,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
     		jsonData.csvColsList.push(stripStr(curField));
     	}
     	//console.log('### Sending file upload request : '+JSON.stringify(jsonData));
+    	myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
     	myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/upload_items_csv_request", {},JSON.stringify(jsonData));		
  		
     	jsonData.csvRows=csvRows;
@@ -708,6 +733,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	
 	this._handleUploadItemsFromCsvAnswer=function(msg) {
 		
+    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 		var parsedMsg = JSON.parse(msg.body);
 		
 		if (myself._callback_UploadCsv_debug==true) {
@@ -752,6 +778,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 					 "totalNbLines" : csvRows.length,
     				};
     			
+    			myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
     			myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/upload_filter_file_contents", {},JSON.stringify(jsonData));
     			curLinesWsBuffer=[];
     		}
@@ -795,6 +822,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			dataObj.requestId=curRequestId;
 			
 	    	//console.log('### Sending download request : '+JSON.stringify(jsonData));
+			myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 	    	myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/download_items_graph_request", {},JSON.stringify(dataObj));		
 
 		}
@@ -807,6 +835,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		
 		this._handleDownloadItemsGraphAnswer=function(msg) {
 			
+	    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 			var parsedMsg = JSON.parse(msg.body);
 			
 			if (myself._callback_DownloadGragh_debug==true) {
@@ -852,7 +881,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			if (myself._callback_Catalogs_debug==true) {
 				console.log("MxAPI Requesting Catalogs "+dataObj.catalogId);
 			}
-			
+			myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 			myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/get_catalogs", {}, 
 									 JSON.stringify({"requestId" : curRequestId,
 										 			 "catalogId":dataObj.catalogId								 
@@ -860,6 +889,8 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		}
 
 		this._handleCatalogsMsg= function (mxCatalogsMsg) {
+			
+	    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 			var decodedData=uncompressBase64(mxCatalogsMsg.body);
 			var parsedMsg = JSON.parse(decodedData);
 			
@@ -887,11 +918,14 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		if (myself._callback_SelectedCatalog_debug==true) {
 			console.log("MxAPI Requesting Select Catalog "+catalogId+" [Catalogs]");
 		}
+		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/select_catalog", {}, 
 								 JSON.stringify({"catalogId":catalogId }));
 	}
 	
 	this._handleSelectedCatalogMsg= function (mxSelectedCatalogMsg) {
+		
+    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 		var decodedData=mxSelectedCatalogMsg.body;
 		var parsedMsg = JSON.parse(decodedData);
 		
@@ -921,7 +955,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 				if (myself._callback_GetCatalogUsers_debug==true) {
 					console.log("MxAPI Requesting Catalog Users "+dataObj.catalogId);
 				}
-				
+				myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 				myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/get_catalog_users", {}, 
 										 JSON.stringify({"requestId" : curRequestId,
 											 			 "catalogId":dataObj.catalogId								 
@@ -929,6 +963,8 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			}
 			
 			this._handleGetCatalogUsersMsg= function (mxCatalogUsersMsg) {
+				
+		    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 				var decodedData=mxCatalogUsersMsg.body;
 				var parsedMsg = JSON.parse(decodedData);
 				
@@ -970,6 +1006,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 					console.log("MxAPI Requesting Set Catalog User Access "+dataObj.catalogId);
 				}
 				
+				myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 				myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/set_catalog_user_access", {}, 
 										 JSON.stringify({"requestId" : curRequestId,
 											 			 "catalogId":dataObj.catalogId,
@@ -979,6 +1016,8 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			}
 			
 			this._handleSetCatalogUserAccessMsg= function (mxCatalogUsersMsg) {
+				
+		    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 				var decodedData=mxCatalogUsersMsg.body;
 				var parsedMsg = JSON.parse(decodedData);
 				
@@ -1020,6 +1059,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			}
 			
 			//console.log("sending customization requestId="+curRequestId);
+			myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 			myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/delete_perspective", {}, 
 									 JSON.stringify({"requestId" : curRequestId,
 										 			 "perspectiveId":dataObj.perspectiveId,
@@ -1028,6 +1068,8 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		}
 		
 		this._handleDeletedPerspectiveMsg= function (mxDeletedPerspectiveMsg) {
+			
+	    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 			var decodedData=mxDeletedPerspectiveMsg.body;
 			var parsedMsg = JSON.parse(decodedData);
 			
@@ -1092,6 +1134,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 				
 		//console.log(jsonCopy);
 		//console.log("sending customization requestId="+curRequestId);
+		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/update_perspective", {}, 
 								 JSON.stringify({"requestId" : curRequestId,
 									 			 "perspectiveId":dataObj.perspectiveId,
@@ -1101,6 +1144,8 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	}
 	
 	this._handleUpdatedPerspectiveMsg= function (mxUpdatedPerspectiveMsg) {
+		
+    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 		var decodedData=mxUpdatedPerspectiveMsg.body;
 		var parsedMsg = JSON.parse(decodedData);
 		
@@ -1147,6 +1192,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 				console.log("MxAPI Requesting Customize Catalog "+catalogId+" [Catalogs]");
 			}
 			
+			myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 			myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/customize_catalog", {}, 
 									 JSON.stringify({"requestId" : curRequestId,
 										 			 "id":dataObj.catalogId,
@@ -1160,6 +1206,8 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		}
 		
 		this._handleCustomizedCatalogMsg= function (mxCustomizedCatalogMsg) {
+			
+	    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 			var decodedData=mxCustomizedCatalogMsg.body;
 			var parsedMsg = JSON.parse(decodedData);
 			
@@ -1194,11 +1242,14 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			if (myself._callback_CreatedCatalog_debug==true) {
 				console.log("MxAPI Requesting Create Catalog "+catalogName+" [Catalogs]");
 			}
+			myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 			myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/create_catalog", {}, 
 									 JSON.stringify({"catalogName":catalogName }));
 		}
 		
 		this._handleCreatedCatalogMsg= function (mxCreatedCatalogMsg) {
+			
+	    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 			var decodedData=mxCreatedCatalogMsg.body;
 			var parsedMsg = JSON.parse(decodedData);
 			
@@ -1230,12 +1281,15 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			var jsonStr = JSON.stringify({ 	"requestId" : curRequestId,
 											"catalogId" : dataObj.catalogId });
 			//console.log("sending new value : "+metadataStrValue);
+			myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 			myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/delete_catalog", {}, jsonStr);
 		}
 		
 		// each field update request is given with a callback to be executed
 		// in case of success or failure.
 		this._handleDeletedCatalogMsg= function(deleteCatalogResponseMsg) {
+			
+	    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 			var parsedMsg = JSON.parse(deleteCatalogResponseMsg.body);
 			let requestId=parsedMsg.requestId;
 			let requestObj=myself.requestDeleteCatalogCallbacks[requestId];
@@ -1270,12 +1324,15 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		var jsonStr = JSON.stringify({ 	"requestId" : curRequestId,
 										"catalogId" : dataObj.catalogId });
 		//console.log("sending new value : "+metadataStrValue);
+		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/join_catalog", {}, jsonStr);
 	}
 	
 	// each field update request is given with a callback to be executed
 	// in case of success or failure.
 	this._handleJoinCatalogMsg= function(joinCatalogResponseMsg) {
+		
+    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 		var parsedMsg = JSON.parse(joinCatalogResponseMsg.body);
 		let requestId=parsedMsg.requestId;
 		let requestObj=myself.requestJoinCatalogCallbacks[requestId];
@@ -1303,10 +1360,13 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			if (myself._callback_CatalogSelectedItem_debug==true) {
 				console.log("MxAPI Sending [SelectItem]\n"+jsonStr);
 			}
+			myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 			myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/select_communitItemnt", {}, jsonStr);
 		}
 		
 		this._handleCatalogSelectedItemMsg= function (mxCatalogSelectedItemsMsg) {
+			
+	    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 			var parsedMsg = JSON.parse(mxCatalogSelectedItemsMsg.body);
 			if (myself._callback_CatalogSelectedItem_debug==true) {
 				console.log("MxAPI Received [ItemSelected]\n"+mxCatalogSelectedItemsMsg.body);
@@ -1354,12 +1414,14 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 					"sortByFieldName":dataObj.sortByFieldName,
 					"reverseSortOrder":dataObj.reverseSortOrder};
 		//console.log(requestObj);
+		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/get_catalog_items", {}, 
 						JSON.stringify(requestObj));
 	}	
 	
 	this._handleCatalogItemsMsg= function (mxCatalogItemsMsg) {
-		
+				
+    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 		// Items are GZIP and Base64 encoded
 		let base64Msg = mxCatalogItemsMsg.body;
 		let bytesGzip = window.atob(base64Msg);
@@ -1415,12 +1477,15 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 										"fieldName" : dataObj.fieldName,
 										"fieldValue" : dataObj.fieldValue});
 		//console.log("sending new value : "+jsonStr);
+		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/update_field_value", {}, jsonStr);
 	}
 	
 	// each field update request is given with a callback to be executed
 	// in case of success or failure.
 	this._handleUpdateFieldResponseMsg= function(updateFieldResponseMsg) {
+		
+    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 		var parsedMsg = JSON.parse(updateFieldResponseMsg.body);
 		let requestId=parsedMsg.requestId;
 		let requestObj=myself.requestFieldValueUpdateCallbacks[requestId];
@@ -1468,12 +1533,15 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		
 		
 		//console.log("requesting term-update "+curRequestId+" : "+dataObj.termName+":"+dataObj.termType);
+		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/update_term", {}, jsonStr);
 	}
 	
 	// each field update request is given with a callback to be executed
 	// in case of success or failure.
 	this._handleUpdateTermResponseMsg= function(updateFieldResponseMsg) {
+		
+    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 		var parsedMsg = JSON.parse(updateFieldResponseMsg.body);
 		let requestId=parsedMsg.requestId;
 		
@@ -1504,6 +1572,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			console.log("MxAPI Sending Request Deleted Term : "+termName);
 		}
 		
+		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/delete_term", {}, 
 				JSON.stringify({ 	"catalogId" : catalogId,
 									"termName" : termName
@@ -1511,6 +1580,8 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	}
 
 	this._handleDeleteTermResponseMsg= function(deleteTermResponseMsg) {
+		
+    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 		var parsedMsg = JSON.parse(deleteTermResponseMsg.body);
 		
 		if (myself._callback_DeleteTerm_debug==true) {
@@ -1547,6 +1618,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			console.log("MxAPI Sending Request Create Term : "+dataObjtermName);
 		}
 		
+		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/create_term", {}, 
 				JSON.stringify({ 	"requestId" : curRequestId,
 									"catalogId" : dataObj.catalogId,
@@ -1557,6 +1629,8 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	}
 
 	this._handleCreateTermResponseMsg= function(createTermResponseMsg) {
+		
+    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 		var parsedMsg = JSON.parse(createTermResponseMsg.body);
 		let requestId=parsedMsg.requestId;
 		
@@ -1594,6 +1668,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		if (myself._callback_CreatedFilter_debug==true) {
 			console.log("MxAPI Requesting Create Filter "+filterName+"='"+queryString+"'");
 		}
+		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/create_filter", {}, 
 								 JSON.stringify({"requestId":curRequestId,
 									 			 "filterName":dataObj.filterName,
@@ -1601,6 +1676,8 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	}
 	
 	this._handleCreatedFilterMsg= function (mxCreatedFilterMsg) {
+		
+    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 		var parsedMsg = JSON.parse(mxCreatedFilterMsg.body);
 		let requestId=parsedMsg.requestId;
 		
@@ -1627,12 +1704,15 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		if (myself._callback_UpdatedFilter_debug==true) {
 			console.log("MxAPI Requesting Update Filter "+filterName+"='"+queryString+"'");
 		}
+		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/update_filter", {}, 
 								 JSON.stringify({"filterName":filterName,
 									 			 "query":queryString}));
 	}
 	
 	this._handleUpdatedFilterMsg= function (mxUpdatedFilterMsg) {
+		
+    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 		var decodedData=mxUpdatedFilterMsg.body;
 		var parsedMsg = JSON.parse(decodedData);
 		
@@ -1654,11 +1734,14 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		if (myself._callback_CreatedFilter_debug==true) {
 			console.log("MxAPI Requesting Delete Filter "+filterName);
 		}
+		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/delete_filter", {}, 
 								 JSON.stringify({"filterName":filterName}));
 	}
 		
 	this._handleDeletedFilterMsg= function (mxDeletedFilterMsg) {
+		
+    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 		var decodedData=mxDeletedFilterMsg.body;
 		var parsedMsg = JSON.parse(decodedData);
 		
@@ -1685,8 +1768,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			
 			var curRequestId=myself.requestCreateItemCallbacks.length;
 			myself.requestCreateItemCallbacks.push(dataObj);
-			
-			
+						
 			
 			// preparing / cleaning fieldsMap
 			// removing extra spaces, coming sometimes from copy/paste operations
@@ -1706,6 +1788,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 				
 				dataObj.fieldsMap[fieldName]=fieldVal.trim();
 			}
+			myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 			var jsonStr = JSON.stringify({ 	"requestId" : curRequestId,
 											"catalogId" : dataObj.catalogId,			
 											"fieldsMap" : dataObj.fieldsMap											
@@ -1719,6 +1802,8 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		// each field update request is given with a callback to be executed
 		// in case of success or failure.
 		this._handleCreatedItemResponseMsg= function(createdItemResponseMsg) {
+			
+	    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 			var parsedMsg = JSON.parse(createdItemResponseMsg.body);
 			let requestId=parsedMsg.requestId;
 			
@@ -1749,7 +1834,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			let jsonData = { 
 					 "itemsIds" : itemsIdsArray,				 
 					};
-				
+			myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 			myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/delete_items", {}, JSON.stringify(jsonData));
 		}
 		
@@ -1761,6 +1846,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			if (myself._callback_CatalogItems_debug==true) {
 				console.log("MxAPI Requesting [Deleting Items] : query='"+query+"' filters='"+filtersIds+"'");
 			}
+			myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 			myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/delete_items_by_query", {}, 
 							JSON.stringify({"filtersNames":filtersNames,
 											"query":query
@@ -1794,12 +1880,15 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			
 			
 			//console.log("requesting term-update "+curRequestId+" : "+dataObj.termName+":"+dataObj.termType);
+			myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 			myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/update_catalog_lexic", {}, jsonStr);
 		}
 		
 		// each field update request is given with a callback to be executed
 		// in case of success or failure.
 		this._handleSetCatalogLexicResponseMsg= function(responseMsg) {
+			
+	    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 			var parsedMsg = JSON.parse(responseMsg.body);
 			let requestId=parsedMsg.requestId;
 			
@@ -1843,12 +1932,15 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 				
 				
 				//console.log("requesting term-update "+curRequestId+" : "+dataObj.termName+":"+dataObj.termType);
+				myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 				myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/update_term_lexic", {}, jsonStr);
 			}
 			
 			// each field update request is given with a callback to be executed
 			// in case of success or failure.
 			this._handleSetTermLexicResponseMsg= function(responseMsg) {
+				
+		    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 				var parsedMsg = JSON.parse(responseMsg.body);
 				let requestId=parsedMsg.requestId;
 				
@@ -1893,6 +1985,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			fileDescriptions.push(fileDesc);			
 		}
 		
+		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 		var jsonStr = JSON.stringify({ 	"requestId" : curRequestId,
 										"catalogId" : dataObj.catalogId,			
 										"fileDescriptions" : fileDescriptions											
@@ -1909,6 +2002,8 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	// each field update request is given with a callback to be executed
 	// in case of success or failure.
 	this._handleUploadFilesAnswer= function(upoloadFilesAnswerMsg) {
+		
+    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 		var parsedMsg = JSON.parse(upoloadFilesAnswerMsg.body);
 		let requestId=parsedMsg.requestId;
 		
@@ -1956,6 +2051,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 				    jsonData={ clientFileId : fileObj.id, processingTaskId:requestObj.processingTaskId, rawContents: sendingBuffer, sequenceNumber:curSequenceNumber };
 			    	//console.log('### Sending file upload contents request : '+JSON.stringify(jsonData));
 			    	//console.log("	### Sending file upload contents request  "+curSequenceNumber+" : -> ["+(curRawdataPos-1)+"]");
+				    myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 			    	myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/upload_userdata_file_contents", {},JSON.stringify(jsonData));
 					
 					if (curRawdataPos<rawdata.length && requestObj.abort!=true) {
@@ -1981,6 +2077,8 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	}
 
 	this._handleUploadFilesContentsAnswer= function(uploadFilesContentsAnswerMsg) {
+		
+    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 		var parsedMsg = JSON.parse(uploadFilesContentsAnswerMsg.body);
 		let requestId=parsedMsg.requestId;
 		
@@ -2018,6 +2116,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 				console.log("MxAPI Requesting Plan Update");
 			}
 			
+			myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 			myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/update_plan_request", {}, 
 									 JSON.stringify({"requestId" : curRequestId,
 										 			 "userId":dataObj.userId,
@@ -2026,6 +2125,8 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		}
 		
 		this._handlePlanUpdateMsg = function (responseMsg) {
+			
+	    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 			var decodedData=responseMsg.body;
 			var parsedMsg = JSON.parse(decodedData);
 			
@@ -2072,6 +2173,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 					console.log("MxAPI Requesting Plan Update Payment Confirmation");
 				}
 				
+				myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 				myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/update_plan_confirm_payment_request", {}, 
 										 JSON.stringify({"requestId" : curRequestId,
 											 			 "userId":dataObj.userId,
@@ -2084,6 +2186,8 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			}
 			
 			this._handlePlanUpdatePaymentConfirmMsg = function (responseMsg) {
+				
+		    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 				var decodedData=responseMsg.body;
 				var parsedMsg = JSON.parse(decodedData);
 				
