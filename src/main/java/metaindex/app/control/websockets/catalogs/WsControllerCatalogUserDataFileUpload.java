@@ -43,6 +43,7 @@ public class WsControllerCatalogUserDataFileUpload extends AMxWSController {
 	
 	private Log log = LogFactory.getLog(WsControllerCatalogUserDataFileUpload.class);
 	
+	private static final Long MAX_UPLOAD_SIZE_BYTES=30000000L; // 30Mo max, otherwise go to Filezilla
 	@Autowired
 	public WsControllerCatalogUserDataFileUpload(SimpMessageSendingOperations messageSender) {
 		super(messageSender);		
@@ -83,7 +84,7 @@ public class WsControllerCatalogUserDataFileUpload extends AMxWSController {
 	    	if (c.getQuotaFtpDiscSpaceBytes()-c.getDiscSpaceUseBytes()<totalSpaceNeededByte) {
 	    		answer.setIsSuccess(false);
 	    		answer.setRejectMessage(user.getText("Catalogs.quotasExceededDiscSpace",
-	    												new Long(c.getQuotaFtpDiscSpaceBytes()/1000000).toString())	    								);
+						new Long(c.getQuotaFtpDiscSpaceBytes()/1000000).toString()));
 	    		this.messageSender.convertAndSendToUser(
 	    				headerAccessor.getUser().getName(),
 	    				"/queue/upload_userdata_files_response", 
@@ -91,6 +92,20 @@ public class WsControllerCatalogUserDataFileUpload extends AMxWSController {
 	    		return;
 	    	}
 	    	
+	    	if (totalSpaceNeededByte>MAX_UPLOAD_SIZE_BYTES) {
+	    		answer.setIsSuccess(false);
+	    		answer.setRejectMessage(user.getText("Catalogs.exceededMaxUploadSize",
+						new Long(totalSpaceNeededByte/1000000).toString(),
+						new Long(MAX_UPLOAD_SIZE_BYTES/1000000).toString(),
+						Globals.GetMxProperty("mx.host"),
+	    				c.getFtpPort().toString()));
+
+	    		this.messageSender.convertAndSendToUser(
+	    				headerAccessor.getUser().getName(),
+	    				"/queue/upload_userdata_files_response", 
+	    				answer);
+	    		return;
+	    	}
 	    	// Instantiate a Processing task
 	    	HandleFileUploadProcess procTask = new HandleFileUploadProcess(
 	    									user,
