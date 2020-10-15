@@ -44,9 +44,9 @@
 	<div class="sidebar-brand-text counter-text app-title " 
 		style="text-align:center;width:100%;color:#ccc;font-size:0.8rem;padding:0;margin:0;line-height:0.5;">
 		MetaindeX
-		<div style="width:100%"><center> <table><tr>
-        	<td style="width:10px"><span id="upstream_light" style="display:none;color:#0f0;font-size:2rem;margin:0;padding:0;text-shadow:none;">&middot;</span></td>
-        	<td style="width:10px"><span id="downstream_light" style="display:none;color:#f00;font-size:2rem;margin:0;padding:0;text-shadow:none;">&middot;</span></td>
+		<div style="width:100%;margin-top:0.5rem;"><center> <table><tr>
+        	<td style="width:10px"><span id="upstream_light" style="display:none;opacity:0.3;color:white;font-size:0.8rem;margin:0;padding:0;text-shadow:none;">&uarr;</span></td>
+        	<td style="width:10px"><span id="downstream_light" style="display:none;opacity:0.3;color:white;font-size:0.8rem;margin:0;padding:0;text-shadow:none;">&darr;</span></td>
         </tr></table></center></div>
 	</div>
 	

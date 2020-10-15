@@ -19,8 +19,12 @@ public interface IUsersManager extends ILoadableFromDb {
 
 	IUserProfileData getUserByHttpSessionId(String userSessionId);	
 	IUserProfileData getUserById(Integer userId);
+	/// create user if no exist
 	IUserProfileData getUserByName(String name);
+	/// return only if exist, null otherwise
+	IUserProfileData getExistingUserByName(String name);
 	List<IUserProfileData> getUsersList() throws DataProcessException;
 	void registerUser(IUserProfileData u) throws DataProcessException;
+	void registerAnonymousUser(IUserProfileData u) throws DataProcessException;
 	
 }

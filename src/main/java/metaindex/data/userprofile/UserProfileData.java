@@ -232,7 +232,10 @@ public class UserProfileData implements IUserProfileData
 	@Override
 	public void setHttpSession(HttpSession session) {
 		if (_httpSession!=null && _httpSession!=session) {
-			_httpSession.invalidate();
+			try { _httpSession.invalidate(); }
+			catch(IllegalStateException e) {
+				// session already invalidated
+			}
 		}
 		_httpSession = session; 
 	}

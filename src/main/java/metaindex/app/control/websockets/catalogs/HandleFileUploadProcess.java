@@ -1,5 +1,7 @@
 package metaindex.app.control.websockets.catalogs;
 
+import java.util.ArrayList;
+
 /*
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -32,7 +34,8 @@ public class HandleFileUploadProcess extends AProcessingTask   {
 	private Log log = LogFactory.getLog(HandleFileUploadProcess.class);
 	
 	private Boolean _interruptFlag=false;
-	
+	private Integer _curFileId=null;
+	private List<String> _filesNames=new ArrayList<>();
 	private String _uploadPath="";
 	private Map<Integer,FileBinOutstream> _fileOutstreams = new HashMap<>();
 	private Map<Integer,FileDescriptor> _fileDescriptors = new HashMap<>();
@@ -48,6 +51,7 @@ public class HandleFileUploadProcess extends AProcessingTask   {
 		
 		Long totalBytesSize=0L;
 		for (FileDescriptor desc : filesToDumpDescr) {
+			_filesNames.add(desc.getName());
 			FileBinOutstream outstream=new FileBinOutstream(
 												getFullFsPath(desc.getName()),
 												desc.getByteSize(),
@@ -76,15 +80,17 @@ public class HandleFileUploadProcess extends AProcessingTask   {
 		if (!_fileOutstreams.containsKey(fileId)) {
 			throw new DataProcessException("No such file id in current processing");
 		}
+		setCurFileId(fileId);
 		_fileOutstreams.get(fileId).write(sequenceNumber,rawData);
 	}
 	
 	@Override
 	public void addProcessedNbData(Long nbDataProcessed) {
 		super.addProcessedNbData(nbDataProcessed);
+		String curFileName=_filesNames.get(this.getCurFileId());
 		getActiveUser().sendGuiProgressMessage(
     			getId(),
-    			getActiveUser().getText("Items.serverside.bulkprocess.progress", getName()),
+    			curFileName,
     			AProcessingTask.pourcentage(getProcessedNbData(), getTargetNbData()));
 	}
 	
@@ -166,8 +172,16 @@ public class HandleFileUploadProcess extends AProcessingTask   {
 		return _uploadPath;
 	}
 
-	public void setUploadPath(String _uploadPath) {
-		this._uploadPath = _uploadPath;
+	public void setUploadPath(String uploadPath) {
+		this._uploadPath = uploadPath;
+	}
+
+	public Integer getCurFileId() {
+		return _curFileId;
+	}
+
+	public void setCurFileId(Integer curFileId) {
+		this._curFileId = curFileId;
 	}
 
 

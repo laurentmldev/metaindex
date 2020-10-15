@@ -12,17 +12,10 @@ See full version of LICENSE in <https://fsf.org/>
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.struts2.ServletActionContext;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.servlet.http.HttpServletRequest;
 
 import metaindex.app.Globals;
 import metaindex.app.Globals.APPLICATION_STATUS;
 import metaindex.data.userprofile.IUserProfileData;
-import metaindex.data.userprofile.UserProfileData;
 import toolbox.exceptions.DataProcessException;
 
     

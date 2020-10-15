@@ -10,6 +10,8 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
+
+
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -18,9 +20,7 @@ import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import metaindex.data.userprofile.UserProfileData;
 import toolbox.database.IDataConnector;
-import toolbox.exceptions.DataProcessException;
 
 public class SQLDataConnector implements IDataConnector {
 	

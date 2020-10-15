@@ -26,15 +26,25 @@ public class UsersManager implements IUsersManager {
 	private Log log = LogFactory.getLog(UsersManager.class);
 	
 	private Map<String,IUserProfileData> _usersByName = new java.util.concurrent.ConcurrentHashMap<>();
+	private Map<String,IUserProfileData> _anonymousUsersBySessionId = new java.util.concurrent.ConcurrentHashMap<>();
+	
 	private Semaphore _usersLock = new Semaphore(1,true);
 	
 	@Override
 	public IUserProfileData getUserByHttpSessionId(String userSessionId) {
 		
-		return _usersByName.values().stream()
+		IUserProfileData u = _usersByName.values().stream()
 						.filter(p -> p.getHttpSessionId().equals(userSessionId))
 						.findFirst()
 						.orElse(null);
+				
+		if (u==null) {
+			return _anonymousUsersBySessionId.values().stream()
+			.filter(p -> p.getHttpSessionId().equals(userSessionId))
+			.findFirst()
+			.orElse(null);
+		}
+		return u; 
 	}
 	
 	@Override
@@ -61,7 +71,16 @@ public class UsersManager implements IUsersManager {
 		
 		return result;
 	}
-
+	@Override
+	public IUserProfileData getExistingUserByName(String name) {
+		
+		return _usersByName.values().stream()
+						.filter(p -> p.getName().equals(name))
+						.findFirst()
+						.orElse(null);
+		
+	}
+	
 	@Override
 	public IUserProfileData getUserById(Integer userId) {
 		for (IUserProfileData user : _usersByName.values()) {
@@ -88,7 +107,7 @@ public class UsersManager implements IUsersManager {
 		try {
 			_usersLock.acquire();
 		} catch (InterruptedException e) {
-			throw new DataProcessException("Unable to add user '"+u.getName()+" : "+e.getMessage());
+			throw new DataProcessException("Unable to add user '"+u.getId()+" : "+e.getMessage());
 		}
 		if (u.getHttpSessionId().length()>0 
 				&& getUserByHttpSessionId(u.getHttpSessionId())!=null
@@ -99,11 +118,51 @@ public class UsersManager implements IUsersManager {
 			throw new DataProcessException("Session ID '"+u.getHttpSessionId()
 					+"' already registered to user '"
 					+getUserByHttpSessionId(u.getHttpSessionId()).getName()
-					+"', unable to add new user '"+u.getName()+"'.");
+					+"', unable to add new user '"+u.getId()+"'.");
 		}
-		_usersByName.put(u.getName(), u);
+		if (u.getName().length()==0) {
+			_usersLock.release();
+			throw new  DataProcessException("Trying to register user by name with empty name");
+		}
+		if (u.getHttpSessionId().length()==0) {
+			_usersLock.release();
+			throw new  DataProcessException("Trying to register user by name with empty session id");
+		}
+
+		if (_usersByName.containsKey(u.getName())) {
+			if (_usersByName.get(u.getName())!=u) {
+				_usersLock.release();
+				throw new  DataProcessException("Trying to register duplicate user "+u.getId());
+			}
+		}
+		
+		// remove user from pending anonymous users
+		if (_anonymousUsersBySessionId.containsValue(u) ) { _anonymousUsersBySessionId.remove(u.getHttpSessionId()); }			
+
 		_usersLock.release();
 		
+	}
+	
+	@Override
+	public void registerAnonymousUser(IUserProfileData u) throws DataProcessException {
+		try {
+			_usersLock.acquire();
+		} catch (InterruptedException e) {
+			throw new DataProcessException("Unable to add user '"+u.getName()+" : "+e.getMessage());
+		}
+		
+		if (u.getHttpSessionId().length()==0) {
+			_usersLock.release();
+			throw new  DataProcessException("Trying to register anonymous user with empty session id");
+		}
+		if (u.getName().length()>0) {
+			_usersLock.release();
+			throw new  DataProcessException("Trying to register anonymous user with a non-empty name "+u.getName());
+		} 
+			
+		_anonymousUsersBySessionId.put(u.getHttpSessionId(),u);
+		
+		_usersLock.release();
 	}
 	
 	@Override

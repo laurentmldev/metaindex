@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import metaindex.app.Globals;
 import metaindex.app.Globals.APPLICATION_STATUS;
 import metaindex.data.userprofile.IUserProfileData;
-import metaindex.data.userprofile.UserProfileData;
+
 import toolbox.exceptions.DataProcessException;
 
     

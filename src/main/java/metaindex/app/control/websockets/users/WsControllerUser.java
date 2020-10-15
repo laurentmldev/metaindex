@@ -11,6 +11,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
+
 import java.util.List;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -53,13 +54,16 @@ import toolbox.utils.payment.IPaymentInterface.PAYMENT_METHOD;
 import toolbox.utils.payment.PaypalPaymentInterfaceProprietary;
 import toolbox.utils.payment.SandboxPaymentInterface;
 
+
+
 @Controller
 public class WsControllerUser extends AMxWSController {
 	
-	
+
 	private Log log = LogFactory.getLog(WsControllerUser.class);
 		
-	public static final Integer NB_DAYS_PLAN_DISCOUNT=182;// approx. half a year
+	
+public static final Integer NB_DAYS_PLAN_DISCOUNT=182;// approx. half a year
 	public static final Integer NB_TRIES_FOR_PAYMENT_CONFIRMATION=5;
 	
 	// list to be coherent with metaindex.js API equivalent

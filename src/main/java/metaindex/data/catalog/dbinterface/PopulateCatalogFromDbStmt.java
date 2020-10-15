@@ -14,7 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -23,10 +23,9 @@ import org.apache.commons.logging.LogFactory;
 
 import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.ICatalog;
-import metaindex.data.userprofile.UserProfileData;
+
 import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLPopulateStmt;
-import toolbox.database.sql.SQLReadStreamStmt;
 import toolbox.exceptions.DataProcessException;
 
 class PopulateCatalogFromDbStmt extends SQLPopulateStmt<ICatalog>   {

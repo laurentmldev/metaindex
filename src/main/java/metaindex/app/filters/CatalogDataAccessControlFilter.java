@@ -31,6 +31,11 @@ import metaindex.data.userprofile.IUserProfileData;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Check user access right to catalog drive
+ * @author laurentml
+ *
+ */
 public class CatalogDataAccessControlFilter implements Filter  {
    
 	private Log log = LogFactory.getLog(CatalogDataAccessControlFilter.class);

@@ -213,24 +213,20 @@
 		  fileDropZone.classList.remove('dropzone-ondragover');
 		  
 		  // from https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/File_drag_and_drop
-		  if (ev.dataTransfer.items) {
-			  if (ev.dataTransfer.items.length>1) {
-				  alert("<s:text name="Items.uploadItems.onlyOneFileIsAllowed" />");
-				  return;
-			  }
+		  if (ev.dataTransfer.items) {			  
 			  if (ev.dataTransfer.items[0].kind !== 'file') {
 				  alert("<s:text name="Items.uploadItems.notAFile" />");
 				  return;
 			  }
 			  
-		      let files = { files : [  ev.dataTransfer.items[0].getAsFile() ] }
-		      MxGuiLeftBar.handleDataFileToUpload(files);
+			  let droppedFiles = [];
+			  for (var idx=0;idx<ev.dataTransfer.items.length;idx++) {
+				  let item=ev.dataTransfer.items[idx];
+				  droppedFiles.push(item.getAsFile()); 
+			  };
+		      MxGuiLeftBar.handleDataFileToUpload({files:droppedFiles});
 		      
 		  } else {
-			  if (ev.dataTransfer.files.length>1) {
-				  alert("<s:text name="Items.uploadItems.onlyOneFileIsAllowed" />");
-				  return;
-			  }
 			  MxGuiLeftBar.handleDataFileToUpload(ev.dataTransfer);			  	    
 		  }
 		  

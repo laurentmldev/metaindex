@@ -1,6 +1,6 @@
 package metaindex.data.catalog;
 
-import java.io.File;
+
 
 /*
 GNU GENERAL PUBLIC LICENSE
@@ -12,6 +12,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;

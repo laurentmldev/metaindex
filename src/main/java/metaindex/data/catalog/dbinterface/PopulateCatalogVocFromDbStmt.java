@@ -11,19 +11,16 @@ See full version of LICENSE in <https://fsf.org/>
 */
 
 import java.sql.ResultSet;
+
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.CatalogVocabularySet;
 import metaindex.data.catalog.ICatalog;
-import metaindex.data.perspective.ICatalogPerspective;
-import metaindex.data.userprofile.UserProfileData;
+
 import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLPopulateStmt;
-import toolbox.database.sql.SQLReadStreamStmt;
 import toolbox.exceptions.DataProcessException;
 
 class PopulateCatalogVocFromDbStmt extends SQLPopulateStmt<ICatalog>   {

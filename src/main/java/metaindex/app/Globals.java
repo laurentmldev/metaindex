@@ -243,22 +243,29 @@ public class Globals {
 			_dbManager = new MxDbManager(_sqlConnector,_esConnector,_kibanaConnector);
 			try {			
 				// load all languages and themes data at init
+				log.info("loading Languages ... ");
 				_guiLanguagesManager.loadFromDb();
+				log.info("loading GUI themes ... ");
 				_guiThemesManager.loadFromDb();
+				log.info("loading Plans ... ");
 				_plansManager.loadFromDb();
+				log.info("loading Catalogs ... ");
 				Globals.Get().getCatalogsMgr().loadFromDb();
+				log.info("loading Users ... ");
 				Globals.Get().getUsersMgr().loadFromDb();
 								
 			} catch (Exception e) {
 				throw new DataProcessException("Application initialization failed.",e);
 			}
-			
-			// starting statistics manager 
+			log.info("starting statistics manager ... ");
 			_mxStats.start();
-			// starting tmp-files cleaner
+			
+			log.info("starting tmp files cleaner ... ");
 			_mxTmpFolderCleaner.start();
-			// starting users quotas checker
+			
+			log.info("starting quptas checker ... ");
 			_mxUsersQuotaChecker.start();
+			
 			log.info("MetaindeX connections init done");
 			
 			if (isDevMode()) {

@@ -34,7 +34,7 @@
  	 }
  	 valueNode.src=imgUrl;
  	 valueNode.title=imgUrl;
- 	 
+ 
  	 fieldContainerNode.appendChild(fieldNode);
   }
 

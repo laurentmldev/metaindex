@@ -22,8 +22,8 @@ function stripStr(str) { return str.replace(/^\s*/,"").replace(/\s*$/,""); }
 
 // shouldn't be too big otherwise risk of WS deconnexion because max. size limit reached.
 var MX_WS_UPLOAD_FILE_MAX_LINES = 500;
-var MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE = 10000;
-var MX_WS_UPLOAD_FILE_SEND_PERIOD_MS = 5;
+var MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE = 50000;
+var MX_WS_UPLOAD_FILE_SEND_PERIOD_MS = 30;
 
 var MX_DOWNSTREAM_MSG="down";
 var MX_UPSTREAM_MSG="up";
@@ -1982,8 +1982,9 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			fileObj=dataObj.filesToUpload[pos];
 			let fileDesc={ name : fileObj.name,byteSize : fileObj.size, id:fileDescriptions.length};
 			fileObj.id=fileDescriptions.length;
-			fileDescriptions.push(fileDesc);			
+			fileDescriptions.push(fileDesc);	
 		}
+				
 		
 		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 		var jsonStr = JSON.stringify({ 	"requestId" : curRequestId,
@@ -2001,10 +2002,10 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		
 	// each field update request is given with a callback to be executed
 	// in case of success or failure.
-	this._handleUploadFilesAnswer= function(upoloadFilesAnswerMsg) {
+	this._handleUploadFilesAnswer= function(uploadFilesAnswerMsg) {
 		
     	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
-		var parsedMsg = JSON.parse(upoloadFilesAnswerMsg.body);
+		var parsedMsg = JSON.parse(uploadFilesAnswerMsg.body);
 		let requestId=parsedMsg.requestId;
 		
 		//console.log("handling upload files answer "+requestId+" : "+parsedMsg);
@@ -2026,6 +2027,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		// upload each file one by one
 	    for (let pos=0;pos<requestObj.filesToUpload.length;pos++) {	 
 	    	let fileObj=requestObj.filesToUpload[pos];
+	    	//console.log("starting uploading file '"+fileObj.name+"'");
 		    let reader = new FileReader();
 		    reader.onloadend = function (evt) 
 		    { 

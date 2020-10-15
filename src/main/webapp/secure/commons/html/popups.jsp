@@ -478,28 +478,19 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFile
 			}
 			newFormInputFile.value="";
 			
-			let header="<tr><th><s:text name="Items.uploadItems.fileToUpload"/></th><th>Size</th><th>Preview</th></tr>";
-			filesListNode.innerHTML=header;
+			filesListNode.innerHTML="";
 			for (var i = 0;i<files.length;i++)
 			{
 				if (i>0) { newFormInputFile.value+=","; }
 				let file=files[i];
-				newFormInputFile.value+=file.name;		
-				let newTr=document.createElement("tr");
-				
-				let name=document.createElement("td");
-				name.innerHTML=file.name;
-				newTr.appendChild(name);
-				
-				let size=document.createElement("td");
-				let sizeValText=(Math.round(file.size/10.0)/100)+" KB";
-				if (file.size>=1000000) { sizeValText=(Math.round(file.size/10000.0)/100)+" MB"; }
-				size.innerHTML=sizeValText;
-				newTr.appendChild(size);
+				newFormInputFile.value+=file.name;	
 				
 				// create a preview if it's an image
+				let newTr=document.createElement("tr");
+				filesListNode.appendChild(newTr);
 				let preview=document.createElement("td");
-				preview.innerHTML="";				
+				newTr.appendChild(preview);
+												
 				if ( file.type.match(/image/)) {
 					let reader = new FileReader()
 					reader.readAsDataURL(file)
@@ -510,19 +501,33 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFile
 						preview.appendChild(img);
 					}
 				}				
-				newTr.appendChild(preview);
 				
+				
+				// file title and size
+				newTr=document.createElement("tr");
 				filesListNode.appendChild(newTr);
+				let name=document.createElement("td");
+				name.innerHTML=file.name;
+				newTr.appendChild(name);
+				
+				let size=document.createElement("td");
+				let sizeValText=(Math.round(file.size/10.0)/100)+" KB";
+				if (file.size>=1000000) { sizeValText=(Math.round(file.size/10000.0)/100)+" MB"; }
+				name.innerHTML+="<br/>("+sizeValText+")";
+				
+				
+				
+				
 
 			}
 			resultFields[curFieldDescr.id]=this.value;
 			resultFiles[curFieldDescr.id]=files;
 			filesListNode.style.display="block";			
 		}
-		newFormInputFile.addEventListener('dragenter', handlerDragEnterFunc, false)
-		newFormInputFile.addEventListener('dragleave', handlerDragLeaveFunc, false)
-		newFormInputFile.addEventListener('dragover', handlerDragOverFunc, false)
-  		newFormInputFile.addEventListener('drop', handlerDragDropFunc, false)
+		newFormInputFile.addEventListener('dragenter', handlerDragEnterFunc, false);
+		newFormInputFile.addEventListener('dragleave', handlerDragLeaveFunc, false);
+		newFormInputFile.addEventListener('dragover', handlerDragOverFunc, false);
+  		newFormInputFile.addEventListener('drop', handlerDragDropFunc, false);
 	}
 	
 	
@@ -755,10 +760,11 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFile
    			class="_form_input_  card  modals-form-control bg-light small " 
    			placeholder="<s:text name="Items.uploadItems.dropFileToUpload"/>"
    			/>
+   	<center>
 	<table class=" table table-striped" style="font-size:0.8rem;" >
 		<tbody class="_files_list_" style="display:none"></tbody>
 	</table>
-   		
+   	</center>
    </fieldset>
    
    

@@ -19,13 +19,11 @@ import org.apache.struts2.ServletActionContext;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import metaindex.app.Globals;
 import metaindex.app.Globals.APPLICATION_STATUS;
-import metaindex.app.control.websockets.users.PaymentLogging;
 import metaindex.data.commons.globals.plans.IPlansManager;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.IUserProfileData.USER_ROLE;

@@ -72,68 +72,65 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 			HttpSession session = request.getSession();
 			
 			// handle URL parameters if any
-			String languageShorname = request.getParameter("language");
-			if (request.getParameter("language")!=null) { setSessionLanguage(	request.getParameter("language"),request,ActionContext.getContext()); }
-			
-			
-	  		if (_userProfileData==null) {
-	  				  			
-	  			
-	  			// if LOGGED-IN user : try to get user profile by name if already logged in
-	  			if (request.getUserPrincipal()!=null) {
-	  				String userName=request.getUserPrincipal().getName();
-	  				_userProfileData=Globals.Get().getUsersMgr().getUserByName(userName);	 
-	  				if (_userProfileData==null) {
-	  					log.error("Could not retrieve data for user '"+userName+"', unable to log-in properly.");
-	  					_userProfileData=null;
-	  					return;
-	  				}
-	  				_userProfileData.setRemoteAddress(request.getRemoteAddr());
-	  				// check to detect multiple parallel users disabled for now
-	  				// not robust enough
-	  				/*
-	  				if (_userProfileData.getRemoteAddress().length()==0) {
-	  					_userProfileData.setRemoteAddress(request.getRemoteAddr());	  					
-	  				}
-	  				else if (!_userProfileData.getRemoteAddress().equals(request.getRemoteAddr())) {  
-	  					
-  	  					log.warn("#### several computers with the same account "+_userProfileData.getName()+":\n"
-  	  							+"			   current="+_userProfileData.getRemoteAddress()
-  	  										+" newRequest="+request.getRemoteAddr()+"\n"
-  	  						);
-  	  					String userMsg="Hum it seems that somebody else just tried to use your login credentials, it has been blocked. "
-  	  											+"Please contact your system administrator";
-	  	  				_userProfileData.sendGuiWarningMessage(userMsg);  	  				
-	  	  				_userProfileData.sendEmail("[METAINDEX] Your account is maybe being used by somebody else",userMsg);
-	  	  				_userProfileData=null;
-	  	  				return;
-  	  				}
-	  				*/
-	  					  				
-	  			} 
-	  			
-	  			// if anonymous session : try to get user profile by session id
-	  			if (_userProfileData==null) {
-	  				_userProfileData=Globals.Get().getUsersMgr().getUserByHttpSessionId(session.getId());
-	  			}
-	  			
-	  			// full new user
-				if (_userProfileData==null) { 
-					_userProfileData = new UserProfileData();					
-				}
-											
-				if (_userProfileData.getHttpSession()==null) {
-  					_userProfileData.setHttpSession(session);
-  					Globals.Get().getUsersMgr().registerUser(_userProfileData);  						  				
+			if (request.getParameter("language")!=null) { 
+				setSessionLanguage(request.getParameter("language"),request,ActionContext.getContext()); 
+			}
+						
+	  		
+  				  				  		
+  			// if LOGGED-IN user : try to get user profile by name if already logged in
+  			if (request.getUserPrincipal()!=null) {
+  				String userName=request.getUserPrincipal().getName();
+  				_userProfileData=Globals.Get().getUsersMgr().getExistingUserByName(userName);	 
+  				if (_userProfileData==null) {
+  					_userProfileData=Globals.Get().getUsersMgr().getUserByHttpSessionId(session.getId());
+  					_userProfileData.setName(userName);
+  							  				
   				} 
-	  		} 
-	  		else { log.error("Using found test user to perform operation "+this.getClass().getName()); }
-
-			
-			// refresh data of its own account from DB
-			if (getCurrentUserProfile()!=null && !getMxStatus().equals("MAINTENANCE") && getCurrentUserProfile().isLoggedIn()) {
+  				assert(_userProfileData!=null);
+  				_userProfileData.setRemoteAddress(request.getRemoteAddr());
+  				_userProfileData.setHttpSession(session);
+				Globals.Get().getUsersMgr().registerUser(_userProfileData);
+				
 				// load all user data from DB
-				getCurrentUserProfile().loadFullUserData();				
+				getCurrentUserProfile().loadFullUserData();
+  				
+				
+  				// check to detect multiple parallel users disabled for now
+  				// not robust enough
+  				/*
+  				if (_userProfileData.getRemoteAddress().length()==0) {
+  					_userProfileData.setRemoteAddress(request.getRemoteAddr());	  					
+  				}
+  				else if (!_userProfileData.getRemoteAddress().equals(request.getRemoteAddr())) {  
+  					
+  					log.warn("#### several computers with the same account "+_userProfileData.getName()+":\n"
+  							+"			   current="+_userProfileData.getRemoteAddress()
+  										+" newRequest="+request.getRemoteAddr()+"\n"
+  						);
+  					String userMsg="Hum it seems that somebody else just tried to use your login credentials, it has been blocked. "
+  											+"Please contact your system administrator";
+  	  				_userProfileData.sendGuiWarningMessage(userMsg);  	  				
+  	  				_userProfileData.sendEmail("[METAINDEX] Your account is maybe being used by somebody else",userMsg);
+  	  				_userProfileData=null;
+  	  				return;
+  				}
+  				*/
+  					  				
+  			} 
+  			
+  			// if anonymous session : try to get user profile by session id
+  			else {
+  				_userProfileData=Globals.Get().getUsersMgr().getUserByHttpSessionId(session.getId());
+  				if (_userProfileData==null) {
+  					_userProfileData=new UserProfileData();
+  					_userProfileData.setHttpSession(session);	  
+  					Globals.Get().getUsersMgr().registerAnonymousUser(_userProfileData);
+  				}
+  			}
+	  					
+			// set user language and guitheme
+			if (getCurrentUserProfile()!=null && !getMxStatus().equals("MAINTENANCE") && getCurrentUserProfile().isLoggedIn()) {
 				
 				setSessionLanguage(	getCurrentUserProfile().getGuiLanguage().getShortname(),request,
 									ActionContext.getContext());

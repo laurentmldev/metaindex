@@ -303,7 +303,7 @@ function _handleExcelDataFile(fileHandle) {
 				
 		let result = [];
 		function handleSheetContents(sheetName,fileName) {
-			let isExcelFile=fileName.match(/\.xlsx?$/)!=null;
+			let isExcelFile=fileName.match(/\.(xlsx?|ods)$/)!=null;
 			var csv = XLSX.utils.sheet_to_csv(workbook.Sheets[sheetName], {raw:false});
 			if(csv.length){
 				//console.log(csv);		    	
@@ -324,18 +324,31 @@ function _handleExcelDataFile(fileHandle) {
 }
 
 MxGuiLeftBar.handleDataFileToUpload=function(fileHandle) {
+	let onUploadSuccessCallback=function() {}
+	let onUploadFailureCallback=function(errorMsg) { footer_showAlert(ERROR, errorMsg); }
+
+	if (fileHandle.files.length>1) {				
+		
+		ws_handlers_uploadFiles(MxGuiHeader.getCurCatalogDescr(),fileHandle.files,
+									onUploadSuccessCallback,onUploadFailureCallback);
+		return;
+	}
+	
+	// if only one file, if it is a csv of calc file, use to to upload documents
+	// otherwise consider it as data files
 	let fileName = fileHandle.files[0].name;
-	var csvRegex= /(\.txt|\.csv)$/;
+	var csvRegex= /(\.csv)$/;
 	var xlsRegex= /(\.xls|\.xlsx|\.ods|\.odt|\.xml)$/;
 	
 	if (csvRegex.test(fileName)) { _handleCsvDataFile(fileHandle); }
 	else if (xlsRegex.test(fileName)) { _handleExcelDataFile(fileHandle); }
 	else {
-		alert("<s:text name="Items.uploadItems.formatNotSupported"/>");
+		ws_handlers_uploadFiles(MxGuiHeader.getCurCatalogDescr(),fileHandle.files,
+									onUploadSuccessCallback,onUploadFailureCallback);
 	}
 	
 }
-
+//ws_handlers_uploadFiles(catalogDescr,filesList,onCreationSuccessCallback,onCreationFailureCallback);
 
 // ---------------- DOWNLOAD -----------------
 
