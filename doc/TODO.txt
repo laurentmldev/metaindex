@@ -3,11 +3,9 @@
 v2.1.0:
 -------
 
-
-open item : go to top
+show user id in preferences and add search example
 
 filter example for last modif date
-
 	drag n drop on field in edit mode
 
 #55 tutorial videos on youtube
