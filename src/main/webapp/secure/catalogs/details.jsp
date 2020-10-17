@@ -32,8 +32,8 @@
 	
 	// nbdocs name
 	let nbdocsName = newPopulatedCatalogDetails.querySelector("._nbdocs_name_");
-	nbdocsName.innerHTML=catalogCard.descr.vocabulary.items;
-	
+	if (catalogCard.descr.nbDocuments<=1) { nbdocsName.innerHTML=capWords(catalogCard.descr.vocabulary.item); }
+	else { nbdocsName.innerHTML=capWords(catalogCard.descr.vocabulary.items); }	
 
 	// open / create
 	let openButtonArea = newPopulatedCatalogDetails.querySelector("._foundInDb_");

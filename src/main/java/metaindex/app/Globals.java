@@ -60,7 +60,7 @@ public class Globals {
 	private static final String MX_PROPERTIES_FILE = "metaindex.properties";
 	public static final Integer AUTOREFRESH_PERIOD_SEC=5;
 	private static final String MX_EMAIL_SUBJECT_PREFIX= "[MetaindeX]";
-	public static final String LOCAL_USERDATA_PATH_SUFFIX="/metaindex/userdata";
+	public static final String LOCAL_USERDATA_PATH_SUFFIX="/userdata";
 	
 	Properties _mx_config = new Properties();
 	static Map<String, String> env = System.getenv();
@@ -113,13 +113,7 @@ public class Globals {
 	private final String DB_DATASOURCE_SQL = "dataSource";
 	
 	public enum APPLICATION_STATUS { STOPPED, RUNNING, FAILURE, MAINTENANCE };
-	private APPLICATION_STATUS _applicationStatus = APPLICATION_STATUS.STOPPED;
-	
-	// activacte specific features for development :
-	// - display warning banner
-	// - dump in logs the link for account confirmation rather than send an email
-	// - acceptation of dev 'dummy' payment method
-	private Boolean _devMode = false;
+	private APPLICATION_STATUS _applicationStatus = APPLICATION_STATUS.STOPPED;	
 	
 	private SQLDataConnector _sqlConnector;
 	private ElasticSearchConnector _esConnector;

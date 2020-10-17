@@ -40,8 +40,10 @@ public class CatalogDataAccessControlFilter implements Filter  {
    
 	private Log log = LogFactory.getLog(CatalogDataAccessControlFilter.class);
 	
-	private String extractCatalogNameFromUri(String uri) {		
-		String catalogName=uri.replace(Globals.LOCAL_USERDATA_PATH_SUFFIX+"/", "").replaceAll("/.*", "");
+	private String extractCatalogNameFromUri(String uri) {
+		String prefixToRemove="/"+Globals.GetMxProperty("mx.appname")+Globals.LOCAL_USERDATA_PATH_SUFFIX+"/";
+		String withoutPrefix=uri.replace(prefixToRemove, "");
+		String catalogName=withoutPrefix.replaceAll("/.*", "");
 		return catalogName;
 	}
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
