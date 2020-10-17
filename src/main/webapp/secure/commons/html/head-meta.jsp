@@ -12,24 +12,24 @@
   <meta name="robots" content="noindex, nofollow">
   <meta name="googlebot" content="noindex, nofollow">
   
-  <link rel="icon" type="image/svg" href="public/commons/media/img/favicon.png">
+  <link rel="icon" type="image/svg" href="${webAppBaseUrl}/public/commons/media/img/favicon.png">
   	
-  <script type="text/javascript" src="${mxurl}public/commons/deps/jquery/jquery.js"></script>
+  <script type="text/javascript" src="${webAppBaseUrl}/public/commons/deps/jquery/jquery.js"></script>
 
   <!-- Core plugin JavaScript-->
-  <script src="${mxurl}public/commons/deps/jquery-easing/jquery.easing.min.js"></script>
-  <script src="${mxurl}public/commons/deps/popper/popper.min.js"></script>
+  <script src="${webAppBaseUrl}/public/commons/deps/jquery-easing/jquery.easing.min.js"></script>
+  <script src="${webAppBaseUrl}/public/commons/deps/popper/popper.min.js"></script>
     
    
   <!-- Bootstrap core JavaScript-->  
-  <script src="${mxurl}public/commons/deps/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="${webAppBaseUrl}/public/commons/deps/bootstrap/js/bootstrap.bundle.min.js"></script>
 
   <!-- Bootstrap Editable -->
-  <link rel="stylesheet" type="text/css" href="${mxurl}public/commons/deps/bootstrap-editable/css/bootstrap-editable.css">
-  <script type="text/javascript" src="${mxurl}public/commons/deps/bootstrap-editable/js/bootstrap-editable.js"></script>
+  <link rel="stylesheet" type="text/css" href="${webAppBaseUrl}/public/commons/deps/bootstrap-editable/css/bootstrap-editable.css">
+  <script type="text/javascript" src="${webAppBaseUrl}/public/commons/deps/bootstrap-editable/js/bootstrap-editable.js"></script>
   
   <!-- Bootstrap Confirmation -->  
-  <script src="${mxurl}public/commons/deps/bootstrap-confirmation/bootstrap-confirmation.js"></script>
+  <script src="${webAppBaseUrl}/public/commons/deps/bootstrap-confirmation/bootstrap-confirmation.js"></script>
   
   <!-- Paypal API -->
   
@@ -37,7 +37,7 @@
    
   
   <!-- Fontawsome icons -->
-  <link href="${mxurl}public/commons/deps/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="${webAppBaseUrl}/public/commons/deps/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
   <!-- Custom styles for this template-->

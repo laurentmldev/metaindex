@@ -3,10 +3,7 @@
 v2.1.0:
 -------
 
-show user id in preferences and add search example
-
-filter example for last modif date
-	drag n drop on field in edit mode
+drag n drop on field in edit mode
 
 #55 tutorial videos on youtube
 
@@ -134,6 +131,10 @@ Done:
 -----
 
 v2.1.0
+
+filter example for last modif date
+
+show user id in preferences and add search example
 
 updload files to drive :
 	- drag n drop on items

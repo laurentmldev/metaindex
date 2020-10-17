@@ -20,6 +20,7 @@ import org.apache.struts2.ServletActionContext;
 
 import metaindex.app.Globals;
 import metaindex.app.Globals.APPLICATION_STATUS;
+import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.UserProfileData;
 import toolbox.exceptions.DataProcessException;
@@ -71,7 +72,8 @@ public class BeanSignupSendEmail extends ABeanEmailConfirmedAction {
 			IUserProfileData tmpUser = new UserProfileData();
 			String languageShortname =getSessionLanguage(ServletActionContext.getRequest());
 			if (languageShortname!=null) {
-				Integer guiLanguageId = Globals.Get().getGuiLanguagesMgr().getGuiLanguage(languageShortname.toUpperCase()).getId();
+				IGuiLanguage lang = Globals.Get().getGuiLanguagesMgr().getGuiLanguage(languageShortname.toUpperCase());
+				Integer guiLanguageId =lang.getId();
 				tmpUser.setGuiLanguageId(guiLanguageId);
 			}
 			
@@ -80,7 +82,7 @@ public class BeanSignupSendEmail extends ABeanEmailConfirmedAction {
 			newAccountWaitingForEmailConfirmation.properties.put("guilanguageid",tmpUser.getGuiLanguageId());
 			addAwaitingAccount(newAccountWaitingForEmailConfirmation);
 			
-			String confirmationLink="https://metaindex.fr:8443/metaindex/signup_confirmemail?" 
+			String confirmationLink=Globals.Get().getWebAppBaseUrl()+"/signup_confirmemail?" 
 					+"email="+newAccountWaitingForEmailConfirmation.email
 					+"&requestId="  
 					+newAccountWaitingForEmailConfirmation.randomRequestId;

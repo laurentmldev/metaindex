@@ -173,7 +173,7 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
   	
   	protected String getSessionLanguage(HttpServletRequest request) {
   		if (request.getSession(false)==null || request.getSession(false).getAttribute(GUILANGUAGE_SESSION_ATT)==null) {
-  			return UserProfileData.DEFAULT_LANG_ID.toString();
+  			return Globals.Get().getGuiLanguagesMgr().getGuiLanguage(UserProfileData.DEFAULT_LANG_ID).getShortname();
   		}
   		return request.getSession(false).getAttribute(GUILANGUAGE_SESSION_ATT).toString();
   		
@@ -198,6 +198,9 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 	// might be needed for proper URL
 	public String getPaymentLogin() {
 		return Globals.GetMxProperty("mx.payment.login");
+	}
+	public String getWebAppBaseUrl() {
+		return Globals.Get().getWebAppBaseUrl();
 	}
 	public ICatalog getCurrentCatalog() {	
 		return _userProfileData.getCurrentCatalog();

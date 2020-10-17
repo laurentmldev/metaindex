@@ -1,12 +1,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="/struts-tags" prefix="s" %>  
-<c:url value="/" var="mxurl"/>
-<c:url value="/signupprocess" var="signupUrl"/>
 
+<c:url value="/signupprocess" var="signupUrl"/>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="/struts-tags" prefix="s" %>  
-<c:url value="/" var="mxurl"/>
 
 
 <!DOCTYPE html>

@@ -2,10 +2,6 @@
 <%@ taglib uri="/struts-tags" prefix="s" %>  
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<c:url value="/" var="mxurl"/>
-<c:url value="/metaindex/Items" var="mxCurPage"/>
-<c:url value="/logoutprocess" var="logoutUrl"/>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -166,7 +162,7 @@
 		  					kibanaIFrame:iframeCode,
 		  					successCallback:function() { 
 		  						console.log("refreshed!"); 
-		  						redirectToPage("${mxUrl}/metaindex/Items"); 
+		  						redirectToPage("${webAppBaseUrl}/Items"); 
 		  					},
 		  					errorCallback:function(msg) { console.log("Unable to set iframe : "+msg); }
 		  			}

@@ -5,13 +5,12 @@
  <c:url value="/logoutprocess" var="logoutUrl"/>
  
  <c:if test="${currentUserProfile.loggedIn == false }">
- 	<META HTTP-EQUIV="Refresh" CONTENT="0;URL=https://metaindex.fr:8443/metaindex/loginform?expired">
+ 	<META HTTP-EQUIV="Refresh" CONTENT="0;URL=loginform?expired">
  </c:if>
 
 <div id="show_info_container"  style="display:none;opacity:0.0;transition: opacity 100ms ease-in-out 100ms;"
 	onkeydown="event.stopPropagation();
   			// when pressing escape, close modal
-  			console.log('plop');
   			if (event.which==27||event.keycode==27) {
   				MxGuiHeader.hideInfoModal();
   			}">

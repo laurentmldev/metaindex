@@ -107,8 +107,8 @@ class CreateFieldIntoEsDbStmt extends ESWriteStmt<ICatalogTerm>   {
 				    									+"||dd/MM/yyyy HH:mm:ss.SSS"
 				    									
 				    									// ISO-8601
-														+"||yyyy-MM-ddTHH:mm:ssZ"
-														+"||yyyy-MM-ddTHH:mm:ss.SSSZ"
+														//+"||yyyy-MM-ddTHH:mm:ssZ"
+														//+"||yyyy-MM-ddTHH:mm:ss.SSSZ"
 		            									);
 
 		            			builder.startObject("fields");

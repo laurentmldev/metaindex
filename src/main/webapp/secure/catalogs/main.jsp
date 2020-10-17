@@ -2,8 +2,6 @@
 <%@ taglib uri="/struts-tags" prefix="s" %>  
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<c:url value="/" var="mxurl"/>
-<c:url value="/metaindex/Catalogs" var="mxCurPage"/>
 
 <!DOCTYPE html>
 <html lang="en">

@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="/struts-tags" prefix="s" %>  
-<c:url value="/" var="mxurl"/>
+
 <c:url value="/loginprocess" var="loginUrl"/>
 
 <!DOCTYPE html>
@@ -24,6 +24,7 @@ onkeypress="if (event.which==13||event.keycode==13) {
           <input type="hidden"  name="${_csrf.parameterName}" value="${_csrf.token}"/>
  	<div class="form-group">
 		<c:if test="${param.error != null}"> <p class="alert-danger p-2" ><s:text name="session.loginerror" /></p></c:if>
+		<c:if test="${param.badcredentials != null}"> <p class="alert-danger p-2" ><s:text name="session.badcredentials" /></p></c:if>
 		<c:if test="${param.logout != null}"><p class="alert-info p-2" ><s:text name="session.logoutmessage" /></p></c:if>
 		<c:if test="${param.expired != null}"><p class="alert-warning p-2"><s:text name="session.expiredmessage" /></p></c:if>
 		<c:if test="${param.passwordreset != null}"><p class="alert-success p-2" ><s:text name="session.passwordreset" /></p></c:if>
@@ -68,8 +69,8 @@ onkeypress="if (event.which==13||event.keycode==13) {
       </center></td>  
      </tr></table>
       <table><tr>
-      		<td><a onclick="window.location.href=URL_add_parameter(location.href, 'language', 'en');"><img src="${mxurl}public/commons/media/img/flags/UK.png" class="mx-lang-flag scale" /></a></td>
-      		<td><a onclick="window.location.href=URL_add_parameter(location.href, 'language', 'fr');"><img src="${mxurl}public/commons/media/img/flags/France.png" class="mx-lang-flag scale"/></a></td>
+      		<td><a onclick="window.location.href=URL_add_parameter(location.href, 'language', 'en');"><img src="${webAppBaseUrl}/public/commons/media/img/flags/UK.png" class="mx-lang-flag scale" /></a></td>
+      		<td><a onclick="window.location.href=URL_add_parameter(location.href, 'language', 'fr');"><img src="${webAppBaseUrl}/public/commons/media/img/flags/France.png" class="mx-lang-flag scale"/></a></td>
   		</tr></table>
 		<hr/>
         </center>

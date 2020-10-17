@@ -84,7 +84,7 @@ public class BeanResetPwdSendEmail extends ABeanEmailConfirmedAction {
 			AwaitingAccount accountWaitingForEmailConfirmation = new AwaitingAccount(getEmail());
 			addAwaitingAccount(accountWaitingForEmailConfirmation);
 			
-			String confirmationLink="https://metaindex.fr:8443/metaindex/resetpwd_confirmemail?" 
+			String confirmationLink=Globals.Get().getWebAppBaseUrl()+"/resetpwd_confirmemail?" 
 					+"email="+accountWaitingForEmailConfirmation.email
 					+"&requestId="  
 					+accountWaitingForEmailConfirmation.randomRequestId;

@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="/struts-tags" prefix="s" %>  
-<c:url value="/" var="mxurl"/>
+
 <c:url value="/loginprocess" var="loginUrl"/>
 
 
@@ -70,12 +70,12 @@
   </div>
 
   <!-- Bootstrap core JavaScript-->
-  <script src="${mxurl}public/commons/deps/jquery/jquery.min.js"></script>
-  <script src="${mxurl}public/commons/deps/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="${webAppBaseUrl}/public/commons/deps/jquery/jquery.min.js"></script>
+  <script src="${webAppBaseUrl}/public/commons/deps/bootstrap/js/bootstrap.bundle.min.js"></script>
 
   <!-- Core plugin JavaScript-->
-  <script src="${mxurl}public/commons/deps/jquery-easing/jquery.easing.min.js"></script>
+  <script src="${webAppBaseUrl}/public/commons/deps/jquery-easing/jquery.easing.min.js"></script>
 
   <!-- Custom scripts for all pages-->
-  <script src="${mxurl}public/commons/js/sb-admin-2.min.js"></script>
+  <script src="${webAppBaseUrl}/public/commons/js/sb-admin-2.min.js"></script>
 

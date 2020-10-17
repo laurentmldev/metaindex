@@ -1,6 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="/struts-tags" prefix="s" %>  
-<c:url value="/" var="mxurl"/>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -16,11 +15,11 @@
   <title>Metaindex Authentication Refused</title>
 
   <!-- Custom fonts for this template-->
-  <link href="${mxurl}public/commons/deps/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="${webAppBaseUrl}/public/commons/deps/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
   <!-- Custom styles for this template-->
-  <link href="${mxurl}public/commons/style/css/sb-admin-2.css" rel="stylesheet">
+  <link href="${webAppBaseUrl}/public/commons/style/css/sb-admin-2.css" rel="stylesheet">
 
 </head>
 
@@ -44,7 +43,7 @@
             <div class="error mx-auto" style="font-size:5rem" data-text="YOU SHALL NOT PASS">YOU SHALL NOT PASS</div>
             <p class="lead text-gray-800 mb-5">Sorry, but you're credentials could not be accepted to access such contents.</p>
             <p class="text-gray-600 mb-0" style="padding-bottom:5rem">Please contact your system administrator if you think this is a problem.</p>
-            <a  href="/metaindex/">&larr; Go Back to Life</a>
+            <a  href="${webAppBaseUrl}/welcome">&larr; Go Back to Life</a>
           </div>
 
         </div>
@@ -69,14 +68,14 @@
 
 
   <!-- Bootstrap core JavaScript-->
-  <script src="${mxurl}public/commons/deps/jquery/jquery.min.js"></script>
-  <script src="${mxurl}public/commons/deps/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="${webAppBaseUrl}/public/commons/deps/jquery/jquery.min.js"></script>
+  <script src="${webAppBaseUrl}/public/commons/deps/bootstrap/js/bootstrap.bundle.min.js"></script>
 
   <!-- Core plugin JavaScript-->
-  <script src="${mxurl}public/commons/deps/jquery-easing/jquery.easing.min.js"></script>
+  <script src="${webAppBaseUrl}/public/commons/deps/jquery-easing/jquery.easing.min.js"></script>
 
   <!-- Custom scripts for all pages-->
-  <script src="${mxurl}public/commons/js/sb-admin-2.min.js"></script>
+  <script src="${webAppBaseUrl}/public/commons/js/sb-admin-2.min.js"></script>
 
 </body>
 

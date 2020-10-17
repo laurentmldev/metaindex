@@ -45,6 +45,9 @@ public class GuiLanguagesManager implements IGuiLanguagesManager {
 		catch(Exception e) {			
 			throw new DataProcessException("Unable to load languages definition from database",e);
 		}
+		catch(Throwable e) {			
+			throw new DataProcessException("Unable to load languages definition from database : "+e.getMessage());
+		}
 	}
 	
 	@Override

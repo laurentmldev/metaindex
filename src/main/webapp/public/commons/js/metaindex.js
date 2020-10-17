@@ -201,7 +201,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	}
 	
 	// public method connect
-	this.connect = function(userConnectCallback, debug) {		
+	this.connect = function(userConnectCallback, debug) {	
 		myself._socket = new SockJS(myself._url+myself.MX_WS_ENDPOINT);
 		myself._stompClient = Stomp.over(myself._socket);
 		myself._stompClient.debug = debug;

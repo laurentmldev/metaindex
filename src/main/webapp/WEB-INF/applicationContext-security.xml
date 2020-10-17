@@ -32,10 +32,10 @@ using classpath local versions for spring XSD, otherwise it does not work offlin
 	
 	
 	
-	<form-login login-page='/loginform?secure' 
+	<form-login login-page='/loginform' 
 				default-target-url='/Catalogs'
 				always-use-default-target='false'
-				authentication-failure-url="/loginform?error"
+				authentication-failure-url="/loginform?badcredentials"
 				login-processing-url="/loginprocess" />
 	<logout invalidate-session="true" logout-url="/logoutprocess"  logout-success-url="/loginform?logout" />
 	<access-denied-handler error-page="/public/commons/errors/ProcessError401.jsp" />	

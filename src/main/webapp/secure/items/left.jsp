@@ -2,9 +2,6 @@
 <%@ taglib uri="/struts-tags" prefix="s" %> 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%> 
 
-<c:url value="/" var="mxurl"/>
-
-
 
 <li id="leftbar_item_create" class="nav-item" style="display:none">
  <!--  Modal contents added by javascript in function "_builCreateNewItemForm" down there -->
@@ -132,7 +129,7 @@
 <script type="text/javascript" >
 
 // Title
-function onclickCatalogName(event) { redirectToPage("${mxUrl}/metaindex/Catalogs"); }
+function onclickCatalogName(event) { redirectToPage("${webAppBaseUrl}/Catalogs"); }
 MxGuiLeftBar.setUpTitle("<s:property value='currentUserProfile.catalogVocabulary.name'/> ",onclickCatalogName);
 MxGuiLeftBar.setTitle("<s:text name="Catalogs.configurationPanel" /> ",onclickCatalogName);
  

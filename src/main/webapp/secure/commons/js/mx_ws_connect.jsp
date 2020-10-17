@@ -1,15 +1,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="/struts-tags" prefix="s" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>  
-<c:url value="/" var="mxurl"/>
 
-<script  src="${mxurl}public/commons/deps/sockjs-0.3.min.js"></script>
-<script  src="${mxurl}public/commons/deps/stomp.min.js"></script>
-<script src="${mxurl}public/commons/js/metaindex.js"></script>
+
+<script  src="${webAppBaseUrl}/public/commons/deps/sockjs-0.3.min.js"></script>
+<script  src="${webAppBaseUrl}/public/commons/deps/stomp.min.js"></script>
+<script src="${webAppBaseUrl}/public/commons/js/metaindex.js"></script>
 
 
 <!-- Pako for GZip inflate/deflate for big communication with server  -->
-<script src="${mxurl}public/commons/deps/pako.min.js"></script>
+<script src="${webAppBaseUrl}/public/commons/deps/pako.min.js"></script>
 
 <script type="text/javascript">
 
@@ -64,7 +64,7 @@ function handleMxSessionStatusEvent(sessionStatus) {
 		let redirectToLoginDelayMs=2000;
 		let timer = setInterval(function() { 
 			clearInterval(timer); 
-			document.location.href="${mxurl}loginform?expired" 
+			document.location.href="${webAppBaseUrl}loginform?expired" 
 		}, redirectToLoginDelayMs);
 	}
 }
@@ -88,8 +88,7 @@ function mx_ws_connect(mxHost,mxApiConnectionParams, onConnectFunc) {
 	MxApi.connect(onConnectFunc);
 }
 	
-var curMxHostUrl = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port : '');
-var mxHost=curMxHostUrl+"/metaindex"
+var mxHost="${webAppBaseUrl}";
 var tokenName = "${_csrf.headerName}";
 var tokenVal = "${_csrf.token}";
 var mxApiConnectionParams={};

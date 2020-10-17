@@ -2,8 +2,6 @@
 <%@ taglib uri="/struts-tags" prefix="s" %>  
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<c:url value="/Items" var="itemsUrl"/>
-
 <script type="text/javascript" >
  
  var _curCatalogDesc=null;
@@ -125,7 +123,7 @@
  }
  function details_enterCatalog() {
 	 footer_showAlert(INFO, "<s:text name="Catalogs.enteringCatalog"/>");
-	 redirectToPage("${mxUrl}/metaindex/Items");
+	 redirectToPage("${webAppBaseUrl}/Items");
  }
  
 // remember which tab was open when a Gui refreshed is performed 

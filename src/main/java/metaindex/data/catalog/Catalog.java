@@ -249,7 +249,7 @@ public class Catalog implements ICatalog {
 	}
 	@Override
 	public String getFilesBaseUrl() {
-		return Globals.Get().getAppBaseUrl()+(Globals.LOCAL_USERDATA_PATH_SUFFIX+"/"+this.getName());
+		return Globals.Get().getHttpBaseUrl()+(Globals.LOCAL_USERDATA_PATH_SUFFIX+"/"+this.getName());
 	}
 	
 	@Override

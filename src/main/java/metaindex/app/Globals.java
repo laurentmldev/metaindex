@@ -207,13 +207,19 @@ public class Globals {
         return path;
     }
 	
-	public String getAppBaseUrl() {
-		return Globals.GetMxProperty("mx.protocol")+"://"
-				+Globals.GetMxProperty("mx.host")+":"+Globals.GetMxProperty("mx.port");
+	public String getHttpBaseUrl() {
+		String baseurl= Globals.GetMxProperty("mx.protocol")+"://"
+				+Globals.GetMxProperty("mx.host");
+		String portStr=Globals.GetMxProperty("mx.port");
+		if (portStr.length()>0) { baseurl+=":"+portStr; }
+		return baseurl;
 					
 	}
+	public String getWebAppBaseUrl() {
+		return getHttpBaseUrl()+"/"+Globals.GetMxProperty("mx.appname");					
+	}
 	public String getWebappsTmpUrl() { 
-		String url = getAppBaseUrl()+"/metaindex/secure/mxtmp/";
+		String url = getHttpBaseUrl()+"/metaindex/secure/mxtmp/";
 		return url;
 	}
 	

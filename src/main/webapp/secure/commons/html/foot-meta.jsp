@@ -4,7 +4,7 @@
   
   
   <!-- Should be applied AFTER all the rest ... -->
-  <script src="${mxurl}public/commons/js/sb-admin-2.min.js"></script>
+  <script src="${webAppBaseUrl}/public/commons/js/sb-admin-2.min.js"></script>
   
 
   
