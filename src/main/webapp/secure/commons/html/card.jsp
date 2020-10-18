@@ -64,7 +64,7 @@ function card_buildNewCard(objDescr) {
 	
 	imgUrl=card_extractThumbnailUrl(objDescr);
 	
-	if (imgUrl!=null && imgUrl.match(/\.(jpeg|jpg|gif|png|tif)$/)!=null) {
+	if (imgUrl!=null && imgUrl.toLowerCase().match(/\.(jpeg|jpg|gif|png|tif|webp)$/)!=null) {
 		let img = newCard.querySelector("._img_");
 		img.src=imgUrl;
 		img.style.display="block";		
