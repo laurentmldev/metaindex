@@ -256,14 +256,14 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			
 			// items
 			myself._stompClient.subscribe('/user/queue/items',myself._handleCatalogItemsMsg);
+			myself._stompClient.subscribe('/user/queue/get_catalog_items_allids_response',myself._handleCatalogItemsIdsMsg);
 			myself._stompClient.subscribe('/user/queue/selected_item',myself._handleCatalogSelectedItemMsg);
 			myself._stompClient.subscribe('/user/queue/upload_items_csv_response',myself._handleUploadItemsFromCsvAnswer);
 			myself._stompClient.subscribe('/user/queue/download_items_csv_response',myself._handleDownloadItemsCsvAnswer);
 			myself._stompClient.subscribe('/user/queue/download_items_graph_response',myself._handleDownloadItemsGraphAnswer);
 			myself._stompClient.subscribe('/user/queue/created_item',myself._handleCreatedItemResponseMsg);
 			myself._stompClient.subscribe('/user/queue/upload_userdata_files_response',myself._handleUploadFilesAnswer);
-			myself._stompClient.subscribe('/user/queue/upload_userdata_file_contents_progress',myself._handleUploadFilesContentsAnswer);
-			
+			myself._stompClient.subscribe('/user/queue/upload_userdata_file_contents_progress',myself._handleUploadFilesContentsAnswer);			
 			
 			// fields
 			myself._stompClient.subscribe('/user/queue/field_value',myself._handleUpdateFieldResponseMsg);
@@ -1378,6 +1378,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		
 		
 //------- Retrieve Catalog Items --------
+// retrieve items contents, only for limited to the currently presented subset
 		
 	// contains error/success callback functions of each field update request
 	this.requestCatalogItemsCallbacks=[];	
@@ -1434,11 +1435,73 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		if (requestObj==null) { return; }
 		if (parsedMsg.isSuccess==true) { requestObj.successCallback(parsedMsg); }
 		else {
-			console.log(parsedMsg);
 			let errorMsg=parsedMsg.rejectMessage;
 			// ensure error message is not empty
 			// (otherwise can lead to some mis behaviour in user app (ex: x-editable) )
 			if (errorMsg==undefined) { errorMsg="field-update refused by server, sorry." }
+			requestObj.errorCallback(errorMsg); 
+		}			
+	}
+
+
+	
+//------- Retrieve all Items ids --------
+// retrieve FULL ids list of items corresponding to given query
+	
+	// contains error/success callback functions of each field update request
+	this.requestCatalogItemsIdsCallbacks=[];	
+	
+	// dataObj {
+	//   fromIdx=0
+	//   size=100
+	//   filtersNames=[]
+	//	 query=""
+	//   sortByFieldName=""
+	//   reverseSortOrder=false
+	//   successCallback (func)({items:[],totalHits:<int>,totalItems:<int>})
+	//   errorCallback (func)(msg)
+	// }
+	this.requestCatalogItemsIds = function(dataObj) {
+		if (dataObj.fromIdx==null) { dataObj.fromIdx=0; }
+		if (dataObj.size==null) { dataObj.size=100; }
+		if (dataObj.filtersNames==null) { dataObj.filtersNames=[]; }
+		if (dataObj.query==null) { dataObj.query=""; }
+		if (dataObj.sortByFieldName==null) { dataObj.sortByFieldName=""; }
+		if (dataObj.reverseSortOrder==null) { dataObj.reverseSortOrder=false; }
+		if (myself._callback_CatalogItems_debug==true) {
+			console.log("MxAPI Requesting [Items Ids]");
+		}
+		
+		var curRequestId=myself.requestCatalogItemsIdsCallbacks.length;
+		myself.requestCatalogItemsIdsCallbacks.push(dataObj);
+		
+		let requestObj = {"requestId" : curRequestId,
+					"fromIdx":dataObj.fromIdx, 
+					"size":dataObj.size,
+					"filtersNames":dataObj.filtersNames,
+					"query":dataObj.query,
+					"sortByFieldName":dataObj.sortByFieldName,
+					"reverseSortOrder":dataObj.reverseSortOrder};
+		//console.log(requestObj);
+		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
+		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/get_catalog_items_allids_request", {}, 
+						JSON.stringify(requestObj));
+	}	
+	
+	this._handleCatalogItemsIdsMsg= function (mxCatalogItemsIdsMsg) {
+				
+    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
+		var parsedMsg = JSON.parse(mxCatalogItemsIdsMsg.body);
+		
+		let requestId=parsedMsg.requestId;
+		let requestObj=myself.requestCatalogItemsIdsCallbacks[requestId];
+		if (requestObj==null) { return; }
+		if (parsedMsg.isSuccess==true) { requestObj.successCallback(parsedMsg); }
+		else {
+			let errorMsg=parsedMsg.rejectMessage;
+			// ensure error message is not empty
+			// (otherwise can lead to some mis behaviour in user app (ex: x-editable) )
+			if (errorMsg==undefined) { errorMsg="items-ids refused by server, sorry." }
 			requestObj.errorCallback(errorMsg); 
 		}			
 	}
@@ -1501,7 +1564,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		}		
 	}
 	
-
+	
 //------- Update Term definition --------
 	// contains error/success callback functions of each field update request
 	this.requestTermUpdateCallbacks=[];

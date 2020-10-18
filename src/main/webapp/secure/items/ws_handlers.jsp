@@ -217,6 +217,22 @@ function ws_handlers_requestItemsSearch(query,selectedFiltersNames,sortByFieldNa
 		 						"errorCallback":retrieveItemsError});
 } 
 
+function ws_handlers_requestItemsIdsSearch(query,selectedFiltersNames,sortByFieldName,reversedSortOrder,
+			successCallback,errorCallback) {
+	
+	let fromIdx=0;
+	let size=-1;
+	 MxApi.requestCatalogItemsIds({"fromIdx":fromIdx,
+		 						"size":size,
+		 						"query":query,
+		 						"filtersNames":selectedFiltersNames,
+		 						"sortByFieldName":sortByFieldName,
+		 						"reverseSortOrder":reversedSortOrder,
+		 						"successCallback":successCallback,
+		 						"errorCallback":errorCallback});
+} 
+
+
 	
 function ws_handlers_requestCreateFilter(filterName, query) {
 		

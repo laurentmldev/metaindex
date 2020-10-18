@@ -37,7 +37,7 @@ public class ESDownloadProcess extends AProcessingTask   {
 	private Semaphore _postingDataLock = new Semaphore(1,true);
 	private Semaphore _stoppingProcessingLock = new Semaphore(1,true);
 	private ICatalog _catalog; 
-	private String _targeFileName;
+	private String _targetName;
 
 	private Long _fromIndex=0L;
 	private String _query="";
@@ -60,7 +60,7 @@ public class ESDownloadProcess extends AProcessingTask   {
 						 List< IPair<String,SORTING_ORDER> > sortingOrder) throws DataProcessException { 
 		super(u,name);
 		_catalog=c;
-		this.setTargeFileName(targeFileName);
+		this.setTargetName(targeFileName);
 		this.setTargetNbData(new Long(maxNbItems));
 		_streamHandler=streamHandler;
 		this.setFromIndex(fromIndex);
@@ -232,14 +232,14 @@ public class ESDownloadProcess extends AProcessingTask   {
 		this._sortByFieldName = _sortByFieldName;
 	}
 	
-	public String getTargeFileName() {
-		return _targeFileName;
+	public String getTargetName() {
+		return _targetName;
 	}
 
-	public void setTargeFileName(String targeFileName) {
-		this._targeFileName = targeFileName;
+	public void setTargetName(String targeFileName) {
+		this._targetName = targeFileName;
 	}
 
-	public Boolean isCsvDataGenerated() { return _dataGenerated; }
+	public Boolean isDataGenerated() { return _dataGenerated; }
 
 };

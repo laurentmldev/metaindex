@@ -285,7 +285,39 @@
 	 
 	_curCatalogDesc=curCatalogDescr; 
 	 
-	var bulkActionsInsertSpot = MxGuiDetails.getBulkActionsInsertSpot();	
+	var bulkActionsInsertSpot = MxGuiDetails.getBulkActionsInsertSpot();
+	
+	// get ids-query button
+	
+	var idsQueryButton=document.getElementById("details.getIdsQuery.button");
+	bulkActionsInsertSpot.appendChild(idsQueryButton);
+	idsQueryButton.style.display='block';
+	idsQueryButton.onclick=function(event) {
+		event.stopPropagation();
+		
+		let successIdsReceivedCallback=function(msg) {
+			let luceneQueryStr="(";
+			for (idx in msg.itemsIds) {
+				let curItemId=msg.itemsIds[idx];
+				if (luceneQueryStr.length>1) { luceneQueryStr+=" OR "; }
+				luceneQueryStr+="\""+curItemId+"\"";
+			}
+			luceneQueryStr+=")";
+			copyToClipBoard(luceneQueryStr);
+			footer_showAlert(SUCCESS, "<s:text name="Items.queryCopiedToClipboard" />");
+		}
+		let errorCallback=function(msg) {
+			footer_showAlert(ERROR, "<s:text name="Items.unableToGetItemsIds" />");
+		}
+		let query = MxGuiHeader.getCurrentSearchQuery();
+		let selectedFiltersNames=MxGuiLeftBar.getSelectedFiltersNames();
+		let sortString = MxGuiHeader.getCurrentSearchSortString();
+		let reversedOrder = MxGuiHeader.getCurrentSearchReversedOrder();
+		
+		ws_handlers_requestItemsIdsSearch(query,selectedFiltersNames,sortString,reversedOrder,
+				successIdsReceivedCallback,errorCallback);
+	}
+	
 	// delete-all button
 	if (mx_helpers_isCatalogWritable(MxGuiDetails.getCurCatalogDescription().userAccessRights)) {
 		var deleteAllItemsButton=document.getElementById("details.deleteAll.button");
@@ -414,6 +446,13 @@
   		onCancel="" ><i class="fa fa-times" aria-hidden="true"></i> 
 		<s:text name="Items.deleteAll" />
 	</button>
+
+<button id="details.getIdsQuery.button" type="button" class="btn btn-default btn-sm alert alert-success" 	  
+ 		style="display:none;margin-left:1rem;margin-right:1rem;"		
+  		><i class="fa fa-times" aria-hidden="true"></i> 
+		<s:text name="Items.getIdsQuery" />
+	</button>	
+	
 	
 <script type="text/javascript" >
 	

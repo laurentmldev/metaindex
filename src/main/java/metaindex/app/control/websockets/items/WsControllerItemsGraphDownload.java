@@ -130,7 +130,7 @@ public class WsControllerItemsGraphDownload extends AMxWSController {
     		procTask.stop();
     		//String gexfFileUrl="http://metaindex.fr/metaindex/downloads/xyzazertutj2454RHHF433a";
     		
-    		Boolean success = procTask.isCsvDataGenerated();
+    		Boolean success = procTask.isDataGenerated();
 			answer.setIsSuccess(success);
 			String targetFileUri=Globals.Get().getWebappsTmpUrl()+targetFileBasename;
 			answer.setGraphFileUrl(targetFileUri);

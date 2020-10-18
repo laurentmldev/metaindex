@@ -76,7 +76,7 @@ class GetItemsStreamFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 	 * Retrieve list of items from ElasticSearch
 	 * @param c the catalog (aka the ES index)
 	 * @param fromIdx the 'fromIdx' of elements to retrieve
-	 * @param size how many max elements to retrieve
+	 * @param size how many max elements to retrieve. -1 to get all elements.
 	 * @param query actually query to be substractivly applied (AND) to get searched items
 	 * @param prefilter list of queries additionally (OR) combined to build a pool on which to perform search
 	 * @param sort list of fields to sort from, with associated order (ASC or DESC)

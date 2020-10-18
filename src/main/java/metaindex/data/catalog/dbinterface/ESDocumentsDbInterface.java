@@ -25,6 +25,8 @@ import toolbox.utils.IPair;
 import toolbox.utils.parsers.CsvDumper;
 import toolbox.utils.parsers.GexfDumper;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -83,6 +85,45 @@ public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem>
 		return new ESBulkProcess(u,name,expectedNbActions,c,timestamp,getDataConnector());
 	}
 	
+	public class IdsStreamHandler extends AStreamHandler<IDbItem> {
+
+		private List<String> _targetIdsList=null;
+		public IdsStreamHandler(IUserProfileData u, String name, Long expectedNbActions,List<String> targetIdsList) throws DataProcessException {
+			super(u, name, expectedNbActions, new Date(),"",u.getText("Items.getIdsFilterProgressMsg"));
+			_targetIdsList=targetIdsList;
+		}
+
+		@Override
+		public void beforeFirst() { }
+
+		@Override
+		public void handle(IDbItem o) { _targetIdsList.add(o.getId()); }
+
+		@Override
+		public void flush() throws IOException {}
+
+		@Override
+		public void afterLast() throws IOException { }
+		 		
+	}
+	
+	// -- extract Ids from given search as a Lucene search query
+	public ESDownloadProcess getNewIdsExtractProcessor(IUserProfileData u,
+												  ICatalog c, 
+												  List<String> targetList,/*list to be filled by the processor*/
+												  String name, 
+												  Long expectedNbActions, 
+												  String query,
+												  List<String> preFilters,
+												  List< IPair<String,SORTING_ORDER> > sortingOrder) 
+												throws DataProcessException 
+	{
+
+		AStreamHandler<IDbItem> streamHandler=new IdsStreamHandler(u, name+":IdsGenerator", expectedNbActions, targetList);		
+		
+		return new ESDownloadProcess(u,name, "ids-list", streamHandler,-1L,c,0L,query,preFilters,sortingOrder);
+	}
+		
 	// -- extract CSV from given search
 	public ESDownloadProcess getNewCsvExtractProcessor(IUserProfileData u,
 												  ICatalog c, 

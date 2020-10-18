@@ -44,22 +44,26 @@ import toolbox.utils.IPair;
 import toolbox.utils.StrTools;
 
 @Controller
-public class WsControllerItemsCsvDownload extends AMxWSController {
+public class WsControllerItemsIds extends AMxWSController {
 	
 	private Log log = LogFactory.getLog(WsControllerItemsCsvFileUpload.class);
 	
 	 
 	@Autowired
-	public WsControllerItemsCsvDownload(SimpMessageSendingOperations messageSender) {
+	public WsControllerItemsIds(SimpMessageSendingOperations messageSender) {
 		super(messageSender);		
 	}		
 	
-    @MessageMapping("/download_items_csv_request")
-    @SubscribeMapping ("/user/queue/download_items_csv_response")    				    
-    public void handleDownloadItemsCsvRequest( SimpMessageHeaderAccessor headerAccessor, 
-    											WsMsgCsvDownload_request requestMsg) {
+	/**
+	 * Build a Lucene Query string from Ids 'ex: "(3 OR 354effege OR adfg34-fff)")  corresponding to given query
+	 * This is used to help user building multi layer requests (ex: get all items whose referenced parent has 2 children
+	 */
+    @MessageMapping("/get_catalog_items_allids_request")
+    @SubscribeMapping ("/user/queue/get_catalog_items_allids_response")    				    
+    public void handleBuildItemsIdsRequest( SimpMessageHeaderAccessor headerAccessor, 
+    											WsMsgGetItems_request requestMsg) {
     	Date now = new Date();
-    	WsMsgCsvDownload_answer answer = new  WsMsgCsvDownload_answer(requestMsg);
+    	WsMsgGetItemsIds_answer answer = new  WsMsgGetItemsIds_answer(requestMsg);
     	try {
 	    	
 	    	IUserProfileData user = getUserProfile(headerAccessor);
@@ -87,24 +91,19 @@ public class WsControllerItemsCsvDownload extends AMxWSController {
     		if (requestMsg.getSortByFieldName().length()>0) {
     			sortByFieldName.add(new BasicPair<String,SORTING_ORDER>(requestMsg.getSortByFieldName(),sortOrder));
     		}    
-    		String timestamp = StrTools.Timestamp(new Date());
-    		String targetFileBasename=user.getCurrentCatalog().getName()+"-extract_"+timestamp+".csv";
-    		String targetFileFsPath=Globals.Get().getWebappsTmpFsPath()+targetFileBasename;
     		
+    		List<String> idsList = new ArrayList<String>();
     		
 	    	ESDownloadProcess procTask = Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
-					.getNewCsvExtractProcessor(
+					.getNewIdsExtractProcessor(
 		    			user, 
 		    			user.getCurrentCatalog(),
-		    			 "Extract CSV", 
-		    			 targetFileFsPath,
-		    			 requestMsg.getTermNamesList(),
+		    			idsList,
+		    			 "Extract-Ids", 
 		    			 new Long(requestMsg.getSize()),
-		    			 new Long(requestMsg.getFromIdx()),
 		    			 requestMsg.getQuery(),
 		    			 preFilters,
-		    			 sortByFieldName,
-		    			 now);
+		    			 sortByFieldName);
     		// set-up the download and start the processing task
 	    	user.addProcessingTask(procTask);
     		procTask.start();
@@ -114,25 +113,22 @@ public class WsControllerItemsCsvDownload extends AMxWSController {
     		
     		Boolean success = procTask.isDataGenerated();
 			answer.setIsSuccess(success);
-			String targetFileUri=Globals.Get().getWebappsTmpUrl()+targetFileBasename;
-			answer.setCsvFileUrl(targetFileUri);
-			answer.setCsvFileName(targetFileBasename);
-			answer.setCsvFileSizeMB(new Double(FileSystemUtils.GetTotalSizeBytes(targetFileFsPath)/1000000.0));
+			answer.setItemsIds(idsList);
+			
     		this.messageSender.convertAndSendToUser(
     				headerAccessor.getUser().getName(),
-    				"/queue/download_items_csv_response", 
+    				"/queue/get_catalog_items_allids_response", 
     				answer);
-    		Globals.GetStatsMgr().handleStatItem(new CsvDownloadMxStat(user,user.getCurrentCatalog()));
-    		log.info("generated CSV file '"+targetFileBasename+"' ("+answer.getCsvFileSizeMB()+"MB)");
+    		
 	    } catch (DataProcessException | MessagingException | IOException e) 
 		{
-			log.error("Unable to process download_items_csv_file from '"+headerAccessor.getUser().getName()+"' : "+e);
+			log.error("Unable to process get_catalog_items_allids_file from '"+headerAccessor.getUser().getName()+"' : "+e);
 			e.printStackTrace();
 			
 			answer.setIsSuccess(false);
 			this.messageSender.convertAndSendToUser(
     				headerAccessor.getUser().getName(),
-    				"/queue/download_items_csv_response", 
+    				"/queue/get_catalog_items_allids_response", 
     				answer);
 		}   
     }
