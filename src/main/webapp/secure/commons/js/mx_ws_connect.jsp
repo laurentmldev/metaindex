@@ -64,7 +64,7 @@ function handleMxSessionStatusEvent(sessionStatus) {
 		let redirectToLoginDelayMs=2000;
 		let timer = setInterval(function() { 
 			clearInterval(timer); 
-			document.location.href="${webAppBaseUrl}loginform?expired" 
+			document.location.href="${webAppBaseUrl}/loginform?expired" 
 		}, redirectToLoginDelayMs);
 	}
 }

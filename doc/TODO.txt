@@ -3,6 +3,10 @@
 v2.1.0:
 -------
 
+download links still reference "metaindex" app path 
+/metaindex/secure/mxtmp/testdemo-extract_2020-10-19_00-04-22.gexf
+/metaindex/secure/mxtmp/testdemo-extract_2020-10-19_00-04-54.csv
+
 fr version for "you've been exited from catalog ... "
 
 #55 tutorial videos on youtube
