@@ -114,7 +114,7 @@ public class WsControllerItemsGraphDownload extends AMxWSController {
 					.getNewGexfExtractProcessor(
 		    			user, 
 		    			user.getCurrentCatalog(),
-		    			 "Extracting GEXF", 
+		    			 user.getText("Items.downloadItems.gexf.extracting"), 
 		    			 targetFileFsPath,
 		    			 nodesDataTermsList,
 		    			 edgesTermsList,
@@ -229,7 +229,7 @@ public class WsControllerItemsGraphDownload extends AMxWSController {
 					.getNewGexfGroupByExtractProcessor(
 		    			user, 
 		    			user.getCurrentCatalog(),
-		    			 "Extracting GroupBy GEXF", 
+		    			user.getText("Items.downloadItems.gexf.extracting"), 
 		    			 targetFileFsPath,
 		    			 groupingTerm,
 		    			 edgeTerm,

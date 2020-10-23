@@ -47,11 +47,12 @@
   let header_preferences_onValidFormCallback = function(fieldsList) {
 	  
 	  let onSuccessCallback=function() {
-		  footer_showAlert(INFO, "Refreshing panorama ...");
+		  footer_showAlert(INFO, "<s:text name="Profile.refreshingWindow" /> ...");
 		  redirectToPage("${mxCurPage}");		  
 	  }
 	  let onErrorCallback=function(errorMsg) {
-		  footer_showAlert(ERROR, "Sorry, unable to update your preferences. "+errorMsg);
+		  footer_showAlert(ERROR, "<s:text name="Profile.unableToUpdatePreferences" />");
+		  log.error("Error updating preferences : " + errorMsg);
 	  }
 	  
 	  MxApi.requestSetUserPreferences({

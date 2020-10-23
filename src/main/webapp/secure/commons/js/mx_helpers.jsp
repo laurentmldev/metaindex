@@ -58,7 +58,7 @@
 	  footerOkButton.style["max-width"]="30%";
 	  footerOkButton.innerHTML="<s:text name="global.ok" />";
 	  
-	  console.log("browserInfo.navigator="+browserInfo.navigator+" browserInfo.version="+browserInfo.version);
+	  //console.log("browserInfo.navigator="+browserInfo.navigator+" browserInfo.version="+browserInfo.version);
 	  if (browserInfo.navigator!=SUPPORTED_BROWSER_NAME || browserInfo.version<SUPPORTED_BROWSER_VERSION) {
 		  let text="<s:text name="global.warnBrowserVersion.1" /> "+browserInfo.navigator+" v"+browserInfo.version+"<br/><br/>"
 		  		+"<s:text name="global.warnBrowserVersion.2" /> "+SUPPORTED_BROWSER_NAME+" v"+SUPPORTED_BROWSER_VERSION+"<br/><br/>"
@@ -159,12 +159,12 @@ function mx_helpers_getItemDetailsById(itemId, receivedItemContentsCallback) {
 
 	retrieveItemsSuccess=function(itemsAnswerMsg) {
 		if (itemsAnswerMsg.totalHits==0) {
-			console.log("no such item : '"+itemId+"'");
+			//console.log("no such item : '"+itemId+"'");
 			receivedItemContentsCallback(null);
 			return;
 		}
 		if (itemsAnswerMsg.totalHits>1) { 
-			console.log("more than one item matching : '"+itemId+"'");
+			//console.log("more than one item matching : '"+itemId+"'");
 			receivedItemContentsCallback(null);
 			return;
 		}

@@ -105,7 +105,7 @@
 		 return;
 	 }
 	// GUI refreshed on 'CatalogContentsChanged' message received appart
-	 footer_showAlert(SUCCESS, "Filter '"+msg.filterName+"' query updated as : \""+msg.query+"\"");
+	 footer_showAlert(SUCCESS, "<s:text name="Items.filters.updated" /> : "+msg.filterName+"=\""+msg.query+"\"");
  }
  function handleMxWsCatalogs(msg) {
 	 if (msg.length!=1) {

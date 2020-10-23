@@ -16,7 +16,7 @@ function _commons_perspective_build_section(catalogDesc,perspectiveData,tabIdx,s
 		
 		 let sectionDefinition=perspectiveData.tabs[tabIdx].sections[sectionIdx];
 		 if (sectionDefinition==null) {
-			 footer_showAlert(WARNING,"inconsistent perspective definition : missing section def. at index "+sectionIdx);
+			 footer_showAlert(WARNING,"<s:text name="Catalogs.perspectives.section.inconsistent" /> "+sectionIdx);
 			 return;
 		 }
 		 let sectionTemplate=document.getElementById("_commons_perspectives_tabsection_template_").cloneNode(true);
@@ -54,7 +54,7 @@ function _commons_perspective_build_section(catalogDesc,perspectiveData,tabIdx,s
 			 let onSectionTitleChangeSuccessCallback=function(fieldName,fieldValue) { perspectiveData.tabs[tabIdx].sections[sectionIdx].title=fieldValue; }	 
 			 let editableTitleNode = xeditable_create_text_field(
 					 	"perspective_"+perspectiveData.id+"_"+tabIdx+"_"+sectionIdx+"_title" /* pk */,
-						"Title",false /*show fieldName*/,
+						"<s:text name="Catalogs.perspectives.field.title" />",false /*show fieldName*/,
 						sectionDefinition.title,
 						onSectionTitleChangeCallback, onSectionTitleChangeSuccessCallback);
 			 titleNode.innerHTML="";
@@ -173,7 +173,8 @@ function _commons_perspective_build_section(catalogDesc,perspectiveData,tabIdx,s
  			 		
 	 	 }	
 		 if (listOfMissingTermsInCatalog!="") {
-		 	footer_showAlert(WARNING, "Some terms defined in section '"+sectionDefinition.title+"' do not exist in catalog : "+listOfMissingTermsInCatalog);
+		 	footer_showAlert(WARNING, "<s:text name="Catalogs.perspectives.missingFields.1" /> '"+sectionDefinition.title
+		 					+"' <s:text name="Catalogs.perspectives.missingFields.2" /> : "+listOfMissingTermsInCatalog);
 		 }
 		 
 		 // add-new-field trailing card

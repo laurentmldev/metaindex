@@ -382,11 +382,10 @@ function _commons_perspective_buildEditableReferenceTerm(catalogDesc,tabIdx,sect
 	 // value
 	 let valueNode = fieldNode.querySelector("._value_");
 	 let onRefsUpdateSuccessCallback=function(fieldname,newvalue) {
-		 successCallback(fieldname,newvalue);
-		 footer_showAlert(SUCCESS, "List updated for "+fieldname);		 		 
+		 successCallback(fieldname,newvalue);	 		 
 	 }
 	 let onRefsUpdateErrorCallback=function(msg) {
-		 footer_showAlert(WARNING, "Sorry list could not be updated : "+msg); 
+		 footer_showAlert(WARNING, "<s:text name="Catalogs.field.couldNotUpdate" /> : "+msg); 
 	 }
 	 let onRefsListChangeCallBack=function(newValue,guiSuccessCallback) {
 		 let successCallbackWithGui=function(fieldname,newvalue) {

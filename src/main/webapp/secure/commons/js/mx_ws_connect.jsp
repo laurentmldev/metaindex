@@ -23,7 +23,7 @@ function handleMxWsHeartbeatEvent(event) {
 	}
 	
 	else if (event=='FAILURE') { 
-		footer_showAlert(ERROR, "Metaindex Server Failure detected",null,999999999);
+		footer_showAlert(ERROR, "<s:text name="metaindex.failure" />",null,999999999);
 	}
 	else if (event=='RUNNING') { 
 		// do nothing special
@@ -98,7 +98,10 @@ mxApiConnectionParams[tokenName]=tokenVal;
 
 function ws_handlers_requestPlanUpdate(planId,onResponseCallback) {
 	
-	function errorCallback(msg) { footer_showAlert(WARNING, "Unable to contact server for Plan Update details : "+msg); }
+	function errorCallback(msg) { 
+		footer_showAlert(WARNING, "<s:text name="Profile.plans.unableToGetPlansDetails" />");
+		console.log("Plans Update error : "+msg);
+	}
 	
 	MxApi.requestPlanUpdate({	"userId":<s:property value="currentUserProfile.id"/>,
 								"planId":planId,
@@ -111,7 +114,10 @@ function ws_handlers_requestPlanUpdate(planId,onResponseCallback) {
 
 function ws_handlers_requestPlanUpdateConfirmPayment(planId,transactionId,totalCost,paymentMethod,paymentDetailsStr,onResponseCallback) {
 	
-	function errorCallback(msg) { footer_showAlert(WARNING, "Unable to contact server for Plan Update Payment Confirmation : "+msg); }
+	function errorCallback(msg) { 
+		footer_showAlert(WARNING, "<s:text name="Profile.plans.unableToContactServerForPaymentConfirm" />");
+		console.log("Plans Payment Confirmation error : "+msg);
+	}
 	
 	MxApi.requestPlanUpdatePaymentConfirm({	"userId":<s:property value="currentUserProfile.id"/>,
 								"planId":planId,
