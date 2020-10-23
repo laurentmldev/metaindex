@@ -17,9 +17,6 @@
 <body id="page-top" 
 	onload="checkBrowser(); websocketsStartup();">
 
-<div>
-<s:text name="Profile.plans.planUpdateFailed" />
-</div>
   <!-- Page Wrapper -->
   <div id="wrapper">
 

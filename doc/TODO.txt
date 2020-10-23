@@ -3,10 +3,6 @@
 v2.1.0:
 -------
 
-terms & conditions: 
-  - what is recorded and why
-  - don't put bad data and respect the european act 
-
 request access to catalog: warn that catalog admins will have access to your email address
  
 when upload CSV : button to upload the file as raw data in the drive

@@ -2,6 +2,20 @@
 <%@ taglib uri="/struts-tags" prefix="s" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>  
   
+  
+  <script>
+  function showTermsAndConditions() {
+	  
+	  let textNode=document.createElement("div");
+	  textNode.innerHTML='<s:text name="signup.termsAndCondition.body" />';
+	  textNode.style["font-size"]="0.8rem";
+	  
+	  MxGuiHeader.showInfoModal(
+  			"<s:text name='signup.termsAndCondition' />",
+  			textNode
+  			);
+  }
+  </script>
   <!-- Footer -->
   		
       <footer class="sticky-footer bg-white">
@@ -11,8 +25,10 @@
         </div>
         <div class="container my-auto">
           <div class="mx-copyright text-center my-auto">
-            <span><s:text name="globals.copyright"/> - MetaindeX v<s:property value="mxVersion"/></span>
+            <div><s:text name="globals.copyright"/> - MetaindeX v<s:property value="mxVersion"/></div>
+            <a href="#" onclick="showTermsAndConditions();"><s:text name="signup.termsAndCondition"/></a>            
           </div>
+          
         </div>
       </footer>
       
