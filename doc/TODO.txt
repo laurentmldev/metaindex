@@ -3,7 +3,7 @@
 v2.1.0:
 -------
 
-request access to catalog: warn that catalog admins will have access to your email address
+
  
 when upload CSV : button to upload the file as raw data in the drive
 

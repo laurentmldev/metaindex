@@ -12,6 +12,12 @@ function buildCatalogsSearchPopup(parentNode) {
 	catalogsSearchPopupNode.id=MX_CATALOGS_SEARCH_POPUP_ID;
 	parentNode.appendChild(catalogsSearchPopupNode);
 	
+	let emailVisibleByAdminsWarning=document.createElement("div");
+	emailVisibleByAdminsWarning.innerHTML="<s:text name="Catalogs.warnEmailVisibleByCatalogAdmins" />";
+	emailVisibleByAdminsWarning.style["margin-top"]="0.3rem";
+	emailVisibleByAdminsWarning.style["margin-bottom"]="0.3rem";
+	bodynode.append(emailVisibleByAdminsWarning);
+	
 	let catalogsTable = document.createElement("table");
 	catalogsTable.id="catalogsSearchTable";
 	catalogsTable.classList.add("table");
