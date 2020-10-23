@@ -21,7 +21,7 @@
 		            <span id="info_modal_title"> </span>
 		        	<span class="scale" style="cursor:pointer" onclick="MxGuiHeader.hideInfoModal()">X</span>
 		       </div>
-		       <div id="info_modal_body" class="modal-body"  style="overflow:auto;max-height:50vh;"></div>
+		       <div id="info_modal_body" class="modal-body"  style="overflow:auto;max-height:40vh;"></div>
 		       <div id="info_modal_footer" class="modal-footer"></div>				       
 		     </div>
 	     </div>

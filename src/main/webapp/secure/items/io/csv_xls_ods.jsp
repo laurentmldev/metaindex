@@ -194,7 +194,7 @@ function _getSelectedCsvColumnsDef(csvColsTable) {
 	return csvColsTermsMap;
 }
 
-function _showCsvPrevisu(CSVrows,fileNameTxt,isExcelFile) {
+function _showCsvPrevisu(CSVrows,fileNameTxt,isExcelFile,fileHandle) {
 	
 	let previsuNode=document.getElementById('datafile_contents_previsu_body').cloneNode(true);
 	let previsuNodeFooter=document.getElementById('datafile_contents_previsu_footer').cloneNode(true);
@@ -241,6 +241,17 @@ function _showCsvPrevisu(CSVrows,fileNameTxt,isExcelFile) {
 		ws_handlers_refreshItemsGui();
 		MxGuiHeader.hideInfoModal();		
 	}
+	let uploadDriveBtn=previsuNodeFooter.querySelector('._uploadDriveBtn_');
+	uploadDriveBtn.onclick=function() {
+		footer_showAlert(INFO,"<s:text name="global.pleasewait"/>",null,5000);	
+		
+		let onUploadSuccessCallback=function() {}
+		let onUploadFailureCallback=function(errorMsg) { footer_showAlert(ERROR, errorMsg); }
+		ws_handlers_uploadFiles(MxGuiHeader.getCurCatalogDescr(),fileHandle.files,
+										onUploadSuccessCallback,onUploadFailureCallback);		
+		
+		MxGuiHeader.hideInfoModal();		
+	}
 	
 	// show
 	MxGuiHeader.showInfoModal("<s:text name="Items.uploadItems.fromDataFile" />",previsuNode,previsuNodeFooter);
@@ -253,7 +264,7 @@ function _handleCsvDataFile(fileHandle) {
 	reader.onload = function (file_contents) {
 		let fileName = fileHandle.files[0].name;
     	let CSVrows = file_contents.target.result.split("\n");
-    	_showCsvPrevisu(CSVrows,fileName,false);
+    	_showCsvPrevisu(CSVrows,fileName,false,fileHandle);
     }
     reader.readAsText(fileHandle.files[0]);
 }
@@ -305,7 +316,7 @@ function _handleExcelDataFile(fileHandle) {
 			var csv = XLSX.utils.sheet_to_csv(workbook.Sheets[sheetName], {raw:false});
 			if(csv.length){
 				//console.log(csv);		    	
-				_showCsvPrevisu(csv.split('\n'),fileName,isExcelFile);
+				_showCsvPrevisu(csv.split('\n'),fileName,isExcelFile,fileHandle);
 			}
 		}
 		if (workbook.SheetNames.length>1) {
@@ -441,9 +452,12 @@ MxGuiLeftBar.showDownloadCsvPrevisu=function() {
  		  </label>
  		  
  		  <div id="datafile_contents_previsu_body" style="display:none">
- 		  		 <div><span class="_filename_"></span> : <span class="_nbEntries_"></span> entries</div>
+ 		  		 <div><span class="_filename_"></span> : <span class="_nbEntries_"></span> <s:text name="Items.serverside.uploadItems.entries" /></div>
  		  		 <table style="margin-top:1rem;" class="_csv_columns_tbl_">
- 		  		 	<tr><th style="padding-right:1rem;min-width:2rem;"></th><th>Csv Column</th><th>Catalog Field</th></tr>
+ 		  		 	<tr><th style="padding-right:1rem;min-width:2rem;"></th>
+ 		  		 		<th><s:text name="Items.serverside.uploadItems.fileColumn"/></th>
+ 		  		 		<th><s:text name="Items.serverside.uploadItems.catalogField"/></th>
+ 		  		 	</tr>
  		  		 </table>
 			</div>
 			<div id="datafile_contents_previsu_footer" style="display:none">
@@ -454,9 +468,14 @@ MxGuiLeftBar.showDownloadCsvPrevisu=function() {
 				<div class="_warning_update_noid_" style="margin-bottom:1rem;font-size:0.8rem;display:'none'">
 					<s:text name="Items.uploadItems.warningNotOverridingContents"/>
 				</div>
- 		  		 <label class="_uploadBtn_ d-none d-sm-inline-block btn-big btn btn-info shadow-sm mx-left-button"  >
+				 <label class="_uploadBtn_ d-none d-sm-inline-block btn-big btn btn-info shadow-sm mx-left-button"  >
  		  				<i class="fas fa-upload fa-sm text-white" style="margin-right:1em"></i><s:text name="global.go"></s:text>
  		  		</label>
+ 		  		<label class="_uploadDriveBtn_ d-none d-sm-inline-block btn-big btn btn-info shadow-sm mx-left-button"  
+							style="background:grey">
+ 		  				<i class="fas fa-upload fa-sm text-white" style="margin-right:1em"></i><s:text name="Items.serverside.uploadItems.importAsRawFile"></s:text>
+ 		  		</label>
+ 		  		
 			</div>
  		  <!-- not displayed but used for the file input -->
  		 <span style="display:none">	 		 	
