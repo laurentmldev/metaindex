@@ -484,7 +484,9 @@ public static final Integer NB_DAYS_PLAN_DISCOUNT=182;// approx. half a year
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_confirm_payment_answer", answer);
     			
     			user.sendEmailCCiAdmin(  user.getText("Profile.plans.email.purchaseNotConfirmed.title",requestMsg.getPaymentMethod().toString()), 
-										user.getText("Profile.plans.email.purchaseNotConfirmed.body",user.getNickname(),requestMsg.getTransactionId()));
+										user.getText("Profile.plans.email.purchaseNotConfirmed.body",user.getNickname(),
+														Globals.Get().getWebAppBaseUrl(),
+														requestMsg.getTransactionId()));
 
     			return;
     		}
@@ -511,7 +513,9 @@ public static final Integer NB_DAYS_PLAN_DISCOUNT=182;// approx. half a year
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_confirm_payment_answer", answer);
     			
     			user.sendEmailCCiAdmin(  user.getText("Profile.plans.email.purchaseNotConfirmed.title",requestMsg.getPaymentMethod().toString()), 
-										user.getText("Profile.plans.email.purchaseNotConfirmed.body",user.getNickname(),requestMsg.getTransactionId()));
+										user.getText("Profile.plans.email.purchaseNotConfirmed.body",user.getNickname(),
+																	Globals.Get().getWebAppBaseUrl(),
+																	requestMsg.getTransactionId()));
 
     			return;
     		}

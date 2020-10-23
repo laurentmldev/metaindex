@@ -768,7 +768,8 @@ public class WsControllerCatalog extends AMxWSController {
 						catalogOwner.getText("Catalogs.users.email.joinRequest.body",
 								catalogOwner.getNickname(),
 								user.getNickname(),
-								c.getName()));
+								c.getName(),
+								Globals.Get().getWebAppBaseUrl()));
 			} catch (Throwable e) {
 				answer.setRejectMessage("Unable to notify admins to give you access rights to this catalog.");
 				this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/join_catalog", answer);

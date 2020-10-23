@@ -3,11 +3,13 @@
 v2.1.0:
 -------
 
-terms & conditions: what is recorded and why
+terms & conditions: 
+  - what is recorded and why
+  - don't put bad data and respect the european act 
 
 request access to catalog: warn that catalog admins will have access to your email address
  
-when upload CSV : button to upload as data in the drive
+when upload CSV : button to upload the file as raw data in the drive
 
 Go back to life : -> metaindex.fr:20000/welcome
 
@@ -17,9 +19,7 @@ test titres emails en français avec signes HTML
 
 test data storage persistence on reboot (did not work on mac_dev target)
 
-verify that link to plans is available when quotas exceeded
-
-link to contact form in help texts
+improve text color for  "link to plans when quotas exceeded"
 
 v2.1.1:
 -------
