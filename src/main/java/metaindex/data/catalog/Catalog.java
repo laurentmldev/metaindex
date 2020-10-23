@@ -297,8 +297,8 @@ public class Catalog implements ICatalog {
 			u.setCurrentCatalog(0);
 			this.quit(u);
 			if (getFtpServer()!=null) { getFtpServer().setUser(u, false); }
-			u.sendGuiWarningMessage("You have been exited from catalog '"+this.getName()
-										+"' after an action of '"+activeUser.getNickname()+"'");
+			u.sendGuiWarningMessage(
+						u.getText("Catalogs.exitedWarning",this.getName(),activeUser.getNickname()));
 		}
 	}
 	

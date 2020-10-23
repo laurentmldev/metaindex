@@ -1,5 +1,7 @@
 package metaindex.data.term.dbinterface;
 
+import java.io.IOException;
+
 /*
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -20,6 +22,7 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
 import metaindex.data.catalog.ICatalog;
+import metaindex.data.term.CatalogTerm;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
 import toolbox.database.elasticsearch.ElasticSearchConnector;
@@ -36,6 +39,88 @@ class CreateFieldIntoEsDbStmt extends ESWriteStmt<ICatalogTerm>   {
 		_catalog=c;
 	}
 	
+	private void addTermToELKBuider(ICatalogTerm t,
+									XContentBuilder builder,
+									/*optional*/List<ICatalogTerm> implicitTerms)
+											throws IOException {
+		String termName=t.getRawFieldName();
+		
+		builder.startObject(termName); {
+        	// build directly elasticsearch type string from our FIELD_TYPE enum string,
+        	// removing prefix 'T' letter.
+        	String esTypeStr = ICatalogTerm.getRawDatatype(t.getDatatype()).toString();
+        	esTypeStr=esTypeStr.replaceFirst("T", "");
+            builder.field("type", esTypeStr);				            
+            				            
+            // for text objects, add a keyword subtype as 'raw', in order to allow
+            // ElasticSearch to sort search results following this field
+            if (ICatalogTerm.getRawDatatype(t.getDatatype())==RAW_DATATYPE.Ttext) {
+            	builder.field("fielddata", true);// allow significant terms search
+            	builder.startObject("fields");
+            	{
+            		builder.startObject("keyword"); {
+	            		builder.field("type", "keyword");
+	            	} builder.endObject();
+            	} builder.endObject();
+            }
+            else if (ICatalogTerm.getRawDatatype(t.getDatatype())==RAW_DATATYPE.Tdate) {
+            	if (implicitTerms!=null) {
+	            	ICatalogTerm centuryImplicitTerm = ICatalogTerm.BuildCatalogTerm(RAW_DATATYPE.Tinteger);
+	            	centuryImplicitTerm.setName(termName+"_century");
+	            	implicitTerms.add(centuryImplicitTerm);
+            	}
+            	
+    			builder.field("ignore_malformed", "true");
+    			builder.field("null_value", "1970/01/01");
+    			
+    			builder.field("format",  
+    									"yyyy"
+    											            									
+    									+"||MM/yy"
+    									+"||MM-yy"
+    									
+    									+"||MM/yyyy"
+    									+"||MM-yyyy"
+    									
+    									+"||yyyy/MM/dd"
+    									+"||yyyy/MM"
+    									+"||yyyy/MM/dd HH:mm"
+										+"||yyyy/MM/dd HH:mm:ss"
+    									+"||yyyy/MM/dd HH:mm:ss.SSS"
+    									
+										+"||yyyy-MM-dd"
+										+"||yyyy-MM"
+										+"||yyyy-MM-dd HH:mm"
+										+"||yyyy-MM-dd HH:mm:ss"
+		            					+"||yyyy-MM-dd HH:mm:ss.SSS"
+    													    									
+										+"||dd-MM-yy"
+										+"||dd-MM-yyyy"
+										+"||dd-MM-yyyy HH:mm"
+										+"||dd-MM-yyyy HH:mm:ss"
+    									+"||dd-MM-yyyy HH:mm:ss.SSS"
+										
+    									+"||dd/MM/yy"
+    									+"||dd/MM/yyyy"
+										+"||dd/MM/yyyy HH:mm"
+    									+"||dd/MM/yyyy HH:mm:ss"
+    									+"||dd/MM/yyyy HH:mm:ss.SSS"
+    									
+    									// ISO-8601
+										//+"||yyyy-MM-ddTHH:mm:ssZ"
+										//+"||yyyy-MM-ddTHH:mm:ss.SSSZ"
+    									);
+
+    			builder.startObject("fields");
+            	{
+            		builder.startObject("keyword"); {
+	            		builder.field("type", "keyword");
+	            	} builder.endObject();
+            	} builder.endObject();
+            }
+            
+        } builder.endObject();
+	}
 	@Override
 	public Boolean execute() throws DataProcessException {
 		PutMappingRequest request = new PutMappingRequest(_catalog.getName());
@@ -47,80 +132,18 @@ class CreateFieldIntoEsDbStmt extends ESWriteStmt<ICatalogTerm>   {
 			builder.startObject(); {
 				
 			  builder.startObject("properties"); {
-			      
-			    	for (ICatalogTerm t : _data) {
-			    		String termName=t.getRawFieldName();
-			    		
-			    		builder.startObject(termName); {
-				        	// build directly elasticsearch type string from our FIELD_TYPE enum string,
-				        	// removing prefix 'T' letter.
-				        	String esTypeStr = ICatalogTerm.getRawDatatype(t.getDatatype()).toString();
-				        	esTypeStr=esTypeStr.replaceFirst("T", "");
-				            builder.field("type", esTypeStr);				            
-				            				            
-				            // for text objects, add a keyword subtype as 'raw', in order to allow
-				            // ElasticSearch to sort search results following this field
-				            if (ICatalogTerm.getRawDatatype(t.getDatatype())==RAW_DATATYPE.Ttext) {
-				            	builder.field("fielddata", true);// allow significant terms search
-				            	builder.startObject("fields");
-				            	{
-				            		builder.startObject("keyword"); {
-					            		builder.field("type", "keyword");
-					            	} builder.endObject();
-				            	} builder.endObject();
-				            }
-				            else if (ICatalogTerm.getRawDatatype(t.getDatatype())==RAW_DATATYPE.Tdate) {
-		            			builder.field("ignore_malformed", "true");
-		            			builder.field("null_value", "1970/01/01");
-		            			
-		            			builder.field("format",  
-		            									"yyyy"
-		            											            									
-		            									+"||MM/yy"
-		            									+"||MM-yy"
-		            									
-		            									+"||MM/yyyy"
-		            									+"||MM-yyyy"
-		            									
-		            									+"||yyyy/MM/dd"
-		            									+"||yyyy/MM"
-		            									+"||yyyy/MM/dd HH:mm"
-														+"||yyyy/MM/dd HH:mm:ss"
-		            									+"||yyyy/MM/dd HH:mm:ss.SSS"
-				    									
-														+"||yyyy-MM-dd"
-														+"||yyyy-MM"
-														+"||yyyy-MM-dd HH:mm"
-														+"||yyyy-MM-dd HH:mm:ss"
-						            					+"||yyyy-MM-dd HH:mm:ss.SSS"
-				    													    									
-														+"||dd-MM-yy"
-														+"||dd-MM-yyyy"
-														+"||dd-MM-yyyy HH:mm"
-														+"||dd-MM-yyyy HH:mm:ss"
-				    									+"||dd-MM-yyyy HH:mm:ss.SSS"
-														
-				    									+"||dd/MM/yy"
-				    									+"||dd/MM/yyyy"
-														+"||dd/MM/yyyy HH:mm"
-				    									+"||dd/MM/yyyy HH:mm:ss"
-				    									+"||dd/MM/yyyy HH:mm:ss.SSS"
-				    									
-				    									// ISO-8601
-														//+"||yyyy-MM-ddTHH:mm:ssZ"
-														//+"||yyyy-MM-ddTHH:mm:ss.SSSZ"
-		            									);
-
-		            			builder.startObject("fields");
-				            	{
-				            		builder.startObject("keyword"); {
-					            		builder.field("type", "keyword");
-					            	} builder.endObject();
-				            	} builder.endObject();
-				            }
-				            
-				        } builder.endObject();
-					}			    
+			        List<ICatalogTerm> implicitTerms = new ArrayList<>();
+			        
+			        // some of the terms require the creation of extra complementary terms
+			        // Ex: for each date we create a century field
+			        for (ICatalogTerm t : _data) {
+			    		addTermToELKBuider(t,builder,implicitTerms);
+					}	
+			    	
+			        for (ICatalogTerm t : implicitTerms) {
+			    		addTermToELKBuider(t,builder,null);
+					}	
+			    	
 			      } builder.endObject();
 			} builder.endObject();
 			request.source(builder);

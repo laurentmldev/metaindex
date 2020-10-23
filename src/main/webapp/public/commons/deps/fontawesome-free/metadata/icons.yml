@@ -6702,7 +6702,7 @@ file:
       - new
       - page
       - pdf
-      - resume
+      - summary
   styles:
     - solid
     - regular

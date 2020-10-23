@@ -47,8 +47,8 @@ public class GexfDumper<T extends IFieldValueMapObject> extends AStreamHandler<T
 	
 	Long _nbEdges = 0L;
 	
-	XMLStreamWriter _xmlStreamWriter=null;
-	XMLStreamWriter _xmlStreamWriterEdges=null;
+	protected XMLStreamWriter _xmlStreamWriter=null;
+	protected XMLStreamWriter _xmlStreamWriterEdges=null;
 	
 	public GexfDumper(IUserProfileData u, 
 						 String name, 
@@ -65,13 +65,15 @@ public class GexfDumper<T extends IFieldValueMapObject> extends AStreamHandler<T
 		
 	}
 	
-	private String termType2gexfType(RAW_DATATYPE rawtype) {
+	protected String termType2gexfType(RAW_DATATYPE rawtype) {
 		if (rawtype==RAW_DATATYPE.Tshort) { return "integer"; }
 		if (rawtype==RAW_DATATYPE.Tinteger) { return "long"; }
 		if (rawtype==RAW_DATATYPE.Tfloat) { return "double"; }
 		
 		return "string";	
 	}
+	
+	protected void addCustomAttributes() throws XMLStreamException {};
 	@Override
 	public void beforeFirst() {
 		try {
@@ -107,7 +109,7 @@ public class GexfDumper<T extends IFieldValueMapObject> extends AStreamHandler<T
 			// description
             _xmlStreamWriter.writeCharacters("\n		");			
             _xmlStreamWriter.writeStartElement("description");
-            _xmlStreamWriter.writeCharacters("Contents extracted from  MetaindeX app");
+            _xmlStreamWriter.writeCharacters("Contents extracted from MetaindeX app");
             _xmlStreamWriter.writeEndElement();
 			
             _xmlStreamWriter.writeCharacters("\n	");
@@ -135,6 +137,7 @@ public class GexfDumper<T extends IFieldValueMapObject> extends AStreamHandler<T
 				_xmlStreamWriter.writeAttribute("type",gexfType);				
 				_xmlStreamWriter.writeEndElement();
 			}
+            addCustomAttributes();
             _xmlStreamWriter.writeCharacters("\n		");
             _xmlStreamWriter.writeEndElement();
             
@@ -199,6 +202,7 @@ public class GexfDumper<T extends IFieldValueMapObject> extends AStreamHandler<T
 						_xmlStreamWriterEdges.writeAttribute("id",_nbEdges.toString());
 						_xmlStreamWriterEdges.writeAttribute("source",item.getId());
 						_xmlStreamWriterEdges.writeAttribute("target",curTargetId);
+						_xmlStreamWriterEdges.writeAttribute("wheight","1");// default edge weight
 						_xmlStreamWriterEdges.writeEndElement();
 						_nbEdges++;
 					}

@@ -19,6 +19,9 @@ public class WsMsgGraphDownload_answer implements IWsMsg_answer {
 	public WsMsgGraphDownload_answer(WsMsgGraphDownload_request request) {
 		this.setRequestId(request.getRequestId());
 	}
+	public WsMsgGraphDownload_answer(WsMsgGraphDownloadGroupBy_request request) {
+		this.setRequestId(request.getRequestId());
+	}
 	
 	public String getGraphFileUrl() {
 		return _graphFileUrl;

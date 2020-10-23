@@ -38,7 +38,7 @@ public class CatalogTerm implements ICatalogTerm {
 	private Map<String,Object> _mappingProperties = new HashMap<>();
 	private RAW_DATATYPE _rawDatatype;
 	
-	// shall be built by BuildCatalogTerm factory method only
+	// shall be built by ICatalogTerm.BuildCatalogTerm factory method only
 	// in order to ensure that proper dynamic class is instanciated
 	protected CatalogTerm() {}
 

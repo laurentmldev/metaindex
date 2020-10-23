@@ -212,8 +212,8 @@ public class Globals {
 	public String getWebAppBaseUrl() {
 		return getHttpBaseUrl()+"/"+Globals.GetMxProperty("mx.appname");					
 	}
-	public String getWebappsTmpUrl() { 
-		String url = getHttpBaseUrl()+"/metaindex/secure/mxtmp/";
+	public String getWebAppsTmpUrl() { 
+		String url = getWebAppBaseUrl()+"/secure/mxtmp/";
 		return url;
 	}
 	

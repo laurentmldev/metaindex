@@ -7,11 +7,8 @@
 
 // ---------------- DOWNLOAD GEXF File-----------------
 
-MxGuiLeftBar.showDownloadGexfPrevisu=function() {
-	
-	let catalogDescr = MxGuiDetails.getCurCatalogDescription();
-	let sortedTermsNames = Object.keys(catalogDescr.terms).sort();
-	
+
+function _buildGexfForm(catalogDescr,sortedTermsNames) {
 	// body
 	let previsuNode=document.getElementById('gexf_contents_previsu_body_download').cloneNode(true);
 	previsuNode.style.display='block';
@@ -70,7 +67,6 @@ MxGuiLeftBar.showDownloadGexfPrevisu=function() {
 	
 	// footer
 	let previsuNodeFooter=document.getElementById('gexf_contents_previsu_download_footer').cloneNode(true);
-	previsuNodeFooter.style.display='block';
 	
 	// Go button
 	let downloadBtn=previsuNodeFooter.querySelector('._downloadBtn_');
@@ -100,11 +96,124 @@ MxGuiLeftBar.showDownloadGexfPrevisu=function() {
 		let sortString = MxGuiHeader.getCurrentSearchSortString();
 		let reversedOrder = MxGuiHeader.getCurrentSearchReversedOrder();
 		ws_handlers_requestDownloadGraphFile(nodesDataTermIds,edgesTermIds,query,selectedFiltersNames,sortString,reversedOrder);
-			
+		MxGuiHeader.hideInfoModal();
 	}
 	
+	return { "body":previsuNode, "footer":previsuNodeFooter };
+}
+
+
+function _buildGexfGroupByForm(catalogDescr,sortedTermsNames) {
+	// body
+	let previsuNode=document.getElementById('gexfgroupby_contents_previsu_body_download').cloneNode(true);
+	previsuNode.style.display='block';
+	
+	// nodes data
+	let fieldsSelectionInsertSpot=previsuNode.querySelector("._groupTerm_selector_");
+	for (var termIdx=0;termIdx<sortedTermsNames.length;termIdx++) {
+		let termName=sortedTermsNames[termIdx];		
+		let termDescr = catalogDescr.terms[termName];
+		let termDatatype = termDescr.datatype;
+		if (termDatatype=="LINK") { continue; }
+		termTranslation=mx_helpers_getTermName(termDescr, catalogDescr)
+		
+		let termChoice=document.createElement("option");
+		fieldsSelectionInsertSpot.appendChild(termChoice);
+		termChoice.value=termDescr.id;
+		termChoice.innerHTML=termTranslation;
+		if (termIdx==0) { fieldsSelectionInsertSpot.value=termDescr.id; }
+				
+	}	
+	
+	
+	// edges data
+	let edgesSelectionInsertSpot=previsuNode.querySelector("._edgeTerm_selector_");	
+	for (var termIdx=0;termIdx<sortedTermsNames.length;termIdx++) {
+		let termName=sortedTermsNames[termIdx];		
+		let termDescr = catalogDescr.terms[termName];
+		let termDatatype = termDescr.datatype;
+		if (termDatatype!="LINK") { continue; }
+		termTranslation=mx_helpers_getTermName(termDescr, catalogDescr)
+		
+		let termChoice=document.createElement("option");
+		edgesSelectionInsertSpot.appendChild(termChoice);
+		termChoice.value=termDescr.id;
+		termChoice.innerHTML=termTranslation;		
+		if (termIdx==0) { edgesSelectionInsertSpot.value=termDescr.id; }
+	}	
+	
+	// footer
+	let previsuNodeFooter=document.getElementById('gexfgroupby_contents_previsu_download_footer').cloneNode(true);
+	
+	// Go button
+	let downloadBtn=previsuNodeFooter.querySelector('._downloadGroupByBtn_');
+	downloadBtn.onclick=function(event) {
+		
+		let groupTermNode=previsuNode.querySelector("._groupTerm_selector_");
+		let edgeTermNode=previsuNode.querySelector("._edgeTerm_selector_");
+		let groupTermId=groupTermNode.value;					
+		let edgeTermId=edgeTermNode.value
+				
+		let query = MxGuiHeader.getCurrentSearchQuery();
+		let selectedFiltersNames=MxGuiLeftBar.getSelectedFiltersNames();
+		let sortString = MxGuiHeader.getCurrentSearchSortString();
+		let reversedOrder = MxGuiHeader.getCurrentSearchReversedOrder();
+		ws_handlers_requestDownloadGraphGroupByFile(groupTermId,edgeTermId,query,selectedFiltersNames,sortString,reversedOrder);
+		MxGuiHeader.hideInfoModal();
+	}
+	
+	return { "body":previsuNode, "footer":previsuNodeFooter };
+}
+
+
+MxGuiLeftBar.showDownloadGexfPrevisu=function() {
+	
+	let catalogDescr = MxGuiDetails.getCurCatalogDescription();
+	let sortedTermsNames = Object.keys(catalogDescr.terms).sort();
+	
+	let bodyAndFooter = _buildGexfForm(catalogDescr,sortedTermsNames);
+	let bodyAndFooterGroupBy = _buildGexfGroupByForm(catalogDescr,sortedTermsNames);
+
+	let center=document.createElement("center");
+	let chooseGraphMethod=document.createElement("select");
+	center.append(chooseGraphMethod);
+	chooseGraphMethod.classList="modals-form-control-dropdown modals-form-control form-control bg-light border-0 small";
+	chooseGraphMethod.style.width="40%";
+	chooseGraphMethod.style["margin"]="1rem";
+	chooseGraphMethod.style.height="auto";
+	let choiceNormal=document.createElement("option");
+	chooseGraphMethod.append(choiceNormal);
+	choiceNormal.value="normal";
+	choiceNormal.innerHTML="<s:text name="Items.downloadItems.gexf.modeNormal" />";
+	choiceNormal.onclick=function(e) {
+		bodyAndFooter.body.style.display='block';
+		bodyAndFooter.footer.style.display='block';
+		bodyAndFooterGroupBy.body.style.display='none';
+		bodyAndFooterGroupBy.footer.style.display='none';
+	}
+	let choiceGroupBy=document.createElement("option");
+	chooseGraphMethod.append(choiceGroupBy);
+	choiceGroupBy.value="groupby";
+	choiceGroupBy.innerHTML="<s:text name="Items.downloadItems.gexf.modeGroupBy" />";
+	choiceGroupBy.onclick=function(e) {
+		bodyAndFooter.body.style.display='none';
+		bodyAndFooter.footer.style.display='none';
+		bodyAndFooterGroupBy.body.style.display='block';
+		bodyAndFooterGroupBy.footer.style.display='block';
+	}
+	
+	let bodyMainContent = document.createElement("div");
+	bodyMainContent.append(center);
+	bodyMainContent.append(bodyAndFooter.body);
+	bodyMainContent.append(bodyAndFooterGroupBy.body);
+	
+	let footerContents = document.createElement("div");
+	footerContents.append(bodyAndFooter.footer);
+	footerContents.append(bodyAndFooterGroupBy.footer);
+	
+	choiceNormal.onclick();
 	// show
-	MxGuiHeader.showInfoModal("<s:text name='Items.downloadItems.asGexf' />",previsuNode,previsuNodeFooter);
+	MxGuiHeader.showInfoModal("<s:text name='Items.downloadItems.asGexf' />",bodyMainContent,footerContents);
 	
 };
 </script>
@@ -124,17 +233,35 @@ MxGuiLeftBar.showDownloadGexfPrevisu=function() {
  		  </label>
  		  
  		 <div id="gexf_contents_previsu_body_download" style="display:none">
- 		 	<h5>Nodes Data</h5>
+ 		 	<h5><s:text name="Items.downloadItems.gexf.nodesData"/></h5>
  		  	 <div class="_nodes_data_selection_insertspot_">	 		  	
 		  	</div>
 		  	<hr/>
-		  	<h5>Edges</h5>
+		  	<h5><s:text name="Items.downloadItems.gexf.links"/></h5>
 		  	<div class="_edges_selection_insertspot_">	 		  	
 		  	</div> 		  			 		  		 
+		  </div>
+		  
+		  <div id="gexfgroupby_contents_previsu_body_download" style="display:none">
+ 		 	<h5><s:text name="Items.downloadItems.gexf.groupby"/></h5>
+ 		  	 <select class="_groupTerm_selector_" >
+ 		  	 </select>	 		  	
+		  	
+		  	<hr/>
+		  	<h5><s:text name="Items.downloadItems.gexf.link"/></h5>
+		  	<select class="_edgeTerm_selector_">	 		  	
+		  	</select> 		  			 		  		 
 		  </div>
 		  <div id="gexf_contents_previsu_download_footer" style="display:none">
  		  		 <label class="_downloadBtn_ d-none d-sm-inline-block btn-big btn btn-info shadow-sm mx-left-button"  >
  		  				<i class="fas fa-download fa-sm text-white" style="margin-right:1em"></i><s:text name="Items.downloadItems.generateGexf"></s:text>
+ 		  		</label> 		  		
+		  </div>
+		  <div id="gexfgroupby_contents_previsu_download_footer" style="display:none"> 		  		 
+ 		  		<label class="_downloadGroupByBtn_ d-none d-sm-inline-block btn-big btn btn-info shadow-sm mx-left-button"  >
+ 		  				<i class="fas fa-download fa-sm text-white" style="margin-right:1em"></i><s:text name="Items.downloadItems.generateGexf"> </s:text>
  		  		</label>
+ 		  		
+ 		  		
 		  </div>
  		 

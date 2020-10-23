@@ -75,7 +75,8 @@ public class WsControllerItemsGraphDownload extends AMxWSController {
     	    		answer.setRejectMessage(user.getText("Items.server.unknownFilterForSearch",
     	    							filterName.toString(),user.getCurrentCatalog().getName()));
     	    		
-    	    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/items", 
+    	    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),
+    	    												"/queue/download_items_graph_response", 
     						getCompressedRawString(answer));
     	    		return;
     			}
@@ -90,7 +91,7 @@ public class WsControllerItemsGraphDownload extends AMxWSController {
     			sortByFieldName.add(new BasicPair<String,SORTING_ORDER>(requestMsg.getSortByFieldName(),sortOrder));
     		}    
     		String timestamp = StrTools.Timestamp(new Date());
-    		String targetFileBasename=user.getCurrentCatalog().getName()+"-extract_"+timestamp+".gexf";
+    		String targetFileBasename=user.getCurrentCatalog().getName()+"-"+timestamp+".gexf";
     		String targetFileFsPath=Globals.Get().getWebappsTmpFsPath()+targetFileBasename;
     		
     		List<ICatalogTerm> nodesDataTermsList = new ArrayList<>();
@@ -113,7 +114,7 @@ public class WsControllerItemsGraphDownload extends AMxWSController {
 					.getNewGexfExtractProcessor(
 		    			user, 
 		    			user.getCurrentCatalog(),
-		    			 "Extract GEXF", 
+		    			 "Extracting GEXF", 
 		    			 targetFileFsPath,
 		    			 nodesDataTermsList,
 		    			 edgesTermsList,
@@ -132,7 +133,7 @@ public class WsControllerItemsGraphDownload extends AMxWSController {
     		
     		Boolean success = procTask.isDataGenerated();
 			answer.setIsSuccess(success);
-			String targetFileUri=Globals.Get().getWebappsTmpUrl()+targetFileBasename;
+			String targetFileUri=Globals.Get().getWebAppsTmpUrl()+targetFileBasename;
 			answer.setGraphFileUrl(targetFileUri);
 			answer.setGraphFileName(targetFileBasename);
 			answer.setGraphFileSizeMB(new Double(FileSystemUtils.GetTotalSizeBytes(targetFileFsPath)/1000000.0));
@@ -157,4 +158,118 @@ public class WsControllerItemsGraphDownload extends AMxWSController {
 		}   
     }
     
+    @MessageMapping("/download_items_graphgroupby_request")
+    @SubscribeMapping ("/user/queue/download_items_graphgroupby_response")    				    
+    public void handleDownloadItemsGraphGroupByRequest( SimpMessageHeaderAccessor headerAccessor, 
+    												WsMsgGraphDownloadGroupBy_request requestMsg) {
+    	Date now = new Date();
+    	WsMsgGraphDownload_answer answer = new  WsMsgGraphDownload_answer(requestMsg);
+    	try {
+	    	
+	    	IUserProfileData user = getUserProfile(headerAccessor);
+	    	ICatalog curCatalog = user.getCurrentCatalog();
+	    	
+	    	// populate filters from selected filters
+    		List<String> preFilters = new ArrayList<String>();    
+    		for (String filterName : requestMsg.getFiltersNames()) {
+    			IFilter c = user.getCurrentCatalog().getFilter(filterName);
+    			if (c==null) {
+    				answer.setIsSuccess(false);    	    	
+    	    		answer.setRejectMessage(user.getText("Items.server.unknownFilterForSearch",
+    	    							filterName.toString(),user.getCurrentCatalog().getName()));
+    	    		
+    	    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/download_items_graphgroupby_response", 
+    						getCompressedRawString(answer));
+    	    		return;
+    			}
+    			preFilters.add(c.getQuery());
+    		}		
+    		
+    		// populate sorting order definition
+    		SORTING_ORDER sortOrder = SORTING_ORDER.ASC;
+    		if (requestMsg.getReverseSortOrder()) { sortOrder = SORTING_ORDER.DESC; }
+    		List< IPair<String,SORTING_ORDER> > sortByFieldName = new ArrayList<>();
+    		if (requestMsg.getSortByFieldName().length()>0) {
+    			sortByFieldName.add(new BasicPair<String,SORTING_ORDER>(requestMsg.getSortByFieldName(),sortOrder));
+    		}    
+    		
+    		ICatalogTerm groupingTerm = null;
+    		for (ICatalogTerm t : curCatalog.getTerms().values()) {
+				if (t.getId().equals(requestMsg.getGroupingTermId())) {
+					groupingTerm=t;
+				}
+    		}
+    		if (groupingTerm==null) {
+    			answer.setIsSuccess(false);    	    	
+	    		answer.setRejectMessage(user.getText("Items.server.noMatchingTermForGrouping"));	    		
+	    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),
+	    				"/queue/download_items_graphgroupby_response", answer);
+	    		return;
+    		}
+    		ICatalogTerm edgeTerm = null;
+    		for (ICatalogTerm t : curCatalog.getTerms().values()) {
+				if (t.getId().equals(requestMsg.getEdgeTermId())) {
+					edgeTerm=t;
+				}
+    		}
+    		if (edgeTerm==null) {
+    			answer.setIsSuccess(false);    	    	
+	    		answer.setRejectMessage(user.getText("Items.server.noMatchingTermForGroupEdges"));	    		
+	    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),
+	    				"/queue/download_items_graphgroupby_response", answer);
+	    		return;
+    		}
+    		
+    		String timestamp = StrTools.Timestamp(new Date());
+    		String targetFileBasename=user.getCurrentCatalog().getName()+"-groupby-"+groupingTerm.getName()+"-"+timestamp+".gexf";
+    		String targetFileFsPath=Globals.Get().getWebappsTmpFsPath()+targetFileBasename;
+    		
+    		
+	    	ESDownloadProcess procTask = Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
+					.getNewGexfGroupByExtractProcessor(
+		    			user, 
+		    			user.getCurrentCatalog(),
+		    			 "Extracting GroupBy GEXF", 
+		    			 targetFileFsPath,
+		    			 groupingTerm,
+		    			 edgeTerm,
+		    			 new Long(requestMsg.getSize()),
+		    			 new Long(requestMsg.getFromIdx()),
+		    			 requestMsg.getQuery(),
+		    			 preFilters,
+		    			 sortByFieldName,
+		    			 now);
+    		// set-up the download and start the processing task
+	    	user.addProcessingTask(procTask);
+    		procTask.start();
+    		// wait for end of processing
+    		procTask.stop();
+    		//String gexfFileUrl="http://metaindex.fr/metaindex/downloads/xyzazertutj2454RHHF433a";
+    		
+    		Boolean success = procTask.isDataGenerated();
+			answer.setIsSuccess(success);
+			String targetFileUri=Globals.Get().getWebAppsTmpUrl()+targetFileBasename;
+			answer.setGraphFileUrl(targetFileUri);
+			answer.setGraphFileName(targetFileBasename);
+			answer.setGraphFileSizeMB(new Double(FileSystemUtils.GetTotalSizeBytes(targetFileFsPath)/1000000.0));
+    		this.messageSender.convertAndSendToUser(
+    				headerAccessor.getUser().getName(),
+    				"/queue/download_items_graphgroupby_response", 
+    				answer);
+    		Globals.GetStatsMgr().handleStatItem(new GraphDownloadMxStat(user,user.getCurrentCatalog()));
+    		
+    		log.info("generated GEXF file '"+targetFileBasename+"' ("+answer.getGraphFileSizeMB()+"MB)");
+    		Globals.GetStatsMgr().handleStatItem(new GexfDownloadMxStat(user,curCatalog));
+	    } catch (DataProcessException | MessagingException | IOException e) 
+		{
+			log.error("Unable to process download_items_graphgroupby_file from '"+headerAccessor.getUser().getName()+"' : "+e);
+			e.printStackTrace();
+			
+			answer.setIsSuccess(false);
+			this.messageSender.convertAndSendToUser(
+    				headerAccessor.getUser().getName(),
+    				"/queue/download_items_graphgroupby_response", 
+    				answer);
+		}   
+    }
 }

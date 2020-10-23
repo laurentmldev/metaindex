@@ -3,15 +3,26 @@
 v2.1.0:
 -------
 
-download links still reference "metaindex" app path 
-/metaindex/secure/mxtmp/testdemo-extract_2020-10-19_00-04-22.gexf
-/metaindex/secure/mxtmp/testdemo-extract_2020-10-19_00-04-54.csv
+terms & conditions: what is recorded and why
 
-fr version for "you've been exited from catalog ... "
+request access to catalog: warn that catalog admins will have access to your email address
+ 
+when upload CSV : button to upload as data in the drive
+
+Go back to life : -> metaindex.fr:20000/welcome
+
+fr version for
+ - "you've been exited from catalog ... "
+ - gexf page fr version + ws_hendler onsuccess footer messages
+ - csv download ?
+ - List updated for ...  (perspective link)
 
 #55 tutorial videos on youtube
 
 test titres emails en français avec signes HTML
+
+test data storage persistence on reboot (did not work on mac_dev target
+
 
 v2.1.1:
 -------

@@ -169,7 +169,8 @@ function _commons_perspective_buildRefsDocsEditableList(itemId,docIdsListStr,ter
 	let refDocsList=docIdsListStr.split(",");
 	let refDocsListEnabledByIdMap=[];
 	for (var i=0;i<refDocsList.length;i++) {
-		refDocsListEnabledByIdMap[refDocsList[i]]=true;
+		let curItemId=refDocsList[i];
+		refDocsListEnabledByIdMap[curItemId]=true;
 	}
 	let refDocsListEnabledByIdNode = document.createElement("div");
 	refDocsListEnabledByIdNode.innerHTML=docIdsListStr;
@@ -276,7 +277,9 @@ function _commons_perspective_buildRefsDocsEditableList(itemId,docIdsListStr,ter
 				 } 	
 			     checkbox.onclick=function(event) {
 			    	 event.stopPropagation();
+
 			    	 let newValue="";
+			    	 // multi select
 			    	 if (multiSelectAllowed) {
 			    		 if (checkbox.checked) { refDocsListEnabledByIdMap[item.id]=true; }
 						 else { refDocsListEnabledByIdMap[item.id]=false; } 
@@ -287,12 +290,18 @@ function _commons_perspective_buildRefsDocsEditableList(itemId,docIdsListStr,ter
 								 newValue+=curItemId;
 							 }
 						 }
+					 // single select	 
 			    	 } else {
+			    		 // deselect existing one
 			    		for (var curItemId in refDocsListEnabledByIdMap) {
 			    			 if (curItemId.length==0) { continue; }
-			    			 checkBoxesById[curItemId].checked=false;
+			    			 // if value does not macth any doc (anymore if deleted) then just skip the desactivation
+			    			 if (checkBoxesById[curItemId]!=null) { checkBoxesById[curItemId].checked=false; }
 			    			 refDocsListEnabledByIdMap[curItemId]=false;			    		
 						}
+			    		console.log(item.id);
+			    		console.log(checkBoxesById);
+			    		
 			    		checkBoxesById[item.id].checked=true;
 			    		refDocsListEnabledByIdMap[item.id]=true;						 
 						newValue=item.id;
@@ -358,7 +367,7 @@ function _commons_perspective_buildRefsDocsEditableList(itemId,docIdsListStr,ter
 
 
 function _commons_perspective_buildEditableReferenceTerm(catalogDesc,tabIdx,sectionIdx,fieldIdx,fieldContainerNode,
-		fieldVisuDesc,termDesc,itemId,fieldValue,successCallback,onChangeCallback) {
+													     fieldVisuDesc,termDesc,itemId,fieldValue,successCallback,onChangeCallback) {
 	
 
 	 let fieldNode=document.getElementById("_commons_perspectives_field_template_reference").cloneNode(true);

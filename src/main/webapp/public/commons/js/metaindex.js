@@ -261,6 +261,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			myself._stompClient.subscribe('/user/queue/upload_items_csv_response',myself._handleUploadItemsFromCsvAnswer);
 			myself._stompClient.subscribe('/user/queue/download_items_csv_response',myself._handleDownloadItemsCsvAnswer);
 			myself._stompClient.subscribe('/user/queue/download_items_graph_response',myself._handleDownloadItemsGraphAnswer);
+			myself._stompClient.subscribe('/user/queue/download_items_graphgroupby_response',myself._handleDownloadItemsGraphGroupByAnswer);
 			myself._stompClient.subscribe('/user/queue/created_item',myself._handleCreatedItemResponseMsg);
 			myself._stompClient.subscribe('/user/queue/upload_userdata_files_response',myself._handleUploadFilesAnswer);
 			myself._stompClient.subscribe('/user/queue/upload_userdata_file_contents_progress',myself._handleUploadFilesContentsAnswer);			
@@ -813,9 +814,6 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			if (dataObj.query==null) { dataObj.query=""; }
 			if (dataObj.sortByFieldName==null) { dataObj.sortByFieldName=""; }
 			if (dataObj.reverseSortOrder==null) { dataObj.reverseSortOrder=false; }
-			if (myself._callback_CatalogItems_debug==true) {
-				console.log("MxAPI Requesting [Items CSV]");
-			}
 
 			var curRequestId=myself.requestGraghDownloadsCallbacks.length;
 			myself.requestGraghDownloadsCallbacks.push(dataObj);
@@ -827,24 +825,11 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 
 		}
 		
-		this.subscribeToGraghDownload=function(callback_func,debug) {
-			debug=debug||false;
-			myself._callback_DownloadGragh_debug=debug;
-			myself._callback_DownloadGragh=callback_func;
-		}
-		
 		this._handleDownloadItemsGraphAnswer=function(msg) {
 			
 	    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 			var parsedMsg = JSON.parse(msg.body);
 			
-			if (myself._callback_DownloadGragh_debug==true) {
-				console.log("[MxApi] Received answer to request for 'Download Items as GEXF' accepted : "+parsedMsg.isSuccess);
-				if (parsedMsg.isSuccess==false) {
-					console.log("Reject msg = "+parsedMsg.rejectMessage);
-				}
-			}
-
 			let requestId=parsedMsg.requestId;
 			let requestObj=myself.requestGraghDownloadsCallbacks[requestId];
 			//console.log("received customization requestId="+requestId+" -> "+requestObj);
@@ -854,13 +839,70 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 				let errorMsg=parsedMsg.rejectMessage;
 				// ensure error message is not empty
 				// (otherwise can lead to some mis behaviour in user app (ex: x-editable) )
-				if (errorMsg==undefined) { errorMsg="perspective delete refused by server, sorry." }
+				if (errorMsg==undefined) { errorMsg="generation of GEXF file refused by server, sorry." }
 				requestObj.errorCallback(errorMsg); 
 			}	
 		    
 		}
 		
+
+//------- Download Graph (GEXF) GroupBy file --------
+				
+		this.requestGraghGroupByDownloadsCallbacks=[];
 		
+		// dataObj {
+		//   groupingTermId = int
+		//   edgeTermId = int
+		//   fromIdx=0
+		//   size=-1
+		//   filtersNames=[]
+		//	 query=""
+		//   sortByFieldName=""
+		//   reverseSortOrder=false
+		//   successCallback (func)({items:[],totalHits:<int>,totalItems:<int>})
+		//   errorCallback (func)(msg)
+		// }
+		this.requestDownloadItemsGraphGroupBy = function(dataObj) {
+			if (dataObj.groupingTermId==null) { dataObj.errorCallback("groupingTermId parameter requested, provided value is empty"); return;}
+			if (dataObj.edgeTermId==null) { dataObj.errorCallback("edgeTermId parameter requested, provided value is empty"); return; }
+			if (dataObj.fromIdx==null) { dataObj.fromIdx=0; }
+			if (dataObj.size==null) { dataObj.size=-1; }
+			if (dataObj.filtersNames==null) { dataObj.filtersNames=[]; }
+			if (dataObj.query==null) { dataObj.query=""; }
+			if (dataObj.sortByFieldName==null) { dataObj.sortByFieldName=""; }
+			if (dataObj.reverseSortOrder==null) { dataObj.reverseSortOrder=false; }
+			
+			var curRequestId=myself.requestGraghGroupByDownloadsCallbacks.length;
+			myself.requestGraghGroupByDownloadsCallbacks.push(dataObj);
+			dataObj.requestId=curRequestId;
+			
+	    	//console.log('### Sending download request : '+JSON.stringify(jsonData));
+			myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
+	    	myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/download_items_graphgroupby_request", {},JSON.stringify(dataObj));		
+
+		}		
+		
+		this._handleDownloadItemsGraphGroupByAnswer=function(msg) {
+			
+	    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
+			var parsedMsg = JSON.parse(msg.body);
+			let requestId=parsedMsg.requestId;
+			let requestObj=myself.requestGraghGroupByDownloadsCallbacks[requestId];
+			if (requestObj==null) { return; }
+			if (parsedMsg.isSuccess==true) { requestObj.successCallback(parsedMsg); }
+			else {
+				let errorMsg=parsedMsg.rejectMessage;
+				// ensure error message is not empty
+				// (otherwise can lead to some mis behaviour in user app (ex: x-editable) )
+				if (errorMsg==undefined) { 
+					errorMsg="generation of GEXF GroupBy file refused by server, sorry." 
+				}
+				requestObj.errorCallback(errorMsg); 
+			}	
+		    
+		}
+		
+				
 		
 //------- Catalogs List --------
 		this.requestGetCatalogsCallbacks=[];

@@ -114,7 +114,7 @@ public class WsControllerItemsCsvDownload extends AMxWSController {
     		
     		Boolean success = procTask.isDataGenerated();
 			answer.setIsSuccess(success);
-			String targetFileUri=Globals.Get().getWebappsTmpUrl()+targetFileBasename;
+			String targetFileUri=Globals.Get().getWebAppsTmpUrl()+targetFileBasename;
 			answer.setCsvFileUrl(targetFileUri);
 			answer.setCsvFileName(targetFileBasename);
 			answer.setCsvFileSizeMB(new Double(FileSystemUtils.GetTotalSizeBytes(targetFileFsPath)/1000000.0));

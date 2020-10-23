@@ -215,55 +215,6 @@ public class WsControllerTerm extends AMxWSController {
 		
     }
     
-    /**
-     * NOT FUNCTIONAL (need ELK re-indexing)
-     * @param headerAccessor
-     * @param requestMsg
-     * @throws Exception
-     */
-    /*
-    @MessageMapping("/delete_term")
-    @SubscribeMapping ( "/user/queue/deleted_term")
-    public void handleDeleteTermRequest(
-    					SimpMessageHeaderAccessor headerAccessor, 
-    					WsMsgDeleteTerm_request requestMsg) throws Exception {
-
-    	WsMsgDeleteTerm_answer answer = new WsMsgDeleteTerm_answer(requestMsg);
-    	IUserProfileData user = getUserProfile(headerAccessor);	
-    	ICatalog c = Globals.Get().getCatalogsMgr().getCatalog(requestMsg.getCatalogId());
-    	if (!this.userHasWriteAccess(user,c)) { 
-    		user.sendGuiErrorMessage(user.getText("globals.noAccessRights"));			
-			return;         		
-    	}
-    	user.setCurrentCatalog(c.getId());
-    	ICatalogTerm term = c.getTerms().get(requestMsg.getTermName());
-    	if (term==null) {
-    		user.sendGuiErrorMessage("Sorry no such term '"+requestMsg.getTermName()+"' in catalog, please refresh your page.");
-    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_term", answer);
-    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.delete_term.no_such_term"));
-    	}
-    	
-    	Boolean result = Globals.Get().getDatabasesMgr().getTermsDbInterface().deleteFromDbStmt(c,term).execute();
-    	
-    	// refresh filters list in catalog
-    	c.acquireLock();
-    	c.clearFilters();
-    	Globals.Get().getDatabasesMgr().getFiltersDbInterface().getLoadFromDbStmt(c).execute();
-    	c.releaseLock();
-    	
-    	if (result==false) {
-    		user.sendGuiErrorMessage("Sorry unable to delete term '"+requestMsg.getTermName()+"'.");
-    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_term", answer);	
-    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.delete_term.refused_by_server"));
-    		return;
-    	}
-    	
-    	answer.setIsSuccess(true);  
-    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_term", answer);
-    	user.notifyCatalogContentsChanged(CATALOG_MODIF_TYPE.FIELDS_LIST, 1);
-        	
-    }
-*/
     @MessageMapping("/update_term_lexic")
     @SubscribeMapping ( "/user/queue/term_lexic_updated")
     public void handleUpdateTermLexicRequest(

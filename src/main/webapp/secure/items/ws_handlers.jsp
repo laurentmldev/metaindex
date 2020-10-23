@@ -294,15 +294,37 @@ function ws_handlers_requestDownloadCsvFile(selectedTermsList,query,selectedFilt
 function ws_handlers_requestDownloadGraphFile(selectedNodesDataTermIdsList,selectedEdgesTermIdsList,query,selectedFiltersNames,sortByFieldName,reversedSortOrder) {
 	
 	 retrieveCsvSuccess=function(itemsAnswerMsg) {
-		footer_showAlert(SUCCESS, "<s:text name="Items.downloadItems.csvFileReady" /> : <a target='_blank' href='"+itemsAnswerMsg.graphFileUrl+"' "
-				+" title='<s:text name="Items.downloadItems.csvFileReady.title" />'"
+		footer_showAlert(SUCCESS, "<s:text name="Items.downloadItems.gexfFileReady" /> : <a target='_blank' href='"+itemsAnswerMsg.graphFileUrl+"' "
+				+" title='<s:text name="Items.downloadItems.gexfFileReady.title" />'"
 				+">"+itemsAnswerMsg.graphFileName+"</a> ("+Math.round(itemsAnswerMsg.graphFileSizeMB*1000)/1000+"MB)","",999999999);						
 	 }
 	
-	 retrieveCsvError=function(msg) { footer_showAlert(ERROR, msg.rejectMessage); }
+	 retrieveCsvError=function(msg) { footer_showAlert(ERROR, msg); }
 	 MxApi.requestDownloadItemsGraph({	
 		 						"nodesDataTermIdsList":selectedNodesDataTermIdsList,
 		 						"edgesTermIdsList":selectedEdgesTermIdsList,
+		 						"fromIdx":0,
+		 						"size":-1,
+		 						"query":query,
+		 						"filtersNames":selectedFiltersNames,
+		 						"sortByFieldName":sortByFieldName,
+		 						"reverseSortOrder":reversedSortOrder,
+		 						"successCallback":retrieveCsvSuccess,
+		 						"errorCallback":retrieveCsvError});	  
+}
+
+function ws_handlers_requestDownloadGraphGroupByFile(groupTermId,edgeTermId,query,selectedFiltersNames,sortByFieldName,reversedSortOrder) {
+	
+	 retrieveCsvSuccess=function(itemsAnswerMsg) {
+		footer_showAlert(SUCCESS, "<s:text name="Items.downloadItems.gexfFileReady" /> : <a target='_blank' href='"+itemsAnswerMsg.graphFileUrl+"' "
+				+" title='<s:text name="Items.downloadItems.gexfFileReady.title" />'"
+				+">"+itemsAnswerMsg.graphFileName+"</a> ("+Math.round(itemsAnswerMsg.graphFileSizeMB*1000)/1000+"MB)","",999999999);						
+	 }
+	
+	 retrieveCsvError=function(msg) { footer_showAlert(ERROR, msg); }
+	 MxApi.requestDownloadItemsGraphGroupBy({	
+		 						"groupingTermId":groupTermId,
+		 						"edgeTermId":edgeTermId,
 		 						"fromIdx":0,
 		 						"size":-1,
 		 						"query":query,

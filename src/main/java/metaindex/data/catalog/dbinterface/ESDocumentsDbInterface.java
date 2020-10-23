@@ -24,6 +24,7 @@ import toolbox.utils.AStreamHandler;
 import toolbox.utils.IPair;
 import toolbox.utils.parsers.CsvDumper;
 import toolbox.utils.parsers.GexfDumper;
+import toolbox.utils.parsers.GexfGroupByDumper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -150,7 +151,7 @@ public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem>
 		return new ESDownloadProcess(u,name, targetFileName,streamHandler,maxNbItems,c,fromIndex,query,preFilters,sortingOrder);
 	}
 	
-	// -- extract CSV from given search
+	// -- extract GEXF from given search
 	public ESDownloadProcess getNewGexfExtractProcessor(IUserProfileData u,
 												  ICatalog c, 
 												  String name, 
@@ -167,10 +168,39 @@ public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem>
 
 		AStreamHandler<IDbItem> streamHandler=new GexfDumper<IDbItem>(
 				u,
-				name+":GexfGenerator",
+				name,
 				maxNbItems,
 				nodesDataTermsList,
 				edgesTermsList,
+				timestamp,
+				targetFileName);
+		
+		
+		return new ESDownloadProcess(u,name, targetFileName,streamHandler,maxNbItems,c,fromIndex,query,preFilters,sortingOrder);
+	}
+	
+
+	// -- extract grouped GEXF from given search
+	public ESDownloadProcess getNewGexfGroupByExtractProcessor(IUserProfileData u,
+												  ICatalog c, 
+												  String name, 
+												  String targetFileName,
+												  ICatalogTerm groupingTerm,
+												  ICatalogTerm edgingTerm,
+												  Long maxNbItems,
+												  Long fromIndex,
+												  String query,
+												  List<String> preFilters,
+												  List< IPair<String,SORTING_ORDER> > sortingOrder,
+												  Date timestamp) throws DataProcessException 
+	{
+
+		AStreamHandler<IDbItem> streamHandler=new GexfGroupByDumper<IDbItem>(
+				u,
+				name,
+				maxNbItems,
+				groupingTerm,
+				edgingTerm,
 				timestamp,
 				targetFileName);
 		

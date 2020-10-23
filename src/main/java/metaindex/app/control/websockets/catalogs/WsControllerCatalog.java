@@ -367,7 +367,7 @@ public class WsControllerCatalog extends AMxWSController {
 	    		}
 		    			    	
 	    	} catch(IndexAlreadyExistException e) {
-	    		user.sendGuiWarningMessage("Reusing existing contents for catalog '"+c.getName()+"'");
+	    		user.sendGuiWarningMessage(user.getText("Catalogs.reusingExistingContents",c.getName()));
 	    	}
 	    		 
 	    	// create default terms
