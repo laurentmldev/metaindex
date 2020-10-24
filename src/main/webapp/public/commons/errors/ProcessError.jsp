@@ -12,7 +12,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Metaindex Error</title>
+  <title><s:text name="global.errorpage.MetaindexError" /></title>
 
   <!-- Custom fonts for this template-->
   <link href="${webAppBaseUrl}/public/commons/deps/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -30,7 +30,8 @@
     
 
     <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column" style="background-image:url('${webAppBaseUrl}/public/commons/media/img/bluescreen-of-death.jpg');">
+    <div id="content-wrapper" class="d-flex flex-column" 
+    	style="background-image:url('${webAppBaseUrl}/public/commons/media/img/bluescreen-of-death.jpg');">
 
       <!-- Main Content -->
       <div id="content" style="background-color:#fff;opacity:0.95;">
@@ -40,12 +41,10 @@
 
           <!-- Process Error Text -->
           <div class="text-center" style="padding-top:20vh">
-            <div class="error mx-auto" data-text="ERROR">ERROR</div>
-            <p class="lead text-gray-800 mb-5">Woops something wrong happened or maybe you don't have access to such contents, sorry!</p>
-            <p class="text-gray-600 mb-0" style="padding-bottom:5rem">If you think this is a serious problem, 
-            							please try to understand how to reproduce it <br/>and explain it to your system administrator, 
-            							so that he can investigate and fix this issue.</p>
-            <a  href="${webAppBaseUrl}/welcome">&larr; Go Back to Life</a>
+            <div class="error mx-auto" data-text="<s:text name="global.errorpage.ERROR"/>"><s:text name="global.errorpage.ERROR"/></div>
+            <p class="lead text-gray-800 mb-5"><s:text name="global.errorpage.somethingWrongOccuredOrNoAccessRights" /></p>
+            <p class="text-gray-600 mb-0" style="padding-bottom:5rem"><s:text name="global.errorpage.contactUsIfNeeded"/></p>
+            <a  href="${webAppBaseUrl}/Catalogs"><s:text name="global.errorpage.backToApp" /></a>
           </div>
 
         </div>

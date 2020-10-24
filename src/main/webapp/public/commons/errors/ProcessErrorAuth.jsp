@@ -12,7 +12,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Metaindex Authentication Refused</title>
+  <title><s:text name="global.errorpage.MetaindexError" /></title>
 
   <!-- Custom fonts for this template-->
   <link href="${webAppBaseUrl}/public/commons/deps/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -40,10 +40,10 @@
 
           <!-- Process Error Text -->
           <div class="text-center" style="padding-top:20vh">
-            <div class="error mx-auto" style="font-size:5rem" data-text="YOU SHALL NOT PASS">YOU SHALL NOT PASS</div>
-            <p class="lead text-gray-800 mb-5">Sorry, but you're credentials could not be accepted to access such contents.</p>
-            <p class="text-gray-600 mb-0" style="padding-bottom:5rem">Please contact your system administrator if you think this is a problem.</p>
-            <a  href="${webAppBaseUrl}/welcome">&larr; Go Back to Life</a>
+            <div class="error mx-auto" data-text="<s:text name="global.errorpage.YOUSHALLNOTPASS"/>"><s:text name="global.errorpage.YOUSHALLNOTPASS"/></div>
+            <p class="lead text-gray-800 mb-5"><s:text name="global.errorpage.error401" /></p>
+            <p class="text-gray-600 mb-0" style="padding-bottom:5rem"><s:text name="global.errorpage.contactUsIfNeeded"/></p>
+            <a  href="${webAppBaseUrl}/Catalogs"><s:text name="global.errorpage.backToApp" /></a>
           </div>
 
         </div>

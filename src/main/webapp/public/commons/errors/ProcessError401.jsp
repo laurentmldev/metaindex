@@ -12,7 +12,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Metaindex Error</title>
+  <title><s:text name="global.errorpage.MetaindexError" /></title>
 
   <!-- Custom fonts for this template-->
   <link href="${webAppBaseUrl}/public/commons/deps/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -40,11 +40,10 @@
 
           <!-- Process Error Text -->
           <div class="text-center" style="padding-top:20vh">
-            <div class="error mx-auto" data-text="ERROR-401">ERROR-401</div>
-            <p class="lead text-gray-800 mb-5">Restricted access : you shall not pass!</p>
-            <p class="text-gray-600 mb-0" style="padding-bottom:5rem">Please try to reproduce the problem and contact your system administrator
-						if you think this is a real problem.</p>
-            <a  href="${webAppBaseUrl}/welcome">&larr; Go Back to Life</a>
+            <div class="error mx-auto" data-text="<s:text name="global.errorpage.ERROR"/>-401"><s:text name="global.errorpage.ERROR"/>-401</div>
+            <p class="lead text-gray-800 mb-5"><s:text name="global.errorpage.error401" /></p>
+            <p class="text-gray-600 mb-0" style="padding-bottom:5rem"><s:text name="global.errorpage.contactUsIfNeeded"/></p>
+            <a  href="${webAppBaseUrl}/Catalogs"><s:text name="global.errorpage.backToApp" /></a>
           </div>
 
         </div>
