@@ -168,7 +168,7 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 	 let buttonPlanUpgrade=document.createElement("a");
 		buttonPlanUpgrade.id=id;
 		buttonPlanUpgrade.classList="btn-big btn btn-sm btn-warning shadow-sm";
-		buttonPlanUpgrade.style="font-size:0.8rem;margin-left:2rem;color:white";
+		buttonPlanUpgrade.style="font-size:0.8rem;margin-left:2rem;color:white !important;";
 		buttonPlanUpgrade.innerHTML="<span style='font-weight:bold;font-size:0.8rem;padding:1rem'><s:text name="Catalogs.left.getMoreCatalogs" /></span>";
 		buttonPlanUpgrade.onclick=function(e) { document.getElementById(MX_HEADER_PLANS_POPUP_ID).toggleShowHide(); }
 		return buttonPlanUpgrade;

@@ -3,8 +3,6 @@
 v2.1.0:
 -------
 
-improve text color for  "link to plans when quotas exceeded"
-
 Go back to life : -> metaindex.fr:20000/welcome
 
 #55 tutorial videos on youtube
