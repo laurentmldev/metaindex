@@ -174,33 +174,26 @@ MxGuiLeftBar.showDownloadGexfPrevisu=function() {
 	let bodyAndFooter = _buildGexfForm(catalogDescr,sortedTermsNames);
 	let bodyAndFooterGroupBy = _buildGexfGroupByForm(catalogDescr,sortedTermsNames);
 
-	let center=document.createElement("center");
-	let chooseGraphMethod=document.createElement("select");
-	center.append(chooseGraphMethod);
-	chooseGraphMethod.classList="modals-form-control-dropdown modals-form-control form-control bg-light border-0 small";
-	chooseGraphMethod.style.width="40%";
-	chooseGraphMethod.style["margin"]="1rem";
-	chooseGraphMethod.style.height="auto";
-	let choiceNormal=document.createElement("option");
-	chooseGraphMethod.append(choiceNormal);
-	choiceNormal.value="normal";
-	choiceNormal.innerHTML="<s:text name="Items.downloadItems.gexf.modeNormal" />";
+	let center=document.createElement("center");	
+	let gexfModeSelector=document.getElementById("gexfModeSelector").cloneNode(true);
+	center.append(gexfModeSelector);
+	gexfModeSelector.style.display="block";
+
+	let choiceNormal=gexfModeSelector.querySelector("._option_normal_");
 	choiceNormal.onclick=function(e) {
 		bodyAndFooter.body.style.display='block';
 		bodyAndFooter.footer.style.display='block';
 		bodyAndFooterGroupBy.body.style.display='none';
 		bodyAndFooterGroupBy.footer.style.display='none';
 	}
-	let choiceGroupBy=document.createElement("option");
-	chooseGraphMethod.append(choiceGroupBy);
-	choiceGroupBy.value="groupby";
-	choiceGroupBy.innerHTML="<s:text name="Items.downloadItems.gexf.modeGroupBy" />";
+	let choiceGroupBy=gexfModeSelector.querySelector("._option_groupby_");
 	choiceGroupBy.onclick=function(e) {
 		bodyAndFooter.body.style.display='none';
 		bodyAndFooter.footer.style.display='none';
 		bodyAndFooterGroupBy.body.style.display='block';
 		bodyAndFooterGroupBy.footer.style.display='block';
 	}
+	
 	
 	let bodyMainContent = document.createElement("div");
 	bodyMainContent.append(center);
@@ -231,6 +224,25 @@ MxGuiLeftBar.showDownloadGexfPrevisu=function() {
 	                   <i class="mx-help-icon far fa-question-circle" style="color:white"></i>    
 	          </span>
  		  </label>
+ 		  
+ 		  <table id="gexfModeSelector" style="display:none"><tr>
+ 		  	<td><select class="modals-form-control-dropdown modals-form-control form-control bg-light border-0 small"
+ 		  				style="width:40%;margin:1rem;height:auto;">
+ 		  			<option class="_option_normal_" value="normal"><s:text name="Items.downloadItems.gexf.modeNormal" /></option>
+ 		  			<option class="_option_groupby_" value="groupby"><s:text name="Items.downloadItems.gexf.modeGroupBy" /></option>
+ 		  		</select>
+ 		  	</td>
+ 		  	<td>
+ 		  	<span title="S.O.S" 
+	                	onclick="event.stopPropagation();event.preventDefault();
+	                			this.parentNode.parentNode.parentNode.querySelector('._sos_text_').style.display='block';">
+	                   <i class="mx-help-icon far fa-question-circle" style="color:grey"></i>    
+	          </span>
+ 		  	</td>
+ 		  </tr>
+ 		  <tr style="display:none;margin:1rem;" class="_sos_text_" >
+ 		  	<td><div style="border:1px dashed grey;overflow:auto;height:4rem;background:#eee;font-size:0.8rem;"><s:text name="Items.downloadItems.gexf.modeHelp" /></div> </td></tr>
+ 		  </table>
  		  
  		 <div id="gexf_contents_previsu_body_download" style="display:none">
  		 	<h5><s:text name="Items.downloadItems.gexf.nodesData"/></h5>
