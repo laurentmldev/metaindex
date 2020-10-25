@@ -387,8 +387,9 @@ height:40px;
 .mx-table-rounded-rows tr td:last-child { border-top-right-radius: 6px; border-bottom-right-radius: 6px; }
 
 .mx-table-rounded-row-selected {
-	border : 2px solid black;
+	border : 2px solid #555;
 	color:#555;
+	box-shadow:2px 4px 10px;
 }
 .mx-table-rounded-row-selected td { border-top: 2px solid #555; border-bottom: 2px solid #555;}
 .mx-table-rounded-row-selected td:first-child { border-left: 2px solid #555; }
