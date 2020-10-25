@@ -46,6 +46,7 @@ import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.userprofile.ICatalogUser.USER_CATALOG_ACCESSRIGHTS;
 import metaindex.data.userprofile.IUserProfileData;
+import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.StrTools;
 import toolbox.utils.StreamHandler;
@@ -152,9 +153,11 @@ public class WsControllerCatalog extends AMxWSController {
 		List<GuiCatalogUser> result = new ArrayList<>();
 				
 		for (IUserProfileData u : users) {
-			// skip one-self and  owner of the catalog
+			// skip one-self, owner of the catalog and app administrators
+			// for which the access to the catalog is not configurable
 			if (u.getId().equals(c.getOwnerId())) { continue; }
 			if (u.getId().equals(activeUser.getId())) { continue; }
+			if (u.getRole().equals(USER_ROLE.ROLE_ADMIN)) { continue; }
 			
 			// ignore disabled users
 			if (u.isEnabled()==false) { continue; }

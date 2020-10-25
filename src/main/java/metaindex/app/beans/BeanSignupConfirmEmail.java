@@ -122,6 +122,11 @@ public class BeanSignupConfirmEmail extends BeanSignupSendEmail {
     		// prepare next step : reset password
     		BeanResetPwd.SignalComingUserPasswdReset(u.getId());
     		
+    		Globals.Get().sendEmail(Globals.GetMxProperty("mx.mailer.admin_recipient"), "New user registered : "+u.getNickname(), 
+    						"Dear and beloved administrator,<br/><br/>"
+    						+"A new user named <b>'"+u.getNickname()+"'</b> just created an account in MetaindeX.<br/><br/>"
+    						+"Please take care of him/her!");
+    		
 		} catch (Throwable e) {
   			e.printStackTrace();
   			return BeanProcessResult.BeanProcess_ERROR.toString();
