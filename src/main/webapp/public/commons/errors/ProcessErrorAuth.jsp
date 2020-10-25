@@ -30,7 +30,8 @@
     
 
     <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column" style="background-image:url('/metaindex/public/commons/media/img/bluescreen-of-death.jpg');">
+    <div id="content-wrapper" class="d-flex flex-column" 
+    	style="background-image:url('${webAppBaseUrl}/public/commons/media/img/bluescreen-of-death.jpg');">
 
       <!-- Main Content -->
       <div id="content" style="background-color:#fff;opacity:0.95;">
@@ -40,7 +41,7 @@
 
           <!-- Process Error Text -->
           <div class="text-center" style="padding-top:20vh">
-            <div class="error mx-auto" data-text="<s:text name="global.errorpage.YOUSHALLNOTPASS"/>"><s:text name="global.errorpage.YOUSHALLNOTPASS"/></div>
+            <div class="error mx-auto"  style="font-size:4rem;" data-text="<s:text name="global.errorpage.YOUSHALLNOTPASS"/>"><s:text name="global.errorpage.YOUSHALLNOTPASS"/></div>
             <p class="lead text-gray-800 mb-5"><s:text name="global.errorpage.error401" /></p>
             <p class="text-gray-600 mb-0" style="padding-bottom:5rem"><s:text name="global.errorpage.contactUsIfNeeded"/></p>
             <a  href="${webAppBaseUrl}/Catalogs"><s:text name="global.errorpage.backToApp" /></a>

@@ -30,7 +30,8 @@
     
 
     <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column" style="background-image:url('/metaindex/public/commons/media/img/bluescreen-of-death.jpg');">
+    <div id="content-wrapper" class="d-flex flex-column" 
+    		style="background-image:url('${webAppBaseUrl}/public/commons/media/img/bluescreen-of-death.jpg');">
 
       <!-- Main Content -->
       <div id="content" style="background-color:#fff;opacity:0.95;">

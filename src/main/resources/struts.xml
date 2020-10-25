@@ -89,13 +89,37 @@
 		</action>
 		
 		<!-- Error -->
-		<action name="Error" class="metaindex.app.beans.BeanProfile">						
+		<action name="Error" class="metaindex.app.beans.BeanProfile">	
+			<result name="BeanProcess_SUCCESS" >/public/commons/errors/ProcessError.jsp</result>					
+		</action>
+		<action name="Error400" class="metaindex.app.beans.BeanProfile">	
+			<result name="BeanProcess_SUCCESS" >/public/commons/errors/ProcessError400.jsp</result>					
+		</action>
+		<action name="Error401" class="metaindex.app.beans.BeanProfile">	
+			<result name="BeanProcess_SUCCESS" >/public/commons/errors/ProcessError401.jsp</result>					
+		</action>
+		<action name="Error404" class="metaindex.app.beans.BeanProfile">	
+			<result name="BeanProcess_SUCCESS" >/public/commons/errors/ProcessError404.jsp</result>					
+		</action>
+		<action name="Error503" class="metaindex.app.beans.BeanProfile">	
+			<result name="BeanProcess_SUCCESS" >/public/commons/errors/ProcessError503.jsp</result>					
+		</action>
+		<action name="ErrorAuth" class="metaindex.app.beans.BeanProfile">	
+			<result name="BeanProcess_SUCCESS" >/public/commons/errors/ProcessErrorAuth.jsp</result>					
+		</action>
+		<action name="ErrorDB" class="metaindex.app.beans.BeanProfile">	
+			<result name="BeanProcess_SUCCESS" >/public/commons/errors/ProcessErrorDB.jsp</result>					
 		</action>
 		
 		<!-- Payement -->
 		<action name="Checkout" class="metaindex.app.beans.BeanCheckout">
 			<result name="BeanProcess_SUCCESS" >/secure/payment/checkout.jsp</result>  			
 		</action> 
+		
+		<!-- Tutos -->
+		<action name="Tutorials" class="metaindex.app.beans.BeanProfile">
+			<result name="BeanProcess_SUCCESS" >/public/tutorials.jsp</result>			
+		</action>
 		
 	</package>  
 </struts>      
