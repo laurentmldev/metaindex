@@ -3,17 +3,8 @@
 v2.1.0:
 -------
 
-
-  
-confirm email:
-	- more visible link to click
-	- rewrite phrase about tutorials, sounds weird (in fr at least)
-	 
 #55 tutorial videos on youtube
-
-test titres emails en français avec signes HTML
-
-test data storage persistence on reboot (did not work on mac_dev target)
+	+ direct link on registration email
 
 
 v2.1.1:
