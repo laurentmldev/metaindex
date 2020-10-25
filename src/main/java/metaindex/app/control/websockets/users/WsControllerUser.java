@@ -13,6 +13,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 
 import java.util.List;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -265,24 +266,28 @@ public static final Integer NB_DAYS_PLAN_DISCOUNT=182;// approx. half a year
 	
 	public class PlanBreakdownEntry {		
 		public String title;
-		public Float cost;
+		public Double cost;
 		public BREAKDOWN_ENTRY_TYPE type;
 		public String unit="";
 		
-		public PlanBreakdownEntry(String title,Float cost,BREAKDOWN_ENTRY_TYPE type,String unit) {
+		public PlanBreakdownEntry(String title,Double cost,BREAKDOWN_ENTRY_TYPE type,String unit) {
 			this.title=title;
 			this.cost=cost;
 			this.type=type;
 			this.unit=unit;
 		}
 	};
+	
+	private Double round2digits(Double value) {
+		return Math.ceil(value*100)/100;
+	}
     private Boolean buildPlanUpdateCheckoutDetails(IUserProfileData u, WsMsgUpdateUserPlan_request requestMsg,WsMsgUpdateUserPlan_answer answerMsg) {
 		
     	
     	Integer requestedPlanId = requestMsg.getPlanId();
     	
-    	Float totalYearlyCost=0.0F;
-    	Float totalYearlyCostHT=0.0F;
+    	Double totalYearlyCost=0.0;
+    	Double totalYearlyCostHT=0.0;
     	
     	IPlan curPlan = u.getPlan();
     	if (curPlan==null) {
@@ -293,31 +298,31 @@ public static final Integer NB_DAYS_PLAN_DISCOUNT=182;// approx. half a year
     			return false;
     		}
 		}
-		Float curPlanCost = curPlan.getYearlyCostEuros();
+    	Double curPlanCost = curPlan.getYearlyCostEuros().doubleValue();
 				
 		IPlan newPlan = Globals.Get().getPlansMgr().getPlan(requestedPlanId);
 		if (newPlan==null) {
 			log.error("User "+u.getName()+" requested update to unknown plan id '"+requestedPlanId+"'");
 			return false;
 		}
-		Float newPlanCost = newPlan.getYearlyCostEuros();
+		Double newPlanCost = newPlan.getYearlyCostEuros().doubleValue();
 		List<PlanBreakdownEntry> breakDownList= new ArrayList<>();
 		
 		// new plan cost
 		breakDownList.add(new PlanBreakdownEntry(
 						"Plan '"+newPlan.getName()+"' 1 "+u.getText("Profile.plans.year"),
-						newPlan.getYearlyCostEuros(),
+						newPlan.getYearlyCostEuros().doubleValue(),
 						BREAKDOWN_ENTRY_TYPE.product,
 						"€ "+u.getText("Profile.plans.taxExcluded")));
-		totalYearlyCostHT+=newPlanCost;
+		totalYearlyCostHT+=round2digits(newPlanCost);
 		
 		// discount if any
 		Date now = new Date();
 		Long curPlanRemainingDays = (u.getPlanEndDate().getTime() - now.getTime())/(1000*3600*24) ;
-		Float discountValue=0.0F;
+		Double discountValue=0.0;
 		if (curPlan.getAvailableForPurchase()==true 
 				&& curPlanCost<=newPlanCost && curPlanRemainingDays>=NB_DAYS_PLAN_DISCOUNT) {
-			discountValue=curPlanCost/2;
+			discountValue=round2digits(curPlanCost/2);
 			breakDownList.add(new PlanBreakdownEntry(
 					u.getText("Profile.plans.discount") + " -50% "
 								+u.getText("Profile.plans.currentPlan")
@@ -335,8 +340,8 @@ public static final Integer NB_DAYS_PLAN_DISCOUNT=182;// approx. half a year
 				"€"));
 		
 		// tax
-		Float taxRate = Float.valueOf(Globals.GetMxProperty("mx.payment.taxrate"));
-		Float taxCost = (float) Math.round(taxRate*totalYearlyCostHT)/100; 
+		Double taxRate = Double.valueOf(Globals.GetMxProperty("mx.payment.taxrate"));
+		Double taxCost = round2digits((taxRate/100)*totalYearlyCostHT); 
 		breakDownList.add(new PlanBreakdownEntry(
 				u.getText("Profile.plans.tax")+" "+taxRate+"%",
 				taxCost,
@@ -344,7 +349,7 @@ public static final Integer NB_DAYS_PLAN_DISCOUNT=182;// approx. half a year
 				"€"));
 		
 		// grand total with taxes
-		totalYearlyCost=totalYearlyCostHT+taxCost;
+		totalYearlyCost=round2digits(totalYearlyCostHT+taxCost);
 		breakDownList.add(new PlanBreakdownEntry(
 				"Total",
 				totalYearlyCost,
@@ -588,8 +593,7 @@ public static final Integer NB_DAYS_PLAN_DISCOUNT=182;// approx. half a year
 																	   requestMsg.getTransactionId()));
     		
 
-    	} catch (DataProcessException e) 
-    	{
+    	} catch (Throwable e) {
     		answer.setRejectMessage(user.getText("Profile.plans.planUpdateFailed"));
 			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/update_plan_confirm_payment_answer", answer);
 			log.error("Unable to finalize plan purchase : "+e.getMessage());
@@ -598,7 +602,6 @@ public static final Integer NB_DAYS_PLAN_DISCOUNT=182;// approx. half a year
 			
 			user.sendEmailCCiAdmin( user.getText("Profile.plans.email.purchaseNotFinalized.title",requestMsg.getPaymentMethod().toString()), 
 					   user.getText("Profile.plans.email.purchaseNotFinalized.body",user.getNickname(),requestMsg.getTransactionId()));
-			return;    		
     	}
     }
 

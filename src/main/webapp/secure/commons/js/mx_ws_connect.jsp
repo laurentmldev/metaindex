@@ -115,7 +115,7 @@ function ws_handlers_requestPlanUpdate(planId,onResponseCallback) {
 function ws_handlers_requestPlanUpdateConfirmPayment(planId,transactionId,totalCost,paymentMethod,paymentDetailsStr,onResponseCallback) {
 	
 	function errorCallback(msg) { 
-		footer_showAlert(WARNING, "<s:text name="Profile.plans.unableToContactServerForPaymentConfirm" />");
+		footer_showAlert(ERROR, "<s:text name="Profile.plans.unableToContactServerForPaymentConfirm" />");
 		console.log("Plans Payment Confirmation error : "+msg);
 	}
 	

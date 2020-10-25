@@ -16,7 +16,7 @@ public class UpdatePlanPaymentMxStat extends UpdatePlanRequestMxStat {
 
 	
 	public UpdatePlanPaymentMxStat(IUserProfileData u, String transactionId, 
-							Integer curPlanId,Integer newPlanId, Float cost) {
+							Integer curPlanId,Integer newPlanId, Double cost) {
 		super(u,transactionId,curPlanId,newPlanId,cost); 
 	}
 	@Override

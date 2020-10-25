@@ -18,5 +18,5 @@ public interface IPaymentInterface  {
 	public enum PAYMENT_METHOD { paypal, sandbox }
 	PAYMENT_METHOD getName();
 	
-	Boolean confirmPayment(String transactionId, Float cost, String paymentDetails) throws IOException ;
+	Boolean confirmPayment(String transactionId, Double cost, String paymentDetails) throws IOException ;
 }

@@ -41,13 +41,13 @@ public class WsMsgUpdateUserPlan_answer extends WsMsgUpdateUserPlan_request impl
 	}
 
 	private String _transactionId;
-	private Float _totalCost;
+	private Double _totalCost;
 	private List<PlanBreakdownEntry> _breakdownEntries =  new ArrayList<>();
 		
-	public Float getTotalCost() {
+	public Double getTotalCost() {
 		return _totalCost;
 	}
-	public void setTotalCost(Float _totalCost) {
+	public void setTotalCost(Double _totalCost) {
 		this._totalCost = _totalCost;
 	}
 	public List<PlanBreakdownEntry> getBreakdownEntries() {

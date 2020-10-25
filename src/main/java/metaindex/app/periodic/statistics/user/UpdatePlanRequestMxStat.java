@@ -18,11 +18,16 @@ public class UpdatePlanRequestMxStat extends AMxStatisticItem {
 	private String _transactionId;
 	private Integer _curPlanId;
 	private Integer _newPlanId;
-	private Float _cost;
+	private Double _cost;
 	
 	public UpdatePlanRequestMxStat(IUserProfileData u, String transactionId, 
-							Integer curPlanId,Integer newPlanId, Float cost) {
+							Integer curPlanId,Integer newPlanId, Double cost) {
 		super(u); 
+		_transactionId=transactionId;
+		_curPlanId=curPlanId;
+		_newPlanId=newPlanId;
+		_cost=cost;
+		
 	}
 	@Override
 	public String getName() {
@@ -46,10 +51,10 @@ public class UpdatePlanRequestMxStat extends AMxStatisticItem {
 	public void setNewPlanId(Integer _newPlanId) {
 		this._newPlanId = _newPlanId;
 	}
-	public Float getCost() {
+	public Double getCost() {
 		return _cost;
 	}
-	public void setCost(Float _cost) {
+	public void setCost(Double _cost) {
 		this._cost = _cost;
 	}
 	

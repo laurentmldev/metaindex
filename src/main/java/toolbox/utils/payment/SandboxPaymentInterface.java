@@ -19,7 +19,7 @@ public class SandboxPaymentInterface implements IPaymentInterface {
 	public PAYMENT_METHOD  getName() { return PAYMENT_METHOD.sandbox; }
 	
 	
-	public Boolean confirmPayment(String transactionId, Float cost, String paymentDetails) throws IOException {
+	public Boolean confirmPayment(String transactionId, Double cost, String paymentDetails) throws IOException {
 		// simulate a payment service for which transaction would not be available immediatly
 		_nbTries++;
 		log.info(transactionId+"\t"+paymentDetails);		
