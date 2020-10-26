@@ -31,34 +31,73 @@
   
   <script type="text/javascript"> 
  
-  var TUTO_VIDEO_BASEURI="/webapp/public/commons/media/video/tuto/";
- 
+var TUTO_VIDEO_BASEURI="/webapp/public/commons/media/video/tuto/";
+var tuto_contents=null;
+var tuto_title=null;
+var tuto_desc=null;
+var tuto_links=null;
+var tuto_links_contents=null;
+
+var tuto_video=null;
+var tuto_video_src=null;
+var tuto_video_captions=null;
+
+
+function setVars() {
+
+	tuto_contents=document.getElementById("tuto-contents");
+	tuto_title=document.getElementById("tuto-title");
+	tuto_desc=document.getElementById("tuto-desc");
+	tuto_links=document.getElementById("tuto-links");
+	tuto_links_contents=document.getElementById("tuto-links-contents");
+
+	tuto_video=document.getElementById("tuto-video");
+	tuto_video_src=document.getElementById("tuto-video-source");
+	tuto_video_captions=document.getElementById("tuto-video-captions");
+	
+}
+
 function deselectAll() {
 	let buttons=document.querySelectorAll(".mx-tuto-button");
 	for (var idx=0;idx<buttons.length;idx++) {
 		buttons[idx].classList.remove("mx-tuto-button-selected");
 	}
 }
-function activateTuto(buttonObj,tutoid,tutoTitle,tutoDesc) {
-	document.getElementById("tuto-title").innerHTML=tutoTitle;
-	document.getElementById("tuto-desc").innerHTML=tutoDesc;
-	document.getElementById("tuto-video-source").src=TUTO_VIDEO_BASEURI+tutoid+".m4v";
-	document.getElementById("tuto-video").load();
-	document.getElementById("tuto-contents").style.display="block";	
+function activateTuto(buttonObj,tutoid,tutoTitle,tutoDesc,tutoLinks) {
+	
+	tuto_title.innerHTML=tutoTitle;
+	tuto_desc.innerHTML=tutoDesc;
+	tuto_video_src.src=TUTO_VIDEO_BASEURI+tutoid+".m4v";
+	tuto_video.load();
+	tuto_contents.style.display="block";	
 	deselectAll();
 	buttonObj.classList.add("mx-tuto-button-selected");
+	
+	if (tutoLinks.length>0) {
+		tuto_links_contents.innerHTML=tutoLinks;
+		tuto_links.style.display='block';
+	} else {
+		tuto_links.style.display='none';
+	}
 	
 	
 }
 </script>
   
   
+  <style>
+  video::cue{
+      font-size:1rem;
+    } 
+  </style>
 </head>
 
 
 <body id="" 
-	onload="document.getElementById('default-tuto').onclick();
-		document.getElementById('tuto-video').stop();"
+	onload="
+		setVars();
+		document.getElementById('default-tuto').onclick();
+		//document.getElementById('tuto-video').stop();"
 	>
 
 
@@ -79,7 +118,8 @@ function activateTuto(buttonObj,tutoid,tutoTitle,tutoDesc) {
 		<div id="default-tuto" class="mx-tuto-button" 
 			onclick="activateTuto(this,'tuto1',
 			'<s:text name="tutorials.tuto1.title"/>', 
-			'<s:text name="tutorials.tuto1.desc"/>');" >
+			'<s:text name="tutorials.tuto1.desc"/>',
+			'<s:text name="tutorials.tuto1.links"/>');" >
 			Tuto 1
 			<div class="mx-tuto-button-descr"><s:text name="tutorials.tuto1.title"/></div>
 		</div>
@@ -87,7 +127,8 @@ function activateTuto(buttonObj,tutoid,tutoTitle,tutoDesc) {
 		<div class="mx-tuto-button" 
 			onclick="activateTuto(this,'tuto2',
 			'<s:text name="tutorials.tuto2.title"/>', 
-			'<s:text name="tutorials.tuto2.desc"/>');" >
+			'<s:text name="tutorials.tuto2.desc"/>',
+			'<s:text name="tutorials.tuto2.links"/>');" >
 			Tuto 2
 			<div class="mx-tuto-button-descr"><s:text name="tutorials.tuto2.title"/></div>
 		</div>
@@ -119,29 +160,29 @@ function activateTuto(buttonObj,tutoid,tutoTitle,tutoDesc) {
           <div class="row">
             <div class="col-lg-12" >
            	  
-	 		  
-			  <div id="empty-placeholder" style="color:#aaa;dwidth:100%" ><center>
+	 		<center>
 				 	  
 						
 			<table id="tuto-contents" class="table" style="display:none;margin-top:1rem;">
  		<tr><td><center>
- 			<h4 id="tuto-title" ></h4>
- 			<div  id="tuto-desc"></div>
+ 			<h3 id="tuto-title" ></h3>
+ 			<h5  id="tuto-desc"></h5>
  			<div>
  				 <video id="tuto-video" width="800" height="530" style="border:none;background:" controls>
-					  <source  id="tuto-video-source" src="" type="video/mp4">
-					  
-					   <!-- track default
-				           kind="captions"
-				           srclang="en"
-				           src="/public/commons/media/video/tuto/tuto1_en.vtt" /-->
-						Your browser does not support the video tag.
+					  <source  id="tuto-video-source" src="" type="video/mp4">					  
+					   <track default  kind="captions" srclang="en" src="/webapp/public/commons/media/video/tuto/tuto1-desc-en.vtt" /-->
+					   Your browser does not support the video tag.
 					</video> 
  			</div>
  	</center>	</td></tr>
  	
  	</table>
 					  
+				  </div>
+				  
+				  <div id="tuto-links" style="display:none;margin-left:5rem;">
+				  		<h5>Useful Links</h5>
+				  		<div id="tuto-links-contents" ></div> 
 				  </div>
 			  </center></div>
 	   		 
