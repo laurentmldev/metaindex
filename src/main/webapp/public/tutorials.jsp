@@ -42,7 +42,11 @@ var tuto_video=null;
 var tuto_video_src=null;
 var tuto_video_captions=null;
 
+var language_shortname = "${current_guilanguage}";
+if (language_shortname.length==0) { language_shortname="en"; }
 
+var origin="welcome";
+if ("${param.origin}"!="") { origin="${param.origin}"; }
 
 function setVars() {
 
@@ -69,8 +73,8 @@ function activateTuto(buttonObj,tutoid,tutoTitle,tutoDesc,tutoLinks) {
 	tuto_title.innerHTML=tutoTitle;
 	tuto_desc.innerHTML=tutoDesc;
 	tuto_video_src.src=TUTO_VIDEO_BASEURI+tutoid+".m4v";
-	tuto_video_captions.src=TUTO_VIDEO_BASEURI+tutoid+"-desc-${current_guilanguage}.vtt";
-	tuto_video_captions.srclang="${current_guilanguage}";
+	tuto_video_captions.src=TUTO_VIDEO_BASEURI+tutoid+"-desc-"+language_shortname+".vtt";
+	tuto_video_captions.srclang=language_shortname;
 	tuto_video.load();
 	tuto_contents.style.display="block";	
 	deselectAll();
@@ -90,7 +94,7 @@ function activateTuto(buttonObj,tutoid,tutoTitle,tutoDesc,tutoLinks) {
   
   <style>
   video::cue{
-  	  background:white;
+  	  background:#f8f9fc;
   	  color:green;
       font-size:1.4rem;
       padding:1rem;
@@ -118,7 +122,13 @@ function activateTuto(buttonObj,tutoid,tutoTitle,tutoDesc,tutoLinks) {
 				<div class="app-title" style="font-size:4vw;padding:0;margin:0;width:100%;text-align:center;">
 			 		<span class="scale-color-white">M</span><span class="app-title2 scale-color-white" style="color:white;">etainde</span><span class="scale-color-white">X</span> 
 			 		<s:text name="tutorials.title" />           		            			
-            	</div>	 	   			 	
+            	</div>	 	 
+            	
+            	<a href="#" class="btn btn-primary btn-user btn-block scale" 
+	        		style="max-width:10%;height:3rem;background:#999;border:none;padding:0;padding:0;padding-top:0.8rem;" 
+		  	onclick="window.location.href='/'+origin">
+	                   <s:text name="globals.goback" />
+	                 </a>  			 	
 		 			
 	 </nav>
   

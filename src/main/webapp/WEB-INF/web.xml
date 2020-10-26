@@ -122,7 +122,7 @@
     </session-config>
     
   <welcome-file-list>
-    <welcome-file>/public/welcome.jsp</welcome-file>
+    <welcome-file>/welcome</welcome-file>
   </welcome-file-list>
   
   <context-param>
@@ -132,31 +132,31 @@
   
  <error-page>
    <error-code>400</error-code>
-   <location>/public/commons/errors/ProcessError400.jsp</location>
+   <location>/Error400</location>
  </error-page>
  <error-page>
    <error-code>401</error-code>
-   <location>/public/commons/errors/ProcessError401.jsp</location>
+   <location>/Error401</location>
  </error-page>
  <error-page>
    <error-code>404</error-code>
-   <location>/public/commons/errors/ProcessError404.jsp</location>
+   <location>/Error404</location>
  </error-page>
  <error-page>
    <error-code>403</error-code>
-   <location>/public/commons/errors/ProcessErrorAuth.jsp</location>
+   <location>/ErrorAuth</location>
  </error-page>
  <error-page>
    <error-code>500</error-code>
-   <location>/public/commons/errors/ProcessError.jsp</location>
+   <location>/Error</location>
  </error-page>
  <error-page>
    <error-code>503</error-code>
-   <location>/public/commons/errors/ProcessError503.jsp</location>
+   <location>/Error503</location>
  </error-page>
  <error-page>
    <exception-type>java.lang.Throwable</exception-type>
-   <location>/public/commons/errors/ProcessError.jsp</location>
+   <location>/Error</location>
  </error-page>
   
 </web-app>
