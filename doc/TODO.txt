@@ -3,6 +3,12 @@
 v2.1.0:
 -------
 
+tuto 
+ - language not set if not logged in once before or not chosen a language
+ - button to go back to origin
+
+when filter created, displayed is 'filter deleted' 
+
 tab icon with white background
 
 #55 tutorial videos

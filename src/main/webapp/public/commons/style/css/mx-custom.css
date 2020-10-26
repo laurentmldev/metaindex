@@ -248,7 +248,7 @@ height:40px;
 }
 
 .mx_welcome_screenshot {
-	max-width:30vw;
+	max-width:50vw;
 	height:auto;
 }
 .mx_welcome_card_ul li {
@@ -471,4 +471,16 @@ height:40px;
 .mx-tuto-button-descr {
 	font-size:0.8rem;
 	color:#ccc;
+}
+
+.mx-welcome-li {
+	color:#555;
+	list-style-type:'\2713';
+	font-size:1.2rem;
+	margin-top:0.5rem;
+	padding-left:1rem;
+}
+
+.mx-welcome-li:hover {
+	text-shadow:2px 2px 2px #ccc;		
 }

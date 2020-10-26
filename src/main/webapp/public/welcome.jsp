@@ -97,18 +97,26 @@
 			<div style="text-align:left;font-size:1rem;text-shadow:none;padding:0;margin:0;font-weight:bold">
             	<ul class="app-title" style="text-align:left;padding-left:6rem;font-size:1rem;text-shadow:none;padding-top:0;">
 	            	<li style="list-style-type:'';margin-bottom:1rem;padding-bottom:0;text-align:center;">
+	            	<table><tr><td>
 	            		<a href="signup?origin=welcome"  
 					 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" 
 					 		style="font-size:1.2rem;background:#6c6;border-color:white;margin-left:0.3rem;text-shadow:none;width:20vw"
 					 		><s:text name="signup.createYourAccount" /></a>
+	            	</td><td>
+	            	
+	            		<a href="Tutorials"  
+					 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" 
+					 		style="font-size:1.2rem;background:#66c;border-color:white;margin-left:0.3rem;text-shadow:none;width:20vw"
+					 		><s:text name="tutorials.welcometitle" /></a>
+					 	</td></tr></table>
 	            	</li>
-            		<li style="list-style-type:'\2713';padding-left:1rem;"><s:text name="welcome.features.injectdata" /></li>
-					<li style="list-style-type:'\2713';padding-left:1rem;"><s:text name="welcome.feature.workOffline" /></li>
-					<li style="list-style-type:'\2713';padding-left:1rem;"><s:text name="welcome.features.storeCorpus" /></li>
-					<li style="list-style-type:'\2713';padding-left:1rem;"><s:text name="welcome.features.explore" /></li>
-					<li style="list-style-type:'\2713';padding-left:1rem;"><s:text name="welcome.features.statistics" /></li>			
-					<li style="list-style-type:'\2713';padding-left:1rem;"><s:text name="welcome.features.graphs" /></li>
-					<li style="list-style-type:'\2713';padding-left:1rem;"><s:text name="welcome.features.teamWork" /></li>
+            		<li class="mx-welcome-li" style="margin-top:2rem;" ><s:text name="welcome.features.injectdata" /></li>
+					<li class="mx-welcome-li" ><s:text name="welcome.feature.workOffline" /></li>
+					<li class="mx-welcome-li" ><s:text name="welcome.features.storeCorpus" /></li>
+					<li class="mx-welcome-li" ><s:text name="welcome.features.explore" /></li>
+					<li class="mx-welcome-li" ><s:text name="welcome.features.statistics" /></li>			
+					<li class="mx-welcome-li" ><s:text name="welcome.features.graphs" /></li>
+					<li class="mx-welcome-li" ><s:text name="welcome.features.teamWork" /></li>
 				</ul>	
 				</div>     
 			  

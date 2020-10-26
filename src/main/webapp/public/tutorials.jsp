@@ -43,6 +43,7 @@ var tuto_video_src=null;
 var tuto_video_captions=null;
 
 
+
 function setVars() {
 
 	tuto_contents=document.getElementById("tuto-contents");
@@ -68,6 +69,8 @@ function activateTuto(buttonObj,tutoid,tutoTitle,tutoDesc,tutoLinks) {
 	tuto_title.innerHTML=tutoTitle;
 	tuto_desc.innerHTML=tutoDesc;
 	tuto_video_src.src=TUTO_VIDEO_BASEURI+tutoid+".m4v";
+	tuto_video_captions.src=TUTO_VIDEO_BASEURI+tutoid+"-desc-${current_guilanguage}.vtt";
+	tuto_video_captions.srclang="${current_guilanguage}";
 	tuto_video.load();
 	tuto_contents.style.display="block";	
 	deselectAll();
@@ -87,7 +90,10 @@ function activateTuto(buttonObj,tutoid,tutoTitle,tutoDesc,tutoLinks) {
   
   <style>
   video::cue{
-      font-size:1rem;
+  	  background:white;
+  	  color:green;
+      font-size:1.4rem;
+      padding:1rem;
     } 
   </style>
 </head>
@@ -103,9 +109,15 @@ function activateTuto(buttonObj,tutoid,tutoTitle,tutoDesc,tutoLinks) {
 
 	 <nav class="navbar navbar-expand navbar-light bg-white topbar static-top mx_welcome_navbar" 
 	 		style="background:#aaa;height:5rem">
+	 				<div>
+            		<table style="margin-left:1rem;width:10vw;"><tr>
+            		<td><a onclick="window.location.href=URL_add_parameter(location.href, 'language', 'en');"><img src="${webAppBaseUrl}/public/commons/media/img/flags/UK.png" class="mx-lang-flag scale" /></a></td>
+            		<td><a onclick="window.location.href=URL_add_parameter(location.href, 'language', 'fr');"><img src="${webAppBaseUrl}/public/commons/media/img/flags/France.png" class="mx-lang-flag scale"/></a></td>
+            		</tr></table>
+            	</div>
 				<div class="app-title" style="font-size:4vw;padding:0;margin:0;width:100%;text-align:center;">
 			 		<span class="scale-color-white">M</span><span class="app-title2 scale-color-white" style="color:white;">etainde</span><span class="scale-color-white">X</span> 
-			 		Tutorials           		            			
+			 		<s:text name="tutorials.title" />           		            			
             	</div>	 	   			 	
 		 			
 	 </nav>
@@ -170,7 +182,7 @@ function activateTuto(buttonObj,tutoid,tutoTitle,tutoDesc,tutoLinks) {
  			<div>
  				 <video id="tuto-video" width="800" height="530" style="border:none;background:" controls>
 					  <source  id="tuto-video-source" src="" type="video/mp4">					  
-					   <track default  kind="captions" srclang="en" src="/webapp/public/commons/media/video/tuto/tuto1-desc-en.vtt" /-->
+					   <track  id="tuto-video-captions" default  kind="captions" srclang="" src="" /-->
 					   Your browser does not support the video tag.
 					</video> 
  			</div>
@@ -181,7 +193,7 @@ function activateTuto(buttonObj,tutoid,tutoTitle,tutoDesc,tutoLinks) {
 				  </div>
 				  
 				  <div id="tuto-links" style="display:none;margin-left:5rem;">
-				  		<h5>Useful Links</h5>
+				  		<h5><s:text name="tutorials.usefullinks" /></h5>
 				  		<div id="tuto-links-contents" ></div> 
 				  </div>
 			  </center></div>
