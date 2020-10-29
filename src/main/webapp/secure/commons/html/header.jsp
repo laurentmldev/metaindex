@@ -111,6 +111,10 @@
                   <i class="fas fa-envelope fa-sm fa-fw mr-2 text-gray-400"></i>
                   	<s:text name="contactform.title"></s:text>
                 </a>
+                <a id="tutorials" class="dropdown-item" href="Tutorials?origin=Catalogs" >
+                  <i class="fas fa-award fa-sm fa-fw mr-2 text-gray-400"></i>
+                  	<s:text name="tutorials.title"></s:text>
+                </a>
                 <a class="dropdown-item" data-toggle="modal" data-target="#logoutModal">
                   <i class="fas fa-running fa-sm fa-fw mr-2 text-gray-400"></i>
                   <s:text name="Profile.logout"></s:text>

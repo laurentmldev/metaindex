@@ -293,7 +293,8 @@ public class UserProfileData implements IUserProfileData
 	public void setGuiLanguageId(Integer guiLanguageId) { 
 		_guiLanguageId=guiLanguageId;
 		String langShortName = getGuiLanguage().getShortname();
-		try { _curLanguageTranslations = Globals.Get().getProperties("global_"+langShortName.toLowerCase());
+		try { 
+			_curLanguageTranslations = Globals.Get().getProperties("global_"+langShortName.toLowerCase());
 		} catch (DataAccessException cex)
 		{
 		    log.error("Unable to load translations for language key '"+langShortName+"', using English.");

@@ -64,11 +64,13 @@ class CreateFieldIntoEsDbStmt extends ESWriteStmt<ICatalogTerm>   {
             	} builder.endObject();
             }
             else if (ICatalogTerm.getRawDatatype(t.getDatatype())==RAW_DATATYPE.Tdate) {
+            	/* century dates field not ready yet
             	if (implicitTerms!=null) {
 	            	ICatalogTerm centuryImplicitTerm = ICatalogTerm.BuildCatalogTerm(RAW_DATATYPE.Tinteger);
 	            	centuryImplicitTerm.setName(termName+"_century");
 	            	implicitTerms.add(centuryImplicitTerm);
             	}
+            	*/
             	
     			builder.field("ignore_malformed", "true");
     			builder.field("null_value", "1970/01/01");

@@ -1,84 +1,110 @@
 WEBVTT
 
 
-00:00:02.000 --> 00:00:08.000 line:50% 
-[MetaindeX - Tuto 1]
+00:00:00.000 --> 00:00:05.000 line:50% 
+*** MetaindeX Tutorials ***
 
-00:00:04.000 --> 00:00:12.000 line:50% 
-*** 5 minutes basics and overview ***
+00:00:00.000 --> 00:00:05.000 line:50% 
+1- Basics and Overview
 
-00:00:07.000 --> 00:00:12.000 line:50%
+00:00:05.000 --> 00:00:10.000 line:50%
 In this tutorial, we'll see how to create and customize a catalog
 
-00:00:09.000 --> 00:00:12.000 line:50%
-and how to create documents
+00:00:07.000 --> 00:00:10.000 line:50%
+and how to create documents by hand
 
-00:00:13.000 --> 00:00:17.000 line:80%
-Let's login now to MetaindeX
+00:00:10.000 --> 00:00:15.000 line:80%
+Let's login first to MetaindeX
 
-00:00:26.000 --> 00:00:34.000 line:80%
+00:00:26.000 --> 00:00:30.000 line:80%
 we'll set language to english and choose blue skin
 
-00:00:33.000 --> 00:00:34.000 line:80%
-Because blue is nice
+00:00:29.000 --> 00:00:30.000 line:80%
+because blue is nice
 
-00:00:45.000 --> 00:01:00.000 line:80%
+00:00:38.000 --> 00:00:41.000 line:80%
 we create now a catalog to store our data 
 
-00:00:50.000 --> 00:01:00.000 line:80%
-only very basic characters are allow here,
-this name is an ID. We can later choose a fancy human name to display
+00:00:41.000 --> 00:00:48.000 line:80%
+only very basic characters are allowed here, this name is an ID.
+we'll show later how to set a fancy human name in the lexic
+
+00:00:52.000 --> 00:01:00.000 line:80%
+catalog panels allow to customize and control catalog's behaviour.
 
 00:01:00.000 --> 00:01:05.000 line:80%
-the main panel allows to configure the catalog.
+we'll customize here a bit our lexic
 
-00:01:05.000 --> 00:01:10.000 line:80%
-each tab has a help explaining what and how
+00:01:05.000 --> 00:01:15.000 line:80%
+let's give a better name and description to the catalog
 
-00:01:15.000 --> 00:01:50.000 line:80%
-we'll customize a bit our lexic
+00:01:15.000 --> 00:01:25.000 line:80%
+we can also give a custom name for documents
 
-00:01:50.000 --> 00:01:55.000 line:80%
-after a refresh we can see the changes applied
+00:01:28.000 --> 00:01:35.000 line:80%
+you can define custom lexic in various languages if your team is international
 
-00:01:57.000 --> 00:02:02.000 line:80%
+00:01:49.000 --> 00:01:53.000 line:80%
+after a refresh (Ctrl-R) we can see the changes applied
+
+00:01:58.000 --> 00:02:05.000 line:80%
+and also applies in other language
+
+00:02:11.000 --> 00:02:13.000 line:80%
 we enter now into the catalog 
 
-00:02:07.000 --> 00:02:17.000 line:80%
-let's create manually few documents
+00:02:15.000 --> 00:02:30.000 line:80%
+catalog is empty, so let's create manually few documents
 
-00:02:09.000 --> 00:02:17.000 line:80%
+00:02:22.000 --> 00:02:30.000 line:80%
 with 2 fields : title (string) and size (integer)
-
-00:02:26.000 --> 00:02:31.000 line:80%
-the locker controls if the field shall be cleared after creating the document
 
 00:02:46.000 --> 00:02:51.000 line:80%
 we can modify values after creation of course
 
-00:03:00.000 --> 00:03:20.000 line:80%
+00:02:57.000 --> 00:03:04.000 line:80%
 let's create few more documents
 
-00:03:40.000 --> 00:03:55.000 line:80%
+00:03:04.000 --> 00:03:15.000 line:80%
+the locker controls if the field shall be cleared after creating the document
+
+00:03:40.000 --> 00:03:50.000 line:80%
 for easier overview, we'll customize cards title in the catalogs panel
 
 00:03:50.000 --> 00:03:55.000 line:80%
 using *title* field as a card caption 
 
-00:03:58.000 --> 00:04:03.000 line:80%
+00:04:02.000 --> 00:04:05.000 line:80%
 we can see our change applied here on the cards
 
-00:04:06.000 --> 00:04:10.000 line:80%
-now we'll end demonstrating basic queries
+00:04:10.000 --> 00:04:12.000 line:80%
+we'll end by demonstrating basic search queries
 
-00:04:11.000 --> 00:04:19.000 line:80%
-size:4 returns documents whose field *size* equals 4
+00:04:12.000 --> 00:04:18.000 line:80%
+size:3 returns documents whose field *size* equals 3
 
-00:04:20.000 --> 00:04:25.000 line:80%
-size:>4 returns documents whose field *size* is greater 4
+00:04:18.000 --> 00:04:22.000 line:80%
+this is 'Lucene' query language, it is very powerful
+to search and filter numbers but also strings and dates
 
-00:04:30.000 --> 00:04:40.000 line:80%
+00:04:22.000 --> 00:04:25.000 line:80%
+we can also combine expressions with AND/OR connectors
+
+00:04:25.000 --> 00:04:33.000 line:80%
+size:>10 returns documents whose field *size* is greater 10
+
+00:04:33.000 --> 00:04:37.000 line:80%
+more examples are given by clicking help icon left to the search input
+
+00:04:37.000 --> 00:04:50.000 line:80%
 we can keep our query in a filter, to reuse it later
 
-00:05:02.000 --> 00:05:07.000 line:50% 
-The End
+00:04:59.500 --> 00:05:06.000 line:30% 
+*** The End ***
+
+00:05:01.000 --> 00:05:06.000 line:40% 
+see also other MetaindeX tutorials for 
+- Excel/Csv import/export
+- statistics charts
+- graphs and connections
+- and more ...

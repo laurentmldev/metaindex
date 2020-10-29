@@ -3,6 +3,7 @@
 v2.1.0:
 -------
 
+remove century field ... not ready yet! 
 tuto 
  - language not set if not logged in once before or not chosen a language
  - button to go back to origin

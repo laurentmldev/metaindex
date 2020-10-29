@@ -1,0 +1,20 @@
+WEBVTT
+
+
+00:00:02.000 --> 00:00:08.000 line:50% 
+[MetaindeX - Tuto 1]
+
+00:00:04.000 --> 00:00:19.000 line:50% 
+*** Vue d'ensemble en 5min ***
+
+00:00:09.000 --> 00:00:19.000 line:50%
+In this tutorial, we'll see how to inject data from an Excel file, and upload some associated pictures.
+
+00:00:11.000 --> 00:00:19.000 line:50%
+We'll also demonstrate flexibility of MetaindeX by customizing the catalog display options.
+
+00:00:13.000 --> 00:00:19.000 line:50%
+At last, we'll show rapidly the statistics and graphs functionality based and Kibana and Gephi tools.  
+
+00:00:20.000 --> 00:00:23.000 
+Let's first of all login. We suppose that we've just registered as a fresh new user

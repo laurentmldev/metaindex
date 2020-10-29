@@ -44,6 +44,7 @@ var tuto_video_captions=null;
 
 var language_shortname = "${current_guilanguage}";
 if (language_shortname.length==0) { language_shortname="en"; }
+language_shortname=language_shortname.toLowerCase();
 
 var origin="welcome";
 if ("${param.origin}"!="") { origin="${param.origin}"; }
@@ -59,7 +60,10 @@ function setVars() {
 	tuto_video=document.getElementById("tuto-video");
 	tuto_video_src=document.getElementById("tuto-video-source");
 	tuto_video_captions=document.getElementById("tuto-video-captions");
-	
+		
+	if ("<s:property value="currentUserProfile.name" />".length!=0) {
+		document.getElementById("language_buttons").style.display='none';	
+	}
 }
 
 function deselectAll() {
@@ -89,6 +93,8 @@ function activateTuto(buttonObj,tutoid,tutoTitle,tutoDesc,tutoLinks) {
 	
 	
 }
+
+function goBack() { window.location.href=origin; }
 </script>
   
   
@@ -113,7 +119,7 @@ function activateTuto(buttonObj,tutoid,tutoTitle,tutoDesc,tutoLinks) {
 
 	 <nav class="navbar navbar-expand navbar-light bg-white topbar static-top mx_welcome_navbar" 
 	 		style="background:#aaa;height:5rem">
-	 				<div>
+	 			<div id="language_buttons">
             		<table style="margin-left:1rem;width:10vw;"><tr>
             		<td><a onclick="window.location.href=URL_add_parameter(location.href, 'language', 'en');"><img src="${webAppBaseUrl}/public/commons/media/img/flags/UK.png" class="mx-lang-flag scale" /></a></td>
             		<td><a onclick="window.location.href=URL_add_parameter(location.href, 'language', 'fr');"><img src="${webAppBaseUrl}/public/commons/media/img/flags/France.png" class="mx-lang-flag scale"/></a></td>
@@ -126,7 +132,7 @@ function activateTuto(buttonObj,tutoid,tutoTitle,tutoDesc,tutoLinks) {
             	
             	<a href="#" class="btn btn-primary btn-user btn-block scale" 
 	        		style="max-width:10%;height:3rem;background:#999;border:none;padding:0;padding:0;padding-top:0.8rem;" 
-		  	onclick="window.location.href='/'+origin">
+		  	onclick="goBack();">
 	                   <s:text name="globals.goback" />
 	                 </a>  			 	
 		 			
@@ -142,8 +148,8 @@ function activateTuto(buttonObj,tutoid,tutoTitle,tutoDesc,tutoLinks) {
 			'<s:text name="tutorials.tuto1.title"/>', 
 			'<s:text name="tutorials.tuto1.desc"/>',
 			'<s:text name="tutorials.tuto1.links"/>');" >
-			Tuto 1
-			<div class="mx-tuto-button-descr"><s:text name="tutorials.tuto1.title"/></div>
+			
+			<div class="mx-tuto-button-title"><b>1</b> <s:text name="tutorials.tuto1.title"/></div>
 		</div>
 		
 		<div class="mx-tuto-button" 
@@ -151,10 +157,18 @@ function activateTuto(buttonObj,tutoid,tutoTitle,tutoDesc,tutoLinks) {
 			'<s:text name="tutorials.tuto2.title"/>', 
 			'<s:text name="tutorials.tuto2.desc"/>',
 			'<s:text name="tutorials.tuto2.links"/>');" >
-			Tuto 2
-			<div class="mx-tuto-button-descr"><s:text name="tutorials.tuto2.title"/></div>
+			
+			<div class="mx-tuto-button-title"><b>2</b> <s:text name="tutorials.tuto2.title"/></div>
 		</div>
 		
+		<div class="mx-tuto-button" 
+			onclick="activateTuto(this,'tuto3',
+			'<s:text name="tutorials.tuto3.title"/>', 
+			'<s:text name="tutorials.tuto3.desc"/>',
+			'<s:text name="tutorials.tuto3.links"/>');" >
+			
+			<div class="mx-tuto-button-title"><b>3</b> <s:text name="tutorials.tuto3.title"/></div>
+		</div>
         </div>
       <hr class="sidebar-divider d-none d-md-block" style="margin-top:2rem;"/>
 	  
@@ -190,7 +204,7 @@ function activateTuto(buttonObj,tutoid,tutoTitle,tutoDesc,tutoLinks) {
  			<h3 id="tuto-title" ></h3>
  			<h5  id="tuto-desc"></h5>
  			<div>
- 				 <video id="tuto-video" width="800" height="530" style="border:none;background:" controls>
+ 				 <video id="tuto-video" width="1000" height="550" style="border:none;background:" controls>
 					  <source  id="tuto-video-source" src="" type="video/mp4">					  
 					   <track  id="tuto-video-captions" default  kind="captions" srclang="" src="" /-->
 					   Your browser does not support the video tag.

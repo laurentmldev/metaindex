@@ -1,0 +1,233 @@
+WEBVTT
+
+
+00:00:00.000 --> 00:00:03.000 line:50% 
+*** MetaindeX Tutorials ***
+
+00:00:00.000 --> 00:00:03.000 line:50% 
+3- Statistic charts with Kibana
+
+00:00:03.000 --> 00:00:13.000 line:50%
+In this tutorial, we'll see how to use integrated Kibana module from ElasticStack
+to create charts based on your catalog contents
+
+00:00:13.000 --> 00:00:18.000 line:80%
+Let's log into MetaindeX
+
+00:00:25.000 --> 00:00:31.000 line:80%
+we'll go with the 'demo_artists' catalog created in previous tutorial "Excel import/export"  
+
+00:00:31.000 --> 00:00:35.000 line:80%
+For the statistics, we'll focus on following fields:  
+
+00:00:35.000 --> 00:00:38.000 line:80%
+<b>birthdate</b> : used for ordering artists chronologically  
+
+00:00:38.000 --> 00:00:42.000 line:80%
+<b>birthyear</b> : deduced from <b>birthdate</b>, it allows easier processing in Kibana in some cases
+
+00:00:42.000 --> 00:00:45.000 line:80%
+<b>nb_guitars</b> : a number saying how many guitars the character owns
+
+00:00:45.000 --> 00:00:48.500 line:80%
+<b>type</b> : can be either <b>writer</b> <b>actor</b> <b>filmmaker</b> <b>guitarist<b>
+
+00:00:48.500 --> 00:00:52.000 line:80%
+<b>sex</b> : the gender, can be either <b>male</b> or <b>female<b>
+
+00:00:52.000 --> 00:00:59.000 line:80%
+So Linda Hamilton (aka Sarah Connor) is :
+- <b>nb_guitars</b> : 4
+- <b>type</b> : actor
+- <b>sex</b> : female
+
+00:01:02.000 --> 00:01:05.000 line:80%
+now we go back to catalog's <b>overview</b> panel
+
+00:01:05.000 --> 00:01:20.000 line:80%
+configure Kibana to sort the documents by <b>birthdate</b> 
+
+00:01:10.000 --> 00:01:15.000 line:80%
+(otherwise it's using the date of the last modification of the document) 
+
+00:01:27.000 --> 00:01:35.000 line:80%
+now to enter the statistics module, we go left panel and click on "Go to Kibana" 
+
+00:01:35.000 --> 00:01:37.000 line:80%
+that will open a new tab
+
+00:01:37.000 --> 00:01:42.000 line:80%
+Kibana is a complete independant app from ElasticStack, 
+running over the same database than MetaindeX 
+
+00:01:42.000 --> 00:01:50.000 line:80%
+so we'll need to log in again
+but we can use same credentials than MetaindeX  
+ 
+00:01:52.000 --> 00:01:55.000 line:100%
+since Kibana runs over the same database than MetaindeX
+
+00:01:55.000 --> 00:01:58.000 line:100%
+we'll find there the same contents than in our catalog
+
+00:02:00.000 --> 00:02:05.000 line:100%
+Kibana interface is mainly made of 3 panels :
+- Discover
+- Dashboard
+- Visualize
+
+00:02:05.000 --> 00:02:09.000 line:100%
+Discover panel just gives a basic trace of available documents, which is currently empty
+
+00:02:09.000 --> 00:02:16.000 line:100%
+because Kibana search window starts by default 15mins ago ...
+while our <b>birthdates</b> starts several decades ago. 
+
+00:02:17.000 --> 00:02:23.000 line:100%
+so let's start from year 1700 to include birth dates of all our artists 
+
+00:02:25.000 --> 00:02:35.000 line:100%
+we can see then a simple distribution of documents along birth dates
+(remember we've set <b>birthdate</b> as a Kibana chronology reference)  
+
+00:02:40.000 --> 00:02:45.000 line:100%
+we'll go now into Visualize panel to create our first chart
+
+00:02:48.000 --> 00:02:52.000 line:100%
+Kibana offers several types of charts,
+we'll only show the use of 2 of them in this tutorial
+
+00:02:52.000 --> 00:02:55.000 line:100%
+starting with a classical Pie chart
+
+00:02:55.000 --> 00:02:58.000 line:100%
+confirm the catalog we use
+
+00:02:58.000 --> 00:03:03.000 line:100%
+Kibana charts are mainly configured with 2 steps:
+
+00:03:03.000 --> 00:03:17.000 line:100%
+1- grouping documents into so called <b>buckets</b>
+2- out of each bucket, compute a value to display, called a <b>metric</b>
+
+00:03:17.000 --> 00:03:21.000 line:100%
+(the simplest metric is the count of documents per bucket)
+
+00:03:21.000 --> 00:03:27.000 line:100%
+for the pie chart, each bucket is a slice of the pie 
+
+00:03:27.000 --> 00:03:37.000 line:100%
+we'll group artists into separate buckets 
+based on their <b><b>type<b></b>
+
+00:03:30.000 --> 00:03:37.000 line:100%
+<i>either "writer" "actor" "filmmaker" "guitarist"</i>
+
+00:03:37.000 --> 00:03:43.000 line:100%
+for performance,
+we'll use <b>type.keyword</b> 
+rather than just <b>type</b> 
+
+00:03:43.000 --> 00:03:47.000 line:100%
+because field <b>type</b> has 
+a predefined list of values
+
+00:03:47.000 --> 00:03:53.000 line:100%
+we can then update the chart 
+
+00:03:53.000 --> 00:03:55.000 line:100%
+we see that 32% are writers
+
+00:03:55.000 --> 00:03:59.000 line:100%
+and 29% are actors
+
+00:04:00.000 --> 00:04:10.000 line:100%
+several rendering options are available
+
+00:04:15.000 --> 00:04:20.000 line:100%
+let's save this chart
+
+00:04:27.000 --> 00:04:31.000 line:100%
+now we'll change the metric 
+
+00:04:31.000 --> 00:04:35.000 line:100%
+instead of documents count
+ 
+00:04:35.000 --> 00:04:42.000 line:100%
+we'll show distribution of guitars among our 4 types
+
+00:04:42.000 --> 00:04:50.000 line:100%
+meaning that each slice represent the 
+total amount of guitars owned by artists of this type
+
+00:04:50.000 --> 00:04:55.000 line:100%
+and we save it also 
+
+00:05:12.000 --> 00:05:20.000 line:100%
+we'll add now another chart
+
+00:05:20.000 --> 00:05:30.000 line:100%
+displaying genders evolution through the years
+as histogram
+
+00:05:30.000 --> 00:05:40.000 line:100%
+let's start grouping artists by quarters of century
+defining buckets for the X-axis
+
+00:05:40.000 --> 00:05:45.000 line:100%
+this can be done with <b>Histogram</b> aggregation
+
+00:05:45.000 --> 00:05:49.000 line:100%
+applied to the <b>birthyear</b> field
+
+00:05:49.000 --> 00:05:53.000 line:100%
+grouping documents every 25 years
+
+00:05:53.000 --> 00:06:00.000 line:100%
+so this first result is the artists count 
+per periods of 25 years
+
+00:06:00.000 --> 00:06:15.000 line:100%
+we will now split each 25-year bucket 
+into sub-buckets discriminated by gender
+
+00:06:15.000 --> 00:06:25.000 line:100%
+here is same procedure than for the pie slices 
+
+00:06:27.000 --> 00:06:29.000 line:100%
+haaa interesting.
+
+00:06:48.000 --> 00:06:40.000 line:100%
+let's choose more meaningful colors,
+say ... hum ... what about blue for boys and pink for ladies ?
+
+00:06:45.000 --> 00:06:55.000 line:100%
+well we can see that this corpus is definitely not gender-balanced ... sorry for that!
+
+00:06:55.000 --> 00:07:05.000 line:100%
+I still want to save it, just for the demo
+
+00:07:15.000 --> 00:07:25.000 line:100%
+last thing, we'll put together our 3 visuals into a dashboard
+
+00:07:32.000 --> 00:07:38.000 line:100%
+just click to add them
+
+00:07:45.000 --> 00:07:55.000 line:100%
+we can then rearrange them at will
+
+00:08:25.000 --> 00:08:35.000 line:100%
+and then save the dashboard
+
+00:08:35.000 --> 00:08:48.000 line:100%
+please note that those charts are <b>dynamic</b>
+and will be updated each time we change things in MetaindeX
+
+00:08:50.000 --> 00:09:01.000 line:30% 
+*** The End ***
+
+00:08:53.000 --> 00:09:01.000 line:30% 
+see also other MetaindeX tutorials for 
+- integrate Kibana dashboard in MetaindeX interface
+- graphs and connections
+- and more ...
