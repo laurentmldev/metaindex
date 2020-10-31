@@ -106,6 +106,7 @@ a.anchor_top {
 	background:inherit;
 	border:none;
 	width:max-content;
+	margin-right:10vw;
 	/*
 	max-width:50vw !important;
 	min-width:100px !important;

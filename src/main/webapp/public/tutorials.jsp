@@ -169,6 +169,16 @@ function goBack() { window.location.href=origin; }
 			
 			<div class="mx-tuto-button-title"><b>3</b> <s:text name="tutorials.tuto3.title"/></div>
 		</div>
+		
+		<div class="mx-tuto-button" 
+			onclick="activateTuto(this,'tuto4',
+			'<s:text name="tutorials.tuto4.title"/>', 
+			'<s:text name="tutorials.tuto4.desc"/>',
+			'<s:text name="tutorials.tuto4.links"/>');" >
+			
+			<div class="mx-tuto-button-title"><b>4</b> <s:text name="tutorials.tuto4.title"/></div>
+		</div>
+		
         </div>
       <hr class="sidebar-divider d-none d-md-block" style="margin-top:2rem;"/>
 	  
