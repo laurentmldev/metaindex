@@ -238,6 +238,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			myself._stompClient.subscribe('/user/queue/catalog_lexic_updated',myself._handleSetCatalogLexicResponseMsg);
 			myself._stompClient.subscribe('/user/queue/catalog_users',myself._handleGetCatalogUsersMsg);
 			myself._stompClient.subscribe('/user/queue/catalog_user_access',myself._handleSetCatalogUserAccessMsg);
+			myself._stompClient.subscribe('/user/queue/catalog_chat_history',myself._handleCatalogChatHistoryResponseMsg);
 			
 			// perspectives
 			myself._stompClient.subscribe('/user/queue/perspective_updated',myself._handleUpdatedPerspectiveMsg);
@@ -272,6 +273,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			// misc
 			myself._stompClient.subscribe('/user/queue/gui_messaging',myself._handleGuiMsgFromServer);
 			myself._stompClient.subscribe('/user/queue/gui_messaging_progress',myself._handleGuiMsgFromServer);
+			myself._stompClient.subscribe('/user/queue/gui_messaging_chat',myself._handleGuiChatMsg);
 			
 			// contents change notif (broadcast) 
 			myself._stompClient.subscribe('/queue/catalog_contents_changed',myself._handleCatalogContentsChangedMsg);
@@ -312,7 +314,86 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			myself._callback_ServerMessages(parsedMsg); 
 		}		
 	}
+//------- Receive Chat Messages from Server --------	
+	this.subscribeToChatMessages=function(callback_func,debug) {
+		debug=debug||false;
+		myself._callback_ChatMessages_debug=debug;
+		myself._callback_ChatMessages=callback_func;
+	}
+	
+	this._handleGuiChatMsg= function (mxChatMsg) {
+		
+		myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
+		var parsedMsg = JSON.parse(mxChatMsg.body)
+		
+		if (myself._callback_ChatMessages_debug==true) {
+			console.log("MxAPI Received [ChatMessage]\n"+parsedMsg);
+		}
+		if (myself._callback_ChatMessages!=null) {			
+			myself._callback_ChatMessages(parsedMsg); 
+		}		
+	}
+// -------- Post Chat Message				
+	
+	// dataObj { 
+	//  catalogId:xxx,
+	//  text:xxx,
+	// }
+	this.requestPostChatMessage = function(dataObj) {
+		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
+		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/post_chat_message", {}, 
+								 JSON.stringify({"catalogId":dataObj.catalogId,
+									 			 "chatMessage":dataObj.text
+									 			}));			
+	}
 
+// -------- Get catalog chat history
+
+	this.requestCatalogChatHistoCallbacks=[];
+	
+	// dataObj {
+	// 	catalogId
+	//  successCallback
+	//  errorCallback
+	// }
+	this.requestCatalogChatHistory = function(dataObj) {
+		
+		var curRequestId=myself.requestCatalogChatHistoCallbacks.length;
+		myself.requestCatalogChatHistoCallbacks.push(dataObj);
+		if (myself._callback_CatalogChatHisto_debug==true) {
+			console.log("MxAPI Requesting Catalog chat history");
+		}
+		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
+		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/get_catalog_chat_history", {}, 
+								 JSON.stringify({"requestId" : curRequestId,
+									 			 "catalogId":dataObj.catalogId,									 			 
+									 			}));			
+	}
+	
+	this._handleCatalogChatHistoryResponseMsg= function (responseMsg) {
+		myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
+		var decodedData=responseMsg.body;
+		var parsedMsg = JSON.parse(decodedData);
+		
+		if (myself._callback_SetUserPreferences_debug==true) {
+			console.log("MxAPI Received Catalog chat history\n"+decodedData);
+		}
+		
+		let requestId=parsedMsg.requestId;
+		let requestObj=myself.requestCatalogChatHistoCallbacks[requestId];
+		//console.log("received customization requestId="+requestId+" -> "+requestObj);
+		if (requestObj==null) { return; }
+		if (parsedMsg.isSuccess==true) { requestObj.successCallback(parsedMsg); }
+		else {
+			let errorMsg=parsedMsg.rejectMessage;
+			// ensure error message is not empty
+			// (otherwise can lead to some mis behaviour in user app (ex: x-editable) )
+			if (errorMsg==undefined) { errorMsg="get catalog chat history refused by server, sorry." }
+			requestObj.errorCallback(errorMsg); 
+		}			
+	}
+	
+	
 	
 //------- Server HeartBeat--------	
 	// server heartbeat occuring every 3 seconds

@@ -16,11 +16,11 @@ and how to create documents by hand
 00:00:10.000 --> 00:00:15.000 line:80%
 Let's login first to MetaindeX
 
-00:00:26.000 --> 00:00:30.000 line:80%
+00:00:24.000 --> 00:00:30.000 line:80%
 we'll set language to english and choose blue skin
 
 00:00:29.000 --> 00:00:30.000 line:80%
-because blue is nice
+<i>because blue is nice</i>
 
 00:00:38.000 --> 00:00:41.000 line:80%
 we create now a catalog to store our data 
@@ -57,7 +57,7 @@ we enter now into the catalog
 catalog is empty, so let's create manually few documents
 
 00:02:22.000 --> 00:02:30.000 line:80%
-with 2 fields : title (string) and size (integer)
+with 2 fields : <b>title</b> (string) and <b>size</b> (integer)
 
 00:02:46.000 --> 00:02:51.000 line:80%
 we can modify values after creation of course
@@ -66,13 +66,13 @@ we can modify values after creation of course
 let's create few more documents
 
 00:03:04.000 --> 00:03:15.000 line:80%
-the locker controls if the field shall be cleared after creating the document
+the <b>locker</b> controls if the field shall be cleared after creating the document
 
 00:03:40.000 --> 00:03:50.000 line:80%
 for easier overview, we'll customize cards title in the catalogs panel
 
 00:03:50.000 --> 00:03:55.000 line:80%
-using *title* field as a card caption 
+using <b>title</b> field as a card caption 
 
 00:04:02.000 --> 00:04:05.000 line:80%
 we can see our change applied here on the cards
@@ -80,18 +80,18 @@ we can see our change applied here on the cards
 00:04:10.000 --> 00:04:12.000 line:80%
 we'll end by demonstrating basic search queries
 
-00:04:12.000 --> 00:04:18.000 line:80%
-size:3 returns documents whose field *size* equals 3
+00:04:12.000 --> 00:04:16.000 line:80%
+size:3 returns documents whose field <b>size</b> equals 3
 
-00:04:18.000 --> 00:04:22.000 line:80%
-this is 'Lucene' query language, it is very powerful
+00:04:16.000 --> 00:04:22.000 line:80%
+this is <b>Lucene</b> query language, it is very powerful
 to search and filter numbers but also strings and dates
 
 00:04:22.000 --> 00:04:25.000 line:80%
 we can also combine expressions with AND/OR connectors
 
 00:04:25.000 --> 00:04:33.000 line:80%
-size:>10 returns documents whose field *size* is greater 10
+size:>10 returns documents whose field <b>size</b> is greater 10
 
 00:04:33.000 --> 00:04:37.000 line:80%
 more examples are given by clicking help icon left to the search input

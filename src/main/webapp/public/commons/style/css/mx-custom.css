@@ -105,8 +105,9 @@ a.anchor_top {
 .mx-perspective-field {	
 	background:inherit;
 	border:none;
-	width:max-content;
+	width:min-content;
 	margin-right:10vw;
+	margin-left:5vw;
 	/*
 	max-width:50vw !important;
 	min-width:100px !important;
@@ -485,3 +486,6 @@ height:40px;
 .mx-welcome-li:hover {
 	text-shadow:2px 2px 2px #ccc;		
 }
+
+<s:include value="mx-chat.css" />
+

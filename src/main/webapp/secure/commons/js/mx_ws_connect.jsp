@@ -68,6 +68,22 @@ function handleMxSessionStatusEvent(sessionStatus) {
 		}, redirectToLoginDelayMs);
 	}
 }
+
+function handleMxWsChatMessage(chatMxMsg) {
+	for (var idx in chatMxMsg.chatMessages) {
+		let curMsg=chatMxMsg.chatMessages[idx];
+		MxChat.handleChatMessage(chatMxMsg.catalogId,curMsg);
+	}	
+}
+
+function handleHisto(chatMxMsg) {
+	for (var idx=0;idx<chatMxMsg.chatHistory.length;idx++) {
+		let curMsg=chatMxMsg.chatHistory[idx];
+		MxChat.handleChatMessage(chatMxMsg.catalogId,curMsg);
+	}
+}
+
+
 function mx_ws_connect(mxHost,mxApiConnectionParams, onConnectFunc) {
 	
 	// from metaindex.js	
@@ -82,6 +98,7 @@ function mx_ws_connect(mxHost,mxApiConnectionParams, onConnectFunc) {
 	MxApi.subscribeToUpdatedFilter(handleMxWsUpdatedFilter);
 	MxApi.subscribeToCsvUpload(handleMxWsCsvUpload);
 	MxApi.subscribeToServerGuiMessages(handleMxWsServerGuiMessage);
+	MxApi.subscribeToChatMessages(handleMxWsChatMessage);
 	MxApi.subscribeToCatalogContentsChanged(handleMxWsCatalogContentsChanged);
 	MxApi.subscribeToServerHeartBeatEvent(handleMxWsHeartbeatEvent);
 	MxApi.subscribeToServerSessionStatusEvent(handleMxSessionStatusEvent);
@@ -129,6 +146,19 @@ function ws_handlers_requestPlanUpdateConfirmPayment(planId,transactionId,totalC
 								"errorCallback":errorCallback
 									});
 	
+}
+
+function ws_handlers_send_chatmsg(catalogId,text) {
+	MxApi.requestPostChatMessage({"catalogId":catalogId,"text":text});	
+}
+
+function ws_handlers_get_chat_histo(catalogId) {
+	function errorCallback(errorMsg) {
+		footer_showAlert(ERROR, "<s:text name="Catalogs.chat.unableToGetChatHistory" />");
+	}
+	MxApi.requestCatalogChatHistory({	"catalogId":catalogId,
+										"successCallback":handleHisto,
+										"errorCallback":errorCallback});	
 }
 
 </script>

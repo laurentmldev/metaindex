@@ -179,6 +179,15 @@ function goBack() { window.location.href=origin; }
 			<div class="mx-tuto-button-title"><b>4</b> <s:text name="tutorials.tuto4.title"/></div>
 		</div>
 		
+		<div class="mx-tuto-button" 
+			onclick="activateTuto(this,'tuto5',
+			'<s:text name="tutorials.tuto5.title"/>', 
+			'<s:text name="tutorials.tuto5.desc"/>',
+			'<s:text name="tutorials.tuto5.links"/>');" >
+			
+			<div class="mx-tuto-button-title"><b>5</b> <s:text name="tutorials.tuto5.title"/></div>
+		</div>
+		
         </div>
       <hr class="sidebar-divider d-none d-md-block" style="margin-top:2rem;"/>
 	  
@@ -213,6 +222,7 @@ function goBack() { window.location.href=origin; }
  		<tr><td><center>
  			<h3 id="tuto-title" ></h3>
  			<h5  id="tuto-desc"></h5>
+ 			<div style="font-size:0.8rem"><a href="#tuto-links"><s:text name="tutorials.seeUsefulLinksBelow" /></a></div>
  			<div>
  				 <video id="tuto-video" width="1000" height="550" style="border:none;background:" controls>
 					  <source  id="tuto-video-source" src="" type="video/mp4">					  

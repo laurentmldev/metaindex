@@ -472,12 +472,13 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFile
 			newFormInputFile.classList.remove("form-text-input-active");
 			let dt = e.dataTransfer;
 			let files = dt.files;
-			if (files.length>1) {
+			
+			if (curFieldDescr.isMultiEnum==false && files.length>1) {
 				footer_showAlert(ERROR,"<s:text name="Items.uploadItems.dropFileToUpload.tooMany"/>")
 				return;
 			}
 			newFormInputFile.value="";
-			
+			resultFields[curFieldDescr.id]="";
 			filesListNode.innerHTML="";
 			for (var i = 0;i<files.length;i++)
 			{
@@ -520,7 +521,8 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFile
 				
 
 			}
-			resultFields[curFieldDescr.id]=this.value;
+			resultFields[curFieldDescr.id]+=this.value;
+			newFormInputFile.value=this.value;
 			resultFiles[curFieldDescr.id]=files;
 			filesListNode.style.display="block";			
 		}
@@ -750,7 +752,7 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFile
   </div>
   
    
-  <fieldset id="_commons_popups_formfileurl_input_template_"  class="form-control-group card  modals-form-control" style="display:none;">
+  <fieldset id="_commons_popups_formfileurl_input_template_"  class="form-control-group card  modals-form-control" style="display:none;max-height:40vh;overflow:auto;">
    <legend style="width:auto;margin:0;padding:0;" class="form-control-group-legend ">
    						<span class="_legend_" style="margin-left:0.5rem;margin-right:0.5rem;" ></span>
    						<i class="fas fa-fw fa-lock-open _locked_" style="margin-right:0.5rem;" 
@@ -768,7 +770,7 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFile
    </fieldset>
    
    
-  <fieldset id="_commons_popups_formtext_input_template_"  class="form-control-group card  modals-form-control" style="display:none;">
+  <fieldset id="_commons_popups_formtext_input_template_"  class="form-control-group card  modals-form-control" style="display:none;max-height:40vh;overflow:auto;">
    <legend style="width:auto;margin:0;padding:0;" class="form-control-group-legend ">
    						<span class="_legend_" style="margin-left:0.5rem;margin-right:0.5rem;" ></span>
    						<i class="fas fa-fw fa-lock-open _locked_" style="margin-right:0.5rem;" 
@@ -781,7 +783,7 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFile
    		
    </fieldset>
    
-   <fieldset id="_commons_popups_formdropdown_input_template_"  class="form-control-group card  modals-form-control" style="display:none;">
+   <fieldset id="_commons_popups_formdropdown_input_template_"  class="form-control-group card  modals-form-control" style="display:none;max-height:40vh;overflow:auto;">
      <legend style="width:auto;margin:0;padding:0;" class="form-control-group-legend ">
    						<span class="_legend_" style="margin-left:0.5rem;margin-right:0.5rem;" ></span>
    						<i class="fas fa-fw fa-lock-open _locked_" style="margin-right:0.5rem;" 

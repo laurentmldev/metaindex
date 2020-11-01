@@ -54,7 +54,8 @@ public class MxDbSearchItem implements IDbItem {
 	private Map<String,Object> _data = new HashMap<String,Object>();
 	
 	public MxDbSearchItem(String id, Map<String,Object> data,
-						  List<String> nameFields, String thumbnailUrlField, String urlPrefix) throws DataProcessException {		
+						  List<String> nameFields, String thumbnailUrlField, 
+						  String urlPrefix) throws DataProcessException {		
 		_id=id;
 		_data=data;
 		_nameFields=nameFields;
@@ -150,6 +151,11 @@ public class MxDbSearchItem implements IDbItem {
 		if (_thumbnailUrlVal.length()==0) {
 			Object curFieldVal = _data.get(_thumbnailUrlField);
 			if (curFieldVal!=null) { _thumbnailUrlVal=curFieldVal.toString(); }					
+		}
+		if (_thumbnailUrlVal.contains(",")) 
+		{ 
+			String urls[]=_thumbnailUrlVal.split(",");
+			if (urls.length>0) { _thumbnailUrlVal=_thumbnailUrlVal.split(",")[0]; }
 		}
 		if (!_thumbnailUrlVal.startsWith("http")) { return _urlPrefix+"/"+_thumbnailUrlVal; }
 		

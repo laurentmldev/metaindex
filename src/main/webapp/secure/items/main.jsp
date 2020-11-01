@@ -85,6 +85,7 @@
 				  </div>
 			  </center></div>
 	   		 <s:include value="../commons/html/footer.jsp"></s:include>
+	   		 <s:include value="../commons/html/chat.jsp"></s:include>
 	   	   </div></div>
    		 
     	</div><!-- End of Cards Container -->

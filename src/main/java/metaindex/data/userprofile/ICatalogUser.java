@@ -55,5 +55,6 @@ public interface ICatalogUser extends IIdentifiable<Integer>
 								String impactedItemName, String impactDetails);
 		
 	public List<ICatalog> getOwnedCatalogs();
+	public List<ICatalog> getAccessibleCatalogs();
 
 }

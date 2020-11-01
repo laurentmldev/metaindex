@@ -131,7 +131,8 @@ class GetItemsFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 												hit.getId(), data,
 												_catalog.getItemNameFields(),
 												_catalog.getItemThumbnailUrlField(),
-												_catalog.getItemsUrlPrefix());
+												_catalog.getItemsUrlPrefix()
+												);
 					result.addItem(item);									
 				}				
 			}

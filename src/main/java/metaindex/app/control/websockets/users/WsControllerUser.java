@@ -42,9 +42,12 @@ import metaindex.app.periodic.statistics.user.LoginUserMxStat;
 import metaindex.app.periodic.statistics.user.SetPrefUserMxStat;
 import metaindex.app.periodic.statistics.user.UpdatePlanPaymentMxStat;
 import metaindex.app.periodic.statistics.user.UpdatePlanRequestMxStat;
+import metaindex.data.catalog.CatalogChatMsg;
 import metaindex.data.catalog.ICatalog;
+import metaindex.data.catalog.ICatalogChatMsg;
 import metaindex.data.commons.globals.plans.IPlan;
 import metaindex.data.commons.globals.plans.IPlansManager;
+import metaindex.data.userprofile.ICatalogUser.USER_CATALOG_ACCESSRIGHTS;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
 import metaindex.data.userprofile.UserProfileData;
@@ -605,6 +608,15 @@ public static final Integer NB_DAYS_PLAN_DISCOUNT=182;// approx. half a year
     }
 
     
+   
+    @SendTo ("/user/queue/gui_messaging_chat")
+    public void sendUserGuiChatMessage(	IUserProfileData user, ICatalog c, ICatalogChatMsg msg) throws Exception {
+
+    		List<ICatalogChatMsg> messagesList = new ArrayList<>();
+    		messagesList.add(msg);
+    		messageSender.convertAndSendToUser(user.getName(), 
+					"/queue/gui_messaging_chat", new WsUserGuiChatMessage(c,messagesList));
+    }
     
     @SendTo ("/user/queue/gui_messaging_progress")
     public void sendUserGuiMessageProgress(	IUserProfileData user, 

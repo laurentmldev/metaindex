@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Semaphore;
@@ -39,6 +40,7 @@ import metaindex.app.periodic.statistics.catalog.SetCustoCatalogMxStat;
 import metaindex.app.periodic.statistics.catalog.UpdateLexicCatalogMxStat;
 import metaindex.app.periodic.statistics.user.ErrorOccuredMxStat;
 import metaindex.data.catalog.Catalog;
+import metaindex.data.catalog.CatalogChatMsg;
 import metaindex.data.catalog.CatalogVocabularySet;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.catalog.dbinterface.CreateIndexIntoEsDbStmt.IndexAlreadyExistException;
@@ -849,6 +851,75 @@ public class WsControllerCatalog extends AMxWSController {
     	}
     	    	
     }
+    
+
+    @MessageMapping("/post_chat_message")
+    public void handlePostMessageRequest(SimpMessageHeaderAccessor headerAccessor, 
+    									WsMsgCatalogPostChatMessageRequest requestMsg) throws Exception {
+    	
+    	IUserProfileData user = getUserProfile(headerAccessor);
+		Integer catalogId = requestMsg.getCatalogId();
+	
+		if (!user.isLoggedIn() || !user.isEnabled()) {    			
+			return;
+		}
+		
+		ICatalog cat = Globals.Get().getCatalogsMgr().getCatalog(catalogId);
+		if (cat==null) {    			
+			return;
+		}
+		if (user.getUserCatalogAccessRights(catalogId)==USER_CATALOG_ACCESSRIGHTS.NONE) {
+			return;
+		}
+		
+		CatalogChatMsg chatMsg = new CatalogChatMsg();
+		chatMsg.setAuthorName(user.getNickname());
+		chatMsg.setAuthorId(user.getName());
+		chatMsg.setText(requestMsg.getChatMessage());
+		chatMsg.setTimestamp(new Date());
+		cat.postMessage(user, chatMsg);
+		    		
+    }
+
+    @MessageMapping("/get_catalog_chat_history")
+    @SubscribeMapping ( "/user/queue/catalog_chat_history")
+    public void handleCatalogChatHistoryRequest(
+    					SimpMessageHeaderAccessor headerAccessor, 
+    					WsMsgCatalogChatHistoryRequest requestMsg) throws Exception {
+    	
+    	WsMsgCatalogChatHistoryAnswer answer = new WsMsgCatalogChatHistoryAnswer(requestMsg);
+    	IUserProfileData user = getUserProfile(headerAccessor);	
+    	ICatalog c = Globals.Get().getCatalogsMgr().getCatalog(requestMsg.getCatalogId());
+    	
+    	if (c==null) {
+    		// return failure notif (default status of answer is 'failed')
+    		answer.setRejectMessage(user.getText("Catalogs.catalogUnknown"));
+    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_chat_history", answer);
+    		return;
+    	}
+    	
+    	if (!this.userHasReadAccess(user,c)) { 
+    		answer.setRejectMessage(user.getText("globals.noAccessRights"));
+			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_chat_history", answer);
+			return;         		
+    	}
+    	
+    	try {   
+    	
+    		answer.setChatHistory(c.getChatHistory());
+	    	answer.setIsSuccess(true);    	
+	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_chat_history", answer);
+	    	
+    	} catch (Exception e) 
+    	{    		
+    		answer.setIsSuccess(false);  
+    		answer.setRejectMessage("Unable to process catalog_chat_history from '"+user.getName()+"' : "+e.getMessage());
+	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_chat_history", answer);
+	    	Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.catalog_chat_history"));
+    		e.printStackTrace();    		
+    	}    	    	
+    }
+    
 
     
 }

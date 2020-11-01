@@ -17,6 +17,8 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import metaindex.data.filter.IFilter;
+import metaindex.data.catalog.ICatalog;
+import metaindex.data.catalog.ICatalogChatMsg;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.commons.globals.guitheme.IGuiTheme;
 import toolbox.exceptions.DataProcessException;
@@ -104,7 +106,8 @@ public interface IUserProfileData extends ICatalogUser,IPlanUser,IObserver<IProc
 	
 	//----------
 	public void sendEmail(String subject, String body) throws DataProcessException;
-	public void sendEmailCCiAdmin(String subject, String body) throws DataProcessException;	
+	public void sendEmailCCiAdmin(String subject, String body) throws DataProcessException;
+	public void sendGuiChatMessage(ICatalog c, ICatalogChatMsg m);
 	public void sendGuiErrorMessage(String msg);
 	public void sendGuiErrorMessage(String msg,List<String> details);
 	public void sendGuiInfoMessage(String msg);

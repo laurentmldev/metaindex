@@ -12,15 +12,14 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
+
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Semaphore;
 
 import org.apache.commons.logging.Log;
@@ -30,15 +29,12 @@ import org.apache.ftpserver.ftplet.FtpException;
 import metaindex.data.filter.IFilter;
 import metaindex.app.Globals;
 import metaindex.app.control.ftpserver.CatalogFtpServer;
-import metaindex.app.control.websockets.catalogs.messages.WsMsgCatalogUsers_answer.GuiCatalogUser;
 import metaindex.app.periodic.db.CatalogPeriodicDbReloader;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
-import metaindex.data.commons.globals.plans.IPlan;
 import metaindex.data.perspective.ICatalogPerspective;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
 import metaindex.data.term.TermVocabularySet;
-import metaindex.data.userprofile.ICatalogUser.USER_CATALOG_ACCESSRIGHTS;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.UserProfileData;
 import toolbox.exceptions.DataProcessException;
@@ -52,8 +48,12 @@ public class Catalog implements ICatalog {
 	public static final Integer AUTOREFRESH_PERIOD_SEC=5;
 	public static final Long DEFAULT_QUOTA_NBDOCS = 200L;
 	public static final Long DEFAULT_QUOTA_DISCSPACEBYTES = 0L;
+	public static final Long CHAT_MESSAGES_KEEPALIVE_MS = 2592000000L;//30 days	
 	
 	private Log log = LogFactory.getLog(Catalog.class);
+	
+	private List<ICatalogChatMsg> _chatMessages = new CopyOnWriteArrayList<>();
+	private Semaphore _chatLock = new Semaphore(1,true);
 	
 	private PeriodicProcessMonitor _dbAutoRefreshProcessing=null;
 	private Semaphore _catalogLock = new Semaphore(1,true);
@@ -468,8 +468,8 @@ public class Catalog implements ICatalog {
 	}
 	@Override
 	public String getItemsUrlPrefix() {
-		if (_urlPrefix.length()==0) { return getFilesBaseUrl(); }//.replaceAll("/$", "").replaceAll("/", ""); }
-		return _urlPrefix;//.replaceAll("/$", "");
+		if (_urlPrefix.length()==0) { return getFilesBaseUrl(); }
+		return _urlPrefix;
 	}
 	@Override
 	public void setItemsUrlPrefix(String urlPrefix) {
@@ -739,6 +739,8 @@ public class Catalog implements ICatalog {
 			
 		}
 		this.releaseLock();
+		
+		cleanChatOlderMessages();
 	}
 	@Override 
 	public Boolean shallBeProcessed(Date testedUpdateDate) { 
@@ -747,6 +749,54 @@ public class Catalog implements ICatalog {
 
 	@Override
 	public Integer getPeriodicProcessPeriodSec() { return _autoRefreshPeriodSec; }
+	@Override
+	public List<ICatalogChatMsg> getChatHistory() {
+		return _chatMessages;
+	}
+	/* removing messages too old*/
+	private void cleanChatOlderMessages() {
+		try {
+			_chatLock.acquire();
+		List<ICatalogChatMsg> purgedMessages = new java.util.concurrent.CopyOnWriteArrayList<>();
+		Long nowMs = new Date().getTime();
+		
+		for (ICatalogChatMsg msg : getChatHistory()) {
+			if (nowMs-msg.getTimestamp().getTime()<=CHAT_MESSAGES_KEEPALIVE_MS) {
+				purgedMessages.add(msg);
+			}
+		}		
+		_chatMessages=purgedMessages;
+		_chatLock.release();
+		
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			_chatLock.release();
+			_chatMessages.clear();
+		}
+		
+	}
+	@Override
+	public void postMessage(IUserProfileData postingUser,ICatalogChatMsg msg) {
+				
+		try {			
+			_chatLock.acquire();
+			List<IUserProfileData> users = this.getUsers();
+			for (IUserProfileData user : users) {
+				if (user.getId().equals(postingUser.getId())) { continue; }
+				user.sendGuiChatMessage(this, msg);
+			}
+			// the sender is the last one to have the msg sent to him, so that he knows 
+			// more or less that everybody got the message
+			postingUser.sendGuiChatMessage(this, msg);
+			_chatMessages.add(msg);
+			_chatLock.release();
+		} catch (DataProcessException | InterruptedException e) {
+			log.error("unable to post chat message");
+			e.printStackTrace();
+			_chatLock.release();
+		}
+		
+	}
 
 
 	

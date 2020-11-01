@@ -29,12 +29,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.apache.commons.configuration2.PropertiesConfiguration;
 
 import metaindex.data.filter.IFilter;
+import metaindex.data.userprofile.ICatalogUser.USER_CATALOG_ACCESSRIGHTS;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.commons.globals.guitheme.GuiThemesManager;
 import metaindex.data.commons.globals.guitheme.IGuiTheme;
 import metaindex.data.commons.globals.plans.IPlan;
 import metaindex.data.commons.globals.plans.IPlansManager;
 import metaindex.app.Globals;
+import metaindex.app.control.websockets.catalogs.messages.WsMsgCatalogDetails_answer;
+import metaindex.app.control.websockets.catalogs.messages.WsMsgCatalogShortDetails_answer;
 import metaindex.app.control.websockets.users.WsControllerUser;
 import metaindex.app.control.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
 import metaindex.app.control.websockets.users.messages.WsUserGuiMessageText.MESSAGE_CRITICITY;
@@ -42,6 +45,7 @@ import metaindex.app.periodic.db.UserProfilePeriodicDbReloader;
 import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.CatalogVocabularySet;
 import metaindex.data.catalog.ICatalog;
+import metaindex.data.catalog.ICatalogChatMsg;
 import toolbox.exceptions.DataAccessException;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.PeriodicProcessMonitor;
@@ -515,6 +519,15 @@ public class UserProfileData implements IUserProfileData
 		
 	}
 	@Override
+	public void sendGuiChatMessage(ICatalog c, ICatalogChatMsg msg) {
+		try {
+			WsControllerUser.UsersWsController.sendUserGuiChatMessage(this,c,msg);
+		} catch (Exception e) {
+			log.error("Unable to send chat msg to user '"+this.getName()+"' : "+e.getMessage());
+		}		
+	}
+	
+	@Override
 	public void sendGuiErrorMessage(String msg) { sendGuiMessage(MESSAGE_CRITICITY.ERROR,msg, new ArrayList<String>()); }
 	@Override
 	public void sendGuiErrorMessage(String msg,List<String> details) {sendGuiMessage(MESSAGE_CRITICITY.ERROR,msg,details); } 
@@ -749,6 +762,19 @@ public class UserProfileData implements IUserProfileData
 	public List<ICatalog> getOwnedCatalogs() {
 		return Globals.Get().getCatalogsMgr().getOwnedCatalogsList(getId());
 	}
-
+	@Override
+	public List<ICatalog> getAccessibleCatalogs() {
+		List<ICatalog> catalogs = Globals.Get().getCatalogsMgr().getCatalogsList();
+		List<ICatalog> result = new ArrayList<>();
+		Iterator<ICatalog> it = catalogs.iterator();
+		while (it.hasNext()) {
+    		ICatalog curCatalog = it.next();
+    		if (this.getUserCatalogAccessRights(curCatalog.getId())!=USER_CATALOG_ACCESSRIGHTS.NONE)
+			{ 
+    			result.add(curCatalog);
+			}
+		}
+		return result; 
+	}
 	
 }

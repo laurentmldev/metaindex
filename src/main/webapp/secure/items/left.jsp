@@ -222,6 +222,7 @@ function _left_build_newitem_form_field_desc(termId,termDesc,catalogDesc) {
 	let langName=catalogDesc.vocabulary.guiLanguageShortName;
 	let fieldFormDef={ 	id:"form_newitem_"+termId, 
 						termId:termId, 
+						isMultiEnum:termDesc.isMultiEnum,
 						important:"false",
 						title:mx_helpers_getTermName(termDesc, catalogDesc)
 						 };
