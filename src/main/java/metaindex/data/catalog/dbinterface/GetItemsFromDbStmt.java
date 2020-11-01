@@ -58,6 +58,7 @@ class GetItemsFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 	private ESDocumentsRequestBuilder _requestsBuilder;
 	
 	
+	
 	/**
 	 * Retrieve list of items from ElasticSearch
 	 * @param c the catalog (aka the ES index)
@@ -108,6 +109,12 @@ class GetItemsFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 			
 			DbSearchResult result = new DbSearchResult();
 			
+			// check if thumbnail field is multi
+			// (because in that case we use the first pic as a thumbnail
+			Boolean isThumbnailFieldMulti=false;			
+			ICatalogTerm thumbnailUrlTerm = _catalog.getTerms().get(_catalog.getItemThumbnailUrlField());
+			if (thumbnailUrlTerm!=null) { isThumbnailFieldMulti=thumbnailUrlTerm.getIsMultiEnum(); }
+			
 			if (searchResponse.status()!=RestStatus.OK) { 
 				throw new DataProcessException("Error while performing search request : "+searchResponse.status()); 
 			}
@@ -131,7 +138,8 @@ class GetItemsFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 												hit.getId(), data,
 												_catalog.getItemNameFields(),
 												_catalog.getItemThumbnailUrlField(),
-												_catalog.getItemsUrlPrefix()
+												_catalog.getItemsUrlPrefix(),
+												isThumbnailFieldMulti
 												);
 					result.addItem(item);									
 				}				

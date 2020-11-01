@@ -51,16 +51,20 @@ public class MxDbSearchItem implements IDbItem {
 	private String _nameVal="";
 	private String _thumbnailUrlVal="";
 	
+	private Boolean _isThumbnailFieldMulti=false;
+	
 	private Map<String,Object> _data = new HashMap<String,Object>();
 	
 	public MxDbSearchItem(String id, Map<String,Object> data,
 						  List<String> nameFields, String thumbnailUrlField, 
-						  String urlPrefix) throws DataProcessException {		
+						  String urlPrefix,
+						  Boolean isThumbnailFieldMulti) throws DataProcessException {		
 		_id=id;
 		_data=data;
 		_nameFields=nameFields;
 		_thumbnailUrlField=thumbnailUrlField;
 		_urlPrefix=urlPrefix;
+		_isThumbnailFieldMulti=isThumbnailFieldMulti;
 		
 		try {
 			String lastUserIdStr=_data.get(ICatalogTerm.MX_TERM_LASTMODIF_USERID).toString();
@@ -152,7 +156,8 @@ public class MxDbSearchItem implements IDbItem {
 			Object curFieldVal = _data.get(_thumbnailUrlField);
 			if (curFieldVal!=null) { _thumbnailUrlVal=curFieldVal.toString(); }					
 		}
-		if (_thumbnailUrlVal.contains(",")) 
+		// for multi pics, use the first one to get the thumbnail
+		if (_isThumbnailFieldMulti && _thumbnailUrlVal.contains(",")) 
 		{ 
 			String urls[]=_thumbnailUrlVal.split(",");
 			if (urls.length>0) { _thumbnailUrlVal=_thumbnailUrlVal.split(",")[0]; }
