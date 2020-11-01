@@ -2,8 +2,40 @@
 
 @charset "UTF-8";
 
-.mx-chatboxes-container {
-	border:1px dashed orange;
+.mx-chat-icon {
+	position:fixed;
+	right:30px;
+	bottom:10px;
+	font-size:
+	2rem;
+	color:#999;
+	opacity:0.6;
+}
+
+.mx-chat-icon-pending {
+	animation:blinkingText 0.7s infinite;
+}	
+
+@keyframes blinkingText{
+    0%{     opacity: 1;    }
+    20%{    opacity: 0.82; }
+    40%{    opacity: 0.75; }
+    60%{    opacity: 0.5; }
+    80%{    opacity: 0.75;  }
+    100%{    opacity: 0.82;    }
+}
+.mx-chat-icon-pending:after {
+        position: absolute;
+        content: '';
+        background-color:green;
+        border-radius:50%;
+        opacity:0.9;
+        width: 6px;
+        height: 6px;
+        pointer-events: none;
+    
+}
+.mx-chatboxes-container {	
 	display:flex;
 	align-items: right;
 	position:fixed;
@@ -107,15 +139,35 @@
 	overflow:auto;
 	opacity:0.6;
 	margin:0;
-	width:120px;
+	width:150px;
 	text-align:center;
 	padding:0;
 	background:#eee;
 	/*border:1px dashed black;*/
 	box-shadow:2px -2px 6px #aaa;	
+	border:1px solid #333;
+	border-radius:3px;
+}
+.mx-chatbox-catalogs-list-elem {
+	text-align:left;
+	font-size:0.8rem;
+	margin-top:0.2rem;
+	margin-left:0.3rem;	
+	color:#555;
 }
 .mx-chatbox-catalogs-list-elem:hover {
 	background:#888;
 	cursor:pointer;
 	color:white;
+}
+.mx-chatbox-catalogs-list-header {
+	font-weight:bold;
+	background:white;
+	color:#444;
+	font-size:0.9rem;
+	padding:0.2rem;
+	
+}
+.mx-chatbox-catalogs-list-header:hover {
+	cursor:s-resize;
 }

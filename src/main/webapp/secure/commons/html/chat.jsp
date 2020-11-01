@@ -9,11 +9,12 @@ function createChatBox(catalogId,catalogName) {
 	let chatBox=document.createElement("div");
 	chatBox.id="chatbox_"+catalogId;
 	chatBox.classList.add("mx-chatbox");
+	chatBox.catalogId=catalogId;
 	
 	let title=document.createElement("div");
 	title.classList.add("mx-chatbox-title");
 	chatBox.append(title);
-	title.innerHTML=catalogName;
+	title.innerHTML="<s:text name="Catalogs.chat.room" /> - "+catalogName;
 	
 	
 	let contents=document.createElement("div");
@@ -85,10 +86,22 @@ function createChatBox(catalogId,catalogName) {
 }
 
 
-function openChatWindow(catalogId,catalogName) {
+function scrollChatBox(catalogId) {
 	let chatBox=document.getElementById("chatbox_"+catalogId);
-	if (chatBox==null) { chatBox=createChatBox(catalogId,catalogName); }
+	if (chatBox!=null) {
+		let chatBoxTextContainer=chatBox.querySelector(".mx-chatbox-text");
+		chatBoxTextContainer.scrollTop = chatBoxTextContainer.scrollHeight;
+	}
+}
+
+function openChatWindow(catalogId,catalogName) {
+
+	let chatBox=document.getElementById("chatbox_"+catalogId);	
+	if (chatBox==null) { 
+		chatBox=createChatBox(catalogId,catalogName);
+	}
 	chatBox.style.display="block";	
+	scrollChatBox(catalogId);	
 	return chatBox;
 }
 
@@ -118,13 +131,22 @@ function addChatEntry(catalogId,catalogName,date,name,senderid,text) {
 	entry.append(textNode);
 	textNode.title=senderid;
 	
-	let chatBox = openChatWindow(catalogId,catalogName);
-	
-	let chatBoxTextContainer=chatBox.querySelector(".mx-chatbox-text");
-	chatBoxTextContainer.append(entry);	
-	// keep visible latest message
-	chatBoxTextContainer.scrollTop = chatBoxTextContainer.scrollHeight;
-	
+	// if the chatbox does not exist already
+	// we will create it and retrieve the full converstion
+	// including this entry, so we don't want to add it twice in this case
+	let doAddEntry=document.getElementById("chatbox_"+catalogId)!=null;
+	let chatBox = openChatWindow(catalogId,catalogName);// <-- create chatBox if missing
+	if (doAddEntry) { 
+		let chatBoxTextContainer=chatBox.querySelector(".mx-chatbox-text");
+		chatBoxTextContainer.append(entry); 
+		scrollChatBox(catalogId);
+	}
+
+	if (!isChatsContainerVisible()) { notifyPendingMsg(catalogId); }
+}
+
+function notifyPendingMsg(catalogId) {
+	document.getElementById("mx_chat_icon").classList.add("mx-chat-icon-pending");
 }
 
 function getOpenedChatsList() {
@@ -143,6 +165,11 @@ function isChatsContainerVisible() {
 function showChatsContainer() {
 	let chatsContainer=document.getElementById("chatBoxes_container");
 	chatsContainer.style.display="flex";
+	let openedChats=getOpenedChatsList();
+	for (var idx=0;idx<openedChats.length;idx++) {
+		let curChatBox=openedChats[idx];
+		scrollChatBox(curChatBox.catalogId);
+	}
 }
 function hideChatsContainer() {
 	let chatsContainer=document.getElementById("chatBoxes_container");
@@ -169,6 +196,15 @@ function showChatCatalogsList() {
 		catalogsChoiceList.classList.add("mx-chatbox-catalogs-list");
 		catalogsChoiceList.id="chat_catalogsChoice";
 		
+		let header=document.createElement("div");
+		header.classList.add("mx-chatbox-catalogs-list-header");
+		header.innerHTML="<s:text name="Catalogs.chat.catalogForChatting" />";
+		catalogsChoiceList.append(header);
+		header.onclick=function(event) {
+			event.stopPropagation();
+			hideChatCatalogsList();
+		}
+		
 		<c:forEach items="${currentUserProfile.accessibleCatalogs}" var="catalog">
 		// adding catalog ${catalog.name}
 		let catalogChoice_${catalog.id}=document.createElement("div");
@@ -191,6 +227,7 @@ function showChatCatalogsList() {
 var newChatTimer=null;
 var longClick=false;
 function startChatClick() {
+	document.getElementById("mx_chat_icon").classList.remove("mx-chat-icon-pending");
 	newChatTimer=setTimeout(function() {     		
         showChatCatalogsList();
         clearTimeout(newChatTimer);
@@ -213,9 +250,14 @@ function stopChatClick() {
 	longClick=false;
 }
 
+var chat_catalogNameById={};
+<c:forEach items="${currentUserProfile.accessibleCatalogs}" var="catalog">
+chat_catalogNameById[${catalog.id}]="${catalog.name}";
+</c:forEach>
+
 var MxChat={}
 MxChat.handleChatMessage=function(catalogId,message) {
-	addChatEntry(catalogId,catalogId,message.timestamp,message.authorName,message.authorId,message.text);
+	addChatEntry(catalogId,chat_catalogNameById[catalogId],message.timestamp,message.authorName,message.authorId,message.text);
 }
 
 </script>
@@ -223,8 +265,7 @@ MxChat.handleChatMessage=function(catalogId,message) {
 
 </div>
 
-<i style="position:fixed;right:30px;bottom:10px;font-size:2rem;color:#999;opacity:0.6;" 
-	class="mx-help-icon fa fa-user-friends"	
+<i id="mx_chat_icon" class="mx-chat-icon mx-help-icon fa fa-user-friends"	
 	onmousedown="startChatClick();"
 	onmouseup="stopChatClick();"
 	title="<s:text name="Catalogs.chat" />" >	

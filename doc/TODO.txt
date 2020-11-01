@@ -3,6 +3,10 @@
 v2.1.0:
 -------
 
+hide email in chat hover
+
+fix multi-image with coma
+
 pas de ',' dans les noms des photos
 
 add "droits d'auteur" dans les terms and conditions
