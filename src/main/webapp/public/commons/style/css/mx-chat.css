@@ -121,6 +121,17 @@
 	color:#999;
 	font-size:0.5rem;
 }
+.mx-chatbox-entry-date-separator {
+	font-size:0.8rem;
+	color:#bbb;
+	
+}
+.mx-chatbox-entry-date-separator:before {
+	content: '- ';
+}
+.mx-chatbox-entry-date-separator:after {
+	content: ' -';
+}
 .mx-chatbox-entry-name {
 	font-weight:bold;
 	color:#444;

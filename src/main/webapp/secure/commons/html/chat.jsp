@@ -10,6 +10,7 @@ function createChatBox(catalogId,catalogName) {
 	chatBox.id="chatbox_"+catalogId;
 	chatBox.classList.add("mx-chatbox");
 	chatBox.catalogId=catalogId;
+	chatBox.previousEntryDate=null;
 	
 	let title=document.createElement("div");
 	title.classList.add("mx-chatbox-title");
@@ -105,6 +106,26 @@ function openChatWindow(catalogId,catalogName) {
 	return chatBox;
 }
 
+function getChatDateStr(dateObj) {
+	let mm = dateObj.getMonth() + 1;
+	let dd = dateObj.getDate();
+	let yy = dateObj.getFullYear();
+	
+	if (mm<10) { mm="0"+mm; }
+	if (dd<10) { dd="0"+dd; }
+	
+	return yy+"/"+mm+"/"+dd;
+}
+function addDateSeparator(chatBoxTextContainer, dateObj) {
+	let dateSeparator=document.createElement("div");
+	dateSeparator.classList.add("mx-chatbox-entry-date-separator");
+	if (getChatDateStr(dateObj)==getChatDateStr(new Date())) {
+		dateSeparator.innerHTML="<s:text name="Catalogs.chat.today" />";
+	} else {
+		dateSeparator.innerHTML=getChatDateStr(dateObj);
+	}
+	chatBoxTextContainer.append(dateSeparator);
+}
 function addChatEntry(catalogId,catalogName,date,name,senderid,text) {
 	
 	let entry = document.createElement("div");
@@ -113,10 +134,12 @@ function addChatEntry(catalogId,catalogName,date,name,senderid,text) {
 	let dateNode = document.createElement("span");
 	dateNode.classList.add("mx-chatbox-entry-date");
 	let dateObj=new Date(date);
-	let mm = dateObj.getMonth() + 1;
-	let dd = dateObj.getDate();
-	let yy = dateObj.getFullYear();
-	dateNode.innerHTML=yy+"/"+mm+"/"+dd+" "+dateObj.toLocaleTimeString();
+	
+	let hours=dateObj.getHours();
+	if (hours<10) {hours="0"+hours;}
+	let minutes=dateObj.getMinutes();
+	if (minutes<10) {minutes="0"+minutes;}
+	dateNode.innerHTML=hours+":"+minutes;
 	entry.append(dateNode);
 
 	let nameNode = document.createElement("span");
@@ -138,6 +161,11 @@ function addChatEntry(catalogId,catalogName,date,name,senderid,text) {
 	let chatBox = openChatWindow(catalogId,catalogName);// <-- create chatBox if missing
 	if (doAddEntry) { 
 		let chatBoxTextContainer=chatBox.querySelector(".mx-chatbox-text");
+		
+		if (chatBox.previousEntryDate==null || getChatDateStr(chatBox.previousEntryDate) != getChatDateStr(dateObj)) {
+			addDateSeparator(chatBoxTextContainer,dateObj);
+		}
+		chatBox.previousEntryDate=dateObj;
 		chatBoxTextContainer.append(entry); 
 		scrollChatBox(catalogId);
 	}

@@ -852,6 +852,31 @@ public class WsControllerCatalog extends AMxWSController {
     	    	
     }
     
+    private String offuscateStrMiddle(String inputStr) {
+    	String start="";
+    	String end="";    	
+    	Integer nbDigitVisible=0;
+    	
+    	if (inputStr.length()>=9) { nbDigitVisible=3; }
+    	else if (inputStr.length()>=6) { nbDigitVisible=2; }
+    	else if (inputStr.length()>=4) { nbDigitVisible=1; }
+    	
+    	if (nbDigitVisible>0) {
+    		start=inputStr.substring(0, nbDigitVisible);
+    		end=inputStr.substring(inputStr.length()-nbDigitVisible, inputStr.length());
+    	}
+    	return start+"***"+end;
+    }
+    private String anonymizeAuthorEmail(String orginalEmail) {
+    	String rst=orginalEmail;
+    	
+    	if (orginalEmail.split("@").length!=2 ) {
+    		return offuscateStrMiddle(orginalEmail);
+    	}
+    	String emailUser=orginalEmail.split("@")[0];
+    	String emailServer=orginalEmail.split("@")[1];
+    	return offuscateStrMiddle(emailUser)+"@"+offuscateStrMiddle(emailServer);
+    }
 
     @MessageMapping("/post_chat_message")
     public void handlePostMessageRequest(SimpMessageHeaderAccessor headerAccessor, 
@@ -874,7 +899,7 @@ public class WsControllerCatalog extends AMxWSController {
 		
 		CatalogChatMsg chatMsg = new CatalogChatMsg();
 		chatMsg.setAuthorName(user.getNickname());
-		chatMsg.setAuthorId(user.getName());
+		chatMsg.setAuthorId(user.getId()+":"+anonymizeAuthorEmail(user.getName()));
 		chatMsg.setText(requestMsg.getChatMessage());
 		chatMsg.setTimestamp(new Date());
 		cat.postMessage(user, chatMsg);

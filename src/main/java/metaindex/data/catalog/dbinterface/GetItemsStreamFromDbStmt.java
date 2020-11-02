@@ -119,6 +119,12 @@ class GetItemsStreamFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 			DbSearchResult result = new DbSearchResult();
 			result.setFromIdx(this.getFromIdx());
 			result.setTotalHits(this.getMaxNbDocs());
+			
+			// check if thumbnail field is multi
+			// (because in that case we use the first pic as a thumbnail
+			Boolean isThumbnailFieldMulti=false;			
+			ICatalogTerm thumbnailUrlTerm = _catalog.getTerms().get(_catalog.getItemThumbnailUrlField());
+			if (thumbnailUrlTerm!=null) { isThumbnailFieldMulti=thumbnailUrlTerm.getIsMultiEnum(); }
 		
 			for (SearchHit hit : searchHits) {
 		    	_curDocIdx++;
@@ -137,7 +143,8 @@ class GetItemsStreamFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 											hit.getId(), data,
 											_catalog.getItemNameFields(),
 											_catalog.getItemThumbnailUrlField(),
-											_catalog.getItemsUrlPrefix());
+											_catalog.getItemsUrlPrefix(),
+											isThumbnailFieldMulti);
 				result.addItem(item);
 				_curNbDocs++;
 				if (_curNbDocs>=_maxNbDocs) { break; }
