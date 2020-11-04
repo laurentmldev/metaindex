@@ -7,51 +7,61 @@ WEBVTT
 00:00:00.000 --> 00:00:03.000 line:50% 
 3- Statistic charts with Kibana
 
-00:00:03.000 --> 00:00:13.000 line:50%
-In this tutorial, we'll see how to use integrated Kibana module from ElasticStack
-to create charts based on your catalog contents
+00:00:03.000 --> 00:00:09.000 line:50%
+We'll create charts based on your catalog contents.
+This tutorial is quite dense, so feel free to 
+pause the video and take time to understand each step.
 
-00:00:13.000 --> 00:00:18.000 line:80%
-Let's log into MetaindeX
+00:00:09.000 --> 00:00:14.000 line:50%
+We'll learn here how to make a <b>pie chart</b> and a <b>chronological histogram</b>. 
 
-00:00:24.000 --> 00:00:29.000 line:80%
-we'll use the <b>demo_artists</b> catalog created in previous tutorial "Excel import/export"  
+00:00:14.000 --> 00:00:18.000 line:80%
+First I need to log into MetaindeX.
 
-00:00:29.000 --> 00:00:32.000 line:80%
-For the statistics, we'll focus on following fields:  
+00:00:24.000 --> 00:00:27.000 line:80%
+I enter into my <b>demo_artists</b> catalog 
+<i>created in previous tutorial "Excel import/export"</i>  
 
-00:00:32.000 --> 00:00:35.000 line:80%
-<b>birthdate</b> : used for ordering artists chronologically  
+00:00:27.000 --> 00:00:33.000 line:80%
+For the <b>chronological histogram</b>, I want to see 
+how men/women distribution evolves every 25 years, based on:
 
-00:00:35.000 --> 00:00:38.000 line:80%
-<b>birthyear</b> : deduced from <b>birthdate</b>, it allows easier processing in Kibana in some cases
-
-00:00:38.000 --> 00:00:41.000 line:80%
+00:00:33.000 --> 00:00:39.000 line:80%
+<b>birthyear</b> : so that Kibana can group artists every 25 years 
 <b>gender</b> : either <b>woman</b>, <b>man<b> or <b>undefined<b>
 
-00:00:41.000 --> 00:00:44.000 line:80%
-<b>nb_guitars</b> : a number saying how many guitars the character owns
+00:00:39.000 --> 00:00:48.000 line:80%
+For the <b>pie chart</b> : 
+<b>nb_guitars</b> : how many guitars the character owns
+<b>type</b> : either <b>writer</b> <b>actor</b> <b>filmdirector</b> <b>guitarist<b>
 
-00:00:44.000 --> 00:00:48.000 line:80%
-<b>type</b> : can be either <b>writer</b> <b>actor</b> <b>filmdirector</b> <b>guitarist<b>
-
-00:00:48.000 --> 00:00:59.000 line:80%
+00:00:48.000 --> 00:00:57.000 line:80%
 So Linda Hamilton (aka Sarah Connor) is :
 - <b>gender</b> : woman
 - <b>type</b> : actor
 - <b>nb_guitars</b> : 4
+- <b>birthyear</b> : 1964
+
+00:00:57.000 --> 00:01:02.000 line:80%
+In Kibana I want artists to be sorted chronologically based on their <b>birthdate</b>.
 
 00:01:02.000 --> 00:01:05.000 line:80%
-now we go back to catalog's <b>overview</b> panel
+I go into catalog's <b>overview</b> panel to configure that
 
 00:01:05.000 --> 00:01:20.000 line:80%
-configure Kibana to sort the documents by <b>birthdate</b> 
+setting  <b>Kibana Timefield</b> to <b>birthdate</b> 
 
-00:01:10.000 --> 00:01:15.000 line:80%
-<i>otherwise it's using the date of the last modification of the document</i> 
+00:01:10.000 --> 00:01:20.000 line:80%
+<i>otherwise sort documents using date of last modification</i> 
+
+00:01:20.000 --> 00:01:23.000 line:80%
+I want now to enter statistics module
+
+00:01:23.000 --> 00:01:25.000 line:80%
+I go back into catalog contents
 
 00:01:25.000 --> 00:01:30.000 line:80%
-now to enter the statistics module, we go left panel and click on "Go to Kibana" 
+and then left panel // <b>statistics</b> //  <b>Go to Kibana</b> 
 
 00:01:31.000 --> 00:01:33.000 line:80%
 that open a new tab
@@ -61,49 +71,59 @@ Kibana is a complete independant app from ElasticStack,
 running over the same database than MetaindeX 
 
 00:01:38.000 --> 00:01:44.000 line:80%
-we need to log in again
-but we can use same credentials than MetaindeX  
+I log in with same username/passwd  
  
 00:01:44.000 --> 00:01:47.000 line:100%
 since Kibana runs over the same database than MetaindeX
 
 00:01:47.000 --> 00:01:51.000 line:100%
-we'll find there the same contents than in our catalog
+I'll find there the same contents than in my catalog
+
+00:01:51.000 --> 00:01:56.000 line:100%
+access to main menu is on top left
 
 00:01:56.000 --> 00:02:01.000 line:100%
 Kibana interface is mainly made of 3 panels :
-- Discover
-- Dashboard
-- Visualize
+- <b>Discover</b> : contents overview
+- <b>Dashboard</b> : view charts together 
+- <b>Visualize</b> : create charts
 
 00:02:01.000 --> 00:02:06.000 line:100%
-Discover panel just gives a basic trace of available documents, which is currently empty
+<b>Discover</b> (documents overview) is currently empty
 
 00:02:06.000 --> 00:02:11.000 line:100%
 because Kibana search window starts by default 15mins ago ...
 while our <b>birthdates</b> starts several decades ago. 
 
-00:02:11.000 --> 00:02:21.000 line:100%
-so let's start from year 1700 to include birthdates of all our artists 
+00:02:11.000 --> 00:02:20.000 line:100%
+so I set <b>absolute start-date</b> to 1700 to include all my artists birthdates 
 
-00:02:23.000 --> 00:02:35.000 line:100%
-we can see then a simple distribution of artists along birthdates
+00:02:20.000 --> 00:02:23.000 line:100%
+I refresh with a click on <b>Update</b> button on top right
 
-00:02:29.000 --> 00:02:35.000 line:100%
+00:02:23.000 --> 00:02:28.000 line:100%
+I can see then a simple distribution of artists along birthdates
+
+00:02:25.000 --> 00:02:28.000 line:100%
 <i>remember we've set <b>birthdate</b> as a Kibana chronology reference</i>  
 
+00:02:28.000 --> 00:02:35.000 line:100%
+and each line shows contents of an artist
+
 00:02:35.000 --> 00:02:40.000 line:100%
-we'll go now into Visualize panel to create our first chart
+I want to create a new chart, so I go to <b>Visualize</b> panel
+
+00:02:40.000 --> 00:02:44.000 line:100%
+I click that big blue button to start creation wizard
 
 00:02:44.000 --> 00:02:47.000 line:100%
-Kibana offers several types of charts,
-we'll only show the use of 2 of them in this tutorial
+Kibana offers several types of charts
 
 00:02:47.000 --> 00:02:50.000 line:100%
-starting with a classical Pie chart
+I want a Pie chart showing distribution of artists among their types
 
 00:02:50.000 --> 00:02:52.000 line:100%
-<i>just confirm the catalog we use</i>
+<i>I just confirm the catalog to use</i>
 
 00:02:53.000 --> 00:02:56.000 line:100%
 Kibana charts are mainly configured with 2 steps:
@@ -115,74 +135,107 @@ Kibana charts are mainly configured with 2 steps:
 2- out of each bucket, compute a value to display, called a <b>metric</b>
 
 00:03:05.000 --> 00:03:09.000 line:100%
-<i>the simplest metric is the count of documents per bucket</i>
+<i>the simplest metric is the Count of documents per bucket</i>
 
 00:03:09.000 --> 00:03:14.000 line:100%
-for the pie chart, each bucket is a slice of the pie 
+I want to group artists by <b>type</b> 
 
-00:03:14.000 --> 00:03:20.000 line:100%
-we'll group artists into separate buckets 
-based on their <b>type</b>
+00:03:14.000 --> 00:03:17.000 line:100%
+so I define buckets based on <b>type</b> field
 
-00:03:16.000 --> 00:03:20.000 line:100%
-<i>either "writer" "actor" "filmdirector" "guitarist"</i>
+00:03:17.000 --> 00:03:20.000 line:100%
+choosing the <b>Terms</b> aggregation
 
-00:03:20.000 --> 00:03:25.000 line:100%
-for performance,
-we'll use <b>type.keyword</b> 
-rather than just <b>type</b> 
+00:03:20.000 --> 00:03:24.000 line:100%
+I don't want Kibana to split separate words
 
-00:03:25.000 --> 00:03:33.000 line:100%
-because field <b>type</b> has 
-a predefined list of values
+00:03:24.000 --> 00:03:30.000 line:100%
+value <i>"brown fox"</i> shall gives a single slice of the pie,
+not 2 slices <i>"brown"</i> and <i>"fox"</i>
 
-00:03:33.000 --> 00:03:37.000 line:100%
-we can then update the chart 
+00:03:30.000 --> 00:03:34.000 line:100%
+for that I choose <b>type.keyword</b> instead of <b>type</b> 
 
-00:03:37.000 --> 00:03:40.000 line:100%
-we see that 32% are writers
+00:03:34.000 --> 00:03:37.000 line:100%
+click on update button on bottom right to refresh
 
-00:03:40.000 --> 00:03:43.000 line:100%
+00:03:38.000 --> 00:03:41.000 line:100%
+I see that 32% of artists are writers
+
+00:03:41.000 --> 00:03:43.000 line:100%
 and 29% are actors
 
-00:03:43.000 --> 00:03:55.000 line:100%
-several rendering options are available
+00:03:43.000 --> 00:03:50.000 line:100%
+I want a real pie rather than a donut, and visible stats
+so I set up corresponding options
 
-00:03:58.000 --> 00:04:15.000 line:100%
-let's save this chart
+00:03:50.000 --> 00:03:55.000 line:100%
+I click again on update button to refresh
 
+00:03:55.000 --> 00:04:00.000 line:100%
+I like it and want to save this chart online
+so I click on <b>save</b> blue button up left
+
+00:04:00.000 --> 00:04:05.000 line:100%
+I give it a name 
+
+00:04:05.000 --> 00:04:10.000 line:100%
+and confirm by clicking related button
+ 
 00:04:25.000 --> 00:04:29.000 line:100%
-now we'll change the metric 
+now I want to see how many guitars each group owns 
 
 00:04:29.000 --> 00:04:32.000 line:100%
-instead of documents count
+so I need to replace the <b>Count</b> metric
  
-00:04:32.000 --> 00:04:40.000 line:100%
-we'll show distribution of guitars among our 4 types
+00:04:32.000 --> 00:04:39.000 line:100%
+by the <b>Sum</b> of <b>nb_guitars</b>
 
-00:04:40.000 --> 00:04:46.000 line:100%
+00:04:39.000 --> 00:04:45.000 line:100%
 meaning that each slice represent the 
-total amount of guitars owned by artists of this type
+total amount of guitars owned by artists of this group
 
-00:04:47.000 --> 00:04:50.000 line:100%
-humm actors really love guitars!
+00:04:45.000 --> 00:04:47.000 line:100%
+click again button down right to refresh
 
-00:04:55.000 --> 00:05:10.000 line:100%
-and we save also this chart 
+00:04:47.000 --> 00:04:52.000 line:100%
+I see that most of guitars are owned by actors (44%)
 
-00:05:22.000 --> 00:05:25.000 line:100%
-we'll add now another chart
+00:04:52.000 --> 00:04:56.000 line:100%
+in other words, sum of <b>nb_guitars</b> field 
+among artists of group <b>actor</b> 
 
-00:05:25.000 --> 00:05:30.000 line:100%
-displaying genders evolution through the years
-as histogram
+00:04:56.000 --> 00:05:00.000 line:100%
+is 44% of the total sum of <b>nb_guitars</b> field among all artists
 
-00:05:32.000 --> 00:05:42.000 line:100%
-let's start grouping artists by quarters of century
-defining buckets for the X-axis
+00:05:00.000 --> 00:05:05.000 line:100%
+I save also this chart 
+
+00:05:05.000 --> 00:05:10.000 line:100%
+activate <b>Save as new</b> option to create a new chart 
+rather than overriding previous one 
+
+00:05:10.000 --> 00:05:15.000 line:100%
+then I name it and confirm
+
+00:05:15.000 --> 00:05:19.000 line:100%
+to find my saved charts, I click on the <b>Visualize</b> link up left
+
+00:05:20.000 --> 00:05:25.000 line:100%
+now I want to create an histogram
+showing genders evolution through the years 
+
+00:05:25.000 --> 00:05:28.000 line:100%
+I click on <b>Vertical Bar</b> chart
+
+00:05:28.000 --> 00:05:32.000 line:100%
+I confirm on which catalog I want to work
+
+00:05:32.000 --> 00:05:40.000 line:100%
+I group artists by quarters of century on X-axis
 
 00:05:40.000 --> 00:05:45.000 line:100%
-this can be done with <b>Histogram</b> aggregation
+choosing the <b>Histogram</b> aggregation
 
 00:05:45.000 --> 00:05:49.000 line:100%
 applied to the <b>birthyear</b> field
@@ -190,53 +243,94 @@ applied to the <b>birthyear</b> field
 00:05:49.000 --> 00:05:53.000 line:100%
 grouping artists every 25 years
 
+00:05:53.000 --> 00:05:56.000 line:100%
+and click on Update button to see the result
+
 00:05:56.000 --> 00:06:04.000 line:100%
-so this first result is the artists count 
-per periods of 25 years
+I see for now artists count per periods of 25 years 
+
+00:06:00.000 --> 00:06:04.000 line:100%
+<i>there are 21 artists for 1950-1975 bucket</b>
 
 00:06:07.000 --> 00:06:15.000 line:100%
-we will now split each 25-year bucket 
-into sub-buckets discriminated by gender
+now I split each of those 25-year buckets 
+into sub-buckets grouped by gender
 
-00:06:15.000 --> 00:06:25.000 line:100%
-here is same procedure than for the pie slices 
+00:06:15.000 --> 00:06:20.000 line:100%
+using <b>Terms</b> aggregation (same than for the pie chart)
 
-00:06:31.000 --> 00:06:33.000 line:100%
-haaa interesting.
+00:06:20.000 --> 00:06:25.000 line:100% 
+but this time with <b>gender.keyword</b> field
+
+00:06:25.000 --> 00:06:28.000 line:100% 
+again I click Update to refresh
 
 00:06:33.000 --> 00:06:50.000 line:100%
-let's choose more meaningful colors,
-say ... hum ... what about blue for boys,
-pink for ladies and green for undefined?
+I don't like those colors,
+I'll use blue for boys, pink for ladies and green for undefined
 
 00:06:51.000 --> 00:06:59.000 line:100%
-well we can see that there are much more men than women in this corpus, 
+I see now that there are much more men than women in this corpus, 
 although it's getting more balanced for the last 50 years
 
 00:06:59.000 --> 00:07:10.000 line:100%
-I save this one too
+I save this chart too
 
-00:07:15.000 --> 00:07:25.000 line:100%
-we'll at last put our 3 visuals together into a dashboard
+00:07:15.000 --> 00:07:20.000 line:100%
+back to the <b>Visualize</b> panel
+
+00:07:20.000 --> 00:07:24.000 line:100%
+I want to see all those 3 charts together into a unique panel
+
+00:07:24.000 --> 00:07:27.000 line:100%
+from left menu I go to <b>Dashboard</b> panel
+
+00:07:27.000 --> 00:07:30.000 line:100%
+click on the button to create a new dashboard
+
+00:07:30.000 --> 00:07:33.000 line:100%
+and then on <b>add an existing object</b> link
 
 00:07:33.000 --> 00:07:38.000 line:100%
-just click to add them
+I select my charts one by one to add them to the dashboard
 
 00:07:45.000 --> 00:07:55.000 line:100%
-we can then rearrange them at will
+I customize the layout a bit
 
 00:08:10.000 --> 00:08:18.000 line:100%
-and then save the dashboard
+and then I save my dashboard
 
-00:08:20.000 --> 00:08:25.000 line:100%
-please note that those charts are <b>dynamic</b>
-and will be updated each time we change things in MetaindeX
+00:08:18.000 --> 00:08:23.000 line:100%
+those charts are <b>updated automatically</b> 
+each time something changes in MetaindeX
 
-00:08:25.000 --> 00:08:45.000 line:100%
-so if I remove for example all actors from the corpus ...
+00:08:23.000 --> 00:08:30.000 line:100%
+back into MetaindeX
+I'll remove all actors from the corpus
 
-00:08:53.000 --> 00:09:03.000 line:100%
-then a simple refresh of the dashboard will update all our charts!
+00:08:30.000 --> 00:08:35.000 line:100%
+in the search input on top of the screen 
+I enter the query "<b>type:actor</b>"
+
+00:08:35.000 --> 00:08:40.000 line:100%
+I find 25 actors, and I delete them 
+using contextual menu on top
+
+00:08:40.000 --> 00:08:47.000 line:100%
+be careful, there is no undo!
+
+00:08:47.000 --> 00:08:49.000 line:100%
+actors are now deleted
+
+00:08:49.000 --> 00:08:53.000 line:100%
+I clear my previous query
+and get now all remaining 60 artists 
+
+00:08:53.000 --> 00:08:55.000 line:100%
+I go back in Kibana
+
+00:08:55.000 --> 00:09:03.000 line:100%
+I refresh the dashboard and see all the charts updated!
 
 00:09:03.000 --> 00:09:06.000 line:100%
 well, that's it folks

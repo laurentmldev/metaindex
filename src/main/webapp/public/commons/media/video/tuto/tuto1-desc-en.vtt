@@ -1,103 +1,156 @@
 WEBVTT
 
 
-00:00:00.000 --> 00:00:05.000 line:50% 
+00:00:00.000 --> 00:00:02.500 line:50% 
 *** MetaindeX Tutorials ***
 
-00:00:00.000 --> 00:00:05.000 line:50% 
+00:00:00.000 --> 00:00:02.500 line:50% 
 1- Basics and Overview
 
-00:00:05.000 --> 00:00:10.000 line:50%
-In this tutorial, we'll see how to create and customize a catalog
+00:00:02.500 --> 00:00:06.000 line:50%
+In this tutorial, I'll simply create a catalog and add some documents in it.
 
-00:00:07.000 --> 00:00:10.000 line:50%
-and how to create documents by hand
+00:00:06.000 --> 00:00:10.000 line:50%
+Explanations might be quite dense sometimes, 
+so feel free to pause the video, and breath!
 
 00:00:10.000 --> 00:00:15.000 line:80%
-Let's login first to MetaindeX
+First I need to log in MetaindeX app
+
+00:00:21.000 --> 00:00:24.000 line:80%
+user preferences are accessed via top right icon
 
 00:00:24.000 --> 00:00:30.000 line:80%
-we'll set language to english and choose blue skin
+there I want to switch language to English and choose blue skin
 
 00:00:29.000 --> 00:00:30.000 line:80%
 <i>because blue is nice</i>
 
-00:00:38.000 --> 00:00:41.000 line:80%
-we create now a catalog to store our data 
+00:00:34.500 --> 00:00:37.500 line:80%
+I create now a new catalog to store my data
 
-00:00:41.000 --> 00:00:48.000 line:80%
-only very basic characters are allowed here, this name is an ID.
-we'll show later how to set a fancy human name in the lexic
+00:00:37.500 --> 00:00:40.500 line:80%
+I go to <b>Create catalog</b> on left panel
 
-00:00:52.000 --> 00:01:00.000 line:80%
-catalog panels allow to customize and control catalog's behaviour.
+00:00:40.500 --> 00:00:45.000 line:80%
+I enter my catalog <b>identifier</b>
+it shall be unique and simple (no space).
 
-00:01:00.000 --> 00:01:05.000 line:80%
-we'll customize here a bit our lexic
+00:00:45.000 --> 00:00:48.000 line:80%
+a statistic space is also created in Kibana
+<i>see Tutorial 3 for statistics charts</i>
+
+00:00:48.000 --> 00:00:52.000 line:80%
+yellow box is just a quotas warning (I cannot create more catalogs)
+
+00:00:52.000 --> 00:00:56.000 line:80%
+most important tabs are:
+- <b>overview</b> : global parameters
+- <b>fields</b> : list and customize data fields
+- <b>lexic</b> : set appropriate names in English or French
+
+00:00:56.000 --> 00:01:01.000 line:80%
+I can click on <b>question marks</b> for contextual help
+
+00:01:01.000 --> 00:01:05.000 line:80%
+I start now defining catalog's lexic
 
 00:01:05.000 --> 00:01:15.000 line:80%
-let's give a better name and description to the catalog
+I set a full name and description
 
 00:01:15.000 --> 00:01:25.000 line:80%
-we can also give a custom name for documents
+and give a custom name for documents, matching my specific funny data
 
 00:01:28.000 --> 00:01:35.000 line:80%
-you can define custom lexic in various languages if your team is international
+I do same thing in French for my team mates from Paris
 
-00:01:49.000 --> 00:01:53.000 line:80%
-after a refresh (Ctrl-R) we can see the changes applied
+00:01:49.000 --> 00:01:55.000 line:80%
+after a refresh (Ctrl+R) I can see the changes applied
 
-00:01:58.000 --> 00:02:05.000 line:80%
-and also applies in other language
+00:01:55.000 --> 00:02:05.000 line:80%
+and if I switch to French,
+then French version of the lexic is used
 
-00:02:11.000 --> 00:02:13.000 line:80%
-we enter now into the catalog 
+00:02:05.000 --> 00:02:11.000 line:80%
+I switch back to English language
 
-00:02:15.000 --> 00:02:30.000 line:80%
-catalog is empty, so let's create manually few documents
+00:02:11.000 --> 00:02:15.000 line:80%
+I quit catalog configuration 
+and enter now into catalog contents view 
 
-00:02:22.000 --> 00:02:30.000 line:80%
-with 2 fields : <b>title</b> (string) and <b>size</b> (integer)
+00:02:15.000 --> 00:02:18.000 line:80%
+catalog is empty for now, 
+and I'll create some documents
 
-00:02:46.000 --> 00:02:51.000 line:80%
-we can modify values after creation of course
+00:02:18.000 --> 00:02:21.000 line:80%
+I go left and click on <b>Create New</b> link
+
+00:02:21.000 --> 00:02:23.000 line:80%
+no field neither is defined in this new catalog
+
+00:02:23.000 --> 00:02:26.500 line:80%
+so I create 2 fields for my docs: 
+<b>title</b> (type <b>string</b>)
+
+00:02:26.500 --> 00:02:30.000 line:80% 
+and <b>size</b> (type <b>integer</b>)
+
+00:02:30.000 --> 00:02:35.000 line:80%
+It's important to choose proper datatype for statisics analysis
+<i>see Tutorial 3 for creating charts</i>
+
+00:02:35.000 --> 00:02:42.000 line:80%
+then I fill in values and click green button to create a new document
+
+00:02:42.000 --> 00:02:47.000 line:80%
+each document is represented with a card
+we can click on it to show contents
+
+00:02:47.000 --> 00:02:57.000 line:80%
+I click to <b>edit mode</b> button and can then modify values
 
 00:02:57.000 --> 00:03:04.000 line:80%
-let's create few more documents
+I create now few more documents
 
-00:03:04.000 --> 00:03:15.000 line:80%
-the <b>locker</b> controls if the field shall be cleared after creating the document
+00:03:04.000 --> 00:03:09.000 line:80%
+when the <b>locker</b> is closed, the field is not cleared after creation
+
+00:03:09.000 --> 00:03:15.000 line:80%
+and then I don't have to write again the same value for the next document
+
+00:03:30.000 --> 00:03:50.000 line:80%
+created documents appear as cards in the main panel
 
 00:03:40.000 --> 00:03:50.000 line:80%
-for easier overview, we'll customize cards title in the catalogs panel
+I go back into catalog's <b>overview</b> 
+to customize cards title
 
 00:03:50.000 --> 00:03:55.000 line:80%
-using <b>title</b> field as a card caption 
+I want to use field <b>title</b> as a caption 
 
-00:04:02.000 --> 00:04:05.000 line:80%
-we can see our change applied here on the cards
+00:04:02.000 --> 00:04:07.000 line:80%
+I can see that change applied, where content of <b>title</b> field
+is used for each card caption
 
-00:04:10.000 --> 00:04:12.000 line:80%
-we'll end by demonstrating basic search queries
+00:04:07.000 --> 00:04:12.000 line:80%
+I want now to explore my data with few search queries
+<i>search input is on top of the main panel</i>
 
 00:04:12.000 --> 00:04:16.000 line:80%
-size:3 returns documents whose field <b>size</b> equals 3
+expression <b>size:3</b> returns documents whose field <b>size</b> equals <b>3</b>
 
 00:04:16.000 --> 00:04:22.000 line:80%
 this is <b>Lucene</b> query language, it is very powerful
 to search and filter numbers but also strings and dates
 
 00:04:22.000 --> 00:04:25.000 line:80%
-we can also combine expressions with AND/OR connectors
+I can also combine expressions with <b>AND/OR</b> connectors
 
-00:04:25.000 --> 00:04:33.000 line:80%
-size:>10 returns documents whose field <b>size</b> is greater 10
+00:04:25.000 --> 00:04:34.000 line:80%
+<b>size:>10</b> returns documents whose field <b>size</b> is greater than 10
 
-00:04:33.000 --> 00:04:37.000 line:80%
-more examples are given by clicking help icon left to the search input
-
-00:04:37.000 --> 00:04:50.000 line:80%
-we can keep our query in a filter, to reuse it later
+00:04:35.000 --> 00:04:50.000 line:80%
+I can keep our query in a filter, to reuse it later
 
 00:04:59.500 --> 00:05:06.000 line:30% 
 *** The End ***
