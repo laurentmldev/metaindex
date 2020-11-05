@@ -109,37 +109,66 @@ we can click on it to show contents
 00:02:47.000 --> 00:02:57.000 line:80%
 I click to <b>edit mode</b> button and can then modify values
 
-00:02:57.000 --> 00:03:04.000 line:80%
+00:02:57.000 --> 00:03:00.000 line:80%
 I create now few more documents
 
-00:03:04.000 --> 00:03:09.000 line:80%
-when the <b>locker</b> is closed, the field is not cleared after creation
+00:03:00.000 --> 00:03:05.000 line:80%
+when the <b>locker</b> is closed, field value is kept for next document
 
-00:03:09.000 --> 00:03:15.000 line:80%
-and then I don't have to write again the same value for the next document
+00:03:05.000 --> 00:03:10.000 line:80%
+field <b>size</b> keep its value for next document 
+while <b>title</b> is cleared
 
-00:03:30.000 --> 00:03:50.000 line:80%
-created documents appear as cards in the main panel
+00:03:10.000 --> 00:03:15.000 line:80%
+I keep lockers open here since all data changes each time
 
-00:03:40.000 --> 00:03:50.000 line:80%
-I go back into catalog's <b>overview</b> 
-to customize cards title
+00:03:15.000 --> 00:03:20.000 line:80%
+for each new document, a new card appears behind, in the contents panel
 
-00:03:50.000 --> 00:03:55.000 line:80%
-I want to use field <b>title</b> as a caption 
+00:03:20.000 --> 00:03:25.000 line:80%
+if I had already my data in a xls/ods/csv file,
+I could use instead the import/export module
+
+00:03:25.000 --> 00:03:30.000 line:80%
+so that my data is automatically uploaded into the catalog
+<i>see Tutorial 2 - Excel import/export</i>
+
+00:03:32.000 --> 00:03:36.000 line:80%
+so I can see here 5 cards for my 5 documents
+
+00:03:36.000 --> 00:03:39.000 line:80%
+but they all look the same
+
+00:03:39.000 --> 00:03:45.000 line:80%
+so I want set field <b>title</b> as cards caption
+instead of generic text <i>Funny Thing</i>
+
+00:03:45.000 --> 00:03:50.000 line:80%
+I go into catalog's <b>overview</b> to customize my cards
+clicking on <b>Catalogs Panel</b> top left
+
+00:03:50.000 --> 00:03:53.000 line:80%
+I use <b>Cards Title</b> setting
+
+00:03:53.000 --> 00:03:58.000 line:80%
+and select my field <b>title</b>
+
+00:03:58.000 --> 00:04:02.000 line:80%
+I go back into catalog contents 
+to see changes applied 
 
 00:04:02.000 --> 00:04:07.000 line:80%
-I can see that change applied, where content of <b>title</b> field
-is used for each card caption
+I can see that indeed <b>title</b> field is used for cards caption
 
-00:04:07.000 --> 00:04:12.000 line:80%
+00:04:08.000 --> 00:04:13.000 line:80%
 I want now to explore my data with few search queries
 <i>search input is on top of the main panel</i>
 
-00:04:12.000 --> 00:04:16.000 line:80%
-expression <b>size:3</b> returns documents whose field <b>size</b> equals <b>3</b>
+00:04:13.000 --> 00:04:18.000 line:80%
+<b>size:3</b> returns documents whose field <b>size</b> equals <b>3</b>
+<i>I click on the <b>magnifier</b> button to refresh</i>
 
-00:04:16.000 --> 00:04:22.000 line:80%
+00:04:18.000 --> 00:04:22.000 line:80%
 this is <b>Lucene</b> query language, it is very powerful
 to search and filter numbers but also strings and dates
 
@@ -149,8 +178,20 @@ I can also combine expressions with <b>AND/OR</b> connectors
 00:04:25.000 --> 00:04:34.000 line:80%
 <b>size:>10</b> returns documents whose field <b>size</b> is greater than 10
 
-00:04:35.000 --> 00:04:50.000 line:80%
-I can keep our query in a filter, to reuse it later
+00:04:34.000 --> 00:04:38.000 line:80%
+I can save my query in a filter, to reuse it later
+
+00:04:38.000 --> 00:04:42.500 line:80%
+I click on the <b>star button</b> right to the query
+
+00:04:42.500 --> 00:04:48.000 line:80%
+I give a name to my filter and confirm 
+
+00:04:48.000 --> 00:04:53.000 line:80%
+then my filter appears on bottom left <b>Filters</b> 
+
+00:04:53.000 --> 00:04:57.000 line:80%
+and I can click on it activate/desactivate the filter
 
 00:04:59.500 --> 00:05:06.000 line:30% 
 *** The End ***
