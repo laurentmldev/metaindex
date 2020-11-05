@@ -8,14 +8,18 @@ WEBVTT
 1- Basics and Overview
 
 00:00:02.500 --> 00:00:06.000 line:50%
-In this tutorial, I'll simply create a catalog and add some documents in it.
+In this tutorial, we'll learn how to create a catalog and add some documents in it.
 
 00:00:06.000 --> 00:00:10.000 line:50%
-Explanations might be quite dense sometimes, 
+Explanations might go a bit fast sometimes, 
 so feel free to pause the video, and breath!
 
 00:00:10.000 --> 00:00:15.000 line:80%
 First I need to log in MetaindeX app
+
+00:00:15.000 --> 00:00:20.000 line:80%
+I've accessed this login page by clicking on <b>Sign-in</b> button,
+top right of MetaindeX welcome page
 
 00:00:21.000 --> 00:00:24.000 line:80%
 user preferences are accessed via top right icon
@@ -41,15 +45,16 @@ a statistic space is also created in Kibana
 <i>see Tutorial 3 for statistics charts</i>
 
 00:00:48.000 --> 00:00:52.000 line:80%
-yellow box is just a quotas warning (I cannot create more catalogs)
+yellow box is just a quotas warning 
+<i>I cannot create more catalogs</i>
 
-00:00:52.000 --> 00:00:56.000 line:80%
-most important tabs are:
-- <b>overview</b> : global parameters
-- <b>fields</b> : list and customize data fields
-- <b>lexic</b> : set appropriate names in English or French
+00:00:52.000 --> 00:00:58.000 line:80%
+main tabs are:
+- <b>Overview</b> : global parameters
+- <b>Fields</b> : list catalog's fields
+- <b>Lexic</b> : customize names in English and French
 
-00:00:56.000 --> 00:01:01.000 line:80%
+00:00:58.000 --> 00:01:01.000 line:80%
 I can click on <b>question marks</b> for contextual help
 
 00:01:01.000 --> 00:01:05.000 line:80%
@@ -59,10 +64,10 @@ I start now defining catalog's lexic
 I set a full name and description
 
 00:01:15.000 --> 00:01:25.000 line:80%
-and give a custom name for documents, matching my specific funny data
+and give a custom name for documents, matching my funny data
 
 00:01:28.000 --> 00:01:35.000 line:80%
-I do same thing in French for my team mates from Paris
+I do same thing in French for my teammates from Rennes and Dijon
 
 00:01:49.000 --> 00:01:55.000 line:80%
 after a refresh (Ctrl+R) I can see the changes applied
@@ -75,28 +80,29 @@ then French version of the lexic is used
 I switch back to English language
 
 00:02:11.000 --> 00:02:15.000 line:80%
-I quit catalog configuration 
-and enter now into catalog contents view 
+I access catalog contents 
+by clicking on big <b>Enter</b> button  
 
 00:02:15.000 --> 00:02:18.000 line:80%
 catalog is empty for now, 
 and I'll create some documents
 
-00:02:18.000 --> 00:02:21.000 line:80%
-I go left and click on <b>Create New</b> link
+00:02:18.000 --> 00:02:20.000 line:80%
+I click on <b>Create New</b> in left menu
 
-00:02:21.000 --> 00:02:23.000 line:80%
-no field neither is defined in this new catalog
+00:02:20.000 --> 00:02:23.000 line:80%
+no field is defined yet in this new catalog
 
 00:02:23.000 --> 00:02:26.500 line:80%
-so I create 2 fields for my docs: 
+I want 2 fields in my documents: 
 <b>title</b> (type <b>string</b>)
 
 00:02:26.500 --> 00:02:30.000 line:80% 
 and <b>size</b> (type <b>integer</b>)
 
 00:02:30.000 --> 00:02:35.000 line:80%
-It's important to choose proper datatype for statisics analysis
+It's important to choose proper datatypes, 
+for later statistic analysis
 <i>see Tutorial 3 for creating charts</i>
 
 00:02:35.000 --> 00:02:42.000 line:80%
@@ -106,48 +112,45 @@ then I fill in values and click green button to create a new document
 each document is represented with a card
 we can click on it to show contents
 
-00:02:47.000 --> 00:02:57.000 line:80%
+00:02:47.000 --> 00:02:55.000 line:80%
 I click to <b>edit mode</b> button and can then modify values
 
-00:02:57.000 --> 00:03:00.000 line:80%
+00:02:55.000 --> 00:02:59.000 line:80%
 I create now few more documents
 
-00:03:00.000 --> 00:03:05.000 line:80%
-when the <b>locker</b> is closed, field value is kept for next document
+00:02:59.000 --> 00:03:05.000 line:80%
+when the <b>locker</b> is closed, field value is reused for next document
 
 00:03:05.000 --> 00:03:10.000 line:80%
-field <b>size</b> keep its value for next document 
-while <b>title</b> is cleared
+so here field <b>title</b> is cleared 
+but <b>size</b> is not
 
 00:03:10.000 --> 00:03:15.000 line:80%
-I keep lockers open here since all data changes each time
+I'll keep both lockers open for next ones
 
 00:03:15.000 --> 00:03:20.000 line:80%
 for each new document, a new card appears behind, in the contents panel
 
-00:03:20.000 --> 00:03:25.000 line:80%
-if I had already my data in a xls/ods/csv file,
-I could use instead the import/export module
-
-00:03:25.000 --> 00:03:30.000 line:80%
-so that my data is automatically uploaded into the catalog
+00:03:20.000 --> 00:03:30.000 line:80%
+If I have a xls/ods/csv file,
+I can also import it directly with the import/export module
 <i>see Tutorial 2 - Excel import/export</i>
 
 00:03:32.000 --> 00:03:36.000 line:80%
 so I can see here 5 cards for my 5 documents
 
-00:03:36.000 --> 00:03:39.000 line:80%
-but they all look the same
+00:03:36.000 --> 00:03:38.000 line:80%
+but all cards look the same
 
-00:03:39.000 --> 00:03:45.000 line:80%
-so I want set field <b>title</b> as cards caption
+00:03:38.000 --> 00:03:43.000 line:80%
+so I want use <b>title</b> field as cards caption
 instead of generic text <i>Funny Thing</i>
 
-00:03:45.000 --> 00:03:50.000 line:80%
+00:03:43.000 --> 00:03:49.000 line:80%
 I go into catalog's <b>overview</b> to customize my cards
 clicking on <b>Catalogs Panel</b> top left
 
-00:03:50.000 --> 00:03:53.000 line:80%
+00:03:49.000 --> 00:03:53.000 line:80%
 I use <b>Cards Title</b> setting
 
 00:03:53.000 --> 00:03:58.000 line:80%
@@ -161,8 +164,8 @@ to see changes applied
 I can see that indeed <b>title</b> field is used for cards caption
 
 00:04:08.000 --> 00:04:13.000 line:80%
-I want now to explore my data with few search queries
-<i>search input is on top of the main panel</i>
+I want now to search for documents with <b>size = 3</b> or <b>size > 10</b>
+<i>queries input is on top of the main panel</i>
 
 00:04:13.000 --> 00:04:18.000 line:80%
 <b>size:3</b> returns documents whose field <b>size</b> equals <b>3</b>
@@ -179,19 +182,19 @@ I can also combine expressions with <b>AND/OR</b> connectors
 <b>size:>10</b> returns documents whose field <b>size</b> is greater than 10
 
 00:04:34.000 --> 00:04:38.000 line:80%
-I can save my query in a filter, to reuse it later
+I save my query in a filter, to reuse it later
 
 00:04:38.000 --> 00:04:42.500 line:80%
 I click on the <b>star button</b> right to the query
 
-00:04:42.500 --> 00:04:48.000 line:80%
+00:04:42.500 --> 00:04:47.000 line:80%
 I give a name to my filter and confirm 
 
-00:04:48.000 --> 00:04:53.000 line:80%
-then my filter appears on bottom left <b>Filters</b> 
+00:04:47.000 --> 00:04:51.000 line:80%
+then my filter appears on bottom left 
 
-00:04:53.000 --> 00:04:57.000 line:80%
-and I can click on it activate/desactivate the filter
+00:04:51.000 --> 00:04:56.000 line:80%
+and I click on it to activate/deactivate the filter
 
 00:04:59.500 --> 00:05:06.000 line:30% 
 *** The End ***

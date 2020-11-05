@@ -5,7 +5,8 @@ v2.1.0:
 
 
 "See Demo & Tutorials" => "Demo & Tutorials"
-	+ start automatically first tuto on page load
+	+ video autostart
+	
 Kibana dates UTC+2 ... configure by file or REST API ?
  
 add "droits d'auteur" dans les terms and conditions
