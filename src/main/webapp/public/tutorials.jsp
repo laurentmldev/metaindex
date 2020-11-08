@@ -89,8 +89,7 @@ function activateTuto(buttonObj,tutoid,tutoTitle,tutoDesc,tutoLinks) {
 		tuto_links.style.display='block';
 	} else {
 		tuto_links.style.display='none';
-	}
-	
+	}	
 	
 }
 
@@ -187,7 +186,16 @@ function goBack() { window.location.href=origin; }
 			
 			<div class="mx-tuto-button-title"><b>5</b> <s:text name="tutorials.tuto5.title"/></div>
 		</div>
-		
+				
+		<div class="mx-tuto-button" 
+			onclick="activateTuto(this,'tuto6',
+			'<s:text name="tutorials.tuto6.title"/>', 
+			'<s:text name="tutorials.tuto6.desc"/>',
+			'<s:text name="tutorials.tuto6.links"/>');" >
+			
+			<div class="mx-tuto-button-title"><b>6</b> <s:text name="tutorials.tuto6.title"/></div>
+		</div>
+				
         </div>
       <hr class="sidebar-divider d-none d-md-block" style="margin-top:2rem;"/>
 	  

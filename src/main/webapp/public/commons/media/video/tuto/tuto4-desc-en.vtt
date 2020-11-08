@@ -1,218 +1,329 @@
 WEBVTT
 
 
-00:00:00.000 --> 00:00:03.000 line:50% 
+00:00:00.000 --> 00:00:02.000 line:50% 
 *** MetaindeX Tutorials ***
 
-00:00:00.000 --> 00:00:03.000 line:50% 
-4- Explore connections within your data
+00:00:00.000 --> 00:00:02.000 line:50% 
+4- Graphs and connections with Gephi
 
-00:00:04.000 --> 00:00:11.000 line:50%
-In this tutorial, we'll see how to export GEXF (graph) files
-to explore connections within your data with the Open-Source tool <b>Gephi</b>
+00:00:02.000 --> 00:00:10.000 line:50%
+In this tutorial, we'll explore data connections, 
+using the Open-Source tool <b>Gephi</b> to draw graphs.
+-
+I will use the <b>demo_artists</b> catalog already imported in <b>Tutorial 2</b>.
 
-00:00:13.000 --> 00:00:18.000 line:100%
+00:00:10.000 --> 00:00:13.500 line:50%
+Explanations might go a bit fast sometimes, 
+so feel free to pause the video, and breath!
+
+00:00:13.500 --> 00:00:18.000 line:100%
 let's have a look to our original data file
-
-00:00:15.000 --> 00:00:18.000 line:100%
-<i>the one we've imported into MetaindeX in tutorial 2</i>
+<i>same file than <b>Tutorial 2</b></i>
 
 00:00:18.000 --> 00:00:30.000 line:100%
-if you remember the field <b>favorite_artist_id</b> 
-contains the id of another artist of our corpus
+in column <b>favorite_artist_id</b>, values are ids of other artists
 
 00:00:30.000 --> 00:00:37.000 line:100%
-that's what we call a link and that's what
-we gonna explore in this tutorial
+I want to draw graphs showing thoses links
+and study relationships between artists
 
-00:00:38.000 --> 00:00:42.000 line:100%
-now let's log in MetaindeX
+00:00:37.000 --> 00:00:40.000 line:100%
+first I log in MetaindeX
 
-00:00:50.000 --> 00:00:56.000 line:100%
-we have imported this <b>favorite_artist_id</b> field
-as a <b>LINK</b> type, rather than TINY_TEXT
+00:00:40.000 --> 00:00:44.000 line:80%
+I've accessed this login page by clicking on <b>Sign-in</b> button,
+top right of MetaindeX welcome page
 
-00:00:56.000 --> 00:01:01.000 line:100%
-so that MetaindeX knows that contents shall be 
-a reference to another artist id
+00:00:44.000 --> 00:00:50.000 line:80%
+in <b>demo_artists</b> catalog, I go in <b>Fields</b> tab,
+it shows fields used in catalog's documents.
 
-00:01:03.000 --> 00:01:07.000 line:100%
-what we can see there is an artist name rather the original id
+00:00:50.000 --> 00:00:54.000 line:100%
+type of field <b>favorite_artist_id</b> is <b>LINK</b>
 
-00:01:07.000 --> 00:01:11.000 line:100%
-that's what MetaindeX shows us for conveniency
+00:00:54.000 --> 00:00:59.000 line:100%
+this way MetaindeX knows that value is another artist id
 
-00:01:11.000 --> 00:01:17.000 line:100%
-but underlying value is still the raw <b>id</b> itself
+00:00:59.000 --> 00:01:03.000 line:100%
+now I enter catalog contents pressing <b>Enter</b> button
+and click on Marcel Pagnol
 
-00:01:27.000 --> 00:01:31.000 line:100%
+00:01:03.000 --> 00:01:08.000 line:100%
+<b>favorite_artist_id</b> displayed value is a <b>name</b>,
+
+00:01:08.000 --> 00:01:13.000 line:100%
+but going over with the mouse shows underlying <b>id</b> value
+
+00:01:13.000 --> 00:01:18.000 line:100%
+clicking on it jumps to Isaac Asimov, with corresponding <b>id</b>.
+
+00:01:18.000 --> 00:01:22.000 line:100%
+search query contains now Asimov's id, so I clear it
+to display again all artists of my catalog
+
+00:01:25.000 --> 00:01:31.000 line:100%
 so each artist points to its favorite artist
 
-00:01:33.000 --> 00:01:40.000 line:100%
-now we'll generate a graph file (format GEXF)
-clicking on the related button on left panel
+00:01:33.000 --> 00:01:39.200 line:100%
+now I want to generate a graph file, to open it with <b>Gephi</b> later.
+I click on left panel // <b>Import/Export Items</b> // <b>Download GEXF</b> 
 
-00:01:42.000 --> 00:01:47.000 line:100%
-we can select which data to export
+00:01:39.200 --> 00:01:44.900 line:100%
+Each artist will be a <b>node</b> of the graph, and each link an <b>edge</b>.
 
-00:01:47.000 --> 00:01:52.000 line:100%
-and using <b>favorite_artist_id</b> field for the links
+00:01:44.900 --> 00:01:48.000 line:100%
+I select which data to inject in the nodes
+
+00:01:48.000 --> 00:01:52.000 line:100%
+and choose also which links to use : <b>favorite_artist_id</b>
 
 00:01:52.000 --> 00:02:02.000 line:100%
-in <b>Basic mode</b>, each artist is exported as a <b>node</b>,
-and each link as a <b>edge</b> of the graph
+I click on <b>Start</b> button to generate the file
 
 00:02:05.000 --> 00:02:13.000 line:100%
-we click to retrieve the GEXF file,
+once file ready, I click on the link to download it
 
-00:02:13.000 --> 00:02:32.000 line:100%
-we open it with <b>Gephi</b> tool
+00:02:13.000 --> 00:02:23.000 line:100%
+I go now in <b>Gephi</b>. This is a very powerful open-source
+graphs tool, and it is easy to install.
+<i>You'll find a link at bottom of this page.</i> 
 
-00:02:33.000 --> 00:02:38.000 line:100%
-85 nodes are detected (85 artists)
+00:02:23.000 --> 00:02:33.000 line:100%
+I open the GEXF file I just downloaded
+
+00:02:33.000 --> 00:02:37.000 line:100%
+85 nodes are detected (the 85 artists)
 and 85 edges (1 favorite artist each)
 
-00:02:40.000 --> 00:02:45.000 line:100%
-<b>Gephi</b> interface is made of 3 panels :
+00:02:37.000 --> 00:02:41.000 line:100%
+I select <b>mixed</b> graph type to preserve edges direction
+and press OK to load contents
+
+00:02:41.000 --> 00:02:45.000 line:100%
+<b>Gephi</b> offers 3 main modules,
+visible on top of the screen
 
 00:02:45.000 --> 00:02:50.000 line:100%
-- <b>overview</b> : control the graph
+- <b>Overview</b> : control the graph
 
 00:02:52.000 --> 00:02:59.000 line:100%
-- <b>data laboratory</b> : explore and transform data 
+- <b>Data Laboratory</b> : explore and transform data 
 <i>a bit like OpenRefine</i>
 
 00:02:59.000 --> 00:03:03.000 line:100%
-- <b>preview</b> : customize graph display and export (pdf,svg,jpg)
+- <b>Preview</b> : customize rendering and export (pdf,svg,jpg)
 
 00:03:03.000 --> 00:03:11.000 line:100%
-back to overview, <b>Graph</b> panel is a view of the nodes and edges
+back to overview, <b>Graph</b> panel is a sketch of the nodes and edges
 
 00:03:11.000 --> 00:03:15.000 line:100%
-<b>Appearance</b> panel to control the way nodes and edges are displayed
+<b>Appearance</b> panel controls nodes and edges colors and size
 
-00:03:15.000 --> 00:03:20.000 line:100%
-<b>Layout</b> panel to control the disposition of the nodes
+00:03:15.000 --> 00:03:19.000 line:100%
+<b>Layout</b> panel controls nodes position
 
-00:03:23.000 --> 00:03:40.000 line:100%
-let's customize the nodes colors
-based on corresponding <b>type</b>
+00:03:19.000 --> 00:03:21.500 line:100%
+I can use the mouse to pan and zoom
 
-00:03:42.000 --> 00:03:56.000 line:100%
-and size based on <b>nb_guitars</b>
+00:03:21.500 --> 00:03:25.000 line:100%
+I want to colorize nodes by <b>type</b>
 
-00:04:00.000 --> 00:04:05.000 line:100%
-maybe size based on number of in-going links is more relevant
+00:03:25.000 --> 00:03:29.000 line:100%
+I select <b>colors</b> tool + <b>partition</b> mode  
 
-00:04:05.000 --> 00:04:10.000 line:100%
-this way the bigger the node
-the more other artists like him
+00:03:29.000 --> 00:03:34.000 line:100%
+and I select <b>type</b> field for partition
 
-00:04:10.000 --> 00:04:23.000 line:100%
-adding nodes labels
+00:03:34.000 --> 00:03:37.000 line:100%
+<b>Gephi</b> displays detected groups
+
+00:03:37.000 --> 00:03:41.000 line:100%
+I can now press <b>Apply</b> to see the result 
+
+00:03:41.000 --> 00:03:45.000 line:100%
+I want now nodes size proportional to <b>nb_guitars</b>
+
+00:03:45.000 --> 00:03:50.000 line:100%
+I select <b>size</b> tool + <b>Ranking</b> mode 
+
+00:03:50.000 --> 00:03:57.000 line:100%
+and choose <b>nb_guitars</b> field for partition
+and click again on <b>apply</b>
+
+00:03:57.000 --> 00:04:01.000 line:100%
+bigger nodes are artists with more guitars
+
+00:04:01.000 --> 00:04:05.000 line:100%
+If I want size based on <b>number of connections</b>
+
+00:04:05.000 --> 00:04:09.000 line:100%
+I change <b>Ranking</b> to be based on <b>In-Degree</b>
+(number of in-bound links)
+
+00:04:09.000 --> 00:04:14.000 line:100%
+then bigger nodes are the ones 
+seen more often in <b>favorite_artists_id</b> field
+
+00:04:14.000 --> 00:04:23.000 line:100%
+now I display nodes labels (artists name and type)
+and refine labels size
 
 00:04:23.000 --> 00:04:28.000 line:100%
-so <i>Paco de Lucia</i> seems to be quite popular !
+I see now that flamenco guitarist <i>Paco de Lucia</i> is quite popular!
 
 00:04:30.000 --> 00:04:34.000 line:100%
-now we'll arrange nodes layout
+I want to arrange nodes layout, 
+because it's quite a mess for now
 
 00:04:34.000 --> 00:04:37.000 line:100%
-which means <i>improving</i> nodes distribution in the view 
+when loading a file, <b>Gephi</b> spread nodes randomly on preview area
 
 00:04:37.000 --> 00:04:42.000 line:100%
-there are several algorithms we can use for that
-but no absolute <i>good solution</i>
+several algorithms are available to improve nodes layout,
+but there is <b>no absolute good solution</i>
 
 00:04:42.000 --> 00:05:05.000 line:100%
-so we generally play with various algorihtms
-until we are satisfied (enough) ...
+I generally try various algorithms until I'm satisfied (enough) ...
 
 00:05:05.000 --> 00:05:12.000 line:100%
-we can maybe do some local improvements if needed 
+and I can finalize with local improvements 
+
+00:05:12.000 --> 00:05:16.000 line:100%
+Okay I think this is good enough, now I want a nice rendering to export it
 
 00:05:16.000 --> 00:05:22.000 line:100%
-we'll now switch to <b>preview</b> panel to finalize the graph
-and export it
+so I switch to <b>Preview</b> module 
 
 00:05:22.000 --> 00:05:26.000 line:100%
+there are several predefined profiles,
 I like <i>black background</i>, aren't you?
 
-00:05:36.000 --> 00:05:46.000 line:100%
-we clearly need to fix labels size
+00:05:26.000 --> 00:05:31.000 line:100%
+I click on <b>Refresh</b> to update the graph 
+
+00:05:31.000 --> 00:05:34.000 line:100%
+and I need here to reset zoom level
+
+00:05:34.000 --> 00:05:39.000 line:100%
+it clearly needs to fix labels size
+
+00:05:39.000 --> 00:05:46.000 line:100%
+I uncheck <b>proportional labels</b> option,
+to keep a constant labels size
 
 00:05:46.000 --> 00:05:51.000 line:100%
-and make edges thicker
+and I cannot see edges,
+so I set a bigger value in edges <b>Thickness</b> parameter
 
-00:06:00.000 --> 00:06:10.000 line:100%
-let's save that graph as SVG file
+00:05:51.000 --> 00:05:56.000 line:100%
+and <b>Refresh again</b>
 
-00:06:15.000 --> 00:06:25.000 line:100%
-we close this graph and go back to MetaindeX now
+00:05:56.000 --> 00:06:00.000 line:100%
+Okay I like it now
 
-00:06:25.000 --> 00:06:30.000 line:100%
-we'll now study connections between types
+00:06:00.000 --> 00:06:05.000 line:100%
+I want to save it as SVG file ...
 
-00:06:30.000 --> 00:06:45.000 line:100%
-using <b>Group mode</b> option : documents are grouped
-depending on value of one of their field
+00:06:10.000 --> 00:06:20.000 line:100%
+on next step I'll want to study relationships 
+between groups of artists (actor,guitarist,filmdirector,writer)
 
-00:06:36.000 --> 00:06:45.000 line:100%
-<i>it's actually quite similar to Kibana buckets</i>
+00:06:20.000 --> 00:06:25.000 line:100%
+I close current Gephi project and go <b>back into MetaindeX</b>
 
-00:06:45.000 --> 00:06:53.000 line:100%
-so we decide to group them by <b>type</b>
+00:06:31.000 --> 00:06:36.000 line:100%
+I click again on <b>GEXF download</b>
 
-00:06:50.000 --> 00:06:53.000 line:100%
-<i>"writer" "actor" "guitarist" "filmdirector"</i> 
+00:06:36.000 --> 00:06:39.000 line:100%
+but using <b>Group mode</b> option
 
-00:06:53.000 --> 00:06:58.000 line:100%
+00:06:39.000 --> 00:06:45.000 line:100%
+I want artists with same <b>type</b> to be grouped together
+
+00:06:45.000 --> 00:06:50.000 line:100%
+that will create one node per value of <b>type</b>
+(actor,guitarist,filmdirector,writer)
+
+00:06:50.000 --> 00:06:54.000 line:100%
+and links will be aggregated to corresponding groups 
+
+00:06:54.000 --> 00:06:58.000 line:100%
 still using field <b>favorite_artist_id</b> for the links
 
 00:07:00.000 --> 00:07:15.000 line:100%
-and we download the file and import it in <b>Gephi</b>
+I download the new file and import it in <b>Gephi</b>
 
-00:07:07.000 --> 00:07:15.000 line:100%
-<i>same procedure than before</i>
+00:07:15.000 --> 00:07:20.000 line:100%
+the new file name contains 'groupby-type'  
 
 00:07:20.000 --> 00:07:25.000 line:100%
-only 4 nodes detected this time as expected
+only 4 nodes are detected this time, as expected
+(actor,guitarist,filmdirector,writer)
 
-00:07:30.000 --> 00:07:50.000 line:100%
-so let's improve a bit the layout
+00:07:25.000 --> 00:07:30.000 line:100%
+I select <b>mixed</b> graph to keep links orientation
+and press <b>OK</b>
+
+00:07:30.000 --> 00:07:40.000 line:100%
+I display nodes labels and increase their size
+
+00:07:40.000 --> 00:07:45.000 line:100%
+I colorize nodes in grey using <b>colors tool</b> + <b>Unique</b> mode
+
+00:07:45.000 --> 00:07:50.000 line:100%
+and I set nodes size proportional to <b>size</b> attribute
+using  <b>size tool</b> + <b>Ranking</b> mode
 
 00:07:50.000 --> 00:07:56.000 line:100%
-the <b>size</b> attribute is the number of artists contained by each node
+this <b>size</b> attribute is the number of artists contained in each group
 
 00:07:56.000 --> 00:08:05.000 line:100%
 it has been added by MetaindeX during the graph generation 
 
-00:08:05.000 --> 00:08:15.000 line:100%
-so let's make bigger nodes containing more artists
+00:08:05.000 --> 00:08:10.000 line:100%
+so I use it to draw bigger node if the group includes more artists
+
+00:08:10.000 --> 00:08:15.000 line:100%
+I increase a bit the maximum size to make it more visible
+
+00:08:15.000 --> 00:08:20.000 line:100%
+I see that there are more actors and writers 
+than guitarists and filmdirectors 
 
 00:08:20.000 --> 00:08:35.000 line:100%
-and try to improve a bit more the layout
+I try to improve the layout
 
-00:08:37.000 --> 00:08:50.000 line:100%
-going to <b>preview</b> to finalize and prepare export
+00:08:37.000 --> 00:08:47.000 line:100%
+now I go to <b>Preview</b> to finalize rendering and prepare export
+
+00:08:47.000 --> 00:08:55.000 line:100%
+I activate nodes labels and click on <b>Refresh</b>
+
+00:08:55.000 --> 00:09:00.000 line:100%
+but I disable label size proportional to node size
+
+00:09:00.000 --> 00:09:05.000 line:100%
+and I increase manually labels size
 
 00:09:10.000 --> 00:09:15.000 line:100%
-edges are in the direction of the clockwise curve
+edges are in the direction of the <b>clockwise</b> curve
 
 00:09:15.000 --> 00:09:20.000 line:100%
-so we can deduce the edge direction based on the side the curve is
+so I deduce the edge direction based on the curve
 
-00:09:23.000 --> 00:09:35.000 line:100%
-making edges a bit thicker
+00:09:20.000 --> 00:09:35.000 line:100%
+I make edges a bit thicker 
+using <b>Rescale weight</b> option and associated parameters
 
 00:09:35.000 --> 00:09:42.000 line:100%
-so we see from this graph that quite few actors like writers
+so I see from this graph that only few actors like writers
 
 00:09:42.000 --> 00:09:47.000 line:100%
-and no writer at all like an actor
+and not a single writer like an actor
 
-00:09:55.000 --> 00:10:05.000 line:100%
-and we save this graph too
+00:09:50.000 --> 00:10:05.000 line:100%
+and I save this graph too because I like it too
 
 00:10:12.000 --> 00:10:25.000 line:30% 
 *** The End ***

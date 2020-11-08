@@ -3,9 +3,15 @@
 v2.1.0:
 -------
 
+add geo_point : <lat>,<lon>
 
-"See Demo & Tutorials" => "Demo & Tutorials"
-	+ video autostart
+when creating new doc with multi pics but field not set as multi 
+	=> improve error text to suggest to activate "Multi" option
+
+tutos:
+	- "See Demo & Tutorials" => "Demo & Tutorials"
+	- ref useful links in conclusion
+
 	
 Kibana dates UTC+2 ... configure by file or REST API ?
  
@@ -25,6 +31,8 @@ tab icon with white background
 
 v2.1.1:
 -------
+
+when renaming a perspective, it actually adds a new one, but keep previous one
 
 remove user env var mx.mailer.admin_recipient, use list of app admin users instead
 

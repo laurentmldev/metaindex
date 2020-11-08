@@ -205,6 +205,7 @@ function _get_new_perspective_json(perspectiveName,catalogId) {
 							  title: "section1",
 							  type: "mozaic",
 							  align: "center", 
+							  showFrame:"true",
 							  fields:[] 
 							} 
 						 ] 

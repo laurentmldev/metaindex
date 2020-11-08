@@ -61,6 +61,7 @@
 			 				{ title :"Section", 
 			 				  type : "mozaic", 
 			 				  align : "center", 
+			 				  showFrame : "false",
 			 				  fields : [] 
 			 				} // section one
 			 			] // sections

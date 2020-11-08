@@ -24,6 +24,7 @@ public class PerspectiveSection {
 	private List<PerspectiveField> _fields = new ArrayList<>();
 	private SECTION_TYPE _type;
 	private SECTION_ALIGN _align;
+	private String _showFrame="true";
 	
 	public String getTitle() {
 		return _title;
@@ -48,6 +49,9 @@ public class PerspectiveSection {
 		
 		// align
 		this.setAlign(SECTION_ALIGN.valueOf(json.getString("align")));
+		
+		// showFrame
+		this.setShowFrame(json.getString("showFrame"));
 				
 		// fields
 		JSONArray fields =  (JSONArray) json.getJSONArray("fields");
@@ -69,5 +73,11 @@ public class PerspectiveSection {
 	}
 	public void setAlign(SECTION_ALIGN _align) {
 		this._align = _align;
+	}
+	public String getShowFrame() {
+		return _showFrame;
+	}
+	public void setShowFrame(String _showFrame) {
+		this._showFrame = _showFrame;
 	}
 }

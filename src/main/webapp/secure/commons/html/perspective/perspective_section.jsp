@@ -15,6 +15,7 @@ function _commons_perspective_build_section(catalogDesc,perspectiveData,tabIdx,s
 		 																			itemId,fieldsValueMap,editSuccessCallback) {
 		
 		 let sectionDefinition=perspectiveData.tabs[tabIdx].sections[sectionIdx];
+		 	
 		 if (sectionDefinition==null) {
 			 footer_showAlert(WARNING,"<s:text name="Catalogs.perspectives.section.inconsistent" /> "+sectionIdx);
 			 return;
@@ -23,8 +24,10 @@ function _commons_perspective_build_section(catalogDesc,perspectiveData,tabIdx,s
 		 sectionTemplate.id="section_"+tabIdx+"_"+sectionIdx;
 		 sectionTemplate.style.display="block";
 		 
-		 // hide section legend if only one section
-		 if (editMode!=MxGuiPerspective.MODE_CUSTOMIZE && perspectiveData.tabs[tabIdx].sections.length==1) {
+		 // hide section legend if only one section or if set to false
+		 if (editMode!=MxGuiPerspective.MODE_CUSTOMIZE 
+				 && sectionDefinition.showFrame=="false"
+			) {
 			 let fieldsetNode=sectionTemplate.querySelector("._fieldset_");
 			 let legendNode=sectionTemplate.querySelector("._legend_");		 
 			 
@@ -37,8 +40,7 @@ function _commons_perspective_build_section(catalogDesc,perspectiveData,tabIdx,s
 		 // title
 		 let titleNode=sectionTemplate.querySelector("._title_");
 		 titleNode.innerHTML=sectionDefinition.title;
-		 
-		 
+		 		 
 		 // CUSTOMIZATION 
 		 if (editMode==MxGuiPerspective.MODE_CUSTOMIZE) {
 			 
@@ -82,8 +84,6 @@ function _commons_perspective_build_section(catalogDesc,perspectiveData,tabIdx,s
 												  "errorCallback":function(msg){footer_showAlert(ERROR, msg);}
 			 	 								});	 
 			 }
-			 
-			
 			 
 			 // type disabled for now, only 'mozaic' type implemented
 			 let typeNode=sectionTemplate.querySelector("._type_");
@@ -132,6 +132,30 @@ function _commons_perspective_build_section(catalogDesc,perspectiveData,tabIdx,s
 						],
 						onSectionAlignChangeCallback, onSectionAlignChangeSuccessCallback);
 			 alignNode.appendChild(editableAlignNode);
+			 
+			 // show frame option
+			 let showFrameNode=sectionTemplate.querySelector("._showFrame_");
+			 showFrameNode.style.display='block';
+			 let onSectionShowFrameChangeCallback=function(pk,fieldName,fieldValue,successCallback, errorCallback) { 			 
+				 let perspectiveDataCopy=JSON.parse(JSON.stringify(perspectiveData));
+				 perspectiveDataCopy.tabs[tabIdx].sections[sectionIdx].showFrame=fieldValue;
+				 //console.log("sending perspective def :\n" +JSON.stringify(perspectiveDataCopy));
+				 
+				 MxApi.requestPerspectiveUpdate({ "catalogId":catalogDesc.id, "perspectiveId":perspectiveData.id,
+												  "perspectiveJsonDef":perspectiveDataCopy,
+												  "successCallback":successCallback, "errorCallback":errorCallback});		 	 
+			 }
+			 
+			 let onSectionShowFrameChangeSuccessCallback=function(fieldName,fieldValue) { perspectiveData.tabs[tabIdx].sections[sectionIdx].showFrame=fieldValue; }			 
+			 let editableShowFrameNode = xeditable_create_dropdown_field(
+					 	"perspective_"+perspectiveData.id+"_"+tabIdx+"_"+sectionIdx+"_showFrame" /* pk */,
+						"<s:text name='Catalogs.perspectives.section.showFrame' />",true /*show fieldName*/,
+						""+sectionDefinition.showFrame,
+						[	{ value:"true",text:"<s:text name='global.yes' />"},
+							{ value:"false",text:"<s:text name='global.no' />"}
+						],
+						onSectionShowFrameChangeCallback, onSectionShowFrameChangeSuccessCallback);
+			 showFrameNode.appendChild(editableShowFrameNode);
 		 } // end of 'if CUSTOMIZE-MODE'
 			 
 		 // body
@@ -192,6 +216,7 @@ function _commons_perspective_build_section(catalogDesc,perspectiveData,tabIdx,s
 			'title':sectionName,
 			'type':"mozaic",
 			'align':"center",
+			'showFrame':"true",
 			'fields':[]
 		}
  }
@@ -280,6 +305,8 @@ function _commons_perspective_build_section(catalogDesc,perspectiveData,tabIdx,s
 			<td><span class="_type_ mx-perspective-section-option" style="display:none"></span></td>
 			<!-- section alignement not functional -->
 			<td><span class="_align_ mx-perspective-section-option" style="display:none"></span></td>		    
+			
+			<td><span class="_showFrame_ mx-perspective-section-option" style="display:none"></span></td>
 		  </tr></table>
 		  
 	  </legend>

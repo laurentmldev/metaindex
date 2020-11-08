@@ -198,7 +198,7 @@ public class UserProfileData implements IUserProfileData
 			this.getCurrentCatalog().quit(this);
 		}
 		this._isLoggedIn=false;
-		log.info("User '"+this.getName()+"' logged-out");
+		//log.info("User '"+this.getName()+"' logged-out");
 	}
 	
 	@Override

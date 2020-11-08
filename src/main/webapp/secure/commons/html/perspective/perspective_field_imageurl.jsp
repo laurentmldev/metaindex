@@ -52,7 +52,7 @@
  function _buildImgUrl(fieldValue,catalogItemsUrlPrefix) {
 	 var regexAbsoluteUrl = /^http/;
  	 let imgUrl=fieldValue;
- 	 if (imgUrl=="") { valueNode.style.display="none"; }
+ 	 if (imgUrl=="") { return ""; }
  	 
  	 // add prefix from Catalog params, if given URL is relative
  	 if (imgUrl!="" && imgUrl!=null 
