@@ -73,7 +73,6 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 	public void updateTermsApplicativeInfo(List<ICatalogTerm> termsFromSqlDb) throws DataProcessException;
 	public void loadTermsFromDb() throws DataProcessException;
 	
-	public void startServices() throws DataProcessException;
 	public void stopServices() throws DataProcessException;
 	
 	// Misc

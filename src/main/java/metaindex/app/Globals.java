@@ -46,6 +46,7 @@ import metaindex.data.userprofile.IUsersManager;
 import metaindex.data.userprofile.UsersManager;
 import toolbox.database.elasticsearch.ElasticSearchConnector;
 import toolbox.database.kibana.KibanaConnector;
+import toolbox.database.kibana.KibanaConnector.KIBANA_HTTP_METHOD;
 import toolbox.database.sql.SQLDataConnector;
 import toolbox.exceptions.DataAccessException;
 import toolbox.exceptions.DataProcessException;
@@ -263,10 +264,11 @@ public class Globals {
 			log.info("starting tmp files cleaner ... ");
 			_mxTmpFolderCleaner.start();
 			
-			log.info("starting quptas checker ... ");
+			log.info("starting quotas checker ... ");
 			_mxUsersQuotaChecker.start();
 			
 			log.info("MetaindeX connections init done");
+			
 			
 			if (isDevMode()) {
 				_mailSender=new DummyMailSender();

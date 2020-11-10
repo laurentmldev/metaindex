@@ -3,7 +3,20 @@
 v2.1.0:
 -------
 
-add geo_point : <lat>,<lon>
+timepicker:quickRanges : centuries, middleAge,ancien régime, renaissance
+timepicker:timeDefaults 
+{
+  "from": "now-15m",
+  "to": "now"
+}
+
+
+
+enable maps in space features
+
+create new item : press enter shall keep popup open (like click on green button)
+
+set kibana timezone, currency
 
 when creating new doc with multi pics but field not set as multi 
 	=> improve error text to suggest to activate "Multi" option

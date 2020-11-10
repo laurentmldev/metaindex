@@ -48,7 +48,7 @@ public class KibanaCatalogDbInterface
 		disabledFeaturesList.add(KIBANA_SPACE_FEATURE.ml);
 		disabledFeaturesList.add(KIBANA_SPACE_FEATURE.advancedSettings);
 		disabledFeaturesList.add(KIBANA_SPACE_FEATURE.logs);
-		disabledFeaturesList.add(KIBANA_SPACE_FEATURE.maps);
+		//disabledFeaturesList.add(KIBANA_SPACE_FEATURE.maps);
 		disabledFeaturesList.add(KIBANA_SPACE_FEATURE.canvas);
 		disabledFeaturesList.add(KIBANA_SPACE_FEATURE.graph);
 		disabledFeaturesList.add(KIBANA_SPACE_FEATURE.monitoring);
@@ -59,13 +59,12 @@ public class KibanaCatalogDbInterface
 		return _kibanaConnector.createKibanaSpace(	Globals.GetMxProperty("mx.elk.user"), 
 													Globals.GetMxProperty("mx.elk.passwd"), 
 				c.getName(), "Statistics for "+c.getName(),
-				"Perform statistics over contents of catalog "+c.getName(), 
+				"Perform statistics for catalog "+c.getName(), 
 				"#444499", 
 				c.getName().charAt(0)+""+c.getName().charAt(c.getName().length()-1), 
 				"", 
 				disabledFeaturesList);
 	}
-
 
 	public Boolean deleteStatisticsSpace(IUserProfileData activeUser,ICatalog c) {
 		return _kibanaConnector.deleteKibanaSpace(	Globals.GetMxProperty("mx.elk.user"), 
@@ -90,6 +89,47 @@ public class KibanaCatalogDbInterface
 											c.getName(),/* c.getName(),*/ 
 											c.getTimeFieldRawName());				
 	}
+	
+
+	public Boolean setSpaceTimezone(ICatalog c, String timezone) {
+		
+		return _kibanaConnector.setKibanaSpaceTimezone(Globals.GetMxProperty("mx.elk.user"),
+											Globals.GetMxProperty("mx.elk.passwd"),
+											c.getName(),
+											timezone);				
+	}
+
+	public Boolean setSpaceLandingUrl(ICatalog c, String landingUrl) {
+		
+		return _kibanaConnector.setKibanaLandingUrl(Globals.GetMxProperty("mx.elk.user"),
+											Globals.GetMxProperty("mx.elk.passwd"),
+											c.getName(),
+											landingUrl);				
+	}
+	public Boolean setSpaceDayOfWeek(ICatalog c, String dayOfWeek) {
+		
+		return _kibanaConnector.setKibanaDayOfWeek(Globals.GetMxProperty("mx.elk.user"),
+											Globals.GetMxProperty("mx.elk.passwd"),
+											c.getName(),
+											dayOfWeek);				
+	}
+	public Boolean setKibanaNumberFormat(ICatalog c, String country,String numberFormat) {
+		
+		return _kibanaConnector.setKibanaNumberFormat(Globals.GetMxProperty("mx.elk.user"),
+											Globals.GetMxProperty("mx.elk.passwd"),
+											c.getName(),
+											country,
+											numberFormat);				
+	}
+	public Boolean setKibanaQueryLanguage(ICatalog c, String queryLanguage) {
+		
+		return _kibanaConnector.setKibanaQueryLanguage(Globals.GetMxProperty("mx.elk.user"),
+											Globals.GetMxProperty("mx.elk.passwd"),
+											c.getName(),
+											queryLanguage);				
+	}
+	
+	
 	
 	public Boolean refreshStatisticsIndexPattern(IUserProfileData activeUser,ICatalog c) {
 		

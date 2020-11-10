@@ -210,14 +210,12 @@ public class UserProfileData implements IUserProfileData
 			url+=":"+Globals.GetMxProperty("mx.kibana.port");
 		}
 		
-		url+="/metaindex/kibana/s/"+this.getCurrentCatalog().getName()+"/";
+		url+="/metaindex/kibana/s/"+this.getCurrentCatalog().getName();
 		return url; 
 	}
 	@Override
 	public String getStatisticsDiscoverUrl() { 
-		String url = getStatisticsUrl()
-				+"#/dashboards"
-				+Globals.GetMxProperty("mx.kibana.urlparams");
+		String url = getStatisticsUrl()+Globals.GetMxProperty("mx.kibana.urlparams");
 		
 		return url;
 	}

@@ -77,12 +77,9 @@ public class CatalogsManager implements ICatalogsManager {
 			log.error("Error occured while loading definitions of catalog "+c.getName());
 			e.printStackTrace();
 		}
-		try {
-			c.startServices();
-		} catch (Exception e) {
-			log.error("Error occured while services of catalog "+c.getName());
-			e.printStackTrace();
-		}
+		
+		// catalog services are started only when on first user enter for first time
+
 	}
 	
 	@Override 

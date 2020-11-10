@@ -64,6 +64,11 @@ public class Catalog implements ICatalog {
 		_catalogLock.release(); 
 	}
 	
+	// flag saying if initial config has been done
+	// (avoid doig it each time and don't want to do it 
+	// at start up for all catalogs because it is too long
+	private Boolean _firstEnterConfig=true;
+	
 	private Integer _autoRefreshPeriodSec=AUTOREFRESH_PERIOD_SEC;
 	private Date _lastUpdate=new Date(0);
 	
@@ -153,8 +158,8 @@ public class Catalog implements ICatalog {
 		}
 		_ftpServer=null;
 	}
-	@Override 
-	public void startServices() throws DataProcessException {
+	
+	private void startServices() throws DataProcessException {
 		        	
 		File userdataFs = new File(getLocalFsFilesPath());
 		if (!userdataFs.exists()) {
@@ -168,6 +173,35 @@ public class Catalog implements ICatalog {
 		startFtpServer();
 		_dbAutoRefreshProcessing=new CatalogPeriodicDbReloader(this);
 		_dbAutoRefreshProcessing.start();
+		
+
+		log.info("configuring Kibana Space for catalog "+this.getName()+"... ");
+		if (!(Globals.Get().getDatabasesMgr()
+				.getCatalogManagementDbInterface()
+				.setSpaceTimezone(this,"Zulu")
+				
+				&& Globals.Get().getDatabasesMgr()
+				.getCatalogManagementDbInterface()
+				.setSpaceDayOfWeek(this, "Monday")
+				
+				&& Globals.Get().getDatabasesMgr()
+				.getCatalogManagementDbInterface()
+				.setKibanaNumberFormat(this, "en", "00.[000]")
+				
+				&& Globals.Get().getDatabasesMgr()
+				.getCatalogManagementDbInterface()
+				.setSpaceLandingUrl(this, "/app/discover")
+				
+				&& Globals.Get().getDatabasesMgr()
+				.getCatalogManagementDbInterface()
+				.setKibanaQueryLanguage(this, "Lucene")
+							
+				)) {
+			throw new DataProcessException("Unable to configure Kibana advanced settings.");
+		}
+		
+		log.info("done configuring Kibana for catalog "+this.getName());
+		
 	}
 	@Override 
 	public void stopServices() throws DataProcessException {
@@ -258,7 +292,14 @@ public class Catalog implements ICatalog {
 	@Override
 	public void enter(IUserProfileData p) throws DataProcessException {
 		try {
-			_loggedUsersLock.acquire();					
+			
+			_loggedUsersLock.acquire();			
+			
+			if (_firstEnterConfig==true) {
+				_firstEnterConfig=false;
+				startServices();				
+			}
+						
 			if (!_loggedUsersIds.containsKey(p.getId()) ) {
 				_loggedUsersIds.put(p.getId(),p);
 				log.info("Catalog "+this.getName()+" added user '"
@@ -266,6 +307,7 @@ public class Catalog implements ICatalog {
 							+". Total: "+_loggedUsersIds.size()+" users.");
 			}
 			_loggedUsersLock.release();
+			
 		} catch (Exception e) { _loggedUsersLock.release(); e.printStackTrace(); }
 		
 	}

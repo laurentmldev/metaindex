@@ -235,6 +235,44 @@ public class KibanaConnector implements IDataConnector {
 		
 	}
 	
+
+	// ----------- Global Config ------------	
+	private Boolean setKibanaAdvancedParam(String adminUser, String adminPwd,KIBANA_HTTP_METHOD method, 
+																String spaceId, String paramName, String paramValue) {
+		
+		JSONObject setParamRequestData = new JSONObject(); 
+		setParamRequestData.put("value", paramValue);
+		
+		//----
+		try {
+			/*JSONObject response = */requestRestService(adminUser, adminPwd, method,
+													"/s/"+spaceId+"/api/kibana/settings/"+paramName, setParamRequestData);
+			return true;
+		} catch (DataProcessException  e) {
+			log.error("Error while performing Kibana operation (via REST API) for setting advanced param '"+paramName+"="+paramValue+"'");
+			return false;
+		}
+		
+	}
+	
+	public Boolean setKibanaSpaceTimezone(String adminUser, String adminPwd,String spaceId, String timezoneId) { 
+		return setKibanaAdvancedParam(adminUser,adminPwd,KIBANA_HTTP_METHOD.POST,spaceId,"dateFormat:tz",timezoneId);
+	}
+	
+	public Boolean setKibanaDayOfWeek(String adminUser, String adminPwd,String spaceId,String dayOfWeek) { 
+		return setKibanaAdvancedParam(adminUser,adminPwd,KIBANA_HTTP_METHOD.POST,spaceId,"dateFormat:dow",dayOfWeek);
+	}
+	public Boolean setKibanaLandingUrl(String adminUser, String adminPwd,String spaceId,String landingUrl) { 
+		return setKibanaAdvancedParam(adminUser,adminPwd,KIBANA_HTTP_METHOD.POST,spaceId,"defaultRoute",landingUrl);
+	}
+	public Boolean setKibanaNumberFormat(String adminUser, String adminPwd,String spaceId,String country, String numberPattern) { 
+		return 	setKibanaAdvancedParam(adminUser,adminPwd,KIBANA_HTTP_METHOD.POST,spaceId,"format:number:defaultLocale",country)
+		&& 		setKibanaAdvancedParam(adminUser,adminPwd,KIBANA_HTTP_METHOD.POST,spaceId,"format:number:defaultPattern",numberPattern)
+				;
+	}
+	public Boolean setKibanaQueryLanguage(String adminUser, String adminPwd,String spaceId,String queryLanguage) { 
+		return setKibanaAdvancedParam(adminUser,adminPwd,KIBANA_HTTP_METHOD.POST,spaceId,"search:queryLanguage",queryLanguage);
+	}
 	
 	// ----------- SPACES ------------
 	public Boolean createKibanaSpace(String adminUser, String adminPwd,
