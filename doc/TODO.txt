@@ -3,30 +3,15 @@
 v2.1.0:
 -------
 
-timepicker:quickRanges : centuries, middleAge,ancien régime, renaissance
-timepicker:timeDefaults 
-{
-  "from": "now-15m",
-  "to": "now"
-}
-
-
-
-enable maps in space features
 
 create new item : press enter shall keep popup open (like click on green button)
-
-set kibana timezone, currency
 
 when creating new doc with multi pics but field not set as multi 
 	=> improve error text to suggest to activate "Multi" option
 
 tutos:
-	- "See Demo & Tutorials" => "Demo & Tutorials"
 	- ref useful links in conclusion
-
 	
-Kibana dates UTC+2 ... configure by file or REST API ?
  
 add "droits d'auteur" dans les terms and conditions
 
@@ -39,11 +24,21 @@ when filter created, displayed is 'filter deleted'
 tab icon with white background
 
 #55 tutorial videos
-	+ direct link on registration email
+	- maps
+	- fr text
 
 
 v2.1.1:
 -------
+
+
+timepicker:quickRanges : centuries, middleAge,ancien régime, renaissance
+timepicker:timeDefaults 
+{
+  "from": "now-15m",
+  "to": "now"
+}
+
 
 when renaming a perspective, it actually adds a new one, but keep previous one
 

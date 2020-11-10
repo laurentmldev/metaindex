@@ -85,7 +85,7 @@ by clicking on big <b>Enter</b> button
 
 00:02:15.000 --> 00:02:18.000 line:80%
 catalog is empty for now, 
-and I'll create some documents
+and I'll create some (funny) documents
 
 00:02:18.000 --> 00:02:20.000 line:80%
 I click on <b>Create New</b> in left menu
@@ -133,7 +133,7 @@ for each new document, a new card appears behind, in the contents panel
 
 00:03:20.000 --> 00:03:30.000 line:80%
 If I have a xls/ods/csv file,
-I can also import it directly with the import/export module
+I can simply inject its contents with the import/export module
 <i>see Tutorial 2 - Excel import/export</i>
 
 00:03:32.000 --> 00:03:36.000 line:80%
