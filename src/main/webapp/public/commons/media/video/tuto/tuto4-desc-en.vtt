@@ -31,11 +31,11 @@ and study relationships between artists
 00:00:37.000 --> 00:00:40.000 line:100%
 first I log in MetaindeX
 
-00:00:40.000 --> 00:00:44.000 line:80%
+00:00:40.000 --> 00:00:44.000 line:100%
 I've accessed this login page by clicking on <b>Sign-in</b> button,
 top right of MetaindeX welcome page
 
-00:00:44.000 --> 00:00:50.000 line:80%
+00:00:44.000 --> 00:00:50.000 line:100%
 in <b>demo_artists</b> catalog, I go in <b>Fields</b> tab,
 it shows fields used in catalog's documents.
 
@@ -50,7 +50,7 @@ now I enter catalog contents pressing <b>Enter</b> button
 and click on Marcel Pagnol
 
 00:01:03.000 --> 00:01:08.000 line:100%
-<b>favorite_artist_id</b> displayed value is a <b>name</b>,
+<b>favorite_artist_id</b> displayed value is a <b>name</b> (Isaac Asimov),
 
 00:01:08.000 --> 00:01:13.000 line:100%
 but going over with the mouse shows underlying <b>id</b> value
@@ -58,7 +58,7 @@ but going over with the mouse shows underlying <b>id</b> value
 00:01:13.000 --> 00:01:18.000 line:100%
 clicking on it jumps to Isaac Asimov, with corresponding <b>id</b>.
 
-00:01:18.000 --> 00:01:22.000 line:100%
+00:01:18.000 --> 00:01:24.000 line:100%
 search query contains now Asimov's id, so I clear it
 to display again all artists of my catalog
 
@@ -70,7 +70,7 @@ now I want to generate a graph file, to open it with <b>Gephi</b> later.
 I click on left panel // <b>Import/Export Items</b> // <b>Download GEXF</b> 
 
 00:01:39.200 --> 00:01:44.900 line:100%
-Each artist will be a <b>node</b> of the graph, and each link an <b>edge</b>.
+each artist will be a <b>node</b> of the graph, and each <b>favorite_artist_id</b> an <b>edge</b>.
 
 00:01:44.900 --> 00:01:48.000 line:100%
 I select which data to inject in the nodes
@@ -149,7 +149,7 @@ I select <b>size</b> tool + <b>Ranking</b> mode
 
 00:03:50.000 --> 00:03:57.000 line:100%
 and choose <b>nb_guitars</b> field for partition
-and click again on <b>apply</b>
+and click again on <b>Apply</b>
 
 00:03:57.000 --> 00:04:01.000 line:100%
 bigger nodes are artists with more guitars
@@ -181,7 +181,7 @@ when loading a file, <b>Gephi</b> spread nodes randomly on preview area
 
 00:04:37.000 --> 00:04:42.000 line:100%
 several algorithms are available to improve nodes layout,
-but there is <b>no absolute good solution</i>
+but there is <b>no perfect solution</i>
 
 00:04:42.000 --> 00:05:05.000 line:100%
 I generally try various algorithms until I'm satisfied (enough) ...

@@ -1,0 +1,220 @@
+WEBVTT
+
+
+00:00:00.000 --> 00:00:03.000 line:50% 
+*** Tutoriels MetaindeX ***
+
+00:00:00.000 --> 00:00:03.000 line:50% 
+6- Personaliser la disposition des champs
+
+00:00:03.000 --> 00:00:09.000 line:50%
+Dans ce tutoriel, nous allons voir comment personaliser la manière dont les champs apparaissent en utilisant des perspectives
+-
+Je vais utiliser le catalogue <b>demo_artists</b> créé durant le <b>Tutoriel 2</b>.
+
+00:00:09.000 --> 00:00:17.000 line:50%
+Les explications peuvent aller assez vite,
+vous pouvez mettre la vidéo sur pause, et respirer!
+
+00:00:17.000 --> 00:00:24.000 line:100%
+je commence par me connecter à MetaindeX
+
+00:00:24.000 --> 00:00:30.000 line:100%
+j'ai pu accéder à cette page en cliquant sur le bouton <b>Sign in</b>
+en haut à droite de la page d'acceuil MetaindeX
+
+00:00:30.000 --> 00:00:40.000 line:100%
+j'utilise le bouton <b>Enter</b> pour accéder au contenu du catalogue 
+
+00:00:40.000 --> 00:00:46.000 line:100%
+et je clique sur Alfred Hitchcock pour afficher les données associées
+
+00:00:46.000 --> 00:00:56.000 line:100%
+le rendu par défaut affiche les données du document sur toute la zone 
+
+00:00:56.000 --> 00:01:04.000 line:100%
+je ne suis intéressé que par le portrait et le nom de l'artiste
+
+00:01:04.000 --> 00:01:09.000 line:100%
+mais je n'ai pas besoin de voir les autres champs
+
+00:01:09.000 --> 00:01:14.000 line:100%
+je clique sur le panneau des catalogues (en haut à gauche)
+
+00:01:14.000 --> 00:01:19.000 line:100%
+et vais sur l'onglet <b>Perspectives</b>
+
+00:01:19.000 --> 00:01:24.000 line:100%
+une perspective définit la liste des champs à afficher 
+ainsi que la manière de les disposer 
+
+00:01:24.000 --> 00:01:29.000 line:100%
+je commence par créer une nouvelle perspective
+en cliquant sur le bouton vert principal
+
+00:01:29.000 --> 00:01:36.000 line:100%
+je lui donne un nom. 
+cette perspective sera utilisée pour les réalisateurs, je la nomme donc "filmdirector"
+
+00:01:36.000 --> 00:01:42.000 line:100%
+une perspective est constituée de plusieurs <b>onglets</b>
+
+00:01:42.000 --> 00:01:47.000 line:100%
+je peux en ajouter un en cliquant sur le <b>+</b> à droite 
+
+00:01:47.000 --> 00:01:52.000 line:100%
+chaque <b>onglet</b> est constitué de <b>sections</b>,
+empilées les unes sur les autres
+
+00:01:52.000 --> 00:01:57.000 line:100%
+chaque section est contient une liste de champs à afficher
+je peux ajouter un champ en appuyant sur le bouton "<b>+</b>" de la section
+
+00:01:57.000 --> 00:02:03.000 line:100%
+je choisis alors parmi les champs existant dans ce catalogue 
+
+00:02:03.000 --> 00:02:07.000 line:100%
+je choisis donc ici le <b>portrait</b> 
+
+00:02:07.000 --> 00:02:12.000 line:100%
+je crée une nouvelle <b>section</b> en cliquant sur le gros bouton vert en bas de la zone
+
+00:02:12.000 --> 00:02:16.000 line:100%
+je l'appelle <b>name</b> car elle contiendra le nom complet de l'artiste
+
+00:02:16.000 --> 00:02:30.000 line:100%
+j'y ajoute donc les 2 champs <b>first_name</b> et <b>family_name</b>
+
+00:02:30.000 --> 00:02:35.000 line:100%
+l'alignement et l'affichage ou non du cadre peuvent être configurés pour chaque section
+
+00:02:35.000 --> 00:02:41.000 line:100%
+pour cette section, je ne veux pas que le cadre soit visible
+uniquement le contenu (le portrait)
+
+00:02:41.000 --> 00:02:48.000 line:100%
+pour chaque champ, on peut configurer la taille, le style (gras, italique), 
+la couleur et l'affichage ou non du nom du champ 
+
+00:02:48.000 --> 00:02:57.000 line:100%
+je veux uniquement la photo, mais le nom du champ ("portrait") ne doit pas apparaître,
+je règle donc le paramètre "Name" sur "Hidden"
+
+00:02:57.000 --> 00:03:07.000 line:100%
+même chose pour le prénom et nom de famille,
+que je souhaite en plus de grande taille et en caractères gras
+
+00:03:07.000 --> 00:03:23.000 line:100%
+je configure donc les paramètres correspondants
+
+00:03:23.000 --> 00:03:28.000 line:100%
+je pense que ma perspective est prête,
+je vais retourner dans le contenu du catalogue pour voir le résultat
+
+00:03:28.000 --> 00:03:32.000 line:100%
+pou cela je clique sur le bouton <b>Enter</b> 
+
+00:03:32.000 --> 00:03:38.000 line:100%
+j'ouvre les données d'Alfred Hitchcock, et  
+maintenant je souhaite activer ma nouvelle perspective 
+
+00:03:38.000 --> 00:03:42.000 line:100%
+je clique sur l'icône "engrenage", au dessus des données de l'artiste
+
+00:03:42.000 --> 00:03:52.000 line:100%
+cela ouvre un menu avec quelques actions complémentaires:
+- <b>Delete</b> : pour supprimer le document
+- <b>Perspectives</b> : pour changer la perspective appliquée 
+
+00:03:52.000 --> 00:03:58.000 line:100%
+je clique sur cette dernière pour afficher la liste des perspectives définies,
+plus celle par défaut
+
+00:03:58.000 --> 00:04:03.000 line:100%
+je clique donc sur ma perspective "filmdirector" pour l'activer
+
+00:04:03.000 --> 00:04:13.000 line:100%
+et je vois que ce qui est affiché correspond bien à ce que j'ai demandé
+
+00:04:13.000 --> 00:04:18.000 line:100%
+j'affiche maintenant le guitariste de jazz Wes Montgomery
+
+00:04:18.000 --> 00:04:25.000 line:100%
+je change à nouveau pour ma nouvelle perspective
+
+00:04:25.000 --> 00:04:33.000 line:100%
+un raccourci est possible en appuyant sur la touche "<b>p</b>"
+pour changer facilement d'une perspective à l'autre
+
+00:04:33.000 --> 00:04:40.000 line:100%
+je peux alors changer d'artiste en conservant la même perspective
+
+00:04:40.000 --> 00:04:50.000 line:100%
+je vaus définir une autre pespective dédiée aux guitaristes,
+et je veux qu'elle s'active automatiquement si l'artiste affiché est effectivement un guitariste
+
+00:04:50.000 --> 00:04:56.000 line:100%
+je retourne dans l'onglet de configuration des <b>Perspectives</b> 
+
+00:04:56.000 --> 00:05:06.000 line:100%
+je crée une nouvelle perspective nommée "guitarist"
+
+00:05:06.000 --> 00:05:12.000 line:100%
+pour celle-ci je veux uniquement le portrait dans un premier onglet
+et le nombre de guitares dans un second onglet
+
+00:05:12.000 --> 00:05:18.000 line:100%
+je commence donc par ajouter le portrait
+
+00:05:18.000 --> 00:05:35.000 line:100%
+je cache le cadre de cette section ainsi que le nom du champ "portrait"
+
+00:05:35.000 --> 00:06:08.000 line:100%
+et je rajoute un nouvel onglet (et section) pour afficher le champ <b>nb_guitars</b>
+
+00:06:08.000 --> 00:06:25.000 line:100%
+je veux le voir écrit en bleu, gras et grand!
+
+00:06:25.000 --> 00:06:50.000 line:100%
+maintenant je veux configurer MetaindeX pour appliquer 
+la perspective "guitarist" quand le champ <b>type</b> vaut "guitarist"
+et idem pour "filmdirector".
+
+00:06:50.000 --> 00:07:05.000 line:100%
+pour cela je me rends dans l'onglet <b>Overview</b> 
+et configure le paramètre <b>"Detect perspective on field"</b> 
+
+00:07:05.000 --> 00:07:14.000 line:100%
+je lui assigne le champ "<b>type</b>".
+De cette manière, quand <b>type=filmdirector</b>, 
+MetaindeX appliquera automatiquement perspective du même nom ("filmdirector")
+
+00:07:14.000 --> 00:07:19.000 line:100%
+quand <b>type=guitarist</b>, idem MetaindeX appliquera la perspective "guitarist"
+
+00:07:19.000 --> 00:07:23.000 line:100%
+autrement MetaindeX appliquera la perspective par défaut 
+
+00:07:23.000 --> 00:07:27.000 line:100%
+je retourne dans le contenu du catalogue pour tester cette nouvelle configuration
+
+00:07:27.000 --> 00:07:33.000 line:100%
+Hitchcock (filmdirector) a bien la bonne perspective appliquée
+
+00:07:33.000 --> 00:07:40.000 line:100%
+Marcel Pagnol (writer) a comme prévu la perspective par défaut
+
+00:07:40.000 --> 00:07:53.000 line:100%
+et Wes Montgomery (guitarist) a bien la perspective des guitaristes
+
+00:07:56.000 --> 00:08:04.000 line:100%
+et voilà ...
+
+00:08:04.000 --> 00:08:14.000 line:30% 
+*** The End ***
+
+00:08:06.000 --> 00:08:14.000 line:30% 
+voir aussi les autres tutos MetaindeX :
+- graphiques statistiques avec Kibana
+- graphes et connexions avec Gephi
+- et plus encore ...

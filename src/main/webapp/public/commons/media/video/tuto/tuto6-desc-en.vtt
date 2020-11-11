@@ -91,7 +91,7 @@ each section can be configured with alignment and frame visibility
 
 00:02:35.000 --> 00:02:41.000 line:100%
 I don't want first section to have a frame displayed,
-just the contents
+just the contents (the portrait)
 
 00:02:41.000 --> 00:02:48.000 line:100%
 each field can also be configured with size, weight (bold,italic), 
@@ -185,13 +185,15 @@ and "filmdirector" perspective when <b>type</b> is "filmdirector".
 for that I go to <b>Overview</b> panel and set <b>"Detect perspective on field"</b> option 
 
 00:07:05.000 --> 00:07:12.000 line:100%
-I set value to field <b>"type"</b>
+I set value to field <b>"type"</b>.
+This way when <b>type=filmdirector</b>, 
+MetaindeX automatically applies perspective with same name ("filmdirector")
 
-00:07:05.000 --> 00:07:23.000 line:100%
-this way :
-- when <b>type=filmdirector</b>, MetaindeX automatically applies perspective with same name ("filmdirector")
-- when <b>type=guitarist</b>, MetaindeX apply perspective with name "guitarist"
-- otherwise MetaindeX apply default perspective 
+00:07:14.000 --> 00:07:19.000 line:100%
+when <b>type=guitarist</b>, MetaindeX apply perspective with name "guitarist"
+
+00:07:19.000 --> 00:07:23.000 line:100%
+otherwise MetaindeX apply default perspective 
 
 00:07:23.000 --> 00:07:27.000 line:100%
 let's go back to catalog contents and try this configuration
@@ -211,7 +213,7 @@ well, that's it folks.
 00:08:04.000 --> 00:08:14.000 line:30% 
 *** The End ***
 
-00:08:08.000 --> 00:08:14.000 line:30% 
+00:08:06.000 --> 00:08:14.000 line:30% 
 see also other MetaindeX tutorials for 
 - statistics with Kibana
 - graphs with Gephi

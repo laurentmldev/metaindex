@@ -56,10 +56,10 @@ with the <b>Name</b> and <b>Type</b>
 but also 2 columns named <b>Enumeration</b> and <b>Multi</b>
 
 00:01:15.000 --> 00:01:20.000 line:100%
-<b>Enumeration</b> contains a <b>coma-separated list</b> of accepted values
+<b>Enumeration</b> can contain a <b>coma-separated list</b> of acceptable values
 
 00:01:20.000 --> 00:01:25.000 line:100%
-<b>Multi</b> says if several values at the same time are possible
+<b>Multi</b> says if several of those values are possible at the same time
 
 00:01:25.000 --> 00:01:38.000 line:100%
 so I define a set of allowed values for the field <b>gender</b>
