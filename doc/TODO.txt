@@ -3,29 +3,27 @@
 v2.1.0:
 -------
 
+add geo_point description in fields help txt
+
+specific plans per user category (non-profit, business)
 
 create new item : press enter shall keep popup open (like click on green button)
 
 when creating new doc with multi pics but field not set as multi 
 	=> improve error text to suggest to activate "Multi" option
 
-tutos:
-	- ref useful links in conclusion
-	
  
 add "droits d'auteur" dans les terms and conditions
-
-tuto 
- - language not set if not logged in once before or not chosen a language
- - button to go back to origin
 
 when filter created, displayed is 'filter deleted' 
 
 tab icon with white background
 
 #55 tutorial videos
-	- maps
 	- fr text
+	- language not set if not logged in once before or not chosen a language
+	- button to go back to origin
+	- ref useful links in conclusion
 
 
 v2.1.1:
