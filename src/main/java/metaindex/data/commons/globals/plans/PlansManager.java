@@ -24,6 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import metaindex.app.Globals;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.UsersManager;
+import metaindex.data.userprofile.IUserProfileData.CATEGORY;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.IStreamHandler;
 
@@ -95,5 +96,16 @@ public class PlansManager implements IPlansManager {
 	@Override
 	public Collection<IPlan> getPlans() {
 		return _plans.values();
+	}
+	
+	@Override 
+	public IPlan getDefaultPlan(CATEGORY c) {
+		for (IPlan p : getPlans()) {
+			if (p.getCategory().equals(c)) { return p; }
+		}
+		for (IPlan p : getPlans()) {
+			if (p.getCategory().equals(CATEGORY.ALL)) { return p; }
+		}
+		return null;
 	}
 }

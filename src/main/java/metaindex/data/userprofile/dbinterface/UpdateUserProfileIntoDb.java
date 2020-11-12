@@ -40,7 +40,7 @@ class UpdateUserProfileIntoDb extends SQLWriteStmt<IUserProfileData>   {
 		try {
 			// insert if not present, update if already present
 			result.add(this.getDataConnector().getConnection().prepareStatement(
-					"update users set nickname=?, guilanguage_id=?, guitheme_id=? where email=?;")); 
+					"update users set nickname=?, guilanguage_id=?, guitheme_id=?, category=? where email=?;")); 
 			
 		} catch (SQLException e) { throw new DataProcessException(e); }
 		
@@ -56,7 +56,8 @@ class UpdateUserProfileIntoDb extends SQLWriteStmt<IUserProfileData>   {
 			stmt.setString(1, dataObject.getNickname());
 			stmt.setInt(2, dataObject.getGuiLanguageId());
 			stmt.setInt(3, dataObject.getGuiThemeId());
-			stmt.setString(4, dataObject.getName());
+			stmt.setString(4, dataObject.getCategory().toString());
+			stmt.setString(5, dataObject.getName());
 			
 			stmt.addBatch();
 		} catch (SQLException e) { throw new DataProcessException(e); }		

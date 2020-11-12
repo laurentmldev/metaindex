@@ -30,6 +30,7 @@ import org.apache.commons.configuration2.PropertiesConfiguration;
 
 import metaindex.data.filter.IFilter;
 import metaindex.data.userprofile.ICatalogUser.USER_CATALOG_ACCESSRIGHTS;
+import metaindex.data.userprofile.IUserProfileData.CATEGORY;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.commons.globals.guitheme.GuiThemesManager;
 import metaindex.data.commons.globals.guitheme.IGuiTheme;
@@ -76,6 +77,7 @@ public class UserProfileData implements IUserProfileData
 	private String _nickname = "";
 	private boolean _isLoggedIn = false;
 	private USER_ROLE _role=USER_ROLE.ROLE_OBSERVER;
+	private CATEGORY _category=CATEGORY.STUDENT_SEARCHER;
 	
 	private Integer _guiLanguageId = DEFAULT_LANG_ID;
 	private Integer _guiThemeId = DEFAULT_GUITHEME_ID;
@@ -136,7 +138,9 @@ public class UserProfileData implements IUserProfileData
 	public IPlan getPlan() {
 		Integer activePlanId=getPlanId();
 		Date now=new Date();		
-		if (now.after(getPlanEndDate())) { activePlanId=IPlansManager.DEFAULT_PLAN_ID; }
+		if (now.after(getPlanEndDate())) { 
+			activePlanId=Globals.Get().getPlansMgr().getDefaultPlan(this.getCategory()).getId(); 
+		}
 		
 		if (_curPlan!=null && _curPlan.getId().equals(activePlanId)) { return _curPlan; }
 		_curPlan = Globals.Get().getPlansMgr().getPlan(activePlanId);		
@@ -773,6 +777,14 @@ public class UserProfileData implements IUserProfileData
 			}
 		}
 		return result; 
+	}
+	@Override
+	public CATEGORY getCategory() {
+		return _category;
+	}
+	@Override
+	public void setCategory(CATEGORY c) {
+		_category=c;
 	}
 	
 }

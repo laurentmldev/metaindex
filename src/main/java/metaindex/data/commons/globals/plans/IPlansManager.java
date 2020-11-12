@@ -13,14 +13,16 @@ See full version of LICENSE in <https://fsf.org/>
 import java.util.Collection;
 import java.util.List;
 
+import metaindex.data.userprofile.IUserProfileData.CATEGORY;
 import toolbox.database.ILoadableFromDb;
 import toolbox.exceptions.DataProcessException;
 
 public interface IPlansManager extends ILoadableFromDb {
 
-	public static final Integer DEFAULT_PLAN_ID = 0;
+	
 	
 	void loadFromDb() throws DataProcessException;
 	IPlan getPlan(Integer planId);
 	Collection<IPlan> getPlans();
+	IPlan getDefaultPlan(CATEGORY c);
 }

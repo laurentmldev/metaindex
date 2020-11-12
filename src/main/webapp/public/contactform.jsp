@@ -39,8 +39,8 @@
                 
                 
                 
-               	<select id="topics" name="topics" style="padding-left:1rem;padding-right:1rem;" value="info">
-				  <option value="info"><s:text name="contactform.topic.info" /></option>
+               	<select id="topics" name="topics" style="padding-left:1rem;padding-right:1rem;" >
+				  <option value="info" selected><s:text name="contactform.topic.info" /></option>
 				  <option value="bug"><s:text name="contactform.topic.bug" /></option>
 				  <option value="other"><s:text name="contactform.topic.other" /></option>
 				</select>

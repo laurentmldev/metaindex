@@ -40,7 +40,22 @@ onkeypress="if (event.which==13||event.keycode==13) {
                <div class="form-group"><center>
                  <input type="text" id="nickname" name='nickname' class="form-control form-control-user mx_welcome_input" 
                   	 placeholder="<s:text name="Profile.nickname" />" required>
-               </center></div>
+               </center>
+               </div>
+               
+               <div class="form-group"><center>
+               
+               
+               	<select id="category" name="category" class="form-control  mx_welcome_input" style="font-size:0.8rem;" >
+               	<!-- values shall match corresponding enum defined in SQL DB -->
+				  <option value="PERSONAL" ><s:text name="Profile.category.PERSONAL" /></option>
+				  <option value="STUDENT_SEARCHER" selected><s:text name="Profile.category.STUDENT_SEARCHER" /></option>
+				  <option value="NONPROFIT" ><s:text name="Profile.category.NONPROFIT" /></option>
+				  <option value="ADMINISTRATION" ><s:text name="Profile.category.ADMINISTRATION" /></option>
+				  <option value="BUSINESS" ><s:text name="Profile.category.BUSINESS" /></option>				  
+				</select>				
+               </center>
+               </div>
                
                <div class="form-group" style="width:100%;">
                <center>

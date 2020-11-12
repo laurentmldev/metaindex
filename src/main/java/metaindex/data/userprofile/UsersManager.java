@@ -179,6 +179,7 @@ public class UsersManager implements IUsersManager {
 			_usersLock.release();
 		} catch (Exception e) {
 			log.error("Unable to load contents of UserProfileData from DB "+e.getMessage());
+			e.printStackTrace();
 			_usersLock.release();
 			throw new DataProcessException(e); 
 		}

@@ -23,6 +23,7 @@ import metaindex.app.periodic.db.PlansPeriodicDbReloader;
 import metaindex.app.periodic.db.UserProfilePeriodicDbReloader;
 import metaindex.data.catalog.Catalog;
 import metaindex.data.commons.globals.plans.IPlan;
+import metaindex.data.userprofile.IUserProfileData.CATEGORY;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.PeriodicProcessMonitor;
 
@@ -38,6 +39,7 @@ public class Plan implements IPlan {
 	private Long _dicsBytesQuotaPerCatalog;
 	private Float _yearlyCost=0.0F;
 	private Boolean _availableForPurchase=false;
+	private CATEGORY _category=CATEGORY.ALL;
 	
 	private Date _lastUpdate;
 	private Integer _autoRefreshPeriodSec=Catalog.AUTOREFRESH_PERIOD_SEC;
@@ -123,5 +125,13 @@ public class Plan implements IPlan {
 				;
 		
 		return str;
+	}
+	@Override
+	public CATEGORY getCategory() {
+		return _category;
+	}
+	@Override
+	public void setCategory(CATEGORY _category) {
+		this._category = _category;
 	}
 }

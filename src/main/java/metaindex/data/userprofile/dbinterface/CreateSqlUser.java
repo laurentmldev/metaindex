@@ -44,8 +44,8 @@ class CreateSqlUser extends SQLWriteStmt<IUserProfileData>   {
 		try {
 			result.add(this.getDataConnector().getConnection().prepareStatement(
 					"insert into users "
-								+"(email,nickname,enabled,guilanguage_id) "
-								+"values (?,?,?,?) "
+								+"(email,nickname,enabled,guilanguage_id,category) "
+								+"values (?,?,?,?,?) "
 							));
 			
 		} catch (SQLException e) { throw new DataProcessException(e); }
@@ -60,7 +60,8 @@ class CreateSqlUser extends SQLWriteStmt<IUserProfileData>   {
 			stmt.setString(1, dataObject.getName());
 			stmt.setString(2, dataObject.getNickname());
 			stmt.setInt(3, 1);			
-			stmt.setInt(4, dataObject.getGuiLanguageId());			
+			stmt.setInt(4, dataObject.getGuiLanguageId());
+			stmt.setString(5, dataObject.getCategory().toString());
 			stmt.addBatch();
 		} catch (SQLException e) { throw new DataProcessException(e); }
 		

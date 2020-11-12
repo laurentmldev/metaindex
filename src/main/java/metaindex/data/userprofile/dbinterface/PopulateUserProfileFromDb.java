@@ -19,6 +19,7 @@ import java.util.List;
 
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.UserProfileData;
+import metaindex.data.userprofile.IUserProfileData.CATEGORY;
 import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
 import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLPopulateStmt;
@@ -28,7 +29,7 @@ class PopulateUserProfileFromDb extends SQLPopulateStmt<IUserProfileData>   {
 
 	public static final String SQL_REQUEST = 
 			"select users.user_id,users.email,users.password, "
-			+"users.nickname,users.guilanguage_id,users.guitheme_id,role,users.lastUpdate,"
+			+"users.nickname,users.guilanguage_id,users.guitheme_id,users.category,role,users.lastUpdate,"
 			+" user_roles.lastUpdate,users.enabled,"
 			+" user_plans.plan_id, user_plans.startDate,user_plans.endDate,user_plans.nbQuotaWarnings,user_plans.lastUpdate"
 			+" from users,user_roles,user_plans";
@@ -63,9 +64,9 @@ class PopulateUserProfileFromDb extends SQLPopulateStmt<IUserProfileData>   {
 			_data.add(d);
 		}
 		
-		Timestamp dbDateUsers = rs.getTimestamp(8);
-		Timestamp dbDateRoles = rs.getTimestamp(9);
-		Timestamp dbDatePlans = rs.getTimestamp(15);
+		Timestamp dbDateUsers = rs.getTimestamp(9);
+		Timestamp dbDateRoles = rs.getTimestamp(10);
+		Timestamp dbDatePlans = rs.getTimestamp(16);
 		Timestamp newerDbDate = dbDateUsers;
 		if (newerDbDate.before(dbDateRoles)) { newerDbDate=dbDateRoles; }
 		if (newerDbDate.before(dbDatePlans)) { newerDbDate=dbDatePlans; }
@@ -78,14 +79,15 @@ class PopulateUserProfileFromDb extends SQLPopulateStmt<IUserProfileData>   {
 		d.setNickname(rs.getString(4));
 		d.setGuiLanguageId(rs.getInt(5));
 		d.setGuiThemeId(rs.getInt(6));
-		d.setRole(USER_ROLE.valueOf(rs.getString(7)));
+		d.setCategory(CATEGORY.valueOf(rs.getString(7)));
+		d.setRole(USER_ROLE.valueOf(rs.getString(8)));
 		d.setLastUpdate(newerDbDate);
-		d.setEnabled(rs.getBoolean(10));
+		d.setEnabled(rs.getBoolean(11));
 		
-		d.setPlanId(rs.getInt(11));
-		d.setPlanStartDate(rs.getDate(12));
-		d.setPlanEndDate(rs.getDate(13));
-		d.setPlanNbQuotaWarnings(rs.getInt(14));
+		d.setPlanId(rs.getInt(12));
+		d.setPlanStartDate(rs.getDate(13));
+		d.setPlanEndDate(rs.getDate(14));
+		d.setPlanNbQuotaWarnings(rs.getInt(15));
 		
 		return d;
 	}

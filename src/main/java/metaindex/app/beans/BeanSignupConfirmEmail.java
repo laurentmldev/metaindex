@@ -26,6 +26,7 @@ import metaindex.app.Globals;
 import metaindex.app.Globals.APPLICATION_STATUS;
 import metaindex.data.commons.globals.plans.IPlansManager;
 import metaindex.data.userprofile.IUserProfileData;
+import metaindex.data.userprofile.IUserProfileData.CATEGORY;
 import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
 import metaindex.data.userprofile.UserProfileData;
 import toolbox.exceptions.DataProcessException;
@@ -84,6 +85,7 @@ public class BeanSignupConfirmEmail extends BeanSignupSendEmail {
 			u.setName(a.email);
 			u.setNickname(a.properties.get("nickname").toString());
 			u.setGuiLanguageId((Integer)a.properties.get("guilanguageid"));
+			u.setCategory((CATEGORY)a.properties.get("category"));
     		Boolean result = Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface()
     														.getCreateUserIntoSqlDbStmt(u).execute();	    		    		
     		if (!result) {
@@ -104,7 +106,7 @@ public class BeanSignupConfirmEmail extends BeanSignupSendEmail {
     		}
     		   
     		// assign default plan to user
-    		u.setPlanId(IPlansManager.DEFAULT_PLAN_ID);
+    		u.setPlanId(Globals.Get().getPlansMgr().getDefaultPlan(u.getCategory()).getId());
 			u.setPlanStartDate(new Date());
 			//  set end-date one year later
 			Integer newPlanDurationYear = 1;

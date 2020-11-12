@@ -13,6 +13,7 @@
   let header_preferences_fieldsList=[	  
 	  { id:"email",type:"text",title:"<s:text name="Profile.email" />", defaultValue:"<s:property value='currentUserProfile.name'/>", important:'true',disabled:"true" },
 	  { id:"id",type:"text",title:"<s:text name="Profile.id" />", defaultValue:"<s:property value='currentUserProfile.id'/>", important:'true',disabled:"true" },
+	  { id:"category",type:"text",title:"<s:text name="Profile.category" />", defaultValue:"<s:property value='currentUserProfile.category'/>", important:'true',disabled:"true" },
 	  { id:"nickName",type:"text",title:"<s:text name="Profile.nickname" />", defaultValue:"<s:property value='currentUserProfile.nickName'/>", important:'true' },	  	  		
   ];
   

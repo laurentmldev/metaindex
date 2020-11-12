@@ -13,6 +13,7 @@ See full version of LICENSE in <https://fsf.org/>
 */
 
 import metaindex.data.commons.globals.plans.IPlan;
+import metaindex.data.userprofile.IUserProfileData.CATEGORY;
 import toolbox.utils.IIdentifiable;
 import toolbox.utils.IPeriodicProcess;
 
@@ -39,5 +40,8 @@ public interface IPlan extends IIdentifiable<Integer>, IPeriodicProcess {
 	public void setYearlyCostEuros(Float cost);
 	
 	public void setLastUpdate(Date newDate);
+	
+	public CATEGORY getCategory();
+	public void setCategory(CATEGORY c);
 	
 }

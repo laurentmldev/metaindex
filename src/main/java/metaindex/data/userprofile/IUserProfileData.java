@@ -35,8 +35,15 @@ import toolbox.utils.IProcessingTask;
 public interface IUserProfileData extends ICatalogUser,IPlanUser,IObserver<IProcessingTask>,IPeriodicProcess
 {
 	
+	// enum defined in SQL db too
 	public enum USER_ROLE { ROLE_ADMIN, ROLE_USER, ROLE_OBSERVER };
 	public USER_ROLE getRole();
+	
+	// enum defined in SQL db too for users (without ALL) plans (with ALL) 
+	public enum CATEGORY { PERSONAL,STUDENT_SEARCHER, NONPROFIT, ADMINISTRATION,BUSINESS,ALL };
+	// different plan apply depending on user category
+	public CATEGORY getCategory();
+	public void setCategory(CATEGORY c);
 	
 	public void setId(Integer id);
 	public void setName(String name);

@@ -22,6 +22,7 @@ import metaindex.app.Globals;
 import metaindex.app.Globals.APPLICATION_STATUS;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.userprofile.IUserProfileData;
+import metaindex.data.userprofile.IUserProfileData.CATEGORY;
 import metaindex.data.userprofile.UserProfileData;
 import toolbox.exceptions.DataProcessException;
 
@@ -40,6 +41,7 @@ public class BeanSignupSendEmail extends ABeanEmailConfirmedAction {
 	protected Map<String,AwaitingAccount>  getAwaitingAccountsByEmailMap() { return _awaitingAccountsByEmail; }
 	
 	private String _nickname = "";
+	private CATEGORY _category = CATEGORY.STUDENT_SEARCHER;
 	
 	/**
 	 * Synchronized to ensure that it is not possible to create together an account with same email
@@ -80,6 +82,7 @@ public class BeanSignupSendEmail extends ABeanEmailConfirmedAction {
 			AwaitingAccount newAccountWaitingForEmailConfirmation = new AwaitingAccount(getEmail());
 			newAccountWaitingForEmailConfirmation.properties.put("nickname",getNickname());
 			newAccountWaitingForEmailConfirmation.properties.put("guilanguageid",tmpUser.getGuiLanguageId());
+			newAccountWaitingForEmailConfirmation.properties.put("category",getCategory());
 			addAwaitingAccount(newAccountWaitingForEmailConfirmation);
 			
 			String confirmationLink=Globals.Get().getWebAppBaseUrl()+"/signup_confirmemail?" 
@@ -115,5 +118,13 @@ public class BeanSignupSendEmail extends ABeanEmailConfirmedAction {
 	}
 	public String getNickname() {
 		return _nickname;
+	}
+
+	public CATEGORY getCategory() {
+		return _category;
+	}
+
+	public void setCategory(CATEGORY _category) {
+		this._category = _category;
 	}
 }  

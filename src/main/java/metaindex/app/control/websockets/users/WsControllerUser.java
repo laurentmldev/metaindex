@@ -293,10 +293,9 @@ public static final Integer NB_DAYS_PLAN_DISCOUNT=182;// approx. half a year
     	
     	IPlan curPlan = u.getPlan();
     	if (curPlan==null) {
-    		curPlan=Globals.Get().getPlansMgr().getPlan(IPlansManager.DEFAULT_PLAN_ID);
+    		curPlan=Globals.Get().getPlansMgr().getDefaultPlan(u.getCategory());
     		if (curPlan==null) {
-    			log.error("Default plan (id="+IPlansManager.DEFAULT_PLAN_ID
-    					+") not defined. Unable to build plan update checkout details");
+    			log.error("No default plan found for category '"+u.getCategory()+"'. Unable to build plan update checkout details");
     			return false;
     		}
 		}

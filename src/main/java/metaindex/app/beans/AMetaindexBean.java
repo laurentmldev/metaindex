@@ -13,6 +13,7 @@ package metaindex.app.beans;
  */
 
 import java.util.Locale;
+import java.util.ArrayList;
 import java.util.Collection;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -34,6 +35,7 @@ import metaindex.app.Globals.APPLICATION_STATUS;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.UserProfileData;
+import metaindex.data.userprofile.IUserProfileData.CATEGORY;
 import toolbox.exceptions.DataProcessException;
 
 
@@ -212,9 +214,17 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 		return _userProfileData.getCurrentFilter();
 	}
 	
-	/* Get Definition of plans available*/
+	/* Get Definition of plans available and matching current user category */
 	public Collection<IPlan> getPlansList() {
-		return Globals.Get().getPlansMgr().getPlans();
+		Collection<IPlan> result = new ArrayList<IPlan>();
+		for (IPlan p : Globals.Get().getPlansMgr().getPlans()) {
+			if (p.getId().equals(this.getCurrentUserProfile().getPlanId())
+					|| p.getCategory().equals(CATEGORY.ALL)
+					|| p.getCategory().equals(this.getCurrentUserProfile().getCategory())) {
+				result.add(p);
+			}
+		}
+		return result;
 	}
 	
 	public Integer getCurrentDocumentId() {		

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import metaindex.data.commons.globals.plans.Plan;
+import metaindex.data.userprofile.IUserProfileData.CATEGORY;
 import metaindex.data.commons.globals.plans.IPlan;
 import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLPopulateStmt;
@@ -32,7 +33,7 @@ class PopulatePlanFromDbStmt extends SQLPopulateStmt<IPlan>   {
 	public static final String SQL_REQUEST = 
 			"select plan_id,name,availableForPurchase,"
 						+"quotaCreatedCatalogs,quotaNbDocsPerCatalog,quotaFtpDiscSpaceBytesPerCatalog,"
-						+"yearlyCostEuros,lastUpdate"
+						+"yearlyCostEuros,category,lastUpdate"
 			+" from plans";	
 
 	public PopulatePlanFromDbStmt(List<IPlan> d, SQLDataConnector ds) throws DataProcessException { 
@@ -73,7 +74,7 @@ class PopulatePlanFromDbStmt extends SQLPopulateStmt<IPlan>   {
 			_data.add(d);
 		}
 
-		Timestamp dbDate = rs.getTimestamp(8);
+		Timestamp dbDate = rs.getTimestamp(9);
 		if (_onlyIfTimestampChanged==true) {
 			if (!d.shallBeProcessed(dbDate)) { return d; } 
 		}
@@ -85,6 +86,7 @@ class PopulatePlanFromDbStmt extends SQLPopulateStmt<IPlan>   {
 		d.setQuotaNbDocsPerCatalog(rs.getLong(5));
 		d.setQuotaDiscBytesPerCatalog(rs.getLong(6));
 		d.setYearlyCostEuros(rs.getFloat(7));
+		d.setCategory(CATEGORY.valueOf(rs.getString(8)));
 		d.setLastUpdate(dbDate);
 		return d;
 	}

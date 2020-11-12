@@ -260,7 +260,9 @@ CREATE TABLE `users` (
   `password` varchar(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'change_me',
   `enabled` tinyint(4) NOT NULL DEFAULT '0',
   `guilanguage_id` int(32) NOT NULL DEFAULT '1',
-  `guitheme_id` int(32) NOT NULL DEFAULT '1',  
+  `guitheme_id` int(32) NOT NULL DEFAULT '1',
+  /* if changed, change it also in plans table, and signup.jsp file */
+  `category` ENUM('PERSONAL','STUDENT_SEARCHER', 'NONPROFIT', 'ADMINISTRATION','BUSINESS') NOT NULL DEFAULT 'STUDENT_SEARCHER',  
   `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
@@ -273,6 +275,8 @@ CREATE TABLE `users` (
 CREATE TABLE `plans` (
 `plan_id` int(32) NOT NULL,
   `name` varchar(45) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  /* idem enum list in 'users' table's category field, but with additional 'ALL' value */
+  `category` ENUM('PERSONAL','STUDENT_SEARCHER', 'NONPROFIT', 'ADMINISTRATION','BUSINESS','ALL') NOT NULL DEFAULT 'ALL',
   `availableForPurchase` boolean NOT NULL DEFAULT true,
   `quotaCreatedCatalogs` int(32) NOT NULL DEFAULT '0',
   `quotaNbDocsPerCatalog` int(64) NOT NULL DEFAULT '0',
