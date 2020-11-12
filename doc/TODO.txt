@@ -3,18 +3,9 @@
 v2.1.0:
 -------
 
-specific plans per user category (non-profit, business, ...)
-
-create new item : press enter shall keep popup open (like click on green button)
-
-when creating new doc with multi pics but field not set as multi 
-	=> improve error text to suggest to activate "Multi" option
-
  
 add "droits d'auteur" dans les terms and conditions
-
-when filter created, displayed is 'filter deleted' 
-
+ 
 tab icon with white background
 
 #55 tutorial videos
@@ -22,7 +13,15 @@ tab icon with white background
 	- language not set if not logged in once before or not chosen a language
 	- button to go back to origin
 	- ref useful links in conclusion
+	- fast overview video
 
+finalize plans and prices per category
+
+explicit limitations of free account
+
+create new item : press enter shall keep popup open (like click on green button)
+
+improve cookies text
 
 v2.1.1:
 -------
@@ -165,6 +164,8 @@ Done:
 -----
 
 v2.1.0
+
+specific plans per user category (non-profit, business, ...)
 
 filter example for last modif date
 

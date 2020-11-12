@@ -237,7 +237,7 @@ function ws_handlers_requestItemsIdsSearch(query,selectedFiltersNames,sortByFiel
 function ws_handlers_requestCreateFilter(filterName, query) {
 		
 	let successCallback=function() { 
-		footer_showAlert(SUCCESS, "<s:text name="Items.filters.deleted" /> : "+filterName);
+		footer_showAlert(SUCCESS, "<s:text name="Items.filters.added" /> : "+filterName);
 		filterDescr={ "name":filterName,"query":query};
 		let newFilter=MxGuiLeftBar.buildNewFilter(filterDescr);
 		filtersInsertSpot=MxGuiLeftBar.getFiltersInsertSpot();

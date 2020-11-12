@@ -90,13 +90,10 @@
     
     <div class="row justify-content-center"  >
     	<center>
-     	 	<div class="app-title" style="text-align:center;font-weight:bold;padding-bottom:1rem;font-size:2rem;text-shadow:none;">						
-				<s:text name="welcome.generalPresentation" />
-				</div>
-           
-			<div style="text-align:left;font-size:1rem;text-shadow:none;padding:0;margin:0;font-weight:bold">
-            	<ul class="app-title" style="text-align:left;padding-left:6rem;font-size:1rem;text-shadow:none;padding-top:0;">
-	            	<li style="list-style-type:'';margin-bottom:1rem;padding-bottom:0;text-align:center;">
+     	 	
+			<div style="text-align:left;font-size:1rem;text-shadow:none;padding:0;margin:0;margi-top:1rem;font-weight:bold">
+            	<ul class="app-title" style="text-align:left;font-size:1rem;text-shadow:none;padding-top:0;">
+	            	<li style="list-style-type:'';margin-bottom:1rem;padding-bottom:0;text-align:center;"><center>
 	            	<table><tr><td>
 	            		<a href="signup?origin=welcome"  
 					 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" 
@@ -109,22 +106,38 @@
 					 		style="font-size:1.2rem;background:#66c;border-color:white;margin-left:0.3rem;text-shadow:none;width:20vw"
 					 		><s:text name="tutorials.welcometitle" /></a>
 					 	</td></tr></table>
+	            	</center></li>
+	            	 
+	            	<li class="" style="margin-top:2rem;width:90vw;list-style-type:'';" >
+	            		<table><tr>
+	            			<td style="width:45%">
+	            				<div >       	
+						        	<img class="mx_welcome_screenshot w3-animate-opacity" src="${webAppBaseUrl}/public/commons/media/img/screenshots/stats.png">	        	
+						        	<img class="mx_welcome_screenshot w3-animate-opacity" src="${webAppBaseUrl}/public/commons/media/img/screenshots/cards1.png">				
+					        	</div>
+	            			</td>
+	            			<td style="width:45%">
+	            				<center><div style="font-size:1.3rem;"><s:text name="welcome.generalPresentation" /></div></center>
+	            				<ul>
+	            				<li class="mx-welcome-li" ><s:text name="welcome.features.teamWork" /></li>
+	            				<li class="mx-welcome-li" ><s:text name="welcome.features.injectdata" /></li>
+								<li class="mx-welcome-li" ><s:text name="welcome.feature.workOffline" /></li>
+								<li class="mx-welcome-li" ><s:text name="welcome.features.storeCorpus" /></li>
+								<li class="mx-welcome-li" ><s:text name="welcome.features.explore" /></li>
+								<li class="mx-welcome-li" ><s:text name="welcome.features.statistics" /></li>			
+								<li class="mx-welcome-li" ><s:text name="welcome.features.graphs" /></li>								
+	            				</ul>
+	            			
+	            			</td>
+	            		</tr></table>
 	            	</li>
-            		<li class="mx-welcome-li" style="margin-top:2rem;" ><s:text name="welcome.features.injectdata" /></li>
-					<li class="mx-welcome-li" ><s:text name="welcome.feature.workOffline" /></li>
-					<li class="mx-welcome-li" ><s:text name="welcome.features.storeCorpus" /></li>
-					<li class="mx-welcome-li" ><s:text name="welcome.features.explore" /></li>
-					<li class="mx-welcome-li" ><s:text name="welcome.features.statistics" /></li>			
-					<li class="mx-welcome-li" ><s:text name="welcome.features.graphs" /></li>
-					<li class="mx-welcome-li" ><s:text name="welcome.features.teamWork" /></li>
+	            	
+            		
 				</ul>	
 				</div>     
 			  
 			  	
-			<div style="margin-bottom:3rem;">       	
-	        	<img class="mx_welcome_screenshot w3-animate-opacity" src="${webAppBaseUrl}/public/commons/media/img/screenshots/stats.png">	        	
-	        	<img class="mx_welcome_screenshot w3-animate-opacity" src="${webAppBaseUrl}/public/commons/media/img/screenshots/cards1.png">				
-        	</div>
+			
         	
 	   </center>
 	  
@@ -145,13 +158,13 @@
         </div>
         <div  id="cookies-alert-div"
         	  class="container fixed-bottom mx-cookies-alert" 
-        	  style="" >
-        	  <s:text name="global.cookiesAlert" />
+        	   >
+        	  <s:text name="global.cookiesAlert" /><br/>
         	  <a href="#"  
         	  	class="btn btn-sm btn-info mx_welcome_btn scale nav-item no-arrow" 
-        	  	style="margin-left:5vw;background:green;border:none" 
+        	  	style="margin-left:5vw;background:green;border:none;margin-top:2rem;" 
         	  	onclick="this.parentNode.style.display='none';">
-        	  	OK</a>
+        	  	<s:text name="global.cookiesAlert.accept" /></a>
         </div>
          
   </footer>

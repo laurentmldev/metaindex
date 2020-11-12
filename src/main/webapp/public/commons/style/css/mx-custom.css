@@ -43,7 +43,7 @@ input[type="file"] {
 	padding-bottom:2rem;	
 	width:60vw;
 	text-align:center;
-	font-size:1.4rem;
+	font-size:1.1rem;
 	color:#666;
 	background:#fafafa;
 	border:2px solid #888;
@@ -250,7 +250,7 @@ height:40px;
 }
 
 .mx_welcome_screenshot {
-	max-width:50vw;
+	max-width:40vw;
 	height:auto;
 }
 .mx_welcome_card_ul li {
@@ -476,15 +476,11 @@ height:40px;
 }
 
 .mx-welcome-li {
-	color:#555;
+	color:#777;
 	list-style-type:'\2713';
-	font-size:1.2rem;
-	margin-top:0.5rem;
-	padding-left:1rem;
-}
-
-.mx-welcome-li:hover {
-	text-shadow:2px 2px 2px #ccc;		
+	font-size:1rem;
+	margin-top:1.2rem;
+	padding-left:1rem;	
 }
 
 <s:include value="mx-chat.css" />
