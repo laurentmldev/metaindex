@@ -13,7 +13,7 @@
   </c:if>
   
 
-  <div class="container" style="width:50%;">
+  <div class="container" style="width:${param.width};">
 	
 	
     <!-- Outer Row -->

@@ -63,7 +63,9 @@ onkeypress="if (event.which==13||event.keycode==13) {
 	  
 	</script>
 	
-<s:include value="generic_form/body.jsp" />
+<s:include value="generic_form/body.jsp"  >
+	<s:param name="width">50%</s:param>
+</s:include>
  
  <div id="contents" style="display:none" >
 	<center>

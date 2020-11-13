@@ -32,14 +32,14 @@
 
 	function carousel() {
 	  var i;
-	  var x = document.getElementsByClassName("mx_welcome_screenshot");
+	  var x = document.getElementsByClassName("_slideshow_");
 	  for (i = 0; i < x.length; i++) {
 	    x[i].style.display = "none";	    
 	  }
 	  slideIndex++;
 	  if (slideIndex > x.length) {slideIndex = 1}
 	  x[slideIndex-1].style.display = "block";
-	  setTimeout(carousel, 5000); // Change image every 3 seconds
+	  setTimeout(carousel, 10000); 
 	}
 
 	</script>
@@ -108,16 +108,36 @@
 					 	</td></tr></table>
 	            	</center></li>
 	            	 
+	            	 <li class="mx-welcome-globaltext" style="margin-top:2rem;width:90vw;list-style-type:'';" >
+	            	 	<center><div><s:text name="welcome.generalPresentation"/></div></center>
+	            	 </li>
 	            	<li class="" style="margin-top:2rem;width:90vw;list-style-type:'';" >
 	            		<table><tr>
 	            			<td style="width:45%">
+	            				<center>
 	            				<div >       	
-						        	<img class="mx_welcome_screenshot w3-animate-opacity" src="${webAppBaseUrl}/public/commons/media/img/screenshots/stats.png">	        	
-						        	<img class="mx_welcome_screenshot w3-animate-opacity" src="${webAppBaseUrl}/public/commons/media/img/screenshots/cards1.png">				
+       					        	<div class="_slideshow_" >
+						        		<div class="mx-welcome-li mx-slideshow-title"><s:text name="welcome.features.injectdata.short" /></div>
+						        		<img class="mx_welcome_screenshot w3-animate-opacity" src="${webAppBaseUrl}/public/commons/media/img/screenshots/cards1.png">
+						        	</div>
+						        	<div class="_slideshow_" >
+						        		<div class="mx-welcome-li mx-slideshow-title"><s:text name="welcome.features.statistics.short" /></div>
+						        		<img class="mx_welcome_screenshot w3-animate-opacity" src="${webAppBaseUrl}/public/commons/media/img/screenshots/stats.png">
+						        	</div>	        	
+						        	<div class="_slideshow_" >
+						        		<div class="mx-welcome-li mx-slideshow-title"><s:text name="welcome.features.teamWork.short" /></div>
+						        		<img class="mx_welcome_screenshot w3-animate-opacity" src="${webAppBaseUrl}/public/commons/media/img/screenshots/collaborate.png">
+						        	</div>	
+						        	<div class="_slideshow_" >
+						        		<div class="mx-welcome-li mx-slideshow-title"><s:text name="welcome.features.explore.short" /></div>
+						        		<img class="mx_welcome_screenshot w3-animate-opacity" src="${webAppBaseUrl}/public/commons/media/img/screenshots/cards2.png">
+						        	</div>
+			
 					        	</div>
+					        	</center>
 	            			</td>
 	            			<td style="width:45%">
-	            				<center><div style="font-size:1.3rem;"><s:text name="welcome.generalPresentation" /></div></center>
+	            				<center><div style="font-size:1.3rem;"><s:text name="welcome.exploreYourData" /></div></center>
 	            				<ul>
 	            				<li class="mx-welcome-li" ><s:text name="welcome.features.teamWork" /></li>
 	            				<li class="mx-welcome-li" ><s:text name="welcome.features.injectdata" /></li>

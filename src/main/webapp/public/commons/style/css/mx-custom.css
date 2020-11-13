@@ -252,6 +252,17 @@ height:40px;
 .mx_welcome_screenshot {
 	max-width:40vw;
 	height:auto;
+	margin-top:1.5rem;
+}
+.mx-slideshow-title {
+	font-weight:bold !important;
+	color:#77b !important;
+	font-size:1.8rem !important;
+}
+
+.mx-welcome-globaltext {
+	font-size:2rem;
+	color:#777;
 }
 .mx_welcome_card_ul li {
 	text-align:left;
@@ -260,6 +271,11 @@ height:40px;
 	margin-bottom:0.5rem;
 	margin-top:1rem;
 }
+.mx_termsAndConditions_li {
+	margin:0.2rem;
+	margin-top:0.6rem;
+	
+} 
 .mx_welcome_card_li_contents {
 	font-family: sans-serif;
 	font-weight:normal;
@@ -479,6 +495,7 @@ height:40px;
 	color:#777;
 	list-style-type:'\2713';
 	font-size:1rem;
+	font-weight:normal;
 	margin-top:1.2rem;
 	padding-left:1rem;	
 }

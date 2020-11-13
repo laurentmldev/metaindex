@@ -11,7 +11,9 @@
 <body  class="mx-public-form" onload="createForm();" >
 	
 	
-<s:include value="generic_form/body.jsp" />
+<s:include value="generic_form/body.jsp"  >
+	<s:param name="width">50%</s:param>
+</s:include>
  
  <div id="contents" style="display:none" >
  	<center><h4 style="margin-bottom:2rem; ">

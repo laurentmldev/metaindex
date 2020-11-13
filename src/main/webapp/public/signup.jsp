@@ -16,11 +16,42 @@ onkeypress="if (event.which==13||event.keycode==13) {
 	onload="createForm();"
 	>
 	
-<s:include value="generic_form/body.jsp" />
- 
- <div id="contents" style="display:none" >
- 	<center><h3><s:text name="signup.createYourAccount" /></h3></center>
 	<form id="form" class="user" action="${signupUrl}" method="post" >
+	<table style="width:100%;"><tr>
+ 	
+ 	<td style="width:50%">
+ 	
+ 	<div id="termsBody" 
+               		style=" margin-left:1rem;
+               				padding-left:1rem;
+               				margin-top:6rem;
+               				font-size:1rem;
+               				display:block;
+               				height:90vh;
+               				overflow:auto;padding-bottom:3rem;text-align:left;background:#f5f5f5" >
+               		<s:text name="signup.termsAndCondition.body" />	   
+               		
+ 					<table style="margin-left:20%;margin-bottom:1rem;" ><tr>
+                  		<td><input id="termsCheckbox" type="checkbox" name='acceptTermsAndConditions' class="form-control form-control-user" /></td>
+                  		<td style="padding-left:0.5rem;">
+                  			<span style="font-weight:bold;font-size:1rem;"><s:text name="signup.accept" /> <s:text name="signup.termsAndCondition" /></span>                  			
+                  		</td>
+	  					</tr></table>                 	
+               	</div>
+               	
+ 	</td>
+ 	<td style="width:50%;">
+<s:include value="generic_form/body.jsp"  >
+	<s:param name="width">100%</s:param>
+</s:include>
+ 
+ 	
+ <div id="contents" style="display:none" >
+ 	<center>
+ 		<h3><s:text name="signup.createYourAccount" /></h3>
+ 		<div style="font-size:0.8rem;text-align:left;"><s:text name="signup.freeAccountLimitations" /></div>
+ 	</center>
+ 	
 	
           <input type="hidden"  name="${_csrf.parameterName}" value="${_csrf.token}"/>
             <div class="form-group">
@@ -29,7 +60,7 @@ onkeypress="if (event.which==13||event.keycode==13) {
               			</p>
               	</c:if>	                  	              	
 	
-</div>
+			</div>
 
                <div class="form-group">
                <center>
@@ -45,7 +76,7 @@ onkeypress="if (event.which==13||event.keycode==13) {
                
                <div class="form-group"><center>
                
-               
+               <div style="margin-bottom:0.5rem"><s:text name="Profile.category" /></div>
                	<select id="category" name="category" class="form-control  mx_welcome_input" style="font-size:0.8rem;" >
                	<!-- values shall match corresponding enum defined in SQL DB -->
 				  <option value="PERSONAL" ><s:text name="Profile.category.PERSONAL" /></option>
@@ -60,17 +91,7 @@ onkeypress="if (event.which==13||event.keycode==13) {
                <div class="form-group" style="width:100%;">
                <center>
                	
-               	<div id="termsBody" 
-               		style="padding-left:0.2rem;padding-right:0.2rem;padding-bottom:1rem;margin-bottom:1rem;border-bottom:1px dotted grey;border-top:1px dotted grey;font-size:0.8rem;display:block;max-height:15vh;overflow:auto;padding-bottom:3rem;text-align:left;background:#f5f5f5" >
-               		<s:text name="signup.termsAndCondition.body" />	   
-               		
- 					<table style="margin-left:20%;margin-bottom:1rem;" ><tr>
-                  		<td><input id="termsCheckbox" type="checkbox" name='acceptTermsAndConditions' class="form-control form-control-user" /></td>
-                  		<td style="padding-left:0.5rem;">
-                  			<span style="font-weight:bold;font-size:1rem;"><s:text name="signup.accept" /> <s:text name="signup.termsAndCondition" /></span>                  			
-                  		</td>
-	  					</tr></table>                 	
-               	</div>
+               	
                	
                	 
                	
@@ -99,10 +120,14 @@ onkeypress="if (event.which==13||event.keycode==13) {
 	                 </center>
 	               </div>
 	   
-       </form>
+       
+       
  </div>
  
  
+       </td></tr>
+       </table>
+       </form>
  <script type="text/javascript">
  
  function checkAndSendForm() {

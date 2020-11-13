@@ -25,7 +25,9 @@
 	}
 	
 	</script>
-<s:include value="generic_form/body.jsp" />
+<s:include value="generic_form/body.jsp"  >
+	<s:param name="width">50%</s:param>
+</s:include>
  
  <div id="contents" style="display:none" >
  	<center><h1 style="margin-bottom:2rem; ">
