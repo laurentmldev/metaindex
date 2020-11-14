@@ -226,12 +226,25 @@ function showChatCatalogsList() {
 		
 		let header=document.createElement("div");
 		header.classList.add("mx-chatbox-catalogs-list-header");
-		header.innerHTML="<s:text name="Catalogs.chat.catalogForChatting" />";
+		let headerTxt=document.createElement("div");
+		headerTxt.innerHTML="<s:text name="Catalogs.chat.catalogForChatting" />";
+		header.append(headerTxt);
+		headerTxt.style["margin-right"]="0.5rem";
 		catalogsChoiceList.append(header);
 		header.onclick=function(event) {
 			event.stopPropagation();
 			hideChatCatalogsList();
 		}
+		let crossClose= document.createElement("i");
+		crossClose.classList.add("mx-help-icon");
+		crossClose.classList.add("mx-chatboxlist-crossclose");
+		crossClose.innerHTML="x";
+		header.append(crossClose);
+		crossClose.onclick=function(event) {
+			event.stopPropagation();
+			hideChatCatalogsList();
+		}
+		
 		
 		<c:forEach items="${currentUserProfile.accessibleCatalogs}" var="catalog">
 		// adding catalog ${catalog.name}
@@ -267,9 +280,8 @@ function stopChatClick() {
 	clearTimeout(newChatTimer);
 	newChatTimer=null;
 	if (longClick==false) {
-		if (isChatCatalogsListVisible()) { hideChatCatalogsList(); }
-		else if (isChatsContainerVisible()) { hideChatsContainer(); }
-		else if (!isChatsContainerVisible()) {
+		if (isChatsContainerVisible()) { hideChatsContainer(); }
+		else {
 			let chatsOpen=getOpenedChatsList();
 			if (chatsOpen.length==0) { showChatCatalogsList(); }
 			else { showChatsContainer(); } 
@@ -290,9 +302,11 @@ MxChat.handleChatMessage=function(catalogId,message) {
 
 </script>
 <div  id="chatBoxes_container" class="mx-chatboxes-container" style="display:none">
-
+	
 </div>
 
+<i id="mx_chatlist_icon" class="mx-chatlist-icon mx-help-icon fa fa-plus" onclick="showChatCatalogsList();">
+</i>
 <i id="mx_chat_icon" class="mx-chat-icon mx-help-icon fa fa-user-friends"	
 	onmousedown="startChatClick();"
 	onmouseup="stopChatClick();"

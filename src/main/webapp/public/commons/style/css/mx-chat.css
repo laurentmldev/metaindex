@@ -6,8 +6,7 @@
 	position:fixed;
 	right:30px;
 	bottom:10px;
-	font-size:
-	2rem;
+	font-size:2rem;
 	color:#999;
 	opacity:0.6;
 }
@@ -15,6 +14,17 @@
 .mx-chat-icon-pending {
 	animation:blinkingText 0.7s infinite;
 }	
+
+
+.mx-chatlist-icon {
+	position:fixed;
+	right:25px;
+	bottom:50px;
+	font-size:1rem;
+	color:#999;
+	opacity:0.6;
+}
+
 
 @keyframes blinkingText{
     0%{     opacity: 1;    }
@@ -76,9 +86,9 @@
 	vertical-align:middle;
 	
 }
-.mx-chatbox-crossclose {
+.mx-chatbox-crossclose, .mx-chatboxlist-crossclose {
 	position:absolute;
-	top:-6px;	
+	top:-20px;	
 	right:0px;
 	color:white;
 	font-size:1rem;
@@ -88,10 +98,13 @@
 	/*width:0px;*/
 	
 }
-.mx-chatbox-crossclose:hover {
+.mx-chatboxlist-crossclose {
+	color:grey;
+	top:-5px;
+}
+.mx-chatbox-crossclose:hover, .mx-chatboxlist-crossclose:hover {
 	font-size:1.2rem;	
 	margin-bottom:50px;
-	color:white;
 }
 
 
@@ -150,7 +163,7 @@
 	overflow:auto;
 	opacity:0.6;
 	margin:0;
-	width:150px;
+	width:180px;
 	text-align:center;
 	padding:0;
 	background:#eee;
@@ -161,7 +174,7 @@
 }
 .mx-chatbox-catalogs-list-elem {
 	text-align:left;
-	font-size:0.8rem;
+	font-size:0.6rem;
 	margin-top:0.2rem;
 	margin-left:0.3rem;	
 	color:#555;

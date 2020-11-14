@@ -24,6 +24,8 @@ create new item : press enter shall keep popup open (like click on green button)
 
 go back from login -> get to catalogs (error no access)
 
+check tchat list is threadsafe when adding new msg
+
 v2.1.1:
 -------
 
