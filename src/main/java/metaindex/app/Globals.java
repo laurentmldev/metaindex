@@ -196,7 +196,7 @@ public class Globals {
 		return GetMxProperty("mx.userdata.path");
 	}
 	public String getWebappsTmpFsPath() {
-		String path=getWebappsFsPath()+"/metaindex/secure/mxtmp/";		
+		String path=getWebappsFsPath()+"/"+Globals.GetMxProperty("mx.appname")+"/secure/mxtmp/";		
 		File directory = new File(path);
         if (! directory.exists()){ directory.mkdir(); }        
         return path;

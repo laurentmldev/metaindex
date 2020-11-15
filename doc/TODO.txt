@@ -2,32 +2,18 @@
 
 v2.1.0:
 -------
-
- 
  
 tab icon with white background
 
-#55 tutorial videos
-	- tuto collaborative work
-	- language not set if not logged in once before or not chosen a language
-	- button to go back to origin
-	- ref useful links in conclusion
-	- fast overview video
-
 finalize plans and prices per category
 
-- improve sign-up page
-	- separate pan for terms and conditions
-	- explicit limitations of free accounts
-
-create new item : press enter shall keep popup open (like click on green button)
-
-go back from login -> get to catalogs (error no access)
-
-check tchat list is threadsafe when adding new msg
+replace fix ftp port by a rolling ftp port
+	because fix ftp port per catalog is not scalable and big FTP range is badly supported by docker
 
 v2.1.1:
 -------
+
+create new item : press enter shall keep popup open (like click on green button)
 
 trace last login date to detect zombie users 
 

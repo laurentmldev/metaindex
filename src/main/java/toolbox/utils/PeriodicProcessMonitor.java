@@ -58,7 +58,7 @@ public class PeriodicProcessMonitor extends Thread implements IRunnable {
 					_objToProcess.doPeriodicProcess();
 				}
 				
-			} catch (InterruptedException|DataProcessException  e) {
+			} catch (Throwable  e) {
 				log.error("While performing cyclic update check on "+_objToProcess.getId()+ ": "+e.getMessage());
 				e.printStackTrace();
 				_continueRunning=false;

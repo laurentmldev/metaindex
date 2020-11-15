@@ -31,7 +31,7 @@
 	 <bean id="dataSource" 
 	 	class="org.springframework.jdbc.datasource.DriverManagerDataSource"> 
 	 	<property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
-	 	<property name="url" value="jdbc:mysql://#{systemEnvironment['mx.sql.host']}:#{systemEnvironment['mx.sql.port']}/#{systemEnvironment['mx.sql.dbname']}?useUnicode=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC" />
+	 	<property name="url" value="jdbc:mysql://#{systemEnvironment['mx.sql.host']}:#{systemEnvironment['mx.sql.port']}/#{systemEnvironment['mx.sql.dbname']}?useUnicode=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC&amp;useSSL=false" />
 		<property name="username" value="#{systemEnvironment['mx.sql.user']}"/>
 		<property name="password" value="#{systemEnvironment['mx.sql.password']}"/>
 	 </bean>

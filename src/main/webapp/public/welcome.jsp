@@ -28,8 +28,6 @@
   <script>
 
 	var slideIndex = 0;
-	carousel();
-
 	function carousel() {
 	  var i;
 	  var x = document.getElementsByClassName("_slideshow_");
@@ -42,11 +40,17 @@
 	  setTimeout(carousel, 10000); 
 	}
 
+	function onload() {
+		if ("<s:property value="currentUserProfile.name" />".length!=0) {
+			document.getElementById("language_buttons").style.display='none';	
+		}
+		carousel();
+	}
 	</script>
 	 
 </head>
 
-<body class="mx-public-form" onload="carousel();" >
+<body class="mx-public-form" onload="onload();" >
 
 <c:if test="${mxDevMode == true}" >
   	<nav class="navbar navbar-expand topbar static-top"
@@ -59,7 +63,7 @@
 	 		style="background:#aaa;height:5rem">
 	 	
 	 		 	
-            	<div>
+            	<div id="language_buttons">
             		<table style="margin-left:1rem;width:10vw;"><tr>
             		<td><a onclick="window.location.href=URL_add_parameter(location.href, 'language', 'en');"><img src="${webAppBaseUrl}/public/commons/media/img/flags/UK.png" class="mx-lang-flag scale" /></a></td>
             		<td><a onclick="window.location.href=URL_add_parameter(location.href, 'language', 'fr');"><img src="${webAppBaseUrl}/public/commons/media/img/flags/France.png" class="mx-lang-flag scale"/></a></td>
@@ -123,6 +127,10 @@
 						        	<div class="_slideshow_" >
 						        		<div class="mx-welcome-li mx-slideshow-title"><s:text name="welcome.features.statistics.short" /></div>
 						        		<img class="mx_welcome_screenshot w3-animate-opacity" src="${webAppBaseUrl}/public/commons/media/img/screenshots/stats.png">
+						        	</div>
+						        	<div class="_slideshow_" >
+						        		<div class="mx-welcome-li mx-slideshow-title"><s:text name="welcome.features.statistics.mapsshort" /></div>
+						        		<img class="mx_welcome_screenshot w3-animate-opacity" src="${webAppBaseUrl}/public/commons/media/img/screenshots/stats-map.png">
 						        	</div>	        	
 						        	<div class="_slideshow_" >
 						        		<div class="mx-welcome-li mx-slideshow-title"><s:text name="welcome.features.teamWork.short" /></div>
