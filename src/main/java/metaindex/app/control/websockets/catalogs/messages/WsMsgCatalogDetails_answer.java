@@ -87,7 +87,7 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 		this.setIsDbIndexFound(c.isDbIndexFound());
 		this.setVocabularies(c.getVocabularies());
 		this.setVocabulary(c.getVocabulary(u.getGuiLanguageId()));
-		this.setFtpPort(c.getFtpPort());
+		this.setFtpPort(c.getDrivePort());
 		this.setUserAccessRights(u.getUserCatalogAccessRights(c.getId()));
 		this.setUserAccessRightsStr(u.getText("Profile.userAccessRights."+this.getUserAccessRights().toString()));
 		this.setQuotaNbDocs(c.getQuotaNbDocs());
@@ -206,7 +206,7 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 	public void setVocabulary(CatalogVocabularySet vocabulary) {
 		this._vocabulary = vocabulary;
 	}
-	public Integer getFtpPort() {
+	public Integer getDrivePort() {
 		return _ftpPort;
 	}
 	public void setFtpPort(Integer ftpPort) {

@@ -71,7 +71,7 @@ class CreateOrUpdateCatalogIntoSqlDbStmt extends SQLWriteStmt<ICatalogCustomPara
 			stmt.setString(5, dataObject.getItemThumbnailUrlField());
 			stmt.setString(6, dataObject.getItemsUrlPrefix());
 			stmt.setString(7, dataObject.getPerspectiveMatchField());
-			stmt.setInt(8, dataObject.getFtpPort());
+			stmt.setInt(8, dataObject.getDrivePort());
 			
 			if (dataObject.getTimeFieldTermId()==null || dataObject.getTimeFieldTermId().equals(0)) { stmt.setNull(9, 0 /*sql type for int TBC*/); }
 			else { stmt.setInt(9, dataObject.getTimeFieldTermId()); }
@@ -81,7 +81,7 @@ class CreateOrUpdateCatalogIntoSqlDbStmt extends SQLWriteStmt<ICatalogCustomPara
 			stmt.setString(12, dataObject.getItemThumbnailUrlField());
 			stmt.setString(13, dataObject.getItemsUrlPrefix());
 			stmt.setString(14, dataObject.getPerspectiveMatchField());	
-			stmt.setInt(15, dataObject.getFtpPort());
+			stmt.setInt(15, dataObject.getDrivePort());
 			
 			if (dataObject.getTimeFieldTermId()==null || dataObject.getTimeFieldTermId().equals(0)) { stmt.setNull(16, 0 /*sql type for int TBC*/); }
 			else { stmt.setInt(16, dataObject.getTimeFieldTermId()); }

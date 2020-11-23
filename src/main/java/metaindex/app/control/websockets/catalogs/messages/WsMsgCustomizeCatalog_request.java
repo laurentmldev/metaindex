@@ -112,7 +112,7 @@ public class WsMsgCustomizeCatalog_request implements ICatalogCustomParams {
 	}
 
 	@Override
-	public Integer getFtpPort() {
+	public Integer getDrivePort() {
 		return _ftpPort;
 	}
 	public void setFtpPort(Integer p) {

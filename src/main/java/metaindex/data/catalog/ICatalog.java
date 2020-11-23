@@ -15,9 +15,8 @@ See full version of LICENSE in <https://fsf.org/>
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ftpserver.ftplet.FtpException;
-
-import metaindex.app.control.ftpserver.CatalogFtpServer;
+import metaindex.app.control.catalogdrive.SftpCatalogDrive;
+import metaindex.app.control.catalogdrive.ICatalogDrive;
 import metaindex.data.filter.IFilter;
 import metaindex.data.perspective.ICatalogPerspective;
 import metaindex.data.term.ICatalogTerm;
@@ -82,14 +81,14 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 	public Long getQuotaNbDocs();
 	public Long getQuotaFtpDiscSpaceBytes();		
 	public Boolean checkQuotasNbDocsOk();
-	public Boolean checkQuotasDisckSpaceOk();
+	public Boolean checkQuotasDiscSpaceOk();
 	public Long getDiscSpaceUseBytes();
 	
 	// Files access
 	public String getLocalFsFilesPath();
 	public String getFilesBaseUrl();
 	public void setFtpPort(Integer port);
-	public CatalogFtpServer getFtpServer();
+	public ICatalogDrive getDriveServer();
 	
 	
 	// Perspectives

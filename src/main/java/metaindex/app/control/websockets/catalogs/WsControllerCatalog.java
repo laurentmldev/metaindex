@@ -529,7 +529,7 @@ public class WsControllerCatalog extends AMxWSController {
     	IUserProfileData user = getUserProfile(headerAccessor);	
     	ICatalog c = user.getCurrentCatalog();
     	// FTP port is not available for user custo for now... maybe later
-    	requestMsg.setFtpPort(c.getFtpPort());
+    	requestMsg.setFtpPort(c.getDrivePort());
     	
     	if (c==null || !c.getId().equals(requestMsg.getId())) {
     		// return failure notif (default status of answer is 'failed')

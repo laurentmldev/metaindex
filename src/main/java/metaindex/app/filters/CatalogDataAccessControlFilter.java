@@ -62,6 +62,7 @@ public class CatalogDataAccessControlFilter implements Filter  {
 		}
 				
 		String URI = ((HttpServletRequest)request).getRequestURI();
+		log.error("### URI="+URI);
 		String catalogName = extractCatalogNameFromUri(URI);
 		
 		ICatalog c = Globals.Get().getCatalogsMgr().getCatalog(catalogName);

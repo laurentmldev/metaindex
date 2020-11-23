@@ -40,6 +40,7 @@
  			 && regexAbsoluteUrl.test(imgUrl)==0) {
  	 	imgUrl=catalogDesc.itemsUrlPrefix+"/"+imgUrl; 
  	 }
+ 	
  	 valueNode.href=imgUrl;
  	 valueNode.innerHTML=fieldValue;
  	 valueNode.title=imgUrl;	 

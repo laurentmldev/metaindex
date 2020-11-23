@@ -622,18 +622,6 @@ public class UserProfileData implements IUserProfileData
 		doPeriodicProcess();
 	}
 
-	private void registerToFtpServers(List<Integer> userCatalogsIds) {
-		for (Integer catId : userCatalogsIds) {
-    		ICatalog c = Globals.Get().getCatalogsMgr().getCatalog(catId);
-    		// maybe catalog has been deleted inbetween
-    		//
-    		// or FtpServer not yet created, and
-    		// maybe at next call to periodic process
-    		// the FtpServer will have been created    		
-    		if (c==null || c.getFtpServer()==null) { continue; }
-			c.getFtpServer().setUser(this,this.isEnabled());
-    	}
-	}
 	
 	@Override
 	public void doPeriodicProcess() throws DataProcessException {
@@ -658,8 +646,6 @@ public class UserProfileData implements IUserProfileData
 	    	if (!result) {
 	    		log.error("unable to update user details in statistics environment.");
     		}
-	    	
-	    	registerToFtpServers(userCatalogsIds);
 	    		
 	    	log.info(this.getDetailsStr());
 	    			

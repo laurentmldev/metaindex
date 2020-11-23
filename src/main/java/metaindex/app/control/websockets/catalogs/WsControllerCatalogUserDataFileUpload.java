@@ -98,7 +98,7 @@ public class WsControllerCatalogUserDataFileUpload extends AMxWSController {
 						new Long(totalSpaceNeededByte/1000000).toString(),
 						new Long(MAX_UPLOAD_SIZE_BYTES/1000000).toString(),
 						Globals.GetMxProperty("mx.host"),
-	    				c.getFtpPort().toString()));
+	    				c.getDrivePort().toString()));
 
 	    		this.messageSender.convertAndSendToUser(
 	    				headerAccessor.getUser().getName(),

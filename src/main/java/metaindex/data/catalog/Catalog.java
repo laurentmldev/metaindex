@@ -24,11 +24,11 @@ import java.util.concurrent.Semaphore;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.ftpserver.ftplet.FtpException;
 
 import metaindex.data.filter.IFilter;
 import metaindex.app.Globals;
-import metaindex.app.control.ftpserver.CatalogFtpServer;
+import metaindex.app.control.catalogdrive.SftpCatalogDrive;
+import metaindex.app.control.catalogdrive.ICatalogDrive;
 import metaindex.app.periodic.db.CatalogPeriodicDbReloader;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.perspective.ICatalogPerspective;
@@ -105,7 +105,7 @@ public class Catalog implements ICatalog {
 	private Map<String,ICatalogPerspective> _perspectives = new java.util.concurrent.ConcurrentHashMap<>();
 	private Semaphore _perspectivesLock = new Semaphore(1,true);
 	
-	private CatalogFtpServer _ftpServer=null;
+	private ICatalogDrive _driveServer=null;
 	
 	
 	
@@ -124,7 +124,7 @@ public class Catalog implements ICatalog {
 		return "'"+this.getName()+"' :"
 				+"\n\t- id: "+this.getId()
 				+"\n\t- creator_id: "+this.getOwnerId()
-				+"\n\t- ftpPort: "+this.getFtpPort()				
+				+"\n\t- drivePort: "+this.getDrivePort()				
 				+"\n\t- quotaNbDocs: "+this.getQuotaNbDocs()
 				+"\n\t- quotaFtpDiscSpaceBytes: "+this.getQuotaFtpDiscSpaceBytes()+" Bytes"
 				+"\n\t- Nb Logged users:\t"+this.getNbLoggedUsers();
@@ -133,30 +133,26 @@ public class Catalog implements ICatalog {
 	}
 	
 	@Override
-	public CatalogFtpServer getFtpServer() { return _ftpServer; };
+	public ICatalogDrive getDriveServer() { return _driveServer; };
 	
-	private void startFtpServer() throws DataProcessException {
-		if (getFtpServer()==null) { _ftpServer=new CatalogFtpServer(this); }
+	private void startDrive() throws DataProcessException {
+		if (getDriveServer()==null) { _driveServer=new SftpCatalogDrive(this); }
 		try { 
-			getFtpServer().start();
-			for (IUserProfileData u : getUsers()) {
-				u.loadFullUserData();
-				getFtpServer().setUser(u, u.isEnabled());
-			}			
+			getDriveServer().start();
 		}
-		catch (FtpException e) { 
+		catch (Exception e) { 
 			throw new DataProcessException
-				("Unable to start FTP server for catalog "+this.getName()+" : "+e.getMessage(),e); 
+				("Unable to start Drive for catalog "+this.getName()+" : "+e.getMessage(),e); 
 		}
 	}
-	private void stopFtpServer() throws DataProcessException {
-		if (getFtpServer()==null) { return; }
-		try { getFtpServer().stop(); }
-		catch (FtpException e) { 
+	private void stopDrive() throws DataProcessException {
+		if (getDriveServer()==null) { return; }
+		try { getDriveServer().stop(); }
+		catch (Exception e) { 
 			throw new DataProcessException
-				("Unable to stop FTP server for catalog "+this.getName()+" : "+e.getMessage(),e); 
+				("Unable to stop Drive for catalog "+this.getName()+" : "+e.getMessage(),e); 
 		}
-		_ftpServer=null;
+		_driveServer=null;
 	}
 	
 	private void startServices() throws DataProcessException {
@@ -170,7 +166,7 @@ public class Catalog implements ICatalog {
 		else {
 			log.info("created local userdata folder : "+getLocalFsFilesPath());
 		}
-		startFtpServer();
+		startDrive();
 		_dbAutoRefreshProcessing=new CatalogPeriodicDbReloader(this);
 		_dbAutoRefreshProcessing.start();
 		
@@ -210,7 +206,7 @@ public class Catalog implements ICatalog {
 		tmpAdminUserData.setName("admin-service");
 		tmpAdminUserData.setNickname("admin-service");
 		kickOutAllUsers(tmpAdminUserData);
-		stopFtpServer();
+		stopDrive();
 		
 		_dbAutoRefreshProcessing.stopMonitoring();
 		_dbAutoRefreshProcessing=null;
@@ -269,7 +265,7 @@ public class Catalog implements ICatalog {
 		return false;
 	}
 	@Override 	
-	public Integer getFtpPort() {
+	public Integer getDrivePort() {
 		return _ftpPort;
 	}
 	@Override
@@ -321,7 +317,7 @@ public class Catalog implements ICatalog {
 				// we don't want FTP connections to stop if user wants
 				// to go to another catalog while uploading files,
 				// so we keep its connection active
-				// _ftpServer.setUser(p, false);
+				// _driveServer.setUser(p, false);
 			}
 			_loggedUsersLock.release();	
 		} catch (Exception e) {
@@ -337,8 +333,7 @@ public class Catalog implements ICatalog {
 		for (Integer userId : _loggedUsersIds.keySet()) {
 			IUserProfileData u = Globals.Get().getUsersMgr().getUserById(userId);
 			u.setCurrentCatalog(0);
-			this.quit(u);
-			if (getFtpServer()!=null) { getFtpServer().setUser(u, false); }
+			this.quit(u);			
 			u.sendGuiWarningMessage(
 						u.getText("Catalogs.exitedWarning",this.getName(),activeUser.getNickname()));
 		}
@@ -744,7 +739,7 @@ public class Catalog implements ICatalog {
 		
 	}
 	@Override
-	public Boolean checkQuotasDisckSpaceOk() {
+	public Boolean checkQuotasDiscSpaceOk() {
 		return getDiscSpaceUseBytes()<this.getQuotaFtpDiscSpaceBytes();
 	}
 
@@ -771,9 +766,9 @@ public class Catalog implements ICatalog {
 		
 		try {
 			this.acquireLock();
-			if (getFtpServer()!=null && !this.getFtpPort().equals(getFtpServer().getPort())) {
-				stopFtpServer();
-				startFtpServer();
+			if (getDriveServer()!=null && !this.getDrivePort().equals(getDriveServer().getPort())) {
+				stopDrive();
+				startDrive();
 			}
 		} catch (Throwable t) {
 			log.error("Unable to restart FTP server for catalog "+getName()+" : "+t.getMessage());
