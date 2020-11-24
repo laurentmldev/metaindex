@@ -32,6 +32,13 @@ input[type="file"] {
 	font-size:1rem;
 	color:lightgrey;
 }
+
+.mx-progress-bar-quota-contents {
+	line-height:2rem;
+	font-size:1rem;
+	color:#444;
+}
+
 .mx-editable {
 	/* necessary to keep bottom border visible */
 	display:inline-block;

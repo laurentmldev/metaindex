@@ -33,8 +33,8 @@ public interface IPlan extends IIdentifiable<Integer>, IPeriodicProcess {
 	public Long getQuotaNbDocsPerCatalog();
 	public void setQuotaNbDocsPerCatalog(Long nbDocs);
 	
-	public Long getQuotaDiscBytesPerCatalog();
-	public void setQuotaDiscBytesPerCatalog(Long nbBytes);
+	public Long getQuotaDriveBytesPerCatalog();
+	public void setQuotaDriveBytesPerCatalog(Long nbBytes);
 	
 	public Float getYearlyCostEuros();
 	public void setYearlyCostEuros(Float cost);

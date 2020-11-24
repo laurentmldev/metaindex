@@ -26,7 +26,7 @@ public class WsMsgCustomizeCatalog_request implements ICatalogCustomParams {
 	private String _perspectiveMatchField;
 	private List<String> _itemNameFields=new ArrayList<>();
 	private String _itemThumbnailUrlField;
-	private Integer _ftpPort=0;
+	private Integer _drivePort=0;
 	private Integer _timeFieldTermId=null;
 	
 	public WsMsgCustomizeCatalog_request() {
@@ -113,10 +113,10 @@ public class WsMsgCustomizeCatalog_request implements ICatalogCustomParams {
 
 	@Override
 	public Integer getDrivePort() {
-		return _ftpPort;
+		return _drivePort;
 	}
-	public void setFtpPort(Integer p) {
-		_ftpPort=p;
+	public void setDrivePort(Integer p) {
+		_drivePort=p;
 	}
 
 	@Override

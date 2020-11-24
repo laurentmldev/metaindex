@@ -45,11 +45,11 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 	private String _itemsUrlPrefix;
 	private String _pespectiveMatchField;
 	private Long _quotaNbDocs=Catalog.DEFAULT_QUOTA_NBDOCS;
-	private Long _quotaDiscSpaceBytes=Catalog.DEFAULT_QUOTA_DISCSPACEBYTES;
+	private Long _quotaDriveBytes=Catalog.DEFAULT_QUOTA_DRIVE_BYTES;
 	private Long _nbDocuments;
-	private Long _discSpaceUseBytes=Long.MAX_VALUE;
+	private Long _driveUseBytes=Long.MAX_VALUE;
 	private Boolean _dbIndexFound;
-	private Integer _ftpPort=0;
+	private Integer _drivePort=0;
 	private Integer _timeFieldTermId=null;
 	
 	private Map<String,ICatalogTerm> _terms = new HashMap<>();
@@ -87,12 +87,12 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 		this.setIsDbIndexFound(c.isDbIndexFound());
 		this.setVocabularies(c.getVocabularies());
 		this.setVocabulary(c.getVocabulary(u.getGuiLanguageId()));
-		this.setFtpPort(c.getDrivePort());
+		this.setDrivePort(c.getDrivePort());
 		this.setUserAccessRights(u.getUserCatalogAccessRights(c.getId()));
 		this.setUserAccessRightsStr(u.getText("Profile.userAccessRights."+this.getUserAccessRights().toString()));
 		this.setQuotaNbDocs(c.getQuotaNbDocs());
-		this.setQuotaFtpDiscSpaceBytes(c.getQuotaFtpDiscSpaceBytes());
-		this.setDiscSpaceUseBytes(c.getDiscSpaceUseBytes());
+		this.setQuotaDriveBytes(c.getQuotaDriveBytes());
+		this.setDriveUseBytes(c.getDriveUseBytes());
 		this.setTimeFieldTermId(c.getTimeFieldTermId());
 		this.setEnabled(c.isEnabled());
 		if (u.getCurrentCatalog()==c) { this.setIsUserCurrentCatalog(true); }	
@@ -207,10 +207,10 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 		this._vocabulary = vocabulary;
 	}
 	public Integer getDrivePort() {
-		return _ftpPort;
+		return _drivePort;
 	}
-	public void setFtpPort(Integer ftpPort) {
-		this._ftpPort = ftpPort;
+	public void setDrivePort(Integer port) {
+		this._drivePort = port;
 	}
 	public USER_CATALOG_ACCESSRIGHTS getUserAccessRights() {
 		return _userAccessRights;
@@ -238,17 +238,17 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 		this._quotaNbDocs=maxNbDocs;
 		
 	}
-	public Long getQuotaFtpDiscSpaceBytes() {
-		return this._quotaDiscSpaceBytes;
+	public Long getQuotaDriveBytes() {
+		return this._quotaDriveBytes;
 	}
-	public void setQuotaFtpDiscSpaceBytes(Long maxFtpSpaceBytes) {
-		this._quotaDiscSpaceBytes=maxFtpSpaceBytes;		
+	public void setQuotaDriveBytes(Long maxSpaceBytes) {
+		this._quotaDriveBytes=maxSpaceBytes;		
 	}
-	public Long getDiscSpaceUseBytes() {
-		return _discSpaceUseBytes;
+	public Long getDriveUseBytes() {
+		return _driveUseBytes;
 	}
-	public void setDiscSpaceUseBytes(Long discSpaceUseBytes) {
-		this._discSpaceUseBytes = discSpaceUseBytes;
+	public void setDriveUseBytes(Long driveUseBytes) {
+		this._driveUseBytes = driveUseBytes;
 	}
 	
 	@Override

@@ -20,20 +20,20 @@ import toolbox.database.sql.SQLDataConnector;
 import toolbox.database.sql.SQLReadStreamStmt;
 import toolbox.exceptions.DataProcessException;
 
-class GetCatalogIdFromFtpPortStmt extends SQLReadStreamStmt<Integer>   {
+class GetCatalogIdFromDrivePortStmt extends SQLReadStreamStmt<Integer>   {
 
-	private Log log = LogFactory.getLog(GetCatalogIdFromFtpPortStmt.class);
+	private Log log = LogFactory.getLog(GetCatalogIdFromDrivePortStmt.class);
 	
 	public static final String SQL_REQUEST = 
 			"select DISTINCT catalogs.catalog_id "
 			+" from catalogs ";
 	
-	Integer _ftpPort=null;
+	Integer _drivePort=null;
 	
 	
-	public GetCatalogIdFromFtpPortStmt(Integer ftpPort, SQLDataConnector ds) throws DataProcessException { 
+	public GetCatalogIdFromDrivePortStmt(Integer port, SQLDataConnector ds) throws DataProcessException { 
 		super(ds);
-		_ftpPort=ftpPort;
+		_drivePort=port;
 	}
 	
 	
@@ -45,7 +45,7 @@ class GetCatalogIdFromFtpPortStmt extends SQLReadStreamStmt<Integer>   {
 
 	@Override
 	public String buildSqlQuery()  {				
-		String sql = SQL_REQUEST+" where ftpPort="+_ftpPort;		
+		String sql = SQL_REQUEST+" where drivePort="+_drivePort;		
 		return sql;
 	}
 					

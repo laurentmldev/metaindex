@@ -30,8 +30,8 @@ public class SQLDbInterface  extends SQLDatabaseInterface<ICatalog>
 	
 	public SQLDbInterface(SQLDataConnector ds) { super(ds); }
 	
-	public SQLReadStreamStmt<Integer> getCatalogIdFromFtpPortStmt(Integer ftpPort) throws DataProcessException {	
-		return new GetCatalogIdFromFtpPortStmt(ftpPort,getDataConnector());
+	public SQLReadStreamStmt<Integer> getCatalogIdFromDrivePortStmt(Integer port) throws DataProcessException {	
+		return new GetCatalogIdFromDrivePortStmt(port,getDataConnector());
 	}
 	public SQLReadStreamStmt<Integer> getCatalogUsersIdsStmt(ICatalog data) throws DataProcessException {	
 		return new GetCatalogUsersIdsStmt(data,getDataConnector());

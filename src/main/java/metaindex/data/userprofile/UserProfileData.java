@@ -640,7 +640,7 @@ public class UserProfileData implements IUserProfileData
 		// detect if contents actually changed
 		if (this.getLastUpdate().after(prevCurDate)) { 
 			// catalogs access rights might have changed
-			// so we update roles in Kibana env. and FTP server
+			// so we update roles in Kibana env. and Drive server
 			
 			Boolean result =Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().createOrUpdateCatalogStatisticsUser(this);
 	    	if (!result) {
@@ -714,7 +714,7 @@ public class UserProfileData implements IUserProfileData
 					"\n\t\t\t Plan OUTDATED. Active plan:"+this.getPlan().getName()+" (id:"+this.getPlan().getId()+")")
 				+"\n\t\t- quotaCatalogsCreated: "+this.getPlan().getQuotaCatalogsCreated()
 				+"\n\t\t- quotaNbDocsPerCatalog: "+this.getPlan().getQuotaNbDocsPerCatalog()
-				+"\n\t\t- quotaDiscPerCatalog: "+(this.getPlan().getQuotaDiscBytesPerCatalog()/1000000)+"MB"
+				+"\n\t\t- quotaDrivePerCatalog: "+(this.getPlan().getQuotaDriveBytesPerCatalog()/1000000)+"MB"
 				+"\n\t- planNbQuotasWarnings: "+this.getPlanNbQuotaWarnings()
 				+"\n\t- catalogs rights: ";
 		if (this.getRole() == USER_ROLE.ROLE_ADMIN) {

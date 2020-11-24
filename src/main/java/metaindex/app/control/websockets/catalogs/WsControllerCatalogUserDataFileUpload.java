@@ -81,10 +81,10 @@ public class WsControllerCatalogUserDataFileUpload extends AMxWSController {
 	    	// check quota
 	    	Long totalSpaceNeededByte = 0L;
 	    	for (FileDescriptor desc : requestMsg.getFileDescriptions()) { totalSpaceNeededByte+=desc.getByteSize();}	    	
-	    	if (c.getQuotaFtpDiscSpaceBytes()-c.getDiscSpaceUseBytes()<totalSpaceNeededByte) {
+	    	if (c.getQuotaDriveBytes()-c.getDriveUseBytes()<totalSpaceNeededByte) {
 	    		answer.setIsSuccess(false);
-	    		answer.setRejectMessage(user.getText("Catalogs.quotasExceededDiscSpace",
-						new Long(c.getQuotaFtpDiscSpaceBytes()/1000000).toString()));
+	    		answer.setRejectMessage(user.getText("Catalogs.quotasExceededDriveSpace",
+						new Long(c.getQuotaDriveBytes()/1000000).toString()));
 	    		this.messageSender.convertAndSendToUser(
 	    				headerAccessor.getUser().getName(),
 	    				"/queue/upload_userdata_files_response", 

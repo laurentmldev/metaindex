@@ -168,7 +168,7 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 	 let buttonPlanUpgrade=document.createElement("a");
 		buttonPlanUpgrade.id=id;
 		buttonPlanUpgrade.classList="btn-big btn btn-sm btn-warning shadow-sm";
-		buttonPlanUpgrade.style="font-size:0.8rem;margin-left:2rem;color:white !important;";
+		buttonPlanUpgrade.style="font-size:0.8rem;margin-left:2rem;color:white !important;margin-top:0.3rem;";
 		buttonPlanUpgrade.innerHTML="<span style='font-weight:bold;font-size:0.8rem;padding:1rem'><s:text name="Catalogs.left.getMoreCatalogs" /></span>";
 		buttonPlanUpgrade.onclick=function(e) { document.getElementById(MX_HEADER_PLANS_POPUP_ID).toggleShowHide(); }
 		return buttonPlanUpgrade;
@@ -190,9 +190,9 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 	
 		if (!mx_helpers_isCatalogWritable(catalogCard.descr.userAccessRights)) {
 			let quotaNbDocs=newPopulatedCatalogDetails.querySelector("._quota_nb_docs_row_");
-			let quotaDiscSpace=newPopulatedCatalogDetails.querySelector("._quota_disc_space_row_");
+			let quotaDrive=newPopulatedCatalogDetails.querySelector("._quota_drive_row_");
 			quotaNbDocs.parentNode.removeChild(quotaNbDocs);
-			quotaDiscSpace.parentNode.removeChild(quotaDiscSpace);
+			quotaDrive.parentNode.removeChild(quotaDrive);
 		}
 		else {
 	// quotas nb docs
@@ -205,50 +205,98 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 			if (usagePourcentNbDocs>95) { pourcentClass="alert-danger" }		
 			else if (usagePourcentNbDocs>85)  { pourcentClass="alert-warning"; }
 			else pourcentClass="";		
-			quotaNbDocs.innerHTML="<span class=\""+pourcentClass+"\" ><b>"+curNbDocs+ "</b> <i>/ "+maxNbDocs+" ("+usagePourcentNbDocs+"%)</i></span>";
+			
+			let quotaNbDocsProgressBarNode=document.getElementById("progressbar-quota-template").cloneNode(true);			
+			quotaNbDocs.append(quotaNbDocsProgressBarNode);
+			quotaNbDocsProgressBarNode.id="progressbars.nbdocsusage";
+			
+	    	let pourcentageNode = quotaNbDocsProgressBarNode.querySelector("._pourcentage_");
+	    	pourcentageNode.style.width=usagePourcentNbDocs+"%";
+	    	
+	    	let textNode = quotaNbDocsProgressBarNode.querySelector("._text_");	    	
+	    	textNode.innerHTML="<div class=\""+pourcentClass+"\" >"
+	    					+"<span style=\"font-size:0.8rem;\">"+curNbDocs
+	    							+"<i> / "
+									+maxNbDocs+"</i></span> "
+									+"<span style=\"font-weight:bold;\">"
+									+usagePourcentNbDocs+"%</span></div>";
+	    	
+			quotaNbDocsProgressBarNode.style.display='block';
+	    
+	    	// adapt color to usage pourcentage
+	    	if (usagePourcentNbDocs>=80 ) {
+    			pourcentageNode.classList.add('bg-warning');
+    		} else if (usagePourcentNbDocs>=95) {
+    			pourcentageNode.classList.add('bg-failure');
+	    	}
+	    	
 			// add a "upgrade plan" button if limit is reached and current user is catalog's owner
-			if (usagePourcentNbDocs>=85
+			if (usagePourcentNbDocs>=80
 					&& catalogCard.descr.ownerId==<s:property value="currentUserProfile.id"/>) {
 				quotaNbDocs.appendChild(_makeUpgradePlanButtton("details_overview_upgrade_quotaNbDocs"));
 			}
 			
-	// quotas disc space
-			let quotaDiscSpace=newPopulatedCatalogDetails.querySelector("._quota_disc_space_");
-			let currentUseBytes=catalogCard.descr.discSpaceUseBytes;
+	// quotas drive space
+			let quotaDrive=newPopulatedCatalogDetails.querySelector("._quota_drive_");
+			let currentUseBytes=catalogCard.descr.driveUseBytes;
 			let currentUseMBytes=currentUseBytes/1000000;
 			if (currentUseBytes==0) { currentUseMBytes=0;} // avoid weird numbers when rounding occurs
-			let maxUseSpaceBytes=catalogCard.descr.quotaFtpDiscSpaceBytes;
+			let maxUseSpaceBytes=catalogCard.descr.quotaDriveBytes;
 			let maxUseSpaceMBytes=maxUseSpaceBytes/1000000;
-			let usagePourcentDiscSpace=100;
-			if (maxUseSpaceBytes>0) { usagePourcentDiscSpace=(currentUseMBytes*100)/maxUseSpaceMBytes; }
+			let usagePourcentDriveSpace=100;
+			if (maxUseSpaceBytes>0) { usagePourcentDriveSpace=(currentUseMBytes*100)/maxUseSpaceMBytes; }
 			
 			// rounding values do 2 decimals
 			currentUseMBytes=Math.round(currentUseMBytes * 100) / 100;
 			maxUseSpaceMBytes=Math.round(maxUseSpaceMBytes * 100) / 100;
-			usagePourcentDiscSpace=Math.round(usagePourcentDiscSpace * 100) / 100;
-			if (currentUseMBytes==0) {usagePourcentDiscSpace=0; }
-			if (usagePourcentDiscSpace>100) { usagePourcentDiscSpace=100; }
+			usagePourcentDriveSpace=Math.round(usagePourcentDriveSpace * 100) / 100;
+			if (currentUseMBytes==0) {usagePourcentDriveSpace=0; }
+			if (usagePourcentDriveSpace>100) { usagePourcentDriveSpace=100; }
 			pourcentClass="";
 			
-			if (usagePourcentDiscSpace>95) { pourcentClass="alert-danger" }		
-			else if (usagePourcentDiscSpace>85)  { pourcentClass="alert-warning"; }
-			else pourcentClass="";		
-			quotaDiscSpace.innerHTML="<span class=\""+pourcentClass+"\" ><b>"+currentUseMBytes+ "MB</b> <i> / "+maxUseSpaceMBytes+"MB ("+usagePourcentDiscSpace+"%</i>)</span>";
+			if (usagePourcentDriveSpace>95) { pourcentClass="alert-danger" }		
+			else if (usagePourcentDriveSpace>80)  { pourcentClass="alert-warning"; }
+			else pourcentClass="";	
+			
+			let quotaProgressBarNode=document.getElementById("progressbar-quota-template").cloneNode(true);			
+			quotaDrive.append(quotaProgressBarNode);
+			quotaProgressBarNode.id="progressbars.driveusage";
+			
+	    	pourcentageNode = quotaProgressBarNode.querySelector("._pourcentage_");
+	    	pourcentageNode.style.width=usagePourcentDriveSpace+"%";
+	    	
+	    	textNode = quotaProgressBarNode.querySelector("._text_");	    	
+	    	textNode.innerHTML="<div class=\""+pourcentClass+"\" >"
+	    					+"<span style=\"font-size:0.8rem;\">"+currentUseMBytes+ "MB"
+	    							+"<i> / "
+									+maxUseSpaceMBytes+"MB</i></span> "
+									+"<span style=\"font-weight:bold;\">"
+									+usagePourcentDriveSpace+"%</span></div>";
+	    	
+			quotaProgressBarNode.style.display='block';
+	    
+	    	// adapt color to usage pourcentage
+	    	if (usagePourcentDriveSpace>=80 ) {
+    			pourcentageNode.classList.add('bg-warning');
+    		} else if (usagePourcentDriveSpace>=95) {
+    			pourcentageNode.classList.add('bg-failure');
+	    	}
+			
 			// add a "upgrade plan" button if limit is reached and current user is catalog's owner
-			if (usagePourcentDiscSpace>=85 
+			if (usagePourcentDriveSpace>=85 
 					&& catalogCard.descr.ownerId==<s:property value="currentUserProfile.id"/>) {
-				quotaNbDocs.appendChild(_makeUpgradePlanButtton("details_overview_upgrade_quotaDiscSpace"));
+				quotaDrive.appendChild(_makeUpgradePlanButtton("details_overview_upgrade_quotaDrive"));
 			}
 		}
 		
-	// ftp port : no FTP access for Read-Only users
+	// drive port : no drive access for Read-Only users
 		if (!mx_helpers_isCatalogWritable(catalogCard.descr.userAccessRights)) {
-			let ftpPortRow = newPopulatedCatalogDetails.querySelector("._ftp_row_");
-			ftpPortRow.parentNode.removeChild(ftpPortRow);
+			let drivePortRow = newPopulatedCatalogDetails.querySelector("._drive_row_");
+			drivePortRow.parentNode.removeChild(drivePortRow);
 		} else {
-			let ftpPort = newPopulatedCatalogDetails.querySelector("._ftp_port_");
-			if (catalogCard.descr.ftpPort==-1) { ftpPort.innerHTML="-"; }
-			else { ftpPort.innerHTML=catalogCard.descr.ftpPort; }
+			let drivePort = newPopulatedCatalogDetails.querySelector("._drive_port_");
+			if (catalogCard.descr.drivePort==-1) { drivePort.innerHTML="-"; }
+			else { drivePort.innerHTML=catalogCard.descr.drivePort; }
 		}
 		
 	// catalog thumbnail url
@@ -458,7 +506,13 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
    
  </script>
  
- 
+<div id="progressbar-quota-template" class="progress mx-progress" 
+		style="display:none;margin:0;width:40%;background:white;" >
+  <div class="progress-bar bg-success _pourcentage_" style="width:0%;">
+  	<span class="_text_ mx-progress-bar-quota-contents" style="padding-left:0.2em;"></span>
+  </div>
+ </div>
+  
  <div class="tab-pane fade show active" id="nav-overview" role="tabpanel" aria-labelledby="nav-overview-tab">
 					   <table class="table table-striped">						    
 						    <tbody>
@@ -474,9 +528,9 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 						        <td  style="font-style:italic"><s:text name="Catalogs.overview.quotaTitleNbDocs" /></td>
 						        <td  style="font-style:italic" class="_quota_nb_docs_"></td>
 						      </tr>
-						      <tr class="_quota_disc_space_row_">
-						        <td  style="font-style:italic"><s:text name="Catalogs.overview.quotaTitleDiscSpace" /></td>
-						        <td  style="font-style:italic" class="_quota_disc_space_"></td>
+						      <tr class="_quota_drive_row_">
+						        <td  style="font-style:italic"><s:text name="Catalogs.overview.quotaTitleDrive" /></td>
+						        <td  style="font-style:italic" class="_quota_drive_"></td>
 						       </tr>
 						        
 						       <tr>
@@ -536,18 +590,18 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 						        <td class="_kibana_time_field_"></td>						        
 						      </tr>						        
 						      
-						      <tr title="<s:text name="globals.clickToCopyToClipboard"/>" class="_ftp_row_"
-						      	  onclick="copyToClipBoard(this.querySelector('._ftp_port_').innerHTML);
-						      		footer_showAlert(INFO, '<s:text name="globals.ftpPortCopiedToClipboard"/>');
+						      <tr title="<s:text name="globals.clickToCopyToClipboard"/>" class="_drive_row_"
+						      	  onclick="copyToClipBoard(this.querySelector('._drive_port_').innerHTML);
+						      		footer_showAlert(INFO, '<s:text name="globals.drivePortCopiedToClipboard"/>');
 						      			" >
-						        <td style="font-style:italic" ><s:text name="Catalogs.overview.ftpPort" />
+						        <td style="font-style:italic" ><s:text name="Catalogs.overview.drivePort" />
 						        	<span title="S.O.S" 
 						                	onclick="event.stopPropagation();event.preventDefault();
-						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.ftp.title" />','<s:text name="help.catalog.overview.ftp.body" />')">
+						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.drive.title" />','<s:text name="help.catalog.overview.drive.body" />')">
 						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
 						             </span>
 						        </td>
-						        <td style="font-style:italic" class="_ftp_port_" ></td>						        
+						        <td style="font-style:italic" class="_drive_port_" ></td>						        
 						      </tr>
 						      	
 						      <tr>

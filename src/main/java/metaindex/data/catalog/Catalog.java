@@ -47,7 +47,7 @@ public class Catalog implements ICatalog {
 
 	public static final Integer AUTOREFRESH_PERIOD_SEC=5;
 	public static final Long DEFAULT_QUOTA_NBDOCS = 200L;
-	public static final Long DEFAULT_QUOTA_DISCSPACEBYTES = 0L;
+	public static final Long DEFAULT_QUOTA_DRIVE_BYTES = 0L;
 	public static final Long CHAT_MESSAGES_KEEPALIVE_MS = 2592000000L;//30 days	
 	
 	private Log log = LogFactory.getLog(Catalog.class);
@@ -85,7 +85,7 @@ public class Catalog implements ICatalog {
 	private String _itemThumbnailUrlField="";
 	private String _urlPrefix="";
 	private String _perspectiveMatchField="";
-	private Integer _ftpPort=0;
+	private Integer _drivePort=0;
 	private Integer _timeFieldTermId = null;
 	
 	// from ElasticSearch DB
@@ -126,7 +126,7 @@ public class Catalog implements ICatalog {
 				+"\n\t- creator_id: "+this.getOwnerId()
 				+"\n\t- drivePort: "+this.getDrivePort()				
 				+"\n\t- quotaNbDocs: "+this.getQuotaNbDocs()
-				+"\n\t- quotaFtpDiscSpaceBytes: "+this.getQuotaFtpDiscSpaceBytes()+" Bytes"
+				+"\n\t- quotaDriveBytes: "+this.getQuotaDriveBytes()+" Bytes"
 				+"\n\t- Nb Logged users:\t"+this.getNbLoggedUsers();
 		
 
@@ -266,11 +266,11 @@ public class Catalog implements ICatalog {
 	}
 	@Override 	
 	public Integer getDrivePort() {
-		return _ftpPort;
+		return _drivePort;
 	}
 	@Override
-	public void setFtpPort(Integer port) {
-		_ftpPort=port;
+	public void setDrivePort(Integer port) {
+		_drivePort=port;
 	}
 	
 	@Override
@@ -314,7 +314,7 @@ public class Catalog implements ICatalog {
 			_loggedUsersLock.acquire();
 			if (_loggedUsersIds.containsKey(p.getId())) {
 				_loggedUsersIds.remove(p.getId());
-				// we don't want FTP connections to stop if user wants
+				// we don't want Drive connections to stop if user wants
 				// to go to another catalog while uploading files,
 				// so we keep its connection active
 				// _driveServer.setUser(p, false);
@@ -715,10 +715,10 @@ public class Catalog implements ICatalog {
 		return curOwner.getPlan().getQuotaNbDocsPerCatalog();
 	}
 	@Override
-	public Long getQuotaFtpDiscSpaceBytes() {
+	public Long getQuotaDriveBytes() {
 		IUserProfileData curOwner = getOwner();
-		if (curOwner==null) { return DEFAULT_QUOTA_DISCSPACEBYTES; }
-		return curOwner.getPlan().getQuotaDiscBytesPerCatalog();
+		if (curOwner==null) { return DEFAULT_QUOTA_DRIVE_BYTES; }
+		return curOwner.getPlan().getQuotaDriveBytesPerCatalog();
 	}
 	
 	@Override
@@ -727,20 +727,20 @@ public class Catalog implements ICatalog {
 	}
 
 	@Override
-	public Long getDiscSpaceUseBytes() {
+	public Long getDriveUseBytes() {
 		try {
 			Long usedDiskSpace = FileSystemUtils.GetTotalSizeBytes(this.getLocalFsFilesPath()+"/");
 			return usedDiskSpace;
 		} catch (IOException e) {
-			log.error("Unable to retrieve used disc usage for catalog '"+this.getName()+"' at "+this.getLocalFsFilesPath()+" : "+e.getMessage());
+			log.error("Unable to retrieve used drive usage for catalog '"+this.getName()+"' at "+this.getLocalFsFilesPath()+" : "+e.getMessage());
 			//e.printStackTrace();
 			return -1L;
 		}
 		
 	}
 	@Override
-	public Boolean checkQuotasDiscSpaceOk() {
-		return getDiscSpaceUseBytes()<this.getQuotaFtpDiscSpaceBytes();
+	public Boolean checkQuotasDriveOk() {
+		return getDriveUseBytes()<this.getQuotaDriveBytes();
 	}
 
 	@Override
@@ -771,7 +771,7 @@ public class Catalog implements ICatalog {
 				startDrive();
 			}
 		} catch (Throwable t) {
-			log.error("Unable to restart FTP server for catalog "+getName()+" : "+t.getMessage());
+			log.error("Unable to restart Drive server for catalog "+getName()+" : "+t.getMessage());
 			t.printStackTrace();
 			
 		}

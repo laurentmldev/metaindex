@@ -46,9 +46,6 @@
         </Console>
     </Appenders>
     <Loggers>    
-    	<Logger name="org.apache.ftpserver.listener.nio.FtpLoggingFilter" level="error" additivity="false">
-        	<appender-ref ref="metaindex-server-logger" /> 
-        </Logger>	
         <Logger name="org.springframework.context" level="info" additivity="false" >
         	<appender-ref ref="metaindex-server-logger" /> 
         </Logger>

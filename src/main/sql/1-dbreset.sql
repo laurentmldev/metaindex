@@ -75,8 +75,8 @@ CREATE TABLE `catalogs` (
   /* field used to automaically activate perspective matching the name of given field */
   `perspectiveMatchField` varchar(1024) DEFAULT '',
   
-  /* FTP port to be used to access userdata for this catalog */
-  `ftpPort` int(32) NOT NULL DEFAULT '0',
+  /* Drive port to be used to access userdata for this catalog */
+  `drivePort` int(32) NOT NULL DEFAULT '0',
 
   /* the (date) field to be used as default time reference in Kibana */
   `timeField_term_id` int(32) NULL,
@@ -280,7 +280,7 @@ CREATE TABLE `plans` (
   `availableForPurchase` boolean NOT NULL DEFAULT true,
   `quotaCreatedCatalogs` int(32) NOT NULL DEFAULT '0',
   `quotaNbDocsPerCatalog` int(64) NOT NULL DEFAULT '0',
-  `quotaFtpDiscSpaceBytesPerCatalog` int(64) NOT NULL DEFAULT '0',
+  `quotaDriveBytesPerCatalog` int(64) NOT NULL DEFAULT '0',
   `yearlyCostEuros` FLOAT NOT NULL DEFAULT '0',
   `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;

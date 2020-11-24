@@ -14,13 +14,13 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
-public class FtpUploadMxStat extends ACatalogMxStatisticItem {
+public class DriveUploadMxStat extends ACatalogMxStatisticItem {
 
-	public FtpUploadMxStat(IUserProfileData u, ICatalog c) {
+	public DriveUploadMxStat(IUserProfileData u, ICatalog c) {
 		super(u,c); 		
 	}
 	@Override
 	public String getName() {
-		return "catalog.ftp-upload";
+		return "catalog.drive-upload";
 	}	
 }

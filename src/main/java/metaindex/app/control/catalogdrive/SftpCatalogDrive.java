@@ -64,7 +64,7 @@ public class SftpCatalogDrive implements ICatalogDrive {
 	private Boolean _isStarted = false;
 	private Semaphore _serverLock = new Semaphore(1,true);
 	
-	public void start() /*throws FtpException  */{
+	public void start() {
 		try {
 			_serverLock.acquire();
 			// possibly need semaphore if more intensive start/stop cycles
@@ -82,7 +82,7 @@ public class SftpCatalogDrive implements ICatalogDrive {
 		}
 		
 	}
-	public void stop() /*throws FtpException */ {
+	public void stop() {
 		try {
 			_serverLock.acquire();
 			
@@ -120,7 +120,7 @@ public class SftpCatalogDrive implements ICatalogDrive {
  		if (catalogDrivePort<drivePortRangeLow || catalogDrivePort>drivePortRangeHigh) {
  			log.error("Drive port '"+catalogDrivePort+"' for catalog "+c.getName()
  				+" is out of range "+drivePortRangeLow+"-"+drivePortRangeHigh
- 				+", unable to start FTP userdata access.");
+ 				+", unable to start SFTP userdata access.");
  			return;
  		}
 		// ensure socket is available
@@ -129,7 +129,7 @@ public class SftpCatalogDrive implements ICatalogDrive {
 			s.close(); 		
 		} catch (IOException e) {
 			log.error("Drive port '"+catalogDrivePort+"' for catalog "+c.getName()
-				+" could not be opened, unable to start FTP userdata access : "+e.getMessage());
+				+" could not be opened, unable to start SFTP userdata access : "+e.getMessage());
 			return; 
 		} 		
 		
@@ -177,7 +177,7 @@ public class SftpCatalogDrive implements ICatalogDrive {
 								_catalog.getLocalFsFilesPath()+"/"+"---### MetaindeX Catalog ["+_catalog.getName()+"] ###---");
 						catalogNameFile.close();
 						
-						if (!_catalog.checkQuotasDiscSpaceOk()) {
+						if (!_catalog.checkQuotasDriveOk()) {
 							OutputStream quotasWarningFile = new FileOutputStream(
 									_catalog.getLocalFsFilesPath()+"/"+QUOTAS_WARNING_FILE_NAME);
 							quotasWarningFile.close();
@@ -212,6 +212,7 @@ public class SftpCatalogDrive implements ICatalogDrive {
 	       _server.setFileSystemFactory(vfs);
 			
 	       SftpSubsystemFactory sftpSubsystemFactory = new SftpSubsystemFactory();
+	       // add listeners to prevent user to upload data if disc quota exceeded
 	       SftpEventListener sftpEventsListener = new AbstractSftpEventListenerAdapter() {
 	    	   
 	    	   @Override
@@ -219,32 +220,22 @@ public class SftpCatalogDrive implements ICatalogDrive {
 	    	            								long offset, byte[] data, int dataOffset, int dataLenBytes)
 	    	            																		throws IOException {
 	    		   super.writing(session,remoteHandle,localHandle,offset,data,dataOffset,dataLenBytes);
-	    	       if (!_catalog.checkQuotasDiscSpaceOk()) {
+	    	       if (!_catalog.checkQuotasDriveOk()) {
 	    	    	 String userName = session.getUsername();
 	    	    	 IUserProfileData p = Globals.Get().getUsersMgr().getUserByName(userName);
-	    	    	 session.disconnect(11, "Disc Quotas Exceeded for catalog "+_catalog.getName());
-	    	    	 p.sendGuiErrorMessage("Could not fully upload file "
-	    	    			 +localHandle.getFile().getName(localHandle.getFile().getNameCount()-1)+", catalog's quotas exceeded");
-	    	    	 
+	    	    	 session.disconnect(11, p.getText("Drive.quotaExceeded", _catalog.getName()));	    	    	    	    	 
 	    	       }
-	    	       
-	    	       	    		   
 	    	    }	    	   
 
 	    	    @Override
 	    	    public void creating(ServerSession session, Path path, Map<String, ?> attrs)
 	    	            throws IOException {
 	    	    	super.creating(session,path,attrs);
-	    	    	if (!_catalog.checkQuotasDiscSpaceOk()) {
+	    	    	if (!_catalog.checkQuotasDriveOk()) {
 	    	    	 String userName = session.getUsername();
 	    	    	 IUserProfileData p = Globals.Get().getUsersMgr().getUserByName(userName);
-	    	    	 session.disconnect(11, "Disc Quotas Exceeded for catalog "+_catalog.getName());
-	    	    	 if (Files.isDirectory(path)) {
-	    	    		 p.sendGuiErrorMessage("Could not create folder "+path.getName(path.getNameCount()-1)+", catalog's quotas exceeded");
-	    	    	 } else {
-	    	    		 p.sendGuiErrorMessage("Could not create file "+path.getName(path.getNameCount()-1)+", catalog's quotas exceeded");
-	    	    	 }
-	    	    	 	    	    	 
+	    	    	 session.disconnect(11, p.getText("Drive.quotaExceeded", _catalog.getName()));
+	    	    	 throw new IOException( p.getText("Drive.quotaExceeded", _catalog.getName()));
 	    	        }	    	        
 	    	    }
 	    	    
@@ -253,7 +244,7 @@ public class SftpCatalogDrive implements ICatalogDrive {
 	    	            throws IOException {
 	    	    	super.removed(session,path,isDirectory,thrown);
 	    	    	
-	    	    	if (_catalog.checkQuotasDiscSpaceOk()) {
+	    	    	if (_catalog.checkQuotasDriveOk()) {
 		    	    	File quotasFile = new File(_catalog.getLocalFsFilesPath()+"/"+QUOTAS_WARNING_FILE_NAME);
 						if (quotasFile.exists()) { quotasFile.delete(); }
 	    	    	}

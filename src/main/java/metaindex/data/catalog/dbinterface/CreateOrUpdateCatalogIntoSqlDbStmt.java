@@ -45,10 +45,10 @@ class CreateOrUpdateCatalogIntoSqlDbStmt extends SQLWriteStmt<ICatalogCustomPara
 		try {
 			result.add(this.getDataConnector().getConnection().prepareStatement(
 					"insert into catalogs (shortname,owner_id,thumbnailUrl,itemNameFields,"
-							+"itemThumbnailUrlField,urlPrefix,perspectiveMatchField,ftpPort,timeField_term_id)"
+							+"itemThumbnailUrlField,urlPrefix,perspectiveMatchField,drivePort,timeField_term_id)"
 							+" values (?,?,?,?,?,?,?,?,?)"
 					+"ON DUPLICATE KEY UPDATE "
-							+"thumbnailUrl=?,itemNameFields=?,itemThumbnailUrlField=?,urlPrefix=?,perspectiveMatchField=?,ftpPort=?,timeField_term_id=?"));
+							+"thumbnailUrl=?,itemNameFields=?,itemThumbnailUrlField=?,urlPrefix=?,perspectiveMatchField=?,drivePort=?,timeField_term_id=?"));
 			
 		} catch (SQLException e) { throw new DataProcessException(e); }
 		

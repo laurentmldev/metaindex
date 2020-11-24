@@ -240,7 +240,7 @@ public class WsControllerCatalog extends AMxWSController {
 		}
 		
 		// update in system is done via periodic monitoring of DB which will detect changes
-		// and propagate where needed (typically FTP server and Kibana)
+		// and propagate where needed (typically drive server and Kibana)
 		
 		answer.setIsSuccess(true);				
 		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),
@@ -260,7 +260,7 @@ public class WsControllerCatalog extends AMxWSController {
 		
     }
     
-    private Integer findAvailableFtpPort(Integer portRangeStart,Integer portRangeEnd) {
+    private Integer findAvailableDrivePort(Integer portRangeStart,Integer portRangeEnd) {
     	
     	Integer curPort=portRangeStart;
     	while (curPort<=portRangeEnd) {
@@ -268,7 +268,7 @@ public class WsControllerCatalog extends AMxWSController {
             	// check it is not used by another catalog
             	List<Integer> catalogIds = new ArrayList<>();
         		Globals.Get().getDatabasesMgr().getCatalogDefDbInterface()
-        			.getCatalogIdFromFtpPortStmt(curPort).execute(new StreamHandler<Integer>(catalogIds));
+        			.getCatalogIdFromDrivePortStmt(curPort).execute(new StreamHandler<Integer>(catalogIds));
         		if (catalogIds.size()!=0) { throw new DataProcessException(""); }
         		
         		// check if another application does not already use this port on the system
@@ -315,23 +315,23 @@ public class WsControllerCatalog extends AMxWSController {
     		c=new Catalog();
     		c.setName(requestMsg.getCatalogName());
     		
-    		// try to determine free abailable FTP port within given range
-    		Integer ftpPortRangeLow = new Integer(Globals.GetMxProperty("mx.ftp.port.range_low"));
-            Integer ftpPortRangeHigh = new Integer(Globals.GetMxProperty("mx.ftp.port.range_high"));
+    		// try to determine free available drive port within given range
+    		Integer drivePortRangeLow = new Integer(Globals.GetMxProperty("mx.drive.port.range_low"));
+            Integer drivePortRangeHigh = new Integer(Globals.GetMxProperty("mx.drive.port.range_high"));
             
-            Integer availablePort = findAvailableFtpPort(ftpPortRangeLow,ftpPortRangeHigh);
+            Integer availablePort = findAvailableDrivePort(drivePortRangeLow,drivePortRangeHigh);
             if (availablePort==null) {
             	answer.setRejectMessage(user.getText("Catalogs.maxNbTotalCatalogsReach"));
-            	log.error("ERROR: no more FTP port available for creating new catalog");
+            	log.error("ERROR: no more drive port available for creating new catalog");
             	Globals.Get().sendEmail(Globals.GetMxProperty("mx.mailer.admin_recipient"), 
-            					"No more FTP port available", 
+            					"No more drive port available", 
             					"User '"+user.getNickname()+"' ("+user.getId()+") tried to create a new catalog '"+c.getName()+"',"
-            					+" but could not because there is no more FTP port available");
+            					+" but could not because there is no more drive port available");
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
     			_GlobalCreateCatalogLock.release();
     			return;
             }
-            c.setFtpPort(availablePort);
+            c.setDrivePort(availablePort);
             
     		Boolean result = Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getCreateIntoDefDbStmt(user,c).execute();
     		if (!result) {
@@ -354,7 +354,7 @@ public class WsControllerCatalog extends AMxWSController {
     			return;
     		}
     		
-    		// during loading of catalog from Db, services are started including FTP server
+    		// during loading of catalog from Db, services are started including drive server
     		// so the port is taken and we can release the lock
     		_GlobalCreateCatalogLock.release();
 	        
@@ -528,8 +528,7 @@ public class WsControllerCatalog extends AMxWSController {
     	WsMsgCustomizeCatalog_answer answer = new WsMsgCustomizeCatalog_answer(requestMsg);
     	IUserProfileData user = getUserProfile(headerAccessor);	
     	ICatalog c = user.getCurrentCatalog();
-    	// FTP port is not available for user custo for now... maybe later
-    	requestMsg.setFtpPort(c.getDrivePort());
+    	requestMsg.setDrivePort(c.getDrivePort());
     	
     	if (c==null || !c.getId().equals(requestMsg.getId())) {
     		// return failure notif (default status of answer is 'failed')

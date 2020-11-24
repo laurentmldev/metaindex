@@ -79,15 +79,15 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 	
 	// Quotas Management
 	public Long getQuotaNbDocs();
-	public Long getQuotaFtpDiscSpaceBytes();		
+	public Long getQuotaDriveBytes();		
 	public Boolean checkQuotasNbDocsOk();
-	public Boolean checkQuotasDiscSpaceOk();
-	public Long getDiscSpaceUseBytes();
+	public Boolean checkQuotasDriveOk();
+	public Long getDriveUseBytes();
 	
 	// Files access
 	public String getLocalFsFilesPath();
 	public String getFilesBaseUrl();
-	public void setFtpPort(Integer port);
+	public void setDrivePort(Integer port);
 	public ICatalogDrive getDriveServer();
 	
 	

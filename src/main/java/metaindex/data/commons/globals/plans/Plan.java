@@ -72,9 +72,9 @@ public class Plan implements IPlan {
 	public void setQuotaNbDocsPerCatalog(Long nbDocs) { _docsQuotaPerCatalog=nbDocs; }
 	
 	@Override
-	public Long getQuotaDiscBytesPerCatalog() { return _dicsBytesQuotaPerCatalog; }
+	public Long getQuotaDriveBytesPerCatalog() { return _dicsBytesQuotaPerCatalog; }
 	@Override
-	public void setQuotaDiscBytesPerCatalog(Long nbBytes) { _dicsBytesQuotaPerCatalog=nbBytes; }
+	public void setQuotaDriveBytesPerCatalog(Long nbBytes) { _dicsBytesQuotaPerCatalog=nbBytes; }
 	
 	@Override
 	public Float getYearlyCostEuros() { return _yearlyCost; }
@@ -121,7 +121,7 @@ public class Plan implements IPlan {
 				+"\n\t- name: "+this.getName()
 				+"\n\t- quotaCatalogsCreated: "+this.getQuotaCatalogsCreated()
 				+"\n\t- quotaNbDocsPerCatalog: "+this.getQuotaNbDocsPerCatalog()
-				+"\n\t- quotaDiscPerCatalog: "+(this.getQuotaDiscBytesPerCatalog()/1000000)+"MB"
+				+"\n\t- quotaDrivePerCatalog: "+(this.getQuotaDriveBytesPerCatalog()/1000000)+"MB"
 				;
 		
 		return str;
