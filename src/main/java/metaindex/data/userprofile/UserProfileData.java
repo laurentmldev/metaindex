@@ -772,5 +772,9 @@ public class UserProfileData implements IUserProfileData
 	public void setCategory(CATEGORY c) {
 		_category=c;
 	}
+	@Override
+	public String getUserDriveFsPath() {
+		return Globals.Get().getUserdataFsPath()+"/userdrives/"+getId();
+	}
 	
 }

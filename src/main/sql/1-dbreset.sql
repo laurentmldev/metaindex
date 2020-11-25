@@ -75,9 +75,6 @@ CREATE TABLE `catalogs` (
   /* field used to automaically activate perspective matching the name of given field */
   `perspectiveMatchField` varchar(1024) DEFAULT '',
   
-  /* Drive port to be used to access userdata for this catalog */
-  `drivePort` int(32) NOT NULL DEFAULT '0',
-
   /* the (date) field to be used as default time reference in Kibana */
   `timeField_term_id` int(32) NULL,
 

@@ -287,17 +287,7 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 					&& catalogCard.descr.ownerId==<s:property value="currentUserProfile.id"/>) {
 				quotaDrive.appendChild(_makeUpgradePlanButtton("details_overview_upgrade_quotaDrive"));
 			}
-		}
-		
-	// drive port : no drive access for Read-Only users
-		if (!mx_helpers_isCatalogWritable(catalogCard.descr.userAccessRights)) {
-			let drivePortRow = newPopulatedCatalogDetails.querySelector("._drive_row_");
-			drivePortRow.parentNode.removeChild(drivePortRow);
-		} else {
-			let drivePort = newPopulatedCatalogDetails.querySelector("._drive_port_");
-			if (catalogCard.descr.drivePort==-1) { drivePort.innerHTML="-"; }
-			else { drivePort.innerHTML=catalogCard.descr.drivePort; }
-		}
+		}	
 		
 	// catalog thumbnail url
 		let thumbnailUrl = newPopulatedCatalogDetails.querySelector("._thumbnail_url_");
@@ -588,22 +578,7 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 						             </span>
 						        </td>
 						        <td class="_kibana_time_field_"></td>						        
-						      </tr>						        
-						      
-						      <tr title="<s:text name="globals.clickToCopyToClipboard"/>" class="_drive_row_"
-						      	  onclick="copyToClipBoard(this.querySelector('._drive_port_').innerHTML);
-						      		footer_showAlert(INFO, '<s:text name="globals.drivePortCopiedToClipboard"/>');
-						      			" >
-						        <td style="font-style:italic" ><s:text name="Catalogs.overview.drivePort" />
-						        	<span title="S.O.S" 
-						                	onclick="event.stopPropagation();event.preventDefault();
-						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.drive.title" />','<s:text name="help.catalog.overview.drive.body" />')">
-						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
-						             </span>
-						        </td>
-						        <td style="font-style:italic" class="_drive_port_" ></td>						        
-						      </tr>
-						      	
+						      </tr>						        						      						      	
 						      <tr>
 						        <td ><s:text name="Catalogs.overview.urlsPrefix" />
 						        	<span class=""  title="S.O.S" 

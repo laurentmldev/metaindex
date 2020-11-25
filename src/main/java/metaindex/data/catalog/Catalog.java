@@ -27,8 +27,8 @@ import org.apache.commons.logging.LogFactory;
 
 import metaindex.data.filter.IFilter;
 import metaindex.app.Globals;
-import metaindex.app.control.catalogdrive.SftpCatalogDrive;
-import metaindex.app.control.catalogdrive.ICatalogDrive;
+import metaindex.app.control.catalogdrive.SftpCatalogsDrive;
+import metaindex.app.control.catalogdrive.ICatalogsDrive;
 import metaindex.app.periodic.db.CatalogPeriodicDbReloader;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.perspective.ICatalogPerspective;
@@ -85,7 +85,6 @@ public class Catalog implements ICatalog {
 	private String _itemThumbnailUrlField="";
 	private String _urlPrefix="";
 	private String _perspectiveMatchField="";
-	private Integer _drivePort=0;
 	private Integer _timeFieldTermId = null;
 	
 	// from ElasticSearch DB
@@ -105,7 +104,7 @@ public class Catalog implements ICatalog {
 	private Map<String,ICatalogPerspective> _perspectives = new java.util.concurrent.ConcurrentHashMap<>();
 	private Semaphore _perspectivesLock = new Semaphore(1,true);
 	
-	private ICatalogDrive _driveServer=null;
+	private ICatalogsDrive _driveServer=null;
 	
 	
 	
@@ -124,19 +123,18 @@ public class Catalog implements ICatalog {
 		return "'"+this.getName()+"' :"
 				+"\n\t- id: "+this.getId()
 				+"\n\t- creator_id: "+this.getOwnerId()
-				+"\n\t- drivePort: "+this.getDrivePort()				
 				+"\n\t- quotaNbDocs: "+this.getQuotaNbDocs()
 				+"\n\t- quotaDriveBytes: "+this.getQuotaDriveBytes()+" Bytes"
 				+"\n\t- Nb Logged users:\t"+this.getNbLoggedUsers();
 		
 
 	}
-	
+	/*
 	@Override
-	public ICatalogDrive getDriveServer() { return _driveServer; };
+	public ICatalogsDrive getDriveServer() { return _driveServer; };
 	
 	private void startDrive() throws DataProcessException {
-		if (getDriveServer()==null) { _driveServer=new SftpCatalogDrive(this); }
+		if (getDriveServer()==null) { _driveServer=new SftpCatalogsDrive(this); }
 		try { 
 			getDriveServer().start();
 		}
@@ -154,22 +152,21 @@ public class Catalog implements ICatalog {
 		}
 		_driveServer=null;
 	}
-	
+	*/
 	private void startServices() throws DataProcessException {
 		        	
-		File userdataFs = new File(getLocalFsFilesPath());
-		if (!userdataFs.exists()) {
-			if (!userdataFs.mkdirs()) {
-				log.error("unable to create local userdata folder : "+getLocalFsFilesPath());
+		File catalogdataFs = new File(getLocalFsFilesPath());
+		if (!catalogdataFs.exists()) {
+			if (!catalogdataFs.mkdirs()) {
+				log.error("unable to create data folder for catalog : "+getLocalFsFilesPath());
 			}
 		}
 		else {
-			log.info("created local userdata folder : "+getLocalFsFilesPath());
+			log.info("created drive folder : "+getLocalFsFilesPath());
 		}
-		startDrive();
-		_dbAutoRefreshProcessing=new CatalogPeriodicDbReloader(this);
-		_dbAutoRefreshProcessing.start();
 		
+		_dbAutoRefreshProcessing=new CatalogPeriodicDbReloader(this);
+		_dbAutoRefreshProcessing.start();		
 
 		log.info("configuring Kibana Space for catalog "+this.getName()+"... ");
 		if (!(Globals.Get().getDatabasesMgr()
@@ -205,8 +202,7 @@ public class Catalog implements ICatalog {
 		IUserProfileData tmpAdminUserData = new UserProfileData();
 		tmpAdminUserData.setName("admin-service");
 		tmpAdminUserData.setNickname("admin-service");
-		kickOutAllUsers(tmpAdminUserData);
-		stopDrive();
+		kickOutAllUsers(tmpAdminUserData);		
 		
 		_dbAutoRefreshProcessing.stopMonitoring();
 		_dbAutoRefreshProcessing=null;
@@ -264,18 +260,10 @@ public class Catalog implements ICatalog {
 		log.warn("isEnabled: unable to get owner of catalog "+getName()+", returned disabled by default.");
 		return false;
 	}
-	@Override 	
-	public Integer getDrivePort() {
-		return _drivePort;
-	}
-	@Override
-	public void setDrivePort(Integer port) {
-		_drivePort=port;
-	}
 	
 	@Override
 	public String getLocalFsFilesPath() {
-		return Globals.Get().getUserdataFsPath()+"/"+this.getName();
+		return Globals.Get().getUserdataFsPath()+"/catalogs/"+this.getName();
 	}
 	@Override
 	public String getFilesBaseUrl() {
@@ -764,19 +752,7 @@ public class Catalog implements ICatalog {
 		// detect if contents actually changed
 		if (this.getLastUpdate().after(prevCurDate)) { log.info(this.getDetailsStr()); }
 		
-		try {
-			this.acquireLock();
-			if (getDriveServer()!=null && !this.getDrivePort().equals(getDriveServer().getPort())) {
-				stopDrive();
-				startDrive();
-			}
-		} catch (Throwable t) {
-			log.error("Unable to restart Drive server for catalog "+getName()+" : "+t.getMessage());
-			t.printStackTrace();
-			
-		}
-		this.releaseLock();
-		
+		// clean chat messages hwich are too old
 		cleanChatOlderMessages();
 	}
 	@Override 

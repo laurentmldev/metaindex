@@ -36,7 +36,7 @@ class PopulateCatalogFromDbStmt extends SQLPopulateStmt<ICatalog>   {
 			"select catalogs.catalog_id,catalogs.shortname, "
 			+"catalogs.owner_id,catalogs.thumbnailUrl, "							
 			+"catalogs.itemNameFields,catalogs.itemThumbnailUrlField,catalogs.urlPrefix,catalogs.perspectiveMatchField, "
-			+"catalogs.drivePort,catalogs.timeField_term_id,catalogs.lastUpdate "
+			+"catalogs.timeField_term_id,catalogs.lastUpdate "
 			+"from catalogs";
 	
 	List<ICatalog> _data;
@@ -71,7 +71,7 @@ class PopulateCatalogFromDbStmt extends SQLPopulateStmt<ICatalog>   {
 		}
 		
 		if (_onlyIfTimestampChanged==true) {
-			Timestamp dbDate = rs.getTimestamp(11);
+			Timestamp dbDate = rs.getTimestamp(10);
 			if (!d.shallBeProcessed(dbDate)) { return d; } 
 		}
 		d.setId(rs.getInt(1));
@@ -87,9 +87,8 @@ class PopulateCatalogFromDbStmt extends SQLPopulateStmt<ICatalog>   {
 		d.setItemThumbnailUrlField(rs.getString(6));
 		d.setItemsUrlPrefix(rs.getString(7));
 		d.setPerspectiveMatchField(rs.getString(8));
-		d.setDrivePort(rs.getInt(9));
-		d.setTimeFieldTermId(rs.getInt(10));
-		d.setLastUpdate(rs.getTimestamp(11));
+		d.setTimeFieldTermId(rs.getInt(9));
+		d.setLastUpdate(rs.getTimestamp(10));
 		return d;
 	}
 

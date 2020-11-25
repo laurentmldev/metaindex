@@ -97,7 +97,8 @@ public class BeanSignupSendEmail extends ABeanEmailConfirmedAction {
 				
 				Globals.Get().sendEmail(getEmail(), 
 						tmpUser.getText("signup.registration.email.title"),
-						tmpUser.getText("signup.registration.email.body",getNickname(),confirmationLink));				
+						tmpUser.getText("signup.registration.email.body",getNickname(),confirmationLink,
+								Globals.GetMxProperty("mx.drive.sftp.port")));				
 			
 			} catch (DataProcessException e) {
 				getAwaitingAccountsByEmailMap().remove(newAccountWaitingForEmailConfirmation.email);

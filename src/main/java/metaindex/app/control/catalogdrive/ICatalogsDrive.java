@@ -11,7 +11,7 @@ See full version of LICENSE in <https://fsf.org/>
 */
 
 
-public interface ICatalogDrive {
+public interface ICatalogsDrive {
 	public void start();
 	public void stop();			
 	public Integer getPort();	

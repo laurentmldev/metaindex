@@ -3,14 +3,11 @@
 v2.1.0:
 -------
 
-FTP access to prod server
+
 access userdata with UTF-8 encoding
+
 drop http requests from blacklist networks/ip-range 
  
-
-replace fix ftp port by a rolling ftp port
-	because fix ftp port per catalog is not scalable and big FTP range is badly supported by docker
-
 tab icon with white background
 
 finalize plans and prices per category

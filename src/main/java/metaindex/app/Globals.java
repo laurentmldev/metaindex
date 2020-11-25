@@ -37,6 +37,8 @@ import metaindex.data.commons.globals.guitheme.GuiThemesManager;
 import metaindex.data.commons.globals.guitheme.IGuiThemesManager;
 import metaindex.data.commons.globals.plans.IPlansManager;
 import metaindex.data.commons.globals.plans.PlansManager;
+import metaindex.app.control.catalogdrive.ICatalogsDrive;
+import metaindex.app.control.catalogdrive.SftpCatalogsDrive;
 import metaindex.app.periodic.fs.MxTmpFolderMonitor;
 import metaindex.app.periodic.monitoring_proprietary.UsersQuotasChecker;
 import metaindex.app.periodic.statistics.MxStatisticsManager;
@@ -129,6 +131,7 @@ public class Globals {
 	private Map<String,PropertiesConfiguration> _propertiesMap = new ConcurrentHashMap<String,PropertiesConfiguration>();
 	
 	private IEmailSender _mailSender = new GoogleMailSender();
+	private ICatalogsDrive _catalogsDrive = null;
 	
 	// -------------
 	
@@ -274,7 +277,11 @@ public class Globals {
 				_mailSender=new DummyMailSender();
 			}
 		}
-		
+				
+		log.info("Starting MetaindeX SFTP server ... ");
+		_catalogsDrive=new SftpCatalogsDrive(Integer.valueOf(
+						Globals.GetMxProperty("mx.drive.sftp.port")));
+		_catalogsDrive.start();		
 		
 	}
 	
@@ -347,8 +354,7 @@ public class Globals {
 				+"- mx.appname="+Globals.GetMxProperty("mx.appname")+"\n"
 				+"- mx.userdata.path="+Globals.GetMxProperty("mx.userdata.path")+"\n"
 				+"- ------------------------ DRIVES CONF ------------------------"+"\n"
-				+"- mx.drive.port.range_low="+Globals.GetMxProperty("mx.drive.port.range_low")+"\n"
-				+"- mx.drive.port.range_high="+Globals.GetMxProperty("mx.drive.port.range_high")+"\n"
+				+"- mx.drive.sftp.port="+Globals.GetMxProperty("mx.drive.sftp.port")+"\n"
 				+"- ------------------------ KIBANA USER ACCESS ------------------------"+"\n"
 				+"- mx.kibana.host="+Globals.GetMxProperty("mx.kibana.host")+"\n"
 				+"- mx.kibana.protocol="+Globals.GetMxProperty("mx.kibana.protocol")+"\n"

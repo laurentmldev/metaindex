@@ -315,24 +315,6 @@ public class WsControllerCatalog extends AMxWSController {
     		c=new Catalog();
     		c.setName(requestMsg.getCatalogName());
     		
-    		// try to determine free available drive port within given range
-    		Integer drivePortRangeLow = new Integer(Globals.GetMxProperty("mx.drive.port.range_low"));
-            Integer drivePortRangeHigh = new Integer(Globals.GetMxProperty("mx.drive.port.range_high"));
-            
-            Integer availablePort = findAvailableDrivePort(drivePortRangeLow,drivePortRangeHigh);
-            if (availablePort==null) {
-            	answer.setRejectMessage(user.getText("Catalogs.maxNbTotalCatalogsReach"));
-            	log.error("ERROR: no more drive port available for creating new catalog");
-            	Globals.Get().sendEmail(Globals.GetMxProperty("mx.mailer.admin_recipient"), 
-            					"No more drive port available", 
-            					"User '"+user.getNickname()+"' ("+user.getId()+") tried to create a new catalog '"+c.getName()+"',"
-            					+" but could not because there is no more drive port available");
-    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
-    			_GlobalCreateCatalogLock.release();
-    			return;
-            }
-            c.setDrivePort(availablePort);
-            
     		Boolean result = Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getCreateIntoDefDbStmt(user,c).execute();
     		if (!result) {
     			answer.setRejectMessage(user.getText("Catalogs.cannotCreate")+" (1)");
@@ -528,7 +510,6 @@ public class WsControllerCatalog extends AMxWSController {
     	WsMsgCustomizeCatalog_answer answer = new WsMsgCustomizeCatalog_answer(requestMsg);
     	IUserProfileData user = getUserProfile(headerAccessor);	
     	ICatalog c = user.getCurrentCatalog();
-    	requestMsg.setDrivePort(c.getDrivePort());
     	
     	if (c==null || !c.getId().equals(requestMsg.getId())) {
     		// return failure notif (default status of answer is 'failed')

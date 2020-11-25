@@ -15,8 +15,8 @@ See full version of LICENSE in <https://fsf.org/>
 import java.util.List;
 import java.util.Map;
 
-import metaindex.app.control.catalogdrive.SftpCatalogDrive;
-import metaindex.app.control.catalogdrive.ICatalogDrive;
+import metaindex.app.control.catalogdrive.SftpCatalogsDrive;
+import metaindex.app.control.catalogdrive.ICatalogsDrive;
 import metaindex.data.filter.IFilter;
 import metaindex.data.perspective.ICatalogPerspective;
 import metaindex.data.term.ICatalogTerm;
@@ -87,9 +87,6 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 	// Files access
 	public String getLocalFsFilesPath();
 	public String getFilesBaseUrl();
-	public void setDrivePort(Integer port);
-	public ICatalogDrive getDriveServer();
-	
 	
 	// Perspectives
 	public Map<String,ICatalogPerspective> getPerspectives();	

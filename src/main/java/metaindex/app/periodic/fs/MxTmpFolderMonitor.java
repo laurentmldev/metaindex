@@ -74,10 +74,16 @@ public class MxTmpFolderMonitor implements IPeriodicProcess {
 		public void doPeriodicProcess() throws DataProcessException {
 			// scan tmp folder for files older than x minutes and remove them
 			Date now = new Date();
-			//log.info("CLeaning temp folder");
+			//log.info("Cleaning tmp folder");
 			String webappsTmpFolderPath = Globals.Get().getWebappsTmpFsPath();
 			File tmpFolder = new File(webappsTmpFolderPath);
-			assert(tmpFolder.isDirectory());
+			if (!tmpFolder.exists()) {
+				if (!tmpFolder.mkdirs()) {
+					log.error("unable to create tmp files folder"+webappsTmpFolderPath);
+					return;
+				}
+			}
+
 			for (File curFile : tmpFolder.listFiles()) {
 				
 				Long fileTimestampMs = new Date(curFile.lastModified()).getTime();

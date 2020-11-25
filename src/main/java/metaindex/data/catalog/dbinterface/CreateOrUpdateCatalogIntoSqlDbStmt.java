@@ -45,10 +45,10 @@ class CreateOrUpdateCatalogIntoSqlDbStmt extends SQLWriteStmt<ICatalogCustomPara
 		try {
 			result.add(this.getDataConnector().getConnection().prepareStatement(
 					"insert into catalogs (shortname,owner_id,thumbnailUrl,itemNameFields,"
-							+"itemThumbnailUrlField,urlPrefix,perspectiveMatchField,drivePort,timeField_term_id)"
-							+" values (?,?,?,?,?,?,?,?,?)"
+							+"itemThumbnailUrlField,urlPrefix,perspectiveMatchField,timeField_term_id)"
+							+" values (?,?,?,?,?,?,?,?)"
 					+"ON DUPLICATE KEY UPDATE "
-							+"thumbnailUrl=?,itemNameFields=?,itemThumbnailUrlField=?,urlPrefix=?,perspectiveMatchField=?,drivePort=?,timeField_term_id=?"));
+							+"thumbnailUrl=?,itemNameFields=?,itemThumbnailUrlField=?,urlPrefix=?,perspectiveMatchField=?,timeField_term_id=?"));
 			
 		} catch (SQLException e) { throw new DataProcessException(e); }
 		
@@ -70,21 +70,17 @@ class CreateOrUpdateCatalogIntoSqlDbStmt extends SQLWriteStmt<ICatalogCustomPara
 			stmt.setString(4, itemNameFields);
 			stmt.setString(5, dataObject.getItemThumbnailUrlField());
 			stmt.setString(6, dataObject.getItemsUrlPrefix());
-			stmt.setString(7, dataObject.getPerspectiveMatchField());
-			stmt.setInt(8, dataObject.getDrivePort());
+			stmt.setString(7, dataObject.getPerspectiveMatchField());			
+			if (dataObject.getTimeFieldTermId()==null || dataObject.getTimeFieldTermId().equals(0)) { stmt.setNull(8, 0 /*sql type for int TBC*/); }
+			else { stmt.setInt(8, dataObject.getTimeFieldTermId()); }
 			
-			if (dataObject.getTimeFieldTermId()==null || dataObject.getTimeFieldTermId().equals(0)) { stmt.setNull(9, 0 /*sql type for int TBC*/); }
-			else { stmt.setInt(9, dataObject.getTimeFieldTermId()); }
-			
-			stmt.setString(10, dataObject.getThumbnailUrl());
-			stmt.setString(11, itemNameFields);
-			stmt.setString(12, dataObject.getItemThumbnailUrlField());
-			stmt.setString(13, dataObject.getItemsUrlPrefix());
-			stmt.setString(14, dataObject.getPerspectiveMatchField());	
-			stmt.setInt(15, dataObject.getDrivePort());
-			
-			if (dataObject.getTimeFieldTermId()==null || dataObject.getTimeFieldTermId().equals(0)) { stmt.setNull(16, 0 /*sql type for int TBC*/); }
-			else { stmt.setInt(16, dataObject.getTimeFieldTermId()); }
+			stmt.setString(9, dataObject.getThumbnailUrl());
+			stmt.setString(10, itemNameFields);
+			stmt.setString(11, dataObject.getItemThumbnailUrlField());
+			stmt.setString(12, dataObject.getItemsUrlPrefix());
+			stmt.setString(13, dataObject.getPerspectiveMatchField());	
+			if (dataObject.getTimeFieldTermId()==null || dataObject.getTimeFieldTermId().equals(0)) { stmt.setNull(14, 0 /*sql type for int TBC*/); }
+			else { stmt.setInt(14, dataObject.getTimeFieldTermId()); }
 			
 			stmt.addBatch();
 		} catch (SQLException e) { throw new DataProcessException(e); }		

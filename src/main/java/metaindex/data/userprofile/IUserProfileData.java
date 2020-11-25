@@ -111,6 +111,9 @@ public interface IUserProfileData extends ICatalogUser,IPlanUser,IObserver<IProc
 	public String getUserCatalogKibanaIFrameHtml(Integer catalogId);
 	public String getCurrentCatalogKibanaIFrameHtml();
 	
+	//-------- management of user local folder
+	public String getUserDriveFsPath();
+	
 	//----------
 	public void sendEmail(String subject, String body) throws DataProcessException;
 	public void sendEmailCCiAdmin(String subject, String body) throws DataProcessException;

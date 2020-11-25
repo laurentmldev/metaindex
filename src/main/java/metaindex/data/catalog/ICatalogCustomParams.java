@@ -50,8 +50,6 @@ public interface ICatalogCustomParams extends IIdentifiable<Integer> {
 	public String getPerspectiveMatchField();
 	public void setPerspectiveMatchField(String fieldName);	
 			
-	public Integer getDrivePort();
-	
 	/// get the field to be used as 'chronology reference' for statistics
 	/// if not set, default used is item's date of creation in application
 	public Integer getTimeFieldTermId();
