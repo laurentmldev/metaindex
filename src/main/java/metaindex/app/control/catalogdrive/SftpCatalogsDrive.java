@@ -61,6 +61,7 @@ public class SftpCatalogsDrive implements ICatalogsDrive {
 	private SshServer _server=null;
 	private Boolean _isStarted = false;
 	private Semaphore _serverLock = new Semaphore(1,true);
+	private Integer _port=0;
 	
 	public void start() {
 		try {
@@ -104,6 +105,19 @@ public class SftpCatalogsDrive implements ICatalogsDrive {
 		return _server.getPort();
 	}
 	
+	private void updateQuotasWarningFile(ICatalog c) {
+		// create a file showing that catalog is over-quotas
+    	try {						
+			if (!c.checkQuotasDriveOk()) {
+				OutputStream quotasWarningFile = new FileOutputStream(
+						c.getLocalFsFilesPath()+"/"+QUOTAS_WARNING_FILE_NAME);
+				quotasWarningFile.close();
+			} else {
+				File quotasFile = new File(c.getLocalFsFilesPath()+"/"+QUOTAS_WARNING_FILE_NAME);
+				if (quotasFile.exists()) { quotasFile.delete(); }
+			}
+		} catch (IOException e) {}// well what to do ... ?
+	}
 	
 	// user drive is made of a symlink to each catalog with write or admin access 
 	private FileSystemFactory buildUserDriveFs(IUserProfileData p) {
@@ -125,19 +139,8 @@ public class SftpCatalogsDrive implements ICatalogsDrive {
 					Files.createSymbolicLink(
 							catalogDriveLink.toPath(), 
 							new File(c.getLocalFsFilesPath()).toPath());
-						
-			    	// create a file showing that catalog is over-quotas
-			    	try {						
-						if (!c.checkQuotasDriveOk()) {
-							OutputStream quotasWarningFile = new FileOutputStream(
-									c.getLocalFsFilesPath()+"/"+QUOTAS_WARNING_FILE_NAME);
-							quotasWarningFile.close();
-						} else {
-							File quotasFile = new File(c.getLocalFsFilesPath()+"/"+QUOTAS_WARNING_FILE_NAME);
-							if (quotasFile.exists()) { quotasFile.delete(); }
-						}
-					} catch (IOException e) {}// well what to do ... ?
-				
+									    	
+					updateQuotasWarningFile(c);
 					nbCatalogs++;
 		    	}
 			}
@@ -150,32 +153,39 @@ public class SftpCatalogsDrive implements ICatalogsDrive {
 		}
     	
 	}
-	private void checkCatalogModifyDataAllowed(ICatalog c, IUserProfileData u) throws IOException {
+	private void checkCatalogAccess(ICatalog c, IUserProfileData u, Boolean checkWriteAccess) throws IOException {
 		if (c==null) { throw new IOException("Catalog does not exist (anymore?)"); }
 		if (u==null) { throw new IOException("Unknown user"); }
 		if (!u.isEnabled()) { throw new IOException("User not allowed to connect"); }
 		USER_CATALOG_ACCESSRIGHTS access = u.getUserCatalogAccessRights(c.getId());
+		
 		if (!access.equals(USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN)
-				&& !access.equals(USER_CATALOG_ACCESSRIGHTS.CATALOG_EDIT)) {
-			throw new IOException("User not allowed to access contents"); 
-		}		
+				&& !access.equals(USER_CATALOG_ACCESSRIGHTS.CATALOG_EDIT)) {			
+			if (checkWriteAccess || !access.equals(USER_CATALOG_ACCESSRIGHTS.CATALOG_READ)) {
+				throw new IOException("User not allowed to access contents"); 
+			}
+		}
 	}
+	
  	public SftpCatalogsDrive(Integer catalogsSftpDrivePort) {
- 		
+ 		_port=catalogsSftpDrivePort;
+ 		init();
+ 	}
+ 	public void init() {
  		Security.addProvider(new BouncyCastleProvider());
  		
  		// ensure socket is available
  		try {
-			ServerSocket s = new ServerSocket(catalogsSftpDrivePort);
+			ServerSocket s = new ServerSocket(_port);
 			s.close(); 		
 		} catch (IOException e) {
-			log.error("Could not open drive port '"+catalogsSftpDrivePort+"' for catalogs SFTP access  : "+e.getMessage());
+			log.error("Could not open drive port '"+_port+"' for catalogs SFTP access  : "+e.getMessage());
 			return; 
 		} 		
 		
 		
 		_server = SshServer.setUpDefaultServer();
-		  _server.setPort(catalogsSftpDrivePort);
+		  _server.setPort(_port);
 		  
 		  // a file where to store host RSA keys so that it can be reused, avoiding 
 		  // user to always accept a new key at each server restart
@@ -221,6 +231,22 @@ public class SftpCatalogsDrive implements ICatalogsDrive {
 	       // add listeners to prevent user to upload data if disc quota exceeded
 	       SftpEventListener sftpEventsListener = new AbstractSftpEventListenerAdapter() {
 	    	   
+
+	    	    @Override
+	    	    public void reading(
+	    	            ServerSession session, String remoteHandle, FileHandle localHandle,
+	    	            long offset, byte[] data, int dataOffset, int dataLen)
+	    	            throws IOException {
+	    	    	super.reading(session,remoteHandle,localHandle,offset,data,dataOffset,dataLen);	    		   
+	    		   	String pathArray[]=localHandle.toString().split("/");
+					if (pathArray.length<3) { throw new IOException("Forbidden to modify root folder"); }
+					String catalogName=pathArray[1];
+					ICatalog c = Globals.Get().getCatalogsMgr().getCatalog(catalogName);
+					IUserProfileData u = Globals.Get().getUsersMgr().getUserByName(session.getUsername());
+					checkCatalogAccess(c,u,false);					
+	    	    }
+
+	    	    
 	    	   @Override
 	    	    public void writing(ServerSession session, String remoteHandle, FileHandle localHandle,
 	    	            								long offset, byte[] data, int dataOffset, int dataLenBytes)
@@ -231,7 +257,7 @@ public class SftpCatalogsDrive implements ICatalogsDrive {
 					String catalogName=pathArray[1];
 					ICatalog c = Globals.Get().getCatalogsMgr().getCatalog(catalogName);
 					IUserProfileData u = Globals.Get().getUsersMgr().getUserByName(session.getUsername());
-					checkCatalogModifyDataAllowed(c,u);
+					checkCatalogAccess(c,u,true);
 					if (!c.checkQuotasDriveOk()) { throw new IOException("Catalog out of quota, operation forbidded"); }
 	    	    }	    	   
 
@@ -245,7 +271,7 @@ public class SftpCatalogsDrive implements ICatalogsDrive {
 		    		String catalogName=pathArray[1];
 		    		ICatalog c = Globals.Get().getCatalogsMgr().getCatalog(catalogName);
 		    		IUserProfileData u = Globals.Get().getUsersMgr().getUserByName(session.getUsername());
-		    		checkCatalogModifyDataAllowed(c,u);
+		    		checkCatalogAccess(c,u,true);
 		    		if (!c.checkQuotasDriveOk()) { throw new IOException("Catalog out of quota, operation forbidded"); }
 	    	    }
 
@@ -259,7 +285,7 @@ public class SftpCatalogsDrive implements ICatalogsDrive {
 					String catalogName=pathArray[1];
 					ICatalog c = Globals.Get().getCatalogsMgr().getCatalog(catalogName);
 					IUserProfileData u = Globals.Get().getUsersMgr().getUserByName(session.getUsername());
-					checkCatalogModifyDataAllowed(c,u);
+					checkCatalogAccess(c,u,true);
 	    	    }
 	    	    
 	    	    @Override
@@ -270,8 +296,7 @@ public class SftpCatalogsDrive implements ICatalogsDrive {
 					if (pathArray.length<3) { throw new IOException("Forbidden to modify root folder"); }
 					String catalogName=pathArray[1];
 					ICatalog c = Globals.Get().getCatalogsMgr().getCatalog(catalogName);
-					IUserProfileData u = Globals.Get().getUsersMgr().getUserByName(session.getUsername());
-					checkCatalogModifyDataAllowed(c,u);
+					updateQuotasWarningFile(c);
 	    	    }
 	    	 
 	    	    @Override
@@ -286,8 +311,8 @@ public class SftpCatalogsDrive implements ICatalogsDrive {
 	    	    	String dstCatalogName=dstPath.toString().split("/")[1];
 					ICatalog cSrc = Globals.Get().getCatalogsMgr().getCatalog(srcCatalogName);
 					ICatalog cDst = Globals.Get().getCatalogsMgr().getCatalog(dstCatalogName);
-					checkCatalogModifyDataAllowed(cSrc,u);
-					checkCatalogModifyDataAllowed(cDst,u);
+					checkCatalogAccess(cSrc,u,true);
+					checkCatalogAccess(cDst,u,true);
 					if (!cDst.checkQuotasDriveOk()) { throw new IOException("Catalog out of quota, operation forbidded"); }
 	    	    }
 	    	    
@@ -307,7 +332,7 @@ public class SftpCatalogsDrive implements ICatalogsDrive {
 					String catalogName=pathArray[1];
 					ICatalog c = Globals.Get().getCatalogsMgr().getCatalog(catalogName);
 					IUserProfileData u = Globals.Get().getUsersMgr().getUserByName(session.getUsername());
-					checkCatalogModifyDataAllowed(c,u);
+					checkCatalogAccess(c,u,true);
 	    	    }
 	    	    
 	       };

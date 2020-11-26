@@ -45,7 +45,7 @@
             <PatternLayout   pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n" />
         </Console>
     </Appenders>
-    <Loggers>    
+    <Loggers>        
         <Logger name="org.springframework.context" level="info" additivity="false" >
         	<appender-ref ref="metaindex-server-logger" /> 
         </Logger>
@@ -65,7 +65,7 @@
             <appender-ref ref="metaindex-stats-file-logger" level="info" />
         </Logger>
         
-        <Logger name="toolbox.utils.payment.PaypalPaymentInterfaceProprietary" level="info" additivity="false" >
+        <Logger name="toolbox.utils.payment.PaypalPaymentInterface" level="info" additivity="false" >
             <appender-ref ref="metaindex-payments-details-file-logger" level="info" />
         </Logger>
         <Logger name="toolbox.utils.payment.SandboxPaymentInterface" level="info" additivity="false" >

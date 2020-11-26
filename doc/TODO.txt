@@ -6,26 +6,21 @@ v2.1.0:
 
 access userdata with UTF-8 encoding
 
-drop http requests from blacklist networks/ip-range 
+enrich blacklist networks/ip-range with troll http requests 
  
 tab icon with white background
 
 finalize plans and prices per category
 
-tchat : when clicking on send button, catalog name is sent as a message, rather than msg contents!
-
-update terms and conditions : server hosted in France not in US
-
-make proprietary code public (GPL ...)
-
 tuto video for drive access
+
 
 v2.1.1:
 -------
 
 deploy fail2ban
 
-use alfresco jlan SMB server 
+use alfresco jlan SMB server ?
 
 create new item : press enter shall keep popup open (like click on green button)
 

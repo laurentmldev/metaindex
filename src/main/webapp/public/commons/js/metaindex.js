@@ -2209,7 +2209,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		}		
 		
 		// if OK start uploading contents of user-files, they will be stored
-		// in catalog userdata space (also accessible via FTP
+		// in catalog drive.
 		// upload each file one by one
 	    for (let pos=0;pos<requestObj.filesToUpload.length;pos++) {	 
 	    	let fileObj=requestObj.filesToUpload[pos];

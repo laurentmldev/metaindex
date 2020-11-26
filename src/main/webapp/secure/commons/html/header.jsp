@@ -31,7 +31,7 @@
 <div id="show_profile_container"></div>
 <div id="errors_popup_container"></div>
 <s:include value="profile_modal.jsp" />
-<s:include value="plans_modal_proprietary.jsp" />
+<s:include value="plans_modal.jsp" />
 <script type="text/javascript">
 
 	var MX_HEADER_PROFILE_POPUP_ID="profile_preferences_popup";

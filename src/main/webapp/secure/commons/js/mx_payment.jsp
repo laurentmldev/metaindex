@@ -7,7 +7,7 @@
 <!-- include Paypal payment method if found -->
 
 <c:if test="${mxDevMode == false}" >
-<s:include value="./mx_payment_paypal_proprietary.jsp" />
+<s:include value="./mx_payment_paypal.jsp" />
 </c:if>
 
 <c:if test="${mxDevMode == true}" >

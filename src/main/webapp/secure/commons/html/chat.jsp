@@ -60,7 +60,7 @@ function createChatBox(catalogId,catalogName) {
 	td2.append(sendBtn);
 	td2.onclick=function() { 
 		if (input.value.length>0) {
-			ws_handlers_send_chatmsg(catalogId,catalogName,input.value);
+			ws_handlers_send_chatmsg(catalogId,input.value);
 			input.value="";
 		}
 	}

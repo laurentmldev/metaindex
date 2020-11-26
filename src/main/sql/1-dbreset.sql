@@ -69,7 +69,7 @@ CREATE TABLE `catalogs` (
   /* which field shall be used to build the items thumbails URLs */
   `itemThumbnailUrlField` varchar(1024) DEFAULT '',
   
-  /* urlPrefix to be applied to relative URLs (i.e. not starting with http */
+  /* urlPrefix to be applied to relative URLs (i.e. not starting with http) */
   `urlPrefix` varchar(1024) DEFAULT '',
 
   /* field used to automaically activate perspective matching the name of given field */

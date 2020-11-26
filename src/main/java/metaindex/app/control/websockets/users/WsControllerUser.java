@@ -54,7 +54,7 @@ import metaindex.data.userprofile.UserProfileData;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.payment.IPaymentInterface;
 import toolbox.utils.payment.IPaymentInterface.PAYMENT_METHOD;
-import toolbox.utils.payment.PaypalPaymentInterfaceProprietary;
+import toolbox.utils.payment.PaypalPaymentInterface;
 import toolbox.utils.payment.SandboxPaymentInterface;
 
 
@@ -478,7 +478,7 @@ public static final Integer NB_DAYS_PLAN_DISCOUNT=182;// approx. half a year
     		IPaymentInterface pi = null;
     		if (requestMsg.getPaymentMethod()==PAYMENT_METHOD.paypal) 
     		{ 
-    			pi = new PaypalPaymentInterfaceProprietary(Globals.GetMxProperty("mx.payment.login"),
+    			pi = new PaypalPaymentInterface(Globals.GetMxProperty("mx.payment.login"),
     						 							   Globals.GetMxProperty("mx.payment.password")); 
     		}
     		else if (Globals.Get().isDevMode() && requestMsg.getPaymentMethod()==PAYMENT_METHOD.sandbox) {

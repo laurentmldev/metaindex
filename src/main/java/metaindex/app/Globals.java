@@ -40,7 +40,7 @@ import metaindex.data.commons.globals.plans.PlansManager;
 import metaindex.app.control.catalogdrive.ICatalogsDrive;
 import metaindex.app.control.catalogdrive.SftpCatalogsDrive;
 import metaindex.app.periodic.fs.MxTmpFolderMonitor;
-import metaindex.app.periodic.monitoring_proprietary.UsersQuotasChecker;
+import metaindex.app.periodic.monitoring.UsersQuotasChecker;
 import metaindex.app.periodic.statistics.MxStatisticsManager;
 import metaindex.data.catalog.CatalogsManager;
 import metaindex.data.catalog.ICatalogsManager;
@@ -63,7 +63,7 @@ public class Globals {
 	private static final String MX_PROPERTIES_FILE = "metaindex.properties";
 	public static final Integer AUTOREFRESH_PERIOD_SEC=5;
 	private static final String MX_EMAIL_SUBJECT_PREFIX= "[MetaindeX]";
-	public static final String LOCAL_USERDATA_PATH_SUFFIX="/userdata";
+	public static final String LOCAL_USERDATA_PATH_SUFFIX="/userdata/catalogs";
 	
 	Properties _mx_config = new Properties();
 	static Map<String, String> env = System.getenv();
