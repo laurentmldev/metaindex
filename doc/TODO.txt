@@ -16,6 +16,9 @@ tchat : when clicking on send button, catalog name is sent as a message, rather 
 
 update terms and conditions : server hosted in France not in US
 
+make proprietary code public (GPL ...)
+
+tuto video for drive access
 
 v2.1.1:
 -------

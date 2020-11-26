@@ -109,7 +109,7 @@ public class SftpCatalogsDrive implements ICatalogsDrive {
 	private FileSystemFactory buildUserDriveFs(IUserProfileData p) {
 		
 		try {
-			File userdriveFs = new File(p.getUserDriveFsPath());
+			File userdriveFs = new File(p.getLocalFsFilesPath());
 			
 			// user access might have changed between 2 connections, so we refresh it
 			if (userdriveFs.exists()) { FileUtils.deleteDirectory(userdriveFs); }
@@ -121,7 +121,7 @@ public class SftpCatalogsDrive implements ICatalogsDrive {
 				if (accesRights.equals(USER_CATALOG_ACCESSRIGHTS.CATALOG_EDIT)
 			    		|| accesRights.equals(USER_CATALOG_ACCESSRIGHTS.CATALOG_ADMIN)) {
 					
-					File catalogDriveLink = new File(p.getUserDriveFsPath()+"/"+c.getName());
+					File catalogDriveLink = new File(p.getLocalFsFilesPath()+"/"+c.getName());
 					Files.createSymbolicLink(
 							catalogDriveLink.toPath(), 
 							new File(c.getLocalFsFilesPath()).toPath());
@@ -254,6 +254,18 @@ public class SftpCatalogsDrive implements ICatalogsDrive {
 	    	    public void removing(ServerSession session, Path path, boolean isDirectory)
 	    	            throws IOException {
 	    	    	super.removing(session, path,isDirectory);
+	    	    	String pathArray[]=path.toString().split("/");
+					if (pathArray.length<3) { throw new IOException("Forbidden to modify root folder"); }
+					String catalogName=pathArray[1];
+					ICatalog c = Globals.Get().getCatalogsMgr().getCatalog(catalogName);
+					IUserProfileData u = Globals.Get().getUsersMgr().getUserByName(session.getUsername());
+					checkCatalogModifyDataAllowed(c,u);
+	    	    }
+	    	    
+	    	    @Override
+	    	    public void removed(ServerSession session, Path path, boolean isDirectory, Throwable thrown)
+	    	            throws IOException {
+	    	    	super.removed(session, path,isDirectory,thrown);
 	    	    	String pathArray[]=path.toString().split("/");
 					if (pathArray.length<3) { throw new IOException("Forbidden to modify root folder"); }
 					String catalogName=pathArray[1];

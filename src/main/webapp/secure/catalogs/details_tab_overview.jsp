@@ -282,9 +282,10 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
     			pourcentageNode.classList.add('bg-failure');
 	    	}
 			
-			// add a "upgrade plan" button if limit is reached and current user is catalog's owner
+			// add a "upgrade plan" button if limit is reached and current user is catalog's owner			
 			if (usagePourcentDriveSpace>=85 
 					&& catalogCard.descr.ownerId==<s:property value="currentUserProfile.id"/>) {
+				console.log("ARGGG");
 				quotaDrive.appendChild(_makeUpgradePlanButtton("details_overview_upgrade_quotaDrive"));
 			}
 		}	
@@ -515,11 +516,23 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 						        <td  style="font-style:italic" class="_access_rights_"></td>						        
 						      </tr>
 						      <tr class="_quota_nb_docs_row_" >
-						        <td  style="font-style:italic"><s:text name="Catalogs.overview.quotaTitleNbDocs" /></td>
+						        <td  style="font-style:italic"><s:text name="Catalogs.overview.quotaTitleNbDocs" />
+						        	<span title="S.O.S" 
+						                	onclick="event.stopPropagation();event.preventDefault();
+						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.quota_nbdocs.title" />','<s:text name="help.catalog.overview.quota_nbdocs.body" />')">
+						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
+						             </span>
+						        </td>
 						        <td  style="font-style:italic" class="_quota_nb_docs_"></td>
 						      </tr>
 						      <tr class="_quota_drive_row_">
-						        <td  style="font-style:italic"><s:text name="Catalogs.overview.quotaTitleDrive" /></td>
+						        <td  style="font-style:italic"><s:text name="Catalogs.overview.quotaTitleDrive" />
+						        	<span title="S.O.S" 
+						                	onclick="event.stopPropagation();event.preventDefault();
+						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.quota_drive.title" />','<s:text name="help.catalog.overview.quota_drive.body" />')">
+						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
+						             </span>
+						        </td>
 						        <td  style="font-style:italic" class="_quota_drive_"></td>
 						       </tr>
 						        

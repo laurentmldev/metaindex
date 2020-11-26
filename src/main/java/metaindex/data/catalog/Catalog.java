@@ -263,7 +263,7 @@ public class Catalog implements ICatalog {
 	
 	@Override
 	public String getLocalFsFilesPath() {
-		return Globals.Get().getUserdataFsPath()+"/catalogs/"+this.getName();
+		return Globals.Get().getUserdataFsPathCatalogs()+"/"+this.getName();
 	}
 	@Override
 	public String getFilesBaseUrl() {

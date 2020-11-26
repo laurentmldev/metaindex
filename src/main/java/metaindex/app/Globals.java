@@ -198,6 +198,12 @@ public class Globals {
 	public String getUserdataFsPath() { 
 		return GetMxProperty("mx.userdata.path");
 	}
+	public String getUserdataFsPathCatalogs() { 
+		return getUserdataFsPath()+"/catalogs";
+	}
+	public String getUserdataFsPathUsers() { 
+		return getUserdataFsPath()+"/users";
+	}
 	public String getWebappsTmpFsPath() {
 		String path=getWebappsFsPath()+"/"+Globals.GetMxProperty("mx.appname")+"/secure/mxtmp/";		
 		File directory = new File(path);

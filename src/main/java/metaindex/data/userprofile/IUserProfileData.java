@@ -112,7 +112,7 @@ public interface IUserProfileData extends ICatalogUser,IPlanUser,IObserver<IProc
 	public String getCurrentCatalogKibanaIFrameHtml();
 	
 	//-------- management of user local folder
-	public String getUserDriveFsPath();
+	public String getLocalFsFilesPath();
 	
 	//----------
 	public void sendEmail(String subject, String body) throws DataProcessException;
