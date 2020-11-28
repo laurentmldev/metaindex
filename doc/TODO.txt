@@ -26,6 +26,8 @@ when uploaded files : reminder we can connect via SFTP to browse drive contents
 enrich blacklist networks/ip-range with troll http requests 
 
 add "TVA number" in footer
+
+Revenir à l'application --> revenir à la page d'accueil
  
 
 v2.1.1:

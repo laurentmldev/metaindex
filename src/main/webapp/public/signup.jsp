@@ -24,7 +24,7 @@ onkeypress="if (event.which==13||event.keycode==13) {
  	<div id="termsBody" 
                		style=" margin-left:1rem;
                				padding-left:1rem;
-               				margin-top:6rem;
+               				margin-top:1rem;
                				font-size:1rem;
                				display:block;
                				height:90vh;
@@ -49,7 +49,6 @@ onkeypress="if (event.which==13||event.keycode==13) {
  <div id="contents" style="display:none" >
  	<center>
  		<h3><s:text name="signup.createYourAccount" /></h3>
- 		<div style="font-size:0.8rem;text-align:left;"><s:text name="signup.freeAccountLimitations" /></div>
  	</center>
  	
 	
@@ -73,27 +72,28 @@ onkeypress="if (event.which==13||event.keycode==13) {
                   	 placeholder="<s:text name="Profile.nickname" />" required>
                </center>
                </div>
-               
+                
                <div class="form-group"><center>
-               
-               <div style="margin-bottom:0.5rem"><s:text name="Profile.category" /></div>
                	<select id="category" name="category" class="form-control  mx_welcome_input" style="font-size:0.8rem;" >
                	<!-- values shall match corresponding enum defined in SQL DB -->
+				  <option value="" selected><s:text name="Profile.category.chooseOne" /></option>
 				  <option value="PERSONAL" ><s:text name="Profile.category.PERSONAL" /></option>
-				  <option value="STUDENT_SEARCHER" selected><s:text name="Profile.category.STUDENT_SEARCHER" /></option>
+				  <option value="STUDENT_SEARCHER" ><s:text name="Profile.category.STUDENT_SEARCHER" /></option>
 				  <option value="NONPROFIT" ><s:text name="Profile.category.NONPROFIT" /></option>
 				  <option value="ADMINISTRATION" ><s:text name="Profile.category.ADMINISTRATION" /></option>
 				  <option value="BUSINESS" ><s:text name="Profile.category.BUSINESS" /></option>				  
 				</select>				
                </center>
                </div>
-               
+
+               <div class="form-group"><center>
+                 <input id="bigtext" type="text" class="form-control form-control-user mx_welcome_input" name="very_important" placeholder="" 
+					style="margin:1rem;padding:0.6rem;color:#68c;"
+						value="<s:text name="contactform.emptyme" />" />
+               </center>
+               </div>               
                <div class="form-group" style="width:100%;">
                <center>
-               	
-               	
-               	
-               	 
                	
 	  <table style="width:100%"><tr>
 	  <td style="width:50%"><center>           
@@ -134,6 +134,12 @@ onkeypress="if (event.which==13||event.keycode==13) {
 	 if (document.getElementById('email').value.length==0) { alert('<s:text name="signup.pleaseGiveEmail"/>'); document.getElementById('email').focus(); }
 	 else if (document.getElementById('nickname').value.length==0) { alert('<s:text name="signup.pleaseGiveNickname"/>'); document.getElementById('nickname').focus(); }
      else if (document.getElementById('termsCheckbox').checked==false) { alert('<s:text name="signup.pleaseAcceptTerms"/>');document.getElementById('termsCheckbox').focus(); }
+     else if (document.getElementById('category').value.length==0) { alert('<s:text name="signup.pleaseChooseUseCase"/>'); document.getElementById('category').focus(); }
+     else if (document.getElementById('bigtext').value!='') {
+		alert('<s:text name="contactform.emptyme.explanation" />'); 
+		document.getElementById('bigtext').focus();
+	}
+       
      else { document.getElementById('form').submit(); }
  }
  function createForm() {

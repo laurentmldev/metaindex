@@ -62,7 +62,7 @@
                	
 	  
 	  <input id="bigtext" type="text" class="form-control form-control-user mx_welcome_input" name="very_important" placeholder="" 
-					style="margin:1rem;padding:0.6rem;"
+					style="margin:1rem;padding:0.6rem;color:#68c;"
 						value="<s:text name="contactform.emptyme" />" />
 				
 				
