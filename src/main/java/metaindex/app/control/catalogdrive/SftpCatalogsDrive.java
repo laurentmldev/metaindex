@@ -19,10 +19,13 @@ import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.Security;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Semaphore;
 
 import org.apache.commons.io.FileUtils;
@@ -41,6 +44,7 @@ import org.apache.sshd.server.session.ServerSession;
 import org.apache.sshd.server.subsystem.SubsystemFactory;
 import org.apache.sshd.server.subsystem.sftp.AbstractSftpEventListenerAdapter;
 import org.apache.sshd.server.subsystem.sftp.FileHandle;
+import org.apache.sshd.server.subsystem.sftp.Handle;
 import org.apache.sshd.server.subsystem.sftp.SftpEventListener;
 import org.apache.sshd.server.subsystem.sftp.SftpSubsystemFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -231,7 +235,69 @@ public class SftpCatalogsDrive implements ICatalogsDrive {
 	       // add listeners to prevent user to upload data if disc quota exceeded
 	       SftpEventListener sftpEventsListener = new AbstractSftpEventListenerAdapter() {
 	    	   
+	    	   private Semaphore _normalizationLock = new Semaphore(1,true);
+	    	   
+	    	   /// store files names to be normalized
+	    	   /// @see closing
+	    	   private Map<String,List<File> > pendingFilesToBeNormalizedPerPath = new ConcurrentHashMap<>(); 
 
+	    	   
+	    	   /**
+	    	    * Need to do file name normalization. If not, files with apparently same name can have potentially
+	    	    * different binary structure of file name (utf-8 decomposition or not for special characters).
+	    	    * Then when user request it by a URI, file is not found while it is apparently present in corresponding folder ...
+	    	    * it is because filename binary representation does not match URI decoded by java.
+	    	    * 
+	    	    * The "closed" method from SftpEventListener would be a good place to rename a file once it has been
+	    	    * finished to be written, but this method is apparently not invoked by Apache Mina server.
+	    	    * Waiting for a better solution, we try to mimic it using "closing" method instead, where the
+	    	    * parent folder is closed after files have been fully written.
+	    	    * We use this as a trigger to perform file names normalization.
+	    	    */
+	    	   @Override
+	    	    public void closing(ServerSession session, String remoteHandle, Handle localHandle) {
+	    	       
+	    		   super.closing(session,remoteHandle,localHandle);
+	    		   File closingFile = localHandle.getFile().toFile(); 
+	    		   if (closingFile.isFile()) {
+	    			   try {
+		    			   _normalizationLock.acquire();
+		    			   String parentPath = closingFile.getParent(); 
+		    			   if (!pendingFilesToBeNormalizedPerPath.containsKey(parentPath)) {
+		    				   pendingFilesToBeNormalizedPerPath.put(parentPath,new CopyOnWriteArrayList<>());
+		    			   }
+		    			   
+		    			   pendingFilesToBeNormalizedPerPath.get(parentPath).add(closingFile);
+	    			   } catch (InterruptedException e) { e.printStackTrace(); }
+    			   
+	    			   _normalizationLock.release();
+	    			   
+	    		   } else if (closingFile.isDirectory()) {
+	    			   try {
+		    			   _normalizationLock.acquire();
+		    			   if (!pendingFilesToBeNormalizedPerPath.containsKey(closingFile.getPath())) {
+		    				   _normalizationLock.release();
+		    				   return;
+		    			   }
+		    			   for (File f : pendingFilesToBeNormalizedPerPath.get(closingFile.getPath())) {
+		    				   String curFileName =f.getPath();
+		    	    		   String normalizedFileName=Normalizer.normalize(curFileName, Globals.LOCAL_USERDATA_NORMALIZATION_FORM);	    	    		  	   
+	    	    			   try {
+									Files.move(new File(curFileName).toPath(), new File(normalizedFileName).toPath());
+								} catch (IOException e) {
+									log.error("Unable to normalize name of uploaded file '"+curFileName+"' : "+e.getMessage());
+								}
+		    	    		   
+		    			   }
+		    			   pendingFilesToBeNormalizedPerPath.get(closingFile.getPath()).clear();
+	    			   } catch (InterruptedException e) { e.printStackTrace(); }
+	    			   _normalizationLock.release();
+	    		   }
+	    		   
+	    		   	
+	    	    }
+	    	  
+	    	  
 	    	    @Override
 	    	    public void reading(
 	    	            ServerSession session, String remoteHandle, FileHandle localHandle,
@@ -258,7 +324,7 @@ public class SftpCatalogsDrive implements ICatalogsDrive {
 					ICatalog c = Globals.Get().getCatalogsMgr().getCatalog(catalogName);
 					IUserProfileData u = Globals.Get().getUsersMgr().getUserByName(session.getUsername());
 					checkCatalogAccess(c,u,true);
-					if (!c.checkQuotasDriveOk()) { throw new IOException("Catalog out of quota, operation forbidded"); }
+					if (!c.checkQuotasDriveOk()) { throw new IOException("Catalog out of quota, operation forbidded"); }					
 	    	    }	    	   
 
 	    	    @Override

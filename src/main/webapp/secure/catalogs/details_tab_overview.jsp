@@ -218,7 +218,7 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 	    					+"<span style=\"font-size:0.8rem;\">"+curNbDocs
 	    							+"<i> / "
 									+maxNbDocs+"</i></span> "
-									+"<span style=\"font-weight:bold;\">"
+									+"<span style=\"font-weight:bold;margin-left:1rem;\">"
 									+usagePourcentNbDocs+"%</span></div>";
 	    	
 			quotaNbDocsProgressBarNode.style.display='block';
@@ -270,7 +270,7 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 	    					+"<span style=\"font-size:0.8rem;\">"+currentUseMBytes+ "MB"
 	    							+"<i> / "
 									+maxUseSpaceMBytes+"MB</i></span> "
-									+"<span style=\"font-weight:bold;\">"
+									+"<span style=\"font-weight:bold;margin-left:1rem;\">"
 									+usagePourcentDriveSpace+"%</span></div>";
 	    	
 			quotaProgressBarNode.style.display='block';

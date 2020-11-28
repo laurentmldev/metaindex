@@ -13,6 +13,8 @@ See full version of LICENSE in <https://fsf.org/>
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.Normalizer;
+import java.text.Normalizer.Form;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -64,6 +66,12 @@ public class Globals {
 	public static final Integer AUTOREFRESH_PERIOD_SEC=5;
 	private static final String MX_EMAIL_SUBJECT_PREFIX= "[MetaindeX]";
 	public static final String LOCAL_USERDATA_PATH_SUFFIX="/userdata/catalogs";
+	
+	// files stored in catalogs drive must be normalized in order to ensure their are
+	// always accessible via corresponding UTF-8 URI
+	// This normalization is done when storing a new file, either via Web upload
+	// of via SFTP upload.
+	public static final Form LOCAL_USERDATA_NORMALIZATION_FORM=Normalizer.Form.NFC;
 	
 	Properties _mx_config = new Properties();
 	static Map<String, String> env = System.getenv();
@@ -383,8 +391,10 @@ public class Globals {
 				+"- ------------------------ Statistics ------------------------"+"\n"
 				+"- mx.statistics.update_period_sec="+Globals.GetMxProperty("mx.statistics.update_period_sec")+"\n"
 				
-				
+				+System.getProperties()
 			;
+		
+		
 	}
 
 }

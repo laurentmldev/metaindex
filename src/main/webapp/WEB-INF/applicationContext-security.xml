@@ -10,8 +10,7 @@ using classpath local versions for spring XSD, otherwise it does not work offlin
 									 classpath:spring/schema/security/spring-security.xsd"
 									 >
 
-<http>
-	
+<http>	
 	<intercept-url pattern="/**" requires-channel="https" />	
 	<intercept-url pattern="/welcome" access="permitAll" />
 	<intercept-url pattern="/loginform" access="permitAll" />
@@ -26,7 +25,7 @@ using classpath local versions for spring XSD, otherwise it does not work offlin
 		will be required by spring to access it.
 		Possible configuration to customize better ...
 	 -->
-	<intercept-url pattern="/drive/**" access="permitAll" />		
+	<intercept-url pattern="/userdata/catalogs/**" access="permitAll" />		
 	<intercept-url pattern="/wsmx/**" access="hasRole('USER') or hasRole('ADMIN') or hasRole('OBSERVER')" />	
 	<intercept-url pattern="/secure/**" access="hasRole('USER') or hasRole('ADMIN') or hasRole('OBSERVER')" />
 	

@@ -62,7 +62,7 @@ public class CatalogDataAccessControlFilter implements Filter  {
 		}
 				
 		String URI = ((HttpServletRequest)request).getRequestURI();
-		log.error("### URI="+URI);
+		
 		String catalogName = extractCatalogNameFromUri(URI);
 		
 		ICatalog c = Globals.Get().getCatalogsMgr().getCatalog(catalogName);
@@ -70,11 +70,12 @@ public class CatalogDataAccessControlFilter implements Filter  {
 			((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "No access right for this URI, no such catalog.");
 			return;
 		}
+		
 		if (user.getUserCatalogAccessRights(c.getId())==USER_CATALOG_ACCESSRIGHTS.NONE) {
 			((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "No access right for this URI, no such contents.");
 			return;
 		}
-		 		
+		 	
 		chain.doFilter(request,response);
 		
 	}

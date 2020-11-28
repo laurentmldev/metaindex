@@ -61,8 +61,8 @@
  	 	imgUrl=catalogItemsUrlPrefix+"/"+imgUrl; 
  	 }
  	 
- 	 //return encodeURI(imgUrl);
- 	return imgUrl;
+ 	return encodeURI(imgUrl);
+ 	//return imgUrl;
  }
  function _commons_perspective_build_readonly_field_image_url(catalogDesc,tabIdx,sectionIdx,fieldIdx,fieldContainerNode,fieldVisuDesc,termDesc,fieldValue) {
 	 

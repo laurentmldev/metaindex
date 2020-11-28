@@ -15,6 +15,8 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.Normalizer;
+import java.text.Normalizer.Form;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
@@ -45,13 +47,20 @@ public class FileBinOutstream implements ILockable {
 	private Long _nbBytesDumped=0L;
 	private AProcessingTask _processingTask=null;
 	private String _tmpFilePath;
-	
+	private Form _normalizeForm = null;
 	private Boolean _stopDone = false;
-	
-	
-	public FileBinOutstream(String filePath,Long fileBytesSize, AProcessingTask proc) throws DataProcessException {
-		setFilePath(filePath);
-		setTmpFilePath(filePath+".tmp"+proc.getId());
+		
+	public FileBinOutstream(String filePath,Long fileBytesSize, AProcessingTask proc, Form normalizeForm) throws DataProcessException {
+		
+		_normalizeForm=normalizeForm;
+		
+		String normalizedFilePath=filePath;
+		if (_normalizeForm!=null) {
+			normalizedFilePath= Normalizer.normalize(filePath, _normalizeForm);
+		}
+		 
+		setFilePath(normalizedFilePath);
+		setTmpFilePath(normalizedFilePath+".tmp"+proc.getId());
 		setFileTargetBytesSize(fileBytesSize);
 
 		try {

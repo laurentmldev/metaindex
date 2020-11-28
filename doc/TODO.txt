@@ -3,17 +3,30 @@
 v2.1.0:
 -------
 
-
-access userdata with UTF-8 encoding
-
-enrich blacklist networks/ip-range with troll http requests 
- 
 tab icon with white background
 
 finalize plans and prices per category
 
 tuto video for drive access
 
+anti-bot field in signup form
+
+disabled in server.xml tomcat admin port etc.
+
+Tutos: "See useful links below" in FR
+
+search bar : icons "hover" style hard to read
+
+perspective detection field SOS text FR
+  - voir la section -> voir le panneau
+  - lien vers le tuto
+  
+when uploaded files : reminder we can connect via SFTP to browse drive contents
+
+enrich blacklist networks/ip-range with troll http requests 
+
+add "TVA number" in footer
+ 
 
 v2.1.1:
 -------

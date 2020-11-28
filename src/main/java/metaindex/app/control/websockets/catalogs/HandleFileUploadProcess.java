@@ -1,5 +1,7 @@
 package metaindex.app.control.websockets.catalogs;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 /*
@@ -19,7 +21,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-
+import metaindex.app.Globals;
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.AProcessingTask;
@@ -42,10 +44,10 @@ public class HandleFileUploadProcess extends AProcessingTask   {
 	
 	
 	public HandleFileUploadProcess(IUserProfileData u, 
-						 String name, 
+						 String taskName, 
 						 String uploadPath,
 						 List<FileDescriptor> filesToDumpDescr) throws DataProcessException { 
-		super(u,name);
+		super(u,taskName);
 		setUploadPath(uploadPath);
 		this.addObserver(u);		
 		
@@ -55,7 +57,8 @@ public class HandleFileUploadProcess extends AProcessingTask   {
 			FileBinOutstream outstream=new FileBinOutstream(
 												getFullFsPath(desc.getName()),
 												desc.getByteSize(),
-												this);
+												this,
+												Globals.LOCAL_USERDATA_NORMALIZATION_FORM);
 			_fileOutstreams.put(desc.getId(),outstream);
 			_fileDescriptors.put(desc.getId(),desc);
 			totalBytesSize+=desc.getByteSize();
@@ -65,6 +68,7 @@ public class HandleFileUploadProcess extends AProcessingTask   {
 	}
 		
 	private String getFullFsPath(String fileName) {
+		
 		return _uploadPath+"/"+fileName;
 	}
 	@Override
