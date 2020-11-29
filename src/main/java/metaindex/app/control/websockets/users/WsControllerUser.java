@@ -306,16 +306,16 @@ public static final Integer NB_DAYS_PLAN_DISCOUNT=182;// approx. half a year
 			log.error("User "+u.getName()+" requested update to unknown plan id '"+requestedPlanId+"'");
 			return false;
 		}
-		Double newPlanCost = newPlan.getYearlyCostEuros().doubleValue();
+		Double newPlanCost = round2digits(newPlan.getYearlyCostEuros().doubleValue());
 		List<PlanBreakdownEntry> breakDownList= new ArrayList<>();
 		
 		// new plan cost
 		breakDownList.add(new PlanBreakdownEntry(
 						"Plan '"+newPlan.getName()+"' 1 "+u.getText("Profile.plans.year"),
-						newPlan.getYearlyCostEuros().doubleValue(),
+						newPlanCost,
 						BREAKDOWN_ENTRY_TYPE.product,
 						"€ "+u.getText("Profile.plans.taxExcluded")));
-		totalYearlyCostHT+=round2digits(newPlanCost);
+		totalYearlyCostHT+=newPlanCost;
 		
 		// discount if any
 		Date now = new Date();
@@ -350,7 +350,7 @@ public static final Integer NB_DAYS_PLAN_DISCOUNT=182;// approx. half a year
 				"€"));
 		
 		// grand total with taxes
-		totalYearlyCost=round2digits(totalYearlyCostHT+taxCost);
+		totalYearlyCost=totalYearlyCostHT+taxCost;
 		breakDownList.add(new PlanBreakdownEntry(
 				"Total",
 				totalYearlyCost,
@@ -367,8 +367,8 @@ public static final Integer NB_DAYS_PLAN_DISCOUNT=182;// approx. half a year
      		Browser          				Server               	Payment Service (Paypal,...)
      			
      	    
-     		   -----ask payment details-------> 
-     		   <----send back breakdown detais-
+     		   -----ask payment details--------> 
+     		   <----send back breakdown details-
      		   
      		   ---------------------------process payment------------->
      		   <------------------------transaction confirmation-------
