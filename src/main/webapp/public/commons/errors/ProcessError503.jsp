@@ -45,7 +45,7 @@
             <p class="lead text-gray-800 mb-5"><s:text name="global.errorpage.error503" /></p>
             <p class="text-gray-600 mb-0" style="padding-bottom:5rem"><s:text name="global.errorpage.pleaseTryAgainLater"/></p>
             <p class="text-gray-600 mb-0" style="padding-bottom:5rem"><s:text name="global.errorpage.contactUsIfNeeded"/></p>
-            <a  href="${webAppBaseUrl}/Catalogs"><s:text name="global.errorpage.backToApp" /></a>
+            <a  href="${webAppBaseUrl}/loginform"><s:text name="global.errorpage.backToApp" /></a>
           </div>
 
         </div>

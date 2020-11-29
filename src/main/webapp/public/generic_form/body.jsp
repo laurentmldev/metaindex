@@ -58,7 +58,7 @@
 				    </div>	
             	<div class="app-title mx-copyright" 
             	style="" >
-            	<s:text name="globals.copyright"/> - MetaindeX v<s:property value="mxVersion"/></div>
+            	<s:text name="globals.copyright"/> - MetaindeX v<s:property value="mxVersion"/><br/><s:property value="mxFooterInfo"/></div>
             </div>
           </div>
         </div>

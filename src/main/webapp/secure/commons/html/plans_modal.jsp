@@ -192,8 +192,15 @@ function plans_modal_addHeaderMenu() {
 	header.style="width:100%;text-align:center";
 	bodynode.append(header);
 	let headerLine=document.createElement("div");
-	headerLine.innerHTML+="<s:text name="Profile.plans.headerLine" />";
-	headerLine.style="font-size:1.5rem;margin:1rem;font-weight:bold";
+	let mainTitle=document.createElement("div");
+	mainTitle.style="font-size:1.5rem;margin:1rem;font-weight:bold;margin-bottom:0.2rem;";
+	mainTitle.innerHTML="<s:text name="Profile.plans.headerLine" />";
+	headerLine.append(mainTitle);
+	let subTitle=document.createElement("div");
+	subTitle.style="font-size:1rem;margin:0;margin-bottom:1rem;color:#5a5;";
+	subTitle.innerHTML="<s:text name="Profile.plans.contactUsForCustomPlan" />";
+	headerLine.append(subTitle);
+	
 	header.append(headerLine);
 	
 	

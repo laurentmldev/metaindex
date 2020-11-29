@@ -64,9 +64,26 @@
 	  <input id="bigtext" type="text" class="form-control form-control-user mx_welcome_input" name="very_important" placeholder="" 
 					style="margin:1rem;padding:0.6rem;color:#68c;"
 						value="<s:text name="contactform.emptyme" />" />
-				
-				
-	  <a href="#" class="btn btn-primary btn-user btn-block scale" style="max-width:30%;" 
+			
+			
+			
+	 <table style="width:100%"><tr>
+      <td style="width:50%;"><center>
+      
+       <a href="#" class="btn btn-user  btn-block scale"  
+        	style="max-width:70%;font-size:0.8rem;background:#aaa;color:white;padding:0.2rem"
+	  	onclick="window.location.href='${param.origin}'">
+                   <s:text name="globals.goback" />
+                 </a>
+                 
+       
+      </center>
+      </td style="width:50%">
+      <td>
+      <center>
+      
+       <a href="#" class="btn  btn-user btn-block scale" 
+       	style="max-width:70%;font-size:0.8rem;background:#8d8;color:white;padding:0.2rem" 
 	  	onclick="
 	  	
 	  			if (!validateEmail(document.getElementById('email').value)) { 
@@ -86,12 +103,14 @@
                    <s:text name="contactform.send" />
                  </a>
                  
-        <a href="#" class="btn btn-primary btn-user btn-block scale" 
-        		style="max-width:30%;margin-top:1rem;padding:0.4rem;background:#999;border:none;" 
-	  	onclick="window.location.href='${param.origin}'">
-                   <s:text name="globals.goback" />
-                 </a>
-                 
+           
+      </center></td>  
+     </tr></table>
+     
+			
+			
+			
+			
                  </center>
                </div>
        </form>

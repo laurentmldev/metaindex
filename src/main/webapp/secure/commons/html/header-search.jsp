@@ -94,15 +94,14 @@
                   <i class="fas fa-cut fa-sm text-grey-50"></i>
                 </button>
               </div>
-             
-              
+ 
               <!-- save current filter expression -->
                <div id="save_current_search_button" class="input-group-append dropdown no-arrow ">
               	<!--  call to external (custom) function header_onSearchClick(searchQuery) -->
-                <a class="btn btn-secondary dropdown-toggle" id="saveFilterDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
+                <button class="btn btn-secondary dropdown-toggle" id="saveFilterDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
                 	title="<s:text name="Header.search.savequery.title"/>" > 
                   <i class="far fa-star fa-sm text-grey-50"></i>
-                </a>
+                </button>
                	  <!-- Dropdown - Filter Save Name -->
 	              <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="saveFilterDropdown">
 	                <div class="form-inline mr-auto w-auto navbar-search">

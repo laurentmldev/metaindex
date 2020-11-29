@@ -252,6 +252,24 @@ function goBack() { window.location.href=origin; }
 	   		 
 	   	   </div></div>
    		 
+   		  
+  <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+          <div class="mx-copyright text-center my-auto">
+            <span><b><s:text name="globals.copyright"/></b> - MetaindeX v<s:property value="mxVersion"/><br/><s:property value="mxFooterInfo"/></span>
+          </div>
+          <center>
+        <div>
+		<a class="" href="https://secure.europeanssl.eu" target="_blank" style="">
+           			<img src="https://secure.europeanssl.eu/seal/metaindex.fr/150" 
+           			style="margin-top:1rem" />
+           			
+		</a>	
+		</div>
+		</center>
+        </div>
+       
+       </footer>
     	</div><!-- End of Cards Container -->
       </div>
       </div><!-- End of Main content -->
@@ -259,7 +277,9 @@ function goBack() { window.location.href=origin; }
     </div><!-- End of Contents Wrapper -->
   
   </div><!-- End of Page Wrapper -->
-  
+   
+  </footer>
+   
   
 </body>
 

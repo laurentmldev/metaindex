@@ -231,8 +231,10 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 		return _userProfileData.getCurrentDocumentId();
 	}	
 	
-	public String getMxVersion() {	return Globals.GetMxProperty("mx.version"); }
-	public String getMxStatus() {	return Globals.GetMxProperty("mx.status"); }
+	public String getMxVersion() { return Globals.GetMxProperty("mx.version"); }
+	public String getMxStatus() { return Globals.GetMxProperty("mx.status"); }
+	public String getMxFooterInfo() {return Globals.GetMxProperty("mx.footer.info"); } 
+	
 	public String getMxRole() {	return _userProfileData.getRole().toString(); }
 	public Boolean getMxDevMode() {	return Globals.Get().isDevMode(); }
 	

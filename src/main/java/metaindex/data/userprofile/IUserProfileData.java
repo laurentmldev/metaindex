@@ -39,7 +39,7 @@ public interface IUserProfileData extends ICatalogUser,IPlanUser,IObserver<IProc
 	public enum USER_ROLE { ROLE_ADMIN, ROLE_USER, ROLE_OBSERVER };
 	public USER_ROLE getRole();
 	
-	// enum defined in SQL db too for users (without ALL) plans (with ALL) 
+	// enum defined in SQL db too for users (without ALL) and plans (with ALL) 
 	public enum CATEGORY { PERSONAL,STUDENT_SEARCHER, NONPROFIT, ADMINISTRATION,BUSINESS,ALL };
 	// different plan apply depending on user category
 	public CATEGORY getCategory();

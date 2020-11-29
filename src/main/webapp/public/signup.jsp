@@ -98,13 +98,14 @@ onkeypress="if (event.which==13||event.keycode==13) {
 	  <table style="width:100%"><tr>
 	  <td style="width:50%"><center>           
 	       <a href="#" class="btn btn-primary btn-user btn-block scale" 
-	        		style="max-width:40%;height:3rem;background:#999;border:none;padding:0;padding:0;padding-top:0.8rem;" 
+	        		style="max-width:40%;background:#999;border:none;padding:0;padding:0.2rem;height:2rem;padding-top:0.4rem;" 
 		  	onclick="window.location.href='${param.origin}'">
 	                   <s:text name="globals.goback" />
 	                 </a>
       </center> </td>
 	  <td style="width:50%"><center>
-		  <a href="#" class="btn btn-primary btn-user btn-block scale" style="height:3rem;max-width:70%;padding:0;padding-top:0.8rem;background:#6c6;color:white;border:none" 
+		  <a href="#" class="btn btn-primary btn-user btn-block scale" 
+		  style="max-width:70%;padding:0.2rem;background:#6c6;color:white;border:none;height:2rem;padding-top:0.4rem;" 
 		  	onclick="checkAndSendForm();">
 	                   <s:text name="signup.create" />
 	                 </a>

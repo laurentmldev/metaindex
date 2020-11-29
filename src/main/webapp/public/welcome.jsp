@@ -174,7 +174,7 @@
  <footer class="sticky-footer bg-white">
         <div class="container my-auto">
           <div class="mx-copyright text-center my-auto">
-            <span><b><s:text name="globals.copyright"/></b> - MetaindeX v<s:property value="mxVersion"/></span>
+            <span><b><s:text name="globals.copyright"/></b> - MetaindeX v<s:property value="mxVersion"/><br/><s:property value="mxFooterInfo"/></span>
           </div>
           <center><div>
 		<a class="" href="https://secure.europeanssl.eu" target="_blank" style="">
