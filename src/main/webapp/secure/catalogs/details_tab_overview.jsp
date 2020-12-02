@@ -238,13 +238,10 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 			
 	// quotas drive space
 			let quotaDrive=newPopulatedCatalogDetails.querySelector("._quota_drive_");
-			let currentUseBytes=catalogCard.descr.driveUseBytes;
-			let currentUseMBytes=currentUseBytes/1000000;
-			if (currentUseBytes==0) { currentUseMBytes=0;} // avoid weird numbers when rounding occurs
-			let maxUseSpaceBytes=catalogCard.descr.quotaDriveBytes;
-			let maxUseSpaceMBytes=maxUseSpaceBytes/1000000;
+			let currentUseMBytes=catalogCard.descr.driveUseMBytes;		
+			let maxUseSpaceMBytes=catalogCard.descr.quotaDriveMBytes;
 			let usagePourcentDriveSpace=100;
-			if (maxUseSpaceBytes>0) { usagePourcentDriveSpace=(currentUseMBytes*100)/maxUseSpaceMBytes; }
+			if (maxUseSpaceMBytes>0) { usagePourcentDriveSpace=(currentUseMBytes*100)/maxUseSpaceMBytes; }
 			
 			// rounding values do 2 decimals
 			currentUseMBytes=Math.round(currentUseMBytes * 100) / 100;
@@ -264,6 +261,11 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 			
 	    	pourcentageNode = quotaProgressBarNode.querySelector("._pourcentage_");
 	    	pourcentageNode.style.width=usagePourcentDriveSpace+"%";
+	    	
+	    	
+	    	// avoid rounding effect if near zero negative numbers
+	    	if (maxUseSpaceMBytes<0) { maxUseSpaceMBytes=0; }
+	    	if (usagePourcentDriveSpace<0) { usagePourcentDriveSpace=0; }
 	    	
 	    	textNode = quotaProgressBarNode.querySelector("._text_");	    	
 	    	textNode.innerHTML="<div class=\""+pourcentClass+"\" >"

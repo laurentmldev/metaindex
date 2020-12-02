@@ -124,7 +124,7 @@ public class Catalog implements ICatalog {
 				+"\n\t- id: "+this.getId()
 				+"\n\t- creator_id: "+this.getOwnerId()
 				+"\n\t- quotaNbDocs: "+this.getQuotaNbDocs()
-				+"\n\t- quotaDriveBytes: "+this.getQuotaDriveBytes()+" Bytes"
+				+"\n\t- quotaDriveMBytes: "+this.getQuotaDriveMBytes()+"MB"
 				+"\n\t- Nb Logged users:\t"+this.getNbLoggedUsers();
 		
 
@@ -703,10 +703,10 @@ public class Catalog implements ICatalog {
 		return curOwner.getPlan().getQuotaNbDocsPerCatalog();
 	}
 	@Override
-	public Long getQuotaDriveBytes() {
+	public Long getQuotaDriveMBytes() {
 		IUserProfileData curOwner = getOwner();
 		if (curOwner==null) { return DEFAULT_QUOTA_DRIVE_BYTES; }
-		return curOwner.getPlan().getQuotaDriveBytesPerCatalog();
+		return curOwner.getPlan().getQuotaDriveMBytesPerCatalog();
 	}
 	
 	@Override
@@ -715,10 +715,10 @@ public class Catalog implements ICatalog {
 	}
 
 	@Override
-	public Long getDriveUseBytes() {
+	public Long getDriveUseMBytes() {
 		try {
 			Long usedDiskSpace = FileSystemUtils.GetTotalSizeBytes(this.getLocalFsFilesPath()+"/");
-			return usedDiskSpace;
+			return usedDiskSpace/1000000;
 		} catch (IOException e) {
 			log.error("Unable to retrieve used drive usage for catalog '"+this.getName()+"' at "+this.getLocalFsFilesPath()+" : "+e.getMessage());
 			//e.printStackTrace();
@@ -728,7 +728,7 @@ public class Catalog implements ICatalog {
 	}
 	@Override
 	public Boolean checkQuotasDriveOk() {
-		return getDriveUseBytes()<this.getQuotaDriveBytes();
+		return getDriveUseMBytes()<this.getQuotaDriveMBytes();
 	}
 
 	@Override

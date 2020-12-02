@@ -43,7 +43,7 @@ public class WsControllerCatalogUserDataFileUpload extends AMxWSController {
 	
 	private Log log = LogFactory.getLog(WsControllerCatalogUserDataFileUpload.class);
 	
-	private static final Long MAX_UPLOAD_SIZE_BYTES=30000000L; // 30Mo max, otherwise go to Filezilla
+	private static final Long MAX_UPLOAD_SIZE_MBYTES=30L; // 30Mo max, otherwise go via SFTP
 	@Autowired
 	public WsControllerCatalogUserDataFileUpload(SimpMessageSendingOperations messageSender) {
 		super(messageSender);		
@@ -79,12 +79,12 @@ public class WsControllerCatalogUserDataFileUpload extends AMxWSController {
 	    	}
 	    	
 	    	// check quota
-	    	Long totalSpaceNeededByte = 0L;
-	    	for (FileDescriptor desc : requestMsg.getFileDescriptions()) { totalSpaceNeededByte+=desc.getByteSize();}	    	
-	    	if (c.getQuotaDriveBytes()-c.getDriveUseBytes()<totalSpaceNeededByte) {
+	    	Long totalSpaceNeededMByte = 0L;
+	    	for (FileDescriptor desc : requestMsg.getFileDescriptions()) { totalSpaceNeededMByte+=desc.getByteSize()/1000000;}	    	
+	    	if (c.getQuotaDriveMBytes()-c.getDriveUseMBytes()<totalSpaceNeededMByte) {
 	    		answer.setIsSuccess(false);
 	    		answer.setRejectMessage(user.getText("Catalogs.quotasExceededDriveSpace",
-						new Long(c.getQuotaDriveBytes()/1000000).toString()));
+						c.getQuotaDriveMBytes().toString()));
 	    		this.messageSender.convertAndSendToUser(
 	    				headerAccessor.getUser().getName(),
 	    				"/queue/upload_userdata_files_response", 
@@ -92,11 +92,11 @@ public class WsControllerCatalogUserDataFileUpload extends AMxWSController {
 	    		return;
 	    	}
 	    	
-	    	if (totalSpaceNeededByte>MAX_UPLOAD_SIZE_BYTES) {
+	    	if (totalSpaceNeededMByte>MAX_UPLOAD_SIZE_MBYTES) {
 	    		answer.setIsSuccess(false);
 	    		answer.setRejectMessage(user.getText("Catalogs.exceededMaxUploadSize",
-						new Long(totalSpaceNeededByte/1000000).toString(),
-						new Long(MAX_UPLOAD_SIZE_BYTES/1000000).toString(),
+						totalSpaceNeededMByte.toString(),
+						MAX_UPLOAD_SIZE_MBYTES.toString(),
 						Globals.GetMxProperty("mx.host"),
 						Globals.GetMxProperty("mx.drive.sftp.port")));
 

@@ -256,31 +256,9 @@ public class WsControllerCatalog extends AMxWSController {
 							 targetUser.getText("Catalogs.users.catalogAccessRightsChanged.email.body",
 									 targetUser.getNickname(),
 									 c.getName(),
-									 requestMsg.getAccessRights().toString()));
+									 requestMsg.getAccessRights().toString(),
+									 Globals.Get().getHttpBaseUrl()));
 		
-    }
-    
-    private Integer findAvailableDrivePort(Integer portRangeStart,Integer portRangeEnd) {
-    	
-    	Integer curPort=portRangeStart;
-    	while (curPort<=portRangeEnd) {
-            try {
-            	// check it is not used by another catalog
-            	List<Integer> catalogIds = new ArrayList<>();
-        		Globals.Get().getDatabasesMgr().getCatalogDefDbInterface()
-        			.getCatalogIdFromDrivePortStmt(curPort).execute(new StreamHandler<Integer>(catalogIds));
-        		if (catalogIds.size()!=0) { throw new DataProcessException(""); }
-        		
-        		// check if another application does not already use this port on the system
-                ServerSocket s = new ServerSocket(curPort);
-                s.close();
-                return curPort;
-            } catch (IOException | DataProcessException e) {
-            	curPort++;
-            }                          
-    	}
-    	
-    	return null;
     }
     
     @MessageMapping("/create_catalog")
@@ -735,7 +713,7 @@ public class WsControllerCatalog extends AMxWSController {
 		}
     	try {   
     		
-    		// assign a 'NONE' access rights to this usert for the catalog
+    		// assign a 'NONE' access rights to this user for the catalog
     		// os that calalog admins can then see it in the users list and 
     		// give hil proper access rights
     		Boolean result = Globals.Get().getDatabasesMgr().getCatalogDefDbInterface()

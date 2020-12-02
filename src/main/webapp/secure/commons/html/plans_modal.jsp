@@ -5,7 +5,7 @@
 
 <script type="text/javascript">
 
-var PLANS_COLORS=["#eee" ,"#bceaff",  "#e4ffad","#ffaaaa", "#aaa"];
+var PLANS_COLORS=["#eee" ,"#bceaff",  "#e4ffad","#ffaaaa", "#ff99cc", "#ff99ff","#99ffcc" ];
 
 
 function addPlanCheckoutBreakDown(id,name,checkoutBreakdownMsg) {
@@ -55,7 +55,7 @@ function addPlanCheckoutBreakDown(id,name,checkoutBreakdownMsg) {
 	
 }
 
-function makePlanPresentationRow(id,name,nbCatalogs,nbDocs,nbBytes,yearlyCostEuros,currentPlanId,popupWindow,
+function makePlanPresentationRow(id,name,nbCatalogs,nbDocs,nbMBytes,yearlyCostEuros,currentPlanId,popupWindow,
 				availableForPurchase, curPlanEndDateStr) {
 	
 	if (availableForPurchase==false && id!=currentPlanId) { return null; }
@@ -153,7 +153,12 @@ function makePlanPresentationRow(id,name,nbCatalogs,nbDocs,nbBytes,yearlyCostEur
 	
 	// drive usage quota
 	let colDriveSpaceUsage = document.createElement("td");
-	colDriveSpaceUsage.innerHTML="<span style='color:#111;'>"+nbBytes/1000000+"</span> <span style='font-size:1rem'>MB</span>";
+	unit="MB";
+	if (nbMBytes>=1000) {
+		nbMBytes=nbMBytes/1000;
+		unit="GB";
+	}
+	colDriveSpaceUsage.innerHTML="<span style='color:#111;'>"+nbMBytes+"</span> <span style='font-size:1rem'>"+unit+"</span>";
 	colDriveSpaceUsage.style="background-color:"+rowColor;
 	row.append(colDriveSpaceUsage);
 	
@@ -238,7 +243,7 @@ function plans_modal_addHeaderMenu() {
 						"<s:property value="currentUserProfile.plan.name"/>",
 						<s:property value="currentUserProfile.plan.quotaCatalogsCreated"/>,
 						<s:property value="currentUserProfile.plan.quotaNbDocsPerCatalog"/>,
-						<s:property value="currentUserProfile.plan.quotaDriveBytesPerCatalog"/>,
+						<s:property value="currentUserProfile.plan.quotaDriveMBytesPerCatalog"/>,
 						<s:property value="currentUserProfile.plan.yearlyCostEuros"/>,
 						<s:property value="currentUserProfile.plan.id"/>,
 						plansPopupNode,
@@ -257,7 +262,7 @@ function plans_modal_addHeaderMenu() {
 								"${item.name}",
 								${item.quotaCatalogsCreated},
 								${item.quotaNbDocsPerCatalog},
-								${item.quotaDriveBytesPerCatalog},
+								${item.quotaDriveMBytesPerCatalog},
 								${item.yearlyCostEuros},
 								<s:property value="currentUserProfile.plan.id"/>,
 								plansPopupNode,

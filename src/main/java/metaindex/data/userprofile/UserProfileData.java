@@ -110,8 +110,8 @@ public class UserProfileData implements IUserProfileData
 	private Boolean _enabled=false;
 	
 	// plan info
-	private Integer _planId;
-	private IPlan _curPlan;
+	private Integer _planId;// the real reference info is plan id
+	private IPlan _cachedCurPlan; // just cache the object corresponding to planId
 	private Date _planStartDate;
 	private Date _planEndDate;
 	private Integer _planNbQuotaWarnings=0;
@@ -142,9 +142,12 @@ public class UserProfileData implements IUserProfileData
 			activePlanId=Globals.Get().getPlansMgr().getDefaultPlan(this.getCategory()).getId(); 
 		}
 		
-		if (_curPlan!=null && _curPlan.getId().equals(activePlanId)) { return _curPlan; }
-		_curPlan = Globals.Get().getPlansMgr().getPlan(activePlanId);		
-		return _curPlan;
+		// update cached current plan object if needed
+		if (_cachedCurPlan==null || !_cachedCurPlan.getId().equals(activePlanId)) {
+			_cachedCurPlan = Globals.Get().getPlansMgr().getPlan(activePlanId);
+		}
+				
+		return _cachedCurPlan;
 	}
 	private String formatDate(Date date) {
 		DateFormat userDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -710,11 +713,11 @@ public class UserProfileData implements IUserProfileData
 				+"\n\t- plan: "+Globals.Get().getPlansMgr().getPlan(getPlanId()).getName()+" (id:"+getPlanId()+")"
 						+" from "+this.getPlanStartDate()+" until "+this.getPlanEndDate()
 				// if defined plan is outdated, fallback into a basic default plan
-				+(getPlan().getId()==getPlanId() ? "" :
+				+(getPlan().getId().equals(getPlanId()) ? "" :
 					"\n\t\t\t Plan OUTDATED. Active plan:"+this.getPlan().getName()+" (id:"+this.getPlan().getId()+")")
 				+"\n\t\t- quotaCatalogsCreated: "+this.getPlan().getQuotaCatalogsCreated()
 				+"\n\t\t- quotaNbDocsPerCatalog: "+this.getPlan().getQuotaNbDocsPerCatalog()
-				+"\n\t\t- quotaDrivePerCatalog: "+(this.getPlan().getQuotaDriveBytesPerCatalog()/1000000)+"MB"
+				+"\n\t\t- quotaDrivePerCatalog: "+this.getPlan().getQuotaDriveMBytesPerCatalog()+"MB"
 				+"\n\t- planNbQuotasWarnings: "+this.getPlanNbQuotaWarnings()
 				+"\n\t- catalogs rights: ";
 		if (this.getRole() == USER_ROLE.ROLE_ADMIN) {

@@ -32,7 +32,7 @@ class PopulatePlanFromDbStmt extends SQLPopulateStmt<IPlan>   {
 	
 	public static final String SQL_REQUEST = 
 			"select plan_id,name,availableForPurchase,"
-						+"quotaCreatedCatalogs,quotaNbDocsPerCatalog,quotaDriveBytesPerCatalog,"
+						+"quotaCreatedCatalogs,quotaNbDocsPerCatalog,quotaDriveMBytesPerCatalog,"
 						+"yearlyCostEuros,category,lastUpdate"
 			+" from plans";	
 
@@ -84,7 +84,7 @@ class PopulatePlanFromDbStmt extends SQLPopulateStmt<IPlan>   {
 		d.setAvailableForPurchase(rs.getBoolean(3));
 		d.setQuotaCatalogsCreated(rs.getInt(4));
 		d.setQuotaNbDocsPerCatalog(rs.getLong(5));
-		d.setQuotaDriveBytesPerCatalog(rs.getLong(6));
+		d.setQuotaDriveMBytesPerCatalog(rs.getLong(6));
 		d.setYearlyCostEuros(rs.getFloat(7));
 		d.setCategory(CATEGORY.valueOf(rs.getString(8)));
 		d.setLastUpdate(dbDate);

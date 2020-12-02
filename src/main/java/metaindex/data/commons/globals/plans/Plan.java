@@ -36,7 +36,7 @@ public class Plan implements IPlan {
 	private String _name;
 	private Integer _catalogsCreatedQuota;
 	private Long _docsQuotaPerCatalog;
-	private Long _dicsBytesQuotaPerCatalog;
+	private Long _dicsMBytesQuotaPerCatalog;
 	private Float _yearlyCost=0.0F;
 	private Boolean _availableForPurchase=false;
 	private CATEGORY _category=CATEGORY.ALL;
@@ -72,9 +72,9 @@ public class Plan implements IPlan {
 	public void setQuotaNbDocsPerCatalog(Long nbDocs) { _docsQuotaPerCatalog=nbDocs; }
 	
 	@Override
-	public Long getQuotaDriveBytesPerCatalog() { return _dicsBytesQuotaPerCatalog; }
+	public Long getQuotaDriveMBytesPerCatalog() { return _dicsMBytesQuotaPerCatalog; }
 	@Override
-	public void setQuotaDriveBytesPerCatalog(Long nbBytes) { _dicsBytesQuotaPerCatalog=nbBytes; }
+	public void setQuotaDriveMBytesPerCatalog(Long nbMBytes) { _dicsMBytesQuotaPerCatalog=nbMBytes; }
 	
 	@Override
 	public Float getYearlyCostEuros() { return _yearlyCost; }
@@ -121,7 +121,7 @@ public class Plan implements IPlan {
 				+"\n\t- name: "+this.getName()
 				+"\n\t- quotaCatalogsCreated: "+this.getQuotaCatalogsCreated()
 				+"\n\t- quotaNbDocsPerCatalog: "+this.getQuotaNbDocsPerCatalog()
-				+"\n\t- quotaDrivePerCatalog: "+(this.getQuotaDriveBytesPerCatalog()/1000000)+"MB"
+				+"\n\t- quotaDrivePerCatalog: "+this.getQuotaDriveMBytesPerCatalog()+"MB"
 				;
 		
 		return str;

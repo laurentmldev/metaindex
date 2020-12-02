@@ -1,0 +1,34 @@
+
+
+in Firefox: reset pwd laurentmlmx
+login laurentmlmx
+
+laurentmlmx: create catalog 'plop'
+laurentmlmx: create catalog 'tutu'
+laurentmlmx: create catalog 'héhé' -> ERROR
+
+in chrome: create user laurentmlpublic
+laurentmlpublic: set lang FR and green theme
+laurentmlpublic: join catalog plop
+
+laurentmlmx: give admin access to laurentmlpublic for catalog plop
+laurentmlmx: delete catalog tutu
+
+laurentmlmx: enter catalog plop
+laurentmlmx: create 3 fields: name (string), value (int), picture (image)
+laurentmlmx: create 1 doc, uploading picture 
+
+laurentmlmx: set cards title/thumbnail and catalog thumbnail
+
+laurentmlmx: give write-only access write to laurentmlpublic
+
+laurentmlmx/laurentmlpublic: chat a bit
+
+laurentmlpublic: upload csv/excel + files by drag and drop
+laurentmlpublic: access drive by SFTP
+
+laurentmlmx: go to kibana and create a visu
+
+laurentmlpublic: go to kibana and see visu
+
+laurentmlpublic: buy a new plan for good

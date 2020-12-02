@@ -277,7 +277,7 @@ CREATE TABLE `plans` (
   `availableForPurchase` boolean NOT NULL DEFAULT true,
   `quotaCreatedCatalogs` int(32) NOT NULL DEFAULT '0',
   `quotaNbDocsPerCatalog` int(64) NOT NULL DEFAULT '0',
-  `quotaDriveBytesPerCatalog` int(64) NOT NULL DEFAULT '0',
+  `quotaDriveMBytesPerCatalog` int(64) NOT NULL DEFAULT '0',
   `yearlyCostEuros` FLOAT NOT NULL DEFAULT '0',
   `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;

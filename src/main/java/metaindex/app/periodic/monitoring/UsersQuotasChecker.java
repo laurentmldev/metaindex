@@ -108,7 +108,7 @@ public class UsersQuotasChecker implements IPeriodicProcess {
 					nbQuotaDocs++;
 					overQuotaContents=true;
 				}
-				if (userPlan.getQuotaDriveBytesPerCatalog()<c.getDriveUseBytes()) {
+				if (userPlan.getQuotaDriveMBytesPerCatalog()<c.getDriveUseMBytes()) {
 					nbQuotaDrive++;
 					overQuotaContents=true;
 				}

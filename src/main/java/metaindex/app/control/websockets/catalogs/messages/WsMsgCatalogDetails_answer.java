@@ -45,9 +45,9 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 	private String _itemsUrlPrefix;
 	private String _pespectiveMatchField;
 	private Long _quotaNbDocs=Catalog.DEFAULT_QUOTA_NBDOCS;
-	private Long _quotaDriveBytes=Catalog.DEFAULT_QUOTA_DRIVE_BYTES;
+	private Long _quotaDriveMBytes=Catalog.DEFAULT_QUOTA_DRIVE_BYTES;
 	private Long _nbDocuments;
-	private Long _driveUseBytes=Long.MAX_VALUE;
+	private Long _driveUseMBytes=Long.MAX_VALUE;
 	private Boolean _dbIndexFound;
 	private Integer _drivePort=0;
 	private Integer _timeFieldTermId=null;
@@ -90,8 +90,8 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 		this.setUserAccessRights(u.getUserCatalogAccessRights(c.getId()));
 		this.setUserAccessRightsStr(u.getText("Profile.userAccessRights."+this.getUserAccessRights().toString()));
 		this.setQuotaNbDocs(c.getQuotaNbDocs());
-		this.setQuotaDriveBytes(c.getQuotaDriveBytes());
-		this.setDriveUseBytes(c.getDriveUseBytes());
+		this.setQuotaDriveMBytes(c.getQuotaDriveMBytes());
+		this.setDriveUseMBytes(c.getDriveUseMBytes());
 		this.setTimeFieldTermId(c.getTimeFieldTermId());
 		this.setEnabled(c.isEnabled());
 		if (u.getCurrentCatalog()==c) { this.setIsUserCurrentCatalog(true); }	
@@ -237,17 +237,17 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 		this._quotaNbDocs=maxNbDocs;
 		
 	}
-	public Long getQuotaDriveBytes() {
-		return this._quotaDriveBytes;
+	public Long getQuotaDriveMBytes() {
+		return this._quotaDriveMBytes;
 	}
-	public void setQuotaDriveBytes(Long maxSpaceBytes) {
-		this._quotaDriveBytes=maxSpaceBytes;		
+	public void setQuotaDriveMBytes(Long maxSpaceMBytes) {
+		this._quotaDriveMBytes=maxSpaceMBytes;		
 	}
-	public Long getDriveUseBytes() {
-		return _driveUseBytes;
+	public Long getDriveUseMBytes() {
+		return _driveUseMBytes;
 	}
-	public void setDriveUseBytes(Long driveUseBytes) {
-		this._driveUseBytes = driveUseBytes;
+	public void setDriveUseMBytes(Long driveUseMBytes) {
+		this._driveUseMBytes = driveUseMBytes;
 	}
 	
 	@Override

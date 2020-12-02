@@ -32,7 +32,7 @@ onkeypress="if (event.which==13||event.keycode==13) {
                		<s:text name="signup.termsAndCondition.body" />	   
                		
  					<table style="margin-left:20%;margin-bottom:1rem;" ><tr>
-                  		<td><input id="termsCheckbox" type="checkbox" name='acceptTermsAndConditions' class="form-control form-control-user" /></td>
+                  		<td style="min-width:15px"><input id="termsCheckbox" type="checkbox" name='acceptTermsAndConditions' class="form-control form-control-user" /></td>
                   		<td style="padding-left:0.5rem;">
                   			<span style="font-weight:bold;font-size:1rem;"><s:text name="signup.accept" /> <s:text name="signup.termsAndCondition" /></span>                  			
                   		</td>
