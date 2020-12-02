@@ -4,7 +4,7 @@
   <groupId>metaindex</groupId>
   <artifactId>metaindex</artifactId>
   <packaging>war</packaging>
-  <version>2.1.0.RELEASE</version>
+  <version>2.1.1.SNAPSHOT</version>
   <name>MetaindeX</name>
   <url>http://metaindex.fr</url>
   <repositories>
