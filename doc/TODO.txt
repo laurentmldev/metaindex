@@ -3,13 +3,6 @@
 v2.1.1:
 -------
 
-	
-disable logs for unknown actions, ex:
-[WARN ] 2020-12-02 09:29:27.905 [https-openssl-nio-20000-exec-8] Dispatcher - Could not find action or result: /webapp/welcomethemes/skachat/plugins/jquery.min.js?m=1589627809
-com.opensymphony.xwork2.config.ConfigurationException: There is no Action mapped for action name jquery.min.js.
-
-
-#108 bigger and more flashy text for tutos, with a colored background
 
 
 v2.1.x:
@@ -173,6 +166,9 @@ Done:
 -----
 
 v2.1.1
+
+	
+#108 bigger and more flashy text for tutos, with a colored background
 
 
 #107 signup/reset password shall allow several attempt until it is finalized? delay 24h ?

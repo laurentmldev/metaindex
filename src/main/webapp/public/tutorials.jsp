@@ -99,8 +99,9 @@ function goBack() { window.location.href=origin; }
   
   <style>
   video::cue{
-  	  background:#f8f9fc;
-  	  color:green;
+  	  /*background:#f8f9fc;*/ 
+  	  background:black;
+  	  color:white;
       font-size:1.4rem;
       padding:1rem;
     } 
