@@ -1,11 +1,7 @@
 
 
-v2.1.1:
--------
 
-
-
-v2.1.x:
+v2.1.2:
 -------
     
 backup/restore a given catalog
