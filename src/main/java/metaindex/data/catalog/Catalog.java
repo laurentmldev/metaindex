@@ -287,7 +287,7 @@ public class Catalog implements ICatalog {
 			if (!_loggedUsersIds.containsKey(p.getId()) ) {
 				_loggedUsersIds.put(p.getId(),p);
 				log.info("Catalog "+this.getName()+" added user '"
-							+p.getName()+"' sessionId="+p.getHttpSessionId()
+							+p.getId()+"' sessionId="+p.getHttpSessionId()
 							+". Total: "+_loggedUsersIds.size()+" users.");
 			}
 			_loggedUsersLock.release();

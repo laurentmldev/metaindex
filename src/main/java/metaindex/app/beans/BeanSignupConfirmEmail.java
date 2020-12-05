@@ -76,12 +76,20 @@ public class BeanSignupConfirmEmail extends BeanSignupSendEmail {
 			// try to limit hardcore overflow. 
 			// That might work since this method in synchronized
 			Thread.sleep(2000);
-
-			clearAwaitingAccount(getEmail());
+			
+			
+			// if user was already created, we just forward to password page
+			// this happens if user clicked several times on the link
+			// (or if outlook rewrites the link to check security ... :/ )
+			IUserProfileData u = Globals.Get().getUsersMgr().getUserByName(a.email);
+			if (u!=null) {
+				BeanResetPwd.SignalComingUserPasswdReset(u.getId());
+				return BeanProcessResult.BeanProcess_SUCCESS.toString();
+			}
 			
 			// creating SQL entry for new user
 			// default password is dummy, will have to be reset by user
-			IUserProfileData u = new UserProfileData();
+			u = new UserProfileData();
 			u.setName(a.email);
 			u.setNickname(a.properties.get("nickname").toString());
 			u.setGuiLanguageId((Integer)a.properties.get("guilanguageid"));

@@ -31,7 +31,7 @@ import toolbox.exceptions.DataProcessException;
  * Common Bean for all the 'Profile' JSP pages (profile,createProfile, editProfile).
  * @author Laurent ML
  */
-public class BeanSignupSendEmail extends ABeanEmailConfirmedAction {  
+public class BeanSignupSendEmail extends ABeanEmailConfirmPasswdAction {  
   	
 	private static final long serialVersionUID = 1L;
 	private Log log = LogFactory.getLog(BeanSignupSendEmail.class);

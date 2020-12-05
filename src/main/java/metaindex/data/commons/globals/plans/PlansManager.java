@@ -13,9 +13,13 @@ See full version of LICENSE in <https://fsf.org/>
 */
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.Semaphore;
 
 import org.apache.commons.logging.Log;
@@ -26,12 +30,17 @@ import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.UsersManager;
 import metaindex.data.userprofile.IUserProfileData.CATEGORY;
 import toolbox.exceptions.DataProcessException;
+import toolbox.utils.IIdentifiable;
 import toolbox.utils.IStreamHandler;
 
 public class PlansManager implements IPlansManager {
 	
 	private Log log = LogFactory.getLog(PlansManager.class);
-	private Map<Integer,IPlan> _plans = new java.util.concurrent.ConcurrentHashMap<>();
+	
+	// need to keep the plans ordered by Id, because we use this order
+	// to display plans by importance
+	// first one is the default plan
+	private SortedMap<Integer,IPlan> _plans = new TreeMap<Integer,IPlan>();
 	private Semaphore _plansLock = new Semaphore(1,true);
 	
 	@Override
@@ -76,7 +85,6 @@ public class PlansManager implements IPlansManager {
 		
 	}
 	
-	
 	@Override
 	public IPlan getPlan(Integer planId) {
 		IPlan plan = null;
@@ -95,17 +103,30 @@ public class PlansManager implements IPlansManager {
 	}
 	@Override
 	public Collection<IPlan> getPlans() {
+		
 		return _plans.values();
 	}
 	
+	/**
+	 * 
+	 * Default plan shall be the one with smallest Id for its category
+	 */
 	@Override 
 	public IPlan getDefaultPlan(CATEGORY c) {
+		IPlan currentDefaultPlan = null;
 		for (IPlan p : getPlans()) {
-			if (p.getCategory().equals(c)) { return p; }
+			if (p.getCategory().equals(c)) {
+				if (currentDefaultPlan==null 
+						|| p.getId()<currentDefaultPlan.getId()) { currentDefaultPlan=p; }
+			}				
 		}
+		if (currentDefaultPlan!=null) { return currentDefaultPlan; }
 		for (IPlan p : getPlans()) {
-			if (p.getCategory().equals(CATEGORY.ALL)) { return p; }
+			if (p.getCategory().equals(CATEGORY.ALL)) { 
+				if (currentDefaultPlan==null 
+						|| p.getId()<currentDefaultPlan.getId()) { currentDefaultPlan=p; } 
+			}
 		}
-		return null;
+		return currentDefaultPlan;
 	}
 }

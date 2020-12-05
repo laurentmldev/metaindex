@@ -29,17 +29,10 @@ import toolbox.exceptions.DataProcessException;
 /**
  * @author Laurent ML
  */
-public class BeanResetPwdSendEmail extends ABeanEmailConfirmedAction {  
+public class BeanResetPwdSendEmail extends ABeanEmailConfirmPasswdAction {  
   	
 	private static final long serialVersionUID = 1L;
 	private Log log = LogFactory.getLog(BeanResetPwdSendEmail.class);
-	
-
-	// list is different between signup and reset password
-	private static Map<String,AwaitingAccount> _awaitingAccountsByEmail=new ConcurrentHashMap<>();
-	
-	@Override
-	protected Map<String,AwaitingAccount>  getAwaitingAccountsByEmailMap() { return _awaitingAccountsByEmail; }
 	
 	@Override
   	public void prepare() throws Exception { 

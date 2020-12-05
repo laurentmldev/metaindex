@@ -16,20 +16,26 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import metaindex.app.beans.ABeanEmailConfirmPasswdAction.AwaitingAccount;
 import toolbox.exceptions.DataProcessException;
 
     
 /**
+ * Parent class for passwd reset and account creation.
+ * Disable link once password has been set, but 
+ * keep the link valid after several clicks as long
+ * as password has not be reset.
  * @author Laurent ML
  */
-public abstract class ABeanEmailConfirmedAction extends AMetaindexBean {  
+public abstract class ABeanEmailConfirmPasswdAction extends AMetaindexBean {  
   	
 	private static final long serialVersionUID = 1L;
-	private Log log = LogFactory.getLog(ABeanEmailConfirmedAction.class);
+	private Log log = LogFactory.getLog(ABeanEmailConfirmPasswdAction.class);
 
 	// 12h to confirm account
 	private static final Integer MAX_ACCOUNT_CONFIRMATION_DELAY_SEC=43200;
@@ -37,6 +43,13 @@ public abstract class ABeanEmailConfirmedAction extends AMetaindexBean {
 	private String _email = "";
 	private Long _requestId=null;
 	
+
+	// list is different between signup and reset password
+	private static Map<String,AwaitingAccount> _awaitingAccountsByEmail=new ConcurrentHashMap<>();
+	
+	protected Map<String,AwaitingAccount>  getAwaitingAccountsByEmailMap() { return _awaitingAccountsByEmail; }
+	
+
 	class AwaitingAccount {
 		
 		public String email="";
@@ -49,8 +62,6 @@ public abstract class ABeanEmailConfirmedAction extends AMetaindexBean {
 		}
 		
 	}
-	
-	abstract protected Map<String,AwaitingAccount>  getAwaitingAccountsByEmailMap();
 	
 	public AwaitingAccount getAwaitingAccount(String email,Long requestId) {
 		AwaitingAccount a = getAwaitingAccountsByEmailMap().get(email);
