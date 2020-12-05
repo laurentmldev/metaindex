@@ -262,8 +262,8 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 	    	pourcentageNode = quotaProgressBarNode.querySelector("._pourcentage_");
 	    	pourcentageNode.style.width=usagePourcentDriveSpace+"%";
 	    	
-	    	
 	    	// avoid rounding effect if near zero negative numbers
+	    	if (currentUseMBytes<0) { currentUseMBytes=0; }
 	    	if (maxUseSpaceMBytes<0) { maxUseSpaceMBytes=0; }
 	    	if (usagePourcentDriveSpace<0) { usagePourcentDriveSpace=0; }
 	    	
