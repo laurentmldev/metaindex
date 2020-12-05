@@ -2,6 +2,7 @@ package metaindex.app.beans;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /*
 GNU GENERAL PUBLIC LICENSE
@@ -26,14 +27,14 @@ import toolbox.exceptions.DataProcessException;
 /** 
  * @author Laurent ML
  */
-public class BeanResetPwd extends BeanSignupSendEmail {  
+public class BeanResetPwd extends BeanResetPwdSendEmail {  
   	
 	private static final long serialVersionUID = 1L;
 	private Log log = LogFactory.getLog(BeanSignupConfirmEmail.class);
 
 	private String _clearPassword="";
 	
-	private static List<Integer> _expectedPasswordReset = new ArrayList<>();
+	private static List<Integer> _expectedPasswordReset = new CopyOnWriteArrayList<>();
   	
 	public static void SignalComingUserPasswdReset(Integer uid) { 
 		if (!_expectedPasswordReset.contains(uid)) {
@@ -82,6 +83,8 @@ public class BeanResetPwd extends BeanSignupSendEmail {
   			e.printStackTrace();
   			return BeanProcessResult.BeanProcess_ERROR.toString();
   		} 
+		
+		clearAwaitingAccount(getEmail());
 		
 		return BeanProcessResult.BeanProcess_SUCCESS.toString();
 	}

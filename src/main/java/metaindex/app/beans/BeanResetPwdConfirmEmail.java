@@ -63,9 +63,7 @@ public class BeanResetPwdConfirmEmail extends BeanResetPwdSendEmail {
 			
 			if (a==null) {
 				return BeanProcessResult.BeanProcess_ERROR.toString();
-			}
-			
-			clearAwaitingAccount(getEmail());
+			}			
 			
 			// try to limit hardcore overflow. 
 			// That might work since this method in synchronized

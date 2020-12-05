@@ -1,10 +1,25 @@
 
 
-v2.1.0:
+v2.1.1:
+-------
+
+	
+disable logs for unknown actions, ex:
+[WARN ] 2020-12-02 09:29:27.905 [https-openssl-nio-20000-exec-8] Dispatcher - Could not find action or result: /webapp/welcomethemes/skachat/plugins/jquery.min.js?m=1589627809
+com.opensymphony.xwork2.config.ConfigurationException: There is no Action mapped for action name jquery.min.js.
+
+
+#108 bigger and more flashy text for tutos, with a colored background
+
+
+v2.1.x:
 -------
     
-
-v2.1.1:
+backup/restore a given catalog
+	- from command line
+	- from admin user
+	
+v2.1.y:
 -------
 
 check why payment by CB does not work in inline Paypal form
@@ -156,6 +171,14 @@ improve userdata drive connection
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+
+v2.1.1
+
+
+#107 signup/reset password shall allow several attempt until it is finalized? delay 24h ?
+	be robust to outlook links transform : 
+	 	https%3A%2F%2Fmetaindex.fr%2Fwebapp%2Fresetpwd_confirmemail%3Femail%3Dclement-michon%40hotmail.fr%26requestId%3D159889402005234063&data=04%7C01%7C%7C622d7f12103c4ff1303e08d8970947f9%7C84df9e7fe9f640afb435aaaaaaaaaaaa%7C1%7C0%7C637425413394135319%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&sdata=Pog93M96mZvIWfCAUdOt28rFjkTvNCCdeczDVy%2FpFrY%3D&reserved=0
+
 
 v2.1.0
 

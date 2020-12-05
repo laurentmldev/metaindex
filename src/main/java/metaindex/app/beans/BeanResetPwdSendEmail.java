@@ -37,6 +37,7 @@ public class BeanResetPwdSendEmail extends ABeanEmailConfirmedAction {
 
 	// list is different between signup and reset password
 	private static Map<String,AwaitingAccount> _awaitingAccountsByEmail=new ConcurrentHashMap<>();
+	
 	@Override
 	protected Map<String,AwaitingAccount>  getAwaitingAccountsByEmailMap() { return _awaitingAccountsByEmail; }
 	
