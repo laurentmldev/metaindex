@@ -8,6 +8,8 @@ backup/restore a given catalog
 	- from command line
 	- from admin user
 	
+keep track of user last login
+
 v2.1.y:
 -------
 
