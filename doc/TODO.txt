@@ -3,28 +3,83 @@
 
 v2.1.2:
 -------
-    
-backup/restore a given catalog
-	- from command line
-	- from admin user
+
+cannot download GEXF file in debug mode : confirm its ok in docker prod mode
+
+BUG: create an account: clicking on Go Back sends an email ...!
+
+#111 tutorials:
+	- force activate subtitles
+	- add msg: "please remember to activate subtitles"
+	- tutos page need a valid session. If we go directly there, we are forwarded to welcome page
 	
-keep track of user last login
+#112 when first login/enter catalog, items won't log
+	- add msg: please refresh page if nothing happien within few seconds
+    
+#113 welcome page:
+	- smaller images on wel ome page
+	- more consistent police
+
+#114 export GEXF :
+	- progress bar title: items.downloadItems.gexf.extract
+	- add link 'type' in generated data (name of the field)
+	
+#115 keep track of user last login
+
+#116 trace access to welcome and tutorials videos
+
+#117 when too many documents and too many fields, edit mode of links takes too long to get ready
+
+create new item : press enter shall keep popup open (like click on green button)
+
+# 118 bug: when renaming a perspective, it actually adds a new one, but keep previous one
+
+#35 Fields: multi shall be visible only if enum is not empty
+
+#119 multi-values displayed as keywords-boxes in read-only
+
 
 v2.1.y:
 -------
+#10 websocket connection refused after session timeout and re-login (TBC)
+
+# delete all items, not only max 10000 items (ELK limit)
+
+#64 type longtext (rich?) pour étude du language / analyse de corpus
+
+#94 when uploading CSV, empty fields might mean "clear contents" while currently it means "ignore it" (i.e. "leave it as is")
+
+
+add reconcile/reconstruct tools
+	- integrate Jupyter ?
+
+
+backup/restore a given catalog
+	- from command line
+	- from admin user
+
+offline page: add a try-again button
+
+GEXF export : 
+	- include/exclude self-references
+	- export multi fields as separate boolean so that we can discriminate them in Gephi
+	
+See Omeka interface for web-publishing features 
+
+session management:
+	- security: block user after x bad passwords ? then email confirm mandatory
+	- handle (or block) severals sessions in parallel
+
+implement tests for WS actions
+
+#28 user profile picture
 
 check why payment by CB does not work in inline Paypal form
 
 traductions anglaises vérifier avec Naomie ?
 
-
-enrich blacklist networks/ip-range with troll http requests 
-
 deploy fail2ban
 
-use alfresco jlan SMB server ?
-
-create new item : press enter shall keep popup open (like click on green button)
 
 trace last login date to detect zombie users 
 
@@ -38,34 +93,16 @@ timepicker:timeDefaults
 }
 
 
-when renaming a perspective, it actually adds a new one, but keep previous one
-
 remove user env var mx.mailer.admin_recipient, use list of app admin users instead
-
-add a login count table to detect old users
 
 drag n drop on field in edit mode
 	or when typing a file name (picture) : 
 		list with thumbnails from what is in the drive
 	
-add a "last activity date" in DB to detect inactive accounts
-
-#93 close GEXF window once generation started
-	+ close popups when press escape
-
-#98 ensure user cannot arm data from others via kibana
-		--> any user can delete spaces from somebody else
-			
-
-session management:
-	- security: block user after x bad passwords ? then email confirm mandatory
-	- handle (or block) severals sessions in parallel
 
 #105 only catalog admin shall be allowed to create a new field
 
 #88 use scripted fields to get decades automatically computed, or create decade sub-fields?
-
-implement tests for WS actions
 
 periodic tasks are broken after context reload?
 
@@ -80,26 +117,22 @@ rename 'perspective' into 'layout' ?
 
 #83 once user has been blocked, unable to log in again
 #76 https://metaindex.fr:8443/ is error page 
-#64 type longtext (rich?) pour étude du language / analyse de corpus
+
 #92 mxtmp folder shall be segregated and secured by catalog
-#94 when uploading CSV, empty fields might mean "clear contents" while currently it means "ignore it" (i.e. "leave it as is")
+
 # install Fai2Ban
 
-# FTP server shall not accept unsecure FTP connection 
-# integrate https://openseadragon.github.io/ for big images viewer
+# integrate https://openseadragon.github.io/ for big images viewer ?
 # integrate annona for annotations IIIF images overlay ?
 #78 import from json file
 #75 mxwebapp shall be robust to a restart of elsrc and kibana (and mxsql ?)
 
 #39 when delete catalog failed because of Kibana, page is not refreshed while it should be
-#35 Fields: multi shall be visible only if enum is not empty
 
-# delete all items, not only max 10000 items (ELK limit)
-#59 auto mx start at server reboot
+#59 auto mx start at server reboot?
 
 #23 avoid use of kibana_user user once ELK issue 51759 us fixed
-#10 websocket connection refused after session timeout and re-login
-#28 user profile picture
+
 
 #43 search on accentuated characters imported from UTF-16 does not seem to work
 #45 when logging out from Mx, log-out Kibana session too
@@ -109,18 +142,6 @@ rename 'perspective' into 'layout' ?
 Backlog:
 --------
 
-improve userdata drive connection
-
-	FTP server with 
-		- explicit message when uploading file too big for quota
-		- fewer debug messages 
-		- banner welcome message
-
-	NFS access : swith to JLAN remote files
-		https://stackoverflow.com/questions/26631989/how-to-setup-alfresco-jlan-file-server-as-a-standalone-java-package
-		
-	#81 accept WinSCP connection
-	
 - Kibana logs rotating daily 
 - construire un graph schéma conceptuel
 	Un schéma conceptuel (ou carte conceptuelle) est une représentation structurée d'un ensemble de concepts reliés sémantiquement. Les concepts sont liés par des lignes fléchées auxquelles sont accolés un mot ou deux décrivant leur relation : « mène à », « prévient que », « favorise », etc.
@@ -163,8 +184,11 @@ improve userdata drive connection
 Done:
 -----
 
-v2.1.1
+v2.1.2
 
+
+
+v2.1.1
 	
 #108 bigger and more flashy text for tutos, with a colored background
 

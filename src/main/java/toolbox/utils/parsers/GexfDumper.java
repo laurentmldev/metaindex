@@ -1,7 +1,5 @@
 package toolbox.utils.parsers;
 
-import java.io.BufferedReader;
-import java.io.File;
 
 /*
 GNU GENERAL PUBLIC LICENSE
@@ -13,6 +11,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
+import java.io.File;
 import static java.nio.file.StandardOpenOption.*;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -41,6 +40,7 @@ import toolbox.utils.filetools.FileSystemUtils;
 public class GexfDumper<T extends IFieldValueMapObject> extends AStreamHandler<T>   {
 
 	private Log log = LogFactory.getLog(GexfDumper.class);
+	private static final Integer EDGE_TYPE_ATTRIBUTE_ID = 0;
 	
 	private List<ICatalogTerm> _nodesDataTermsList=new ArrayList<>();
 	private List<ICatalogTerm> _edgesTermsList=new ArrayList<>();
@@ -121,7 +121,7 @@ public class GexfDumper<T extends IFieldValueMapObject> extends AStreamHandler<T
             _xmlStreamWriter.writeAttribute("mode","static");
             _xmlStreamWriter.writeAttribute("defaultedgetype","undirected");
 			
-			// attributes def
+			// nodes attributes def
             _xmlStreamWriter.writeCharacters("\n		");
             _xmlStreamWriter.writeStartElement("attributes");
             _xmlStreamWriter.writeAttribute("class","node");
@@ -138,6 +138,24 @@ public class GexfDumper<T extends IFieldValueMapObject> extends AStreamHandler<T
 				_xmlStreamWriter.writeEndElement();
 			}
             addCustomAttributes();
+            _xmlStreamWriter.writeCharacters("\n		");
+            _xmlStreamWriter.writeEndElement();
+            
+            //edges attributes def
+            _xmlStreamWriter.writeCharacters("\n		");
+            _xmlStreamWriter.writeStartElement("attributes");
+            _xmlStreamWriter.writeAttribute("class","edge");
+           {
+				Integer id = EDGE_TYPE_ATTRIBUTE_ID;
+				String name = "_edge_type_";
+				String gexfType = "string";
+				_xmlStreamWriter.writeCharacters("\n			");
+				_xmlStreamWriter.writeStartElement("attribute");
+				_xmlStreamWriter.writeAttribute("id",id.toString());
+				_xmlStreamWriter.writeAttribute("title",name);
+				_xmlStreamWriter.writeAttribute("type",gexfType);				
+				_xmlStreamWriter.writeEndElement();
+			}
             _xmlStreamWriter.writeCharacters("\n		");
             _xmlStreamWriter.writeEndElement();
             
@@ -203,7 +221,22 @@ public class GexfDumper<T extends IFieldValueMapObject> extends AStreamHandler<T
 						_xmlStreamWriterEdges.writeAttribute("source",item.getId());
 						_xmlStreamWriterEdges.writeAttribute("target",curTargetId);
 						_xmlStreamWriterEdges.writeAttribute("wheight","1");// default edge weight
-						_xmlStreamWriterEdges.writeEndElement();
+						
+						_xmlStreamWriterEdges.writeCharacters("\n				");
+						_xmlStreamWriterEdges.writeStartElement("attvalues");
+						
+						{
+							_xmlStreamWriterEdges.writeCharacters("\n					");
+							_xmlStreamWriterEdges.writeStartElement("attvalue");
+							_xmlStreamWriterEdges.writeAttribute("for",EDGE_TYPE_ATTRIBUTE_ID.toString());
+							_xmlStreamWriterEdges.writeAttribute("value",term.getName());	
+							_xmlStreamWriterEdges.writeEndElement();							
+						}
+						
+						_xmlStreamWriterEdges.writeCharacters("\n				");
+						_xmlStreamWriterEdges.writeEndElement();//attvalues
+						
+						_xmlStreamWriterEdges.writeEndElement();// edge
 						_nbEdges++;
 					}
 				}
