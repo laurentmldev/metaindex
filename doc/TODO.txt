@@ -17,12 +17,12 @@ BUG: create an account: clicking on Go Back sends an email ...!
 	- add msg: please refresh page if nothing happien within few seconds
     
 #113 welcome page:
-	- smaller images on wel ome page
+	x smaller images on welcome page
 	- more consistent police
 
 #114 export GEXF :
-	- progress bar title: items.downloadItems.gexf.extract
-	- add link 'type' in generated data (name of the field)
+	x progress bar title: items.downloadItems.gexf.extract
+	x add link 'type' in generated data (name of the field)
 	
 #115 keep track of user last login
 
