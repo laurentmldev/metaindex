@@ -175,9 +175,9 @@ public class WsControllerItem extends AMxWSController {
     	{
     		answer.setIsSuccess(false);
     		answer.setSize(-1);
-    		log.error("DataProcessException while retrieving items : "+e.getMessage());
+    		//log.error("DataProcessException while retrieving items : "+e.getMessage());
     		e.printStackTrace();
-    		answer.setRejectMessage(user.getText("Items.server.DbErrorOccured"));
+    		answer.setRejectMessage(user.getText("Items.server.DbErrorOccured",e.getMessage()));
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/items", 
 					getCompressedRawString(answer));    
     		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.get_catalog_items.db_error"));

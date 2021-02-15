@@ -11,6 +11,7 @@ where contents is a coma-separated list of documents IDs.
  -->		  
  <script type="text/javascript" >
  
+ const NB_ELEMENTS_TO_RETRIEVE=7;
  
 //--------------- H E L P E R S ------------------
 
@@ -73,7 +74,7 @@ function _commons_perspective_buildRefsDocsList(itemId,docIdsListStr,termDesc) {
 	refDocsListEnabledByIdNode.innerHTML=docIdsListStr;
 	
 	// populate documents list with all docs found in current value of the field.
-	retrieveItemsOptionsSuccess=function(itemsAnswerMsg) {
+	buildReadOnlyListLinks=function(itemsAnswerMsg) {
 		//console.log("retrieved "+itemsAnswerMsg.items.length+" children blabla");
 		refDocsListEnabledByIdNode.innerHTML="";
 		
@@ -92,6 +93,7 @@ function _commons_perspective_buildRefsDocsList(itemId,docIdsListStr,termDesc) {
 		
 		// refs docs table
 		let refsDocsTable=docsListFieldset.querySelector("._refsdocs_table_");
+		
 		for (var idx=0;idx<itemsAnswerMsg.items.length;idx++) {
 			 var item=itemsAnswerMsg.items[idx];
 			 let newRow=document.getElementById("_perspective_field_reference_refsdocs_fieldset_template_raw_container_").querySelector("._raw_").cloneNode(true);
@@ -101,7 +103,9 @@ function _commons_perspective_buildRefsDocsList(itemId,docIdsListStr,termDesc) {
 			 let newRowContents=newRow.querySelector("._refdoc_col_");
 			 newRowContents.appendChild(_commons_perspective_buildLinkToItem(item.id,item.name,item.id));
 			 refsDocsTable.appendChild(newRow);
-		}				
+
+		}	
+		
 	 }
 	
 	 // cannot build query with JSON object because one of the keys is dynamic
@@ -112,7 +116,7 @@ function _commons_perspective_buildRefsDocsList(itemId,docIdsListStr,termDesc) {
 	 MxApi.requestCatalogItems({"fromIdx":0,
 		 						"size":10000,
 		 						"query":queryJsonStr,
-		 						"successCallback":retrieveItemsOptionsSuccess,
+		 						"successCallback":buildReadOnlyListLinks,
 		 						"errorCallback":retrieveItemsOptionsError});
 	return refDocsListEnabledByIdNode;
 }
@@ -162,100 +166,69 @@ function _commons_perspective_build_readonly_field_reference(catalogDesc,tabIdx,
 // -------- EDITABLE ---------
 
 
-//build list of children connected to a given document
-//return div containing datafield with refs
-function _commons_perspective_buildRefsDocsEditableList(itemId,docIdsListStr,termDesc,onChangeCallBack) {	
-		
-	let refDocsList=docIdsListStr.split(",");
-	let refDocsListEnabledByIdMap=[];
-	for (var i=0;i<refDocsList.length;i++) {
-		let curItemId=refDocsList[i];
-		refDocsListEnabledByIdMap[curItemId]=true;
-	}
-	let refDocsListEnabledByIdNode = document.createElement("div");
-	refDocsListEnabledByIdNode.innerHTML=docIdsListStr;
+function _buildHandleChoiceOnClickFunc(newRow,item,checkBoxesById,refDocsListEnabledByIdMap,onChangeCallBack) {
 	
-	// populate documents list with all docs matching the query defined 
-	// in the "enumsList" field of the term, setting to true the ones
-	// found in current value of the field.
-	retrieveItemsOptionsSuccess=function(itemsAnswerMsg) {
-		//console.log("retrieved "+itemsAnswerMsg.items.length+" children blabla");
-		refDocsListEnabledByIdNode.innerHTML="";
-		
-		let docsListFieldset = document.getElementById("_perspective_field_reference_refsdocs_fieldset_template_").cloneNode(true);
-		docsListFieldset.id=itemId+"_"+termDesc.name+"_docslist_edit";
-		docsListFieldset.style.display='block';
-		refDocsListEnabledByIdNode.appendChild(docsListFieldset);
-		
-		// legend
-		let legend= docsListFieldset.querySelector("._legend_");
-		// maybe add here a "search" input field
-		legend.innerHTML="Select Elements";
-		
-		// refs docs table
-		let refsDocsTable=docsListFieldset.querySelector("._refsdocs_table_");
-		refsDocsTable.refresh=function(searchTxt) {
-			clearNodeChildren(refsDocsTable);
+	let myOnClickFunc=function(e) {
+		 event.stopPropagation();
+			
+    	 let newValue="";
+    	 // multi select (checkbox)
+    	 if (multiSelectAllowed) {
+    		 if (checkbox.checked) { refDocsListEnabledByIdMap[item.id]=true; }
+			 else { refDocsListEnabledByIdMap[item.id]=false; } 
+			 						 
+			 for (var curItemId in refDocsListEnabledByIdMap) {
+				 if (refDocsListEnabledByIdMap[curItemId]==true) {
+					 if (newValue.length>0) { newValue+=","; }
+					 newValue+=curItemId;
+				 }
+			 }
+		 // single select (radio button)	 
+    	 } else {
+    		 // deselect existing one
+    		for (var curItemId in refDocsListEnabledByIdMap) {
+    			 if (curItemId.length==0) { continue; }
+    			 // if value does not macth any doc (anymore if deleted) then just skip the desactivation
+    			 if (checkBoxesById[curItemId]!=null) { checkBoxesById[curItemId].checked=false; }
+    			 refDocsListEnabledByIdMap[curItemId]=false;			    		
+			}
+    		//console.log(item.id);
+    		//console.log(checkBoxesById);
+    		
+    		checkBoxesById[item.id].checked=true;
+    		refDocsListEnabledByIdMap[item.id]=true;						 
+			newValue=item.id;
+    		
+    	 }
+    				    	
+		 newRow.classList.remove("editable-bg-transition");
+		 newRow.style.background="yellow";
+
+		let onSuccessCallback=function(fieldname,newvalue) {
+			 newRow.classList.add("editable-bg-transition");
+			 newRow.style.background="";
+		}
+
+		onChangeCallBack(newValue,onSuccessCallback);
+	}
+	return myOnClickFunc;
+}
+
+function _buildHandleSearchedItemsFunc(itemId,refsDocsTable,termDesc,refDocsListEnabledByIdMap,onChangeCallBack) {
+	
+		let buildHandleSearchedItemsFunc=function(itemsAnswerMsg) {
+			
+			if (itemsAnswerMsg==null) { return; }
+			
+			//console.log("### "+itemsAnswerMsg.items.length+" results");
+			
 			let checkBoxesById=[];
 			for (var idx=0;idx<itemsAnswerMsg.items.length;idx++) {
 				 let item=itemsAnswerMsg.items[idx];
-				 /*
-				// do not link to itself
-				 //if (item.id==itemId) { continue; }
-				 
-				 // keep only entries matching current 'fast' search
-				 if (searchTxt!=null && searchTxt.length>0) { 
-					let nameMatch=item.name.toLowerCase().match(stripStr(searchTxt).toLowerCase());
-					let idMatch=item.id==stripStr(searchTxt);
-					if (nameMatch==null && !idMatch) { continue; }
-				 }
-									 
-				 // add a new row for the new document do be listed
-				 let newRow=document.getElementById("_perspective_field_reference_refsdocs_fieldset_template_raw_container_").querySelector("._raw_").cloneNode(true);
-				 newRow.style.display="table-row";
-				 
-				 // selector checkbox
-				 let selector=newRow.querySelector("._selector_");
-				 selector.style.display="block";
-				 let checkbox=selector.querySelector("._selector_checkbox_");
-			     if (refDocsListEnabledByIdMap[item.id]==true) {					 
-					 checkbox.checked=true;
-				 } 	
-			     checkbox.onclick=function(event) {
-			    	 event.stopPropagation();
-					 if (checkbox.checked) { refDocsListEnabledByIdMap[item.id]=true; }
-					 else { refDocsListEnabledByIdMap[item.id]=false; } 
-					 
-					 event.stopPropagation();
-					 let newValue="";
-					 for (var curItemId in refDocsListEnabledByIdMap) {
-						 if (refDocsListEnabledByIdMap[curItemId]==true) {
-							 if (newValue.length>0) { newValue+=","; }
-							 newValue+=curItemId;
-						 }
-					 }
-					 
-					 newRow.classList.remove("editable-bg-transition");
-					 newRow.style.background="yellow";
-					 
-					 let onSuccessCallback=function(fieldname,newvalue) {
-						 newRow.classList.add("editable-bg-transition");
-						 newRow.style.background="";
-					}
-					 onChangeCallBack(newValue,onSuccessCallback);
-				 }	
-				 */
-				 
+				
 				 // do not link to itself
 				 if (item.id==itemId) { continue; }
-				 
-				 // keep only entries matching current 'fast' search
-				 if (searchTxt!=null && searchTxt.length>0) { 
-					let nameMatch=item.name.toLowerCase().match(stripStr(searchTxt).toLowerCase());
-					let idMatch=item.id==stripStr(searchTxt);
-					if (nameMatch==null && !idMatch) { continue; }
-				 }
-									 
+				 			 
 				 // add a new row for the new document do be listed
 				 let newRow=document.getElementById("_perspective_field_reference_refsdocs_fieldset_template_raw_container_").querySelector("._raw_").cloneNode(true);
 				 newRow.style.display="table-row";
@@ -275,49 +248,8 @@ function _commons_perspective_buildRefsDocsEditableList(itemId,docIdsListStr,ter
 			     if (refDocsListEnabledByIdMap[item.id]==true) {					 
 					 checkbox.checked=true;
 				 } 	
-			     checkbox.onclick=function(event) {
-			    	 event.stopPropagation();
-
-			    	 let newValue="";
-			    	 // multi select
-			    	 if (multiSelectAllowed) {
-			    		 if (checkbox.checked) { refDocsListEnabledByIdMap[item.id]=true; }
-						 else { refDocsListEnabledByIdMap[item.id]=false; } 
-						 						 
-						 for (var curItemId in refDocsListEnabledByIdMap) {
-							 if (refDocsListEnabledByIdMap[curItemId]==true) {
-								 if (newValue.length>0) { newValue+=","; }
-								 newValue+=curItemId;
-							 }
-						 }
-					 // single select	 
-			    	 } else {
-			    		 // deselect existing one
-			    		for (var curItemId in refDocsListEnabledByIdMap) {
-			    			 if (curItemId.length==0) { continue; }
-			    			 // if value does not macth any doc (anymore if deleted) then just skip the desactivation
-			    			 if (checkBoxesById[curItemId]!=null) { checkBoxesById[curItemId].checked=false; }
-			    			 refDocsListEnabledByIdMap[curItemId]=false;			    		
-						}
-			    		console.log(item.id);
-			    		console.log(checkBoxesById);
-			    		
-			    		checkBoxesById[item.id].checked=true;
-			    		refDocsListEnabledByIdMap[item.id]=true;						 
-						newValue=item.id;
-			    		
-			    	 }
-			    				    	
-					 newRow.classList.remove("editable-bg-transition");
-					 newRow.style.background="yellow";
-
-					let onSuccessCallback=function(fieldname,newvalue) {
-						 newRow.classList.add("editable-bg-transition");
-						 newRow.style.background="";
-					}
-
-					onChangeCallBack(newValue,onSuccessCallback);
-				 }	
+			     // click on checkbox
+			     checkbox.onclick=_buildHandleChoiceOnClickFunc(newRow,item,checkBoxesById,refDocsListEnabledByIdMap,onChangeCallBack);
 				 
 				 // contents
 				 let newRowContents=newRow.querySelector("._refdoc_col_");
@@ -325,46 +257,136 @@ function _commons_perspective_buildRefsDocsEditableList(itemId,docIdsListStr,ter
 				 refsDocsTable.appendChild(newRow);
 				 		
 			}	
-		}
-		refsDocsTable.refresh();
 		
-		 // fastsearch
-		 let searchinput = docsListFieldset.querySelector("._fastsearch_");
-		 searchinput.style.display="block";
-		 searchinput.onkeypress=function(event) {
-			 //event.preventDefault();
-			 event.stopPropagation();			 			 
-		 }
-		 searchinput.onkeydown=function(event) {
-			 //event.preventDefault();
-			 event.stopPropagation();			 			 
-		 }
-		 searchinput.oninput=function(event) {
-			 event.preventDefault();
-			 event.stopPropagation();			 
-			 refsDocsTable.refresh(searchinput.value); 
-		 }
-		 	 
-		 
 	 }
-	
-	// query = get all children having current document as parent
-	// if several defined, we merge them with a 'or' operator
-  	let queryStr = "";
-  	for (var j=0;j<termDesc.enumsList.length;j++) {
-  		if (queryStr.length>0) { queryStr+=" or "; }
-  		queryStr+=termDesc.enumsList[j];
-  	};  	
-	 
-	 retrieveItemsOptionsError=function(msg) { footer_showAlert(ERROR, msg); }
-	 MxApi.requestCatalogItems({"fromIdx":0,
-		 						"size":10000,
-		 						"query":queryStr,
-		 						"successCallback":retrieveItemsOptionsSuccess,
-		 						"errorCallback":retrieveItemsOptionsError});
-	return refDocsListEnabledByIdNode;
+		
+	return buildHandleSearchedItemsFunc;	
 }
 
+function _buildSearInputOnChangeFunc(searchinput,refsDocsTable,refDocsListEnabledByIdNode) {
+	
+	let retrieveItemsOptionsError=function(msg) { footer_showAlert(ERROR, msg); }
+	
+	let onSearchInputChangeFunc=function(e) {
+		if (event) { /*event.preventDefault();*/ event.stopPropagation(); }	
+		 
+		 searchinput.style["border-color"]="orange";
+		 let refreshAndClear=function(itemsReceivedMsg) {
+			 console.log("### clearing current contents");
+			 clearNodeChildren(refsDocsTable);
+			 refsDocsTable.innerHTML="";
+			 refsDocsTable.handleSearchedItems(itemsReceivedMsg);
+			 
+			 if (searchinput.value.length>0) { searchinput.style["border-color"]="green"; }
+			 else { searchinput.style["border-color"]="grey"; }
+		 }
+		 
+		 let customQuery=searchinput.value;
+		 if (refDocsListEnabledByIdNode.mxquery!=null && refDocsListEnabledByIdNode.mxquery.length>0) {
+			 customQuery="("+customQuery+") AND ("+refDocsListEnabledByIdNode.mxquery+")";	 
+		 }
+		 
+		 refDocsListEnabledByIdNode.mxCustomQuery=customQuery;
+		 let queryError=function(errorMsg) { refsDocsTable.handleSearchedItems(null,true);}
+		 
+		 clearTimeout(searchinput.refineListQueryTimer);
+		 searchinput.refineListQueryTimer=setTimeout(
+			function() {     				        
+				 MxApi.requestCatalogItems({"fromIdx":0,
+					"size":NB_ELEMENTS_TO_RETRIEVE,
+					"query":searchinput.currentQuery,
+					"successCallback":refreshAndClear,
+					"errorCallback":retrieveItemsOptionsError});
+			 
+		    }, 
+		    1000);
+	}
+	return onSearchInputChangeFunc;
+}
+
+function _buildTableOnScrollFunc(refsDocsTable,refDocsListEnabledByIdNode) {
+	
+	let retrieveItemsOptionsError=function(msg) { footer_showAlert(ERROR, msg); }
+	
+	let tableOnScrollFunc=function(e) {
+		if (e.target.scrollTop >= e.target.scrollTopMax) {
+			let query=refDocsListEnabledByIdNode.mxquery;
+			if(refDocsListEnabledByIdNode.mxCustomQuery!=null) {
+				query=refDocsListEnabledByIdNode.mxCustomQuery;
+			}
+		    //console.log("### reached bottom, completing with query: '"+query+"'");
+			MxApi.requestCatalogItems({"fromIdx":refsDocsTable.children.length,
+				 						"size":NB_ELEMENTS_TO_RETRIEVE,
+				 						"query":query,
+				 						"successCallback":refsDocsTable.handleSearchedItems,
+				 						"errorCallback":retrieveItemsOptionsError});
+		}
+	}
+	return tableOnScrollFunc;
+}
+
+
+function _buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListEnabledByIdMap,onChangeCallBack) {
+	
+	refDocsListEnabledByIdNode.innerHTML="";
+	
+	let docsListFieldset = document.getElementById("_perspective_field_reference_refsdocs_fieldset_template_").cloneNode(true);
+	docsListFieldset.id=itemId+"_"+termDesc.name+"_docslist_edit";
+	docsListFieldset.style.display='block';
+	refDocsListEnabledByIdNode.appendChild(docsListFieldset);
+	
+	// legend
+	let legend= docsListFieldset.querySelector("._legend_");	
+	legend.innerHTML="Select Elements";
+	
+	// handle reach scroll bottom: retrieve and list additional items 
+	let refsDocsTable=docsListFieldset.querySelector("._refsdocs_table_");
+	// callback function invoked when receiving new items list
+	refsDocsTable.handleSearchedItems=_buildHandleSearchedItemsFunc(itemId,refsDocsTable,termDesc,refDocsListEnabledByIdMap,onChangeCallBack);
+		
+	let refsDocsTableCont=docsListFieldset.querySelector("._refsdocs_table_container_");
+	
+	// ask for more items when reaching bottom
+	refsDocsTableCont.onscroll=_buildTableOnScrollFunc(refsDocsTable,refDocsListEnabledByIdNode);
+	
+	// inner search filter
+	let searchinput = docsListFieldset.querySelector("._search_input_");
+	searchinput.style.display="block";
+	searchinput.onkeypress=function(event) {
+		if (event) { /*event.preventDefault();*/ event.stopPropagation(); }
+	}
+	searchinput.onkeydown=function(event) {
+		if (event) { /*event.preventDefault();*/ event.stopPropagation(); }			 			 
+	}
+	// each time user changes input contents
+	// wait for 1s and then update listed elements
+	searchinput.oninput=_buildSearInputOnChangeFunc(searchinput,refsDocsTable,refDocsListEnabledByIdNode);
+	
+	// force one first request to populate the list
+ 	searchinput.oninput(null);
+	 	 
+	
+}
+
+//build list of children connected to a given document
+//return div containing datafield with refs
+function _commons_perspective_buildRefsDocsEditableList(itemId,docIdsListStr,termDesc,onChangeCallBack) {	
+		
+	let refDocsList=docIdsListStr.split(",");
+	let refDocsListEnabledByIdMap=[];
+	for (var i=0;i<refDocsList.length;i++) {
+		let curItemId=refDocsList[i];
+		refDocsListEnabledByIdMap[curItemId]=true;
+	}
+	let refDocsListEnabledByIdNode = document.createElement("div");
+	refDocsListEnabledByIdNode.innerHTML=docIdsListStr;
+	
+	
+	_buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListEnabledByIdMap,onChangeCallBack);
+	
+	
+	return refDocsListEnabledByIdNode;
+}
 
 function _commons_perspective_buildEditableReferenceTerm(catalogDesc,tabIdx,sectionIdx,fieldIdx,fieldContainerNode,
 													     fieldVisuDesc,termDesc,itemId,fieldValue,successCallback,onChangeCallback) {
@@ -419,6 +441,9 @@ function _commons_perspective_buildEditableReferenceTerm(catalogDesc,tabIdx,sect
 	 
 }
 
+
+//
+
 </script>
 
 <div style="display:none;" class="mx-perspective-field" id="_commons_perspectives_field_template_reference"  >
@@ -434,18 +459,33 @@ function _commons_perspective_buildEditableReferenceTerm(catalogDesc,tabIdx,sect
    <legend class="mx-perspective-field-legend">
    		<table>
    		<tr><td class="_legend_" ></td></tr>   		
-   		<tr><td><input style="display:none" type="text" placeholder="<s:text name="Items.filterThat" /> ..."  
-   										title="Quick Filter Displayed List" class="small _fastsearch_" >
+   		<tr>
+   			<td><input style="display:none;border:2px solid grey" type="text" placeholder="<s:text name="Items.filterThat" /> ..."  
+   										title="Quick Filter Displayed List" class="small _search_input_" >
+			</td>
+			
    		</tr>
    		</table>
    	</legend>
    
-   <table class="table table-striped" style="margin-bottom:0.2rem">
-	   <tbody class="_refsdocs_table_">
+   <div class="_refsdocs_table_container_" style="overflow:auto;max-height:10vh"">
+
+   <table class="table table-striped" style="margin-bottom:0.2rem display:none"  >
+	   <tbody class="_refsdocs_table_"  style="overflow:auto" >
 	   	
 	   </tbody>   
    </table>
-   
+      </div>
+   <!--
+   function scrolled(event) {
+   const container = event.target.body
+   const {clientHeight, scrollHeight, scrollY: scrollTop} = container
+
+   if (clientHeight + scrollY >= scrollHeight) {
+    scrolledToBottom(event);
+   }
+}
+   -->
 </fieldset>
 <table id="_perspective_field_reference_refsdocs_fieldset_template_raw_container_" style="display:none" >
 	<tr class="editable-bg-transition _raw_" >
@@ -453,7 +493,9 @@ function _commons_perspective_buildEditableReferenceTerm(catalogDesc,tabIdx,sect
   			<input  style="display:none"  class="_selector_checkbox_" type="checkbox" >
   			<input style="display:none" class="_selector_radio_" type="radio">
   		</td>
-  		<td style="padding:0;font-size:0.6rem" class="_refdoc_col_"></td>
+  		<td style="padding:0;font-size:0.6rem" class="_refdoc_col_" >
+  		
+  		</td>
   		
   		
   	</tr>

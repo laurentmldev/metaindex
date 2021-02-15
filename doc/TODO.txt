@@ -4,9 +4,17 @@
 v2.1.2:
 -------
 
+click link: go back
+
+stats of chat messages
+
+allow access to several pages without session (tutorials for ex) 
+
+[ERROR] 2021-02-12 08:25:13.414 [clientInboundChannel-127] MxDbSearchItem - Unhandled date format : '2021-02-09 07:37:58.331'
+
 cannot download GEXF file in debug mode : confirm its ok in docker prod mode
 
-BUG: create an account: clicking on Go Back sends an email ...!
+BUG: create an account: clicking on Go Back -> sends an email ...!
 
 #111 tutorials:
 	- force activate subtitles
@@ -20,9 +28,6 @@ BUG: create an account: clicking on Go Back sends an email ...!
 	x smaller images on welcome page
 	- more consistent police
 
-#114 export GEXF :
-	x progress bar title: items.downloadItems.gexf.extract
-	x add link 'type' in generated data (name of the field)
 	
 #115 keep track of user last login
 
@@ -186,6 +191,9 @@ Done:
 
 v2.1.2
 
+#114 export GEXF :
+	x progress bar title: items.downloadItems.gexf.extract
+	x add link 'type' in generated data (name of the field)
 
 
 v2.1.1

@@ -18,6 +18,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.ElasticsearchStatusException;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.core.CountRequest;
@@ -148,12 +149,15 @@ class GetItemsFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 			resultList.add(result);			
 			h.handle(resultList);			
 			
+		// ex: occurs when syntax error in user search query 
+		} catch (ElasticsearchStatusException e) {
+			throw new DataProcessException("Possibly wrong query syntax : "+e.getMessage(),e);
 		} catch (ElasticsearchException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			throw new DataProcessException(e.getRootCause().getMessage(),e);
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			throw new DataProcessException(e.getMessage(),e);
 		}
 	}					
