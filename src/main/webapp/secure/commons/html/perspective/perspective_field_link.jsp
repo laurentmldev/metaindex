@@ -166,7 +166,7 @@ function _commons_perspective_build_readonly_field_reference(catalogDesc,tabIdx,
 // -------- EDITABLE ---------
 
 
-function _buildHandleChoiceOnClickFunc(newRow,item,checkBoxesById,refDocsListEnabledByIdMap,onChangeCallBack) {
+function _buildHandleChoiceOnClickFunc(newRow,item,multiSelectAllowed,checkbox,checkBoxesById,refDocsListEnabledByIdMap,onChangeCallBack) {
 	
 	let myOnClickFunc=function(e) {
 		 event.stopPropagation();
@@ -226,9 +226,6 @@ function _buildHandleSearchedItemsFunc(itemId,refsDocsTable,termDesc,refDocsList
 			for (var idx=0;idx<itemsAnswerMsg.items.length;idx++) {
 				 let item=itemsAnswerMsg.items[idx];
 				
-				 // do not link to itself
-				 if (item.id==itemId) { continue; }
-				 			 
 				 // add a new row for the new document do be listed
 				 let newRow=document.getElementById("_perspective_field_reference_refsdocs_fieldset_template_raw_container_").querySelector("._raw_").cloneNode(true);
 				 newRow.style.display="table-row";
@@ -249,7 +246,7 @@ function _buildHandleSearchedItemsFunc(itemId,refsDocsTable,termDesc,refDocsList
 					 checkbox.checked=true;
 				 } 	
 			     // click on checkbox
-			     checkbox.onclick=_buildHandleChoiceOnClickFunc(newRow,item,checkBoxesById,refDocsListEnabledByIdMap,onChangeCallBack);
+			     checkbox.onclick=_buildHandleChoiceOnClickFunc(newRow,item,multiSelectAllowed,checkbox,checkBoxesById,refDocsListEnabledByIdMap,onChangeCallBack);
 				 
 				 // contents
 				 let newRowContents=newRow.querySelector("._refdoc_col_");
@@ -263,7 +260,7 @@ function _buildHandleSearchedItemsFunc(itemId,refsDocsTable,termDesc,refDocsList
 	return buildHandleSearchedItemsFunc;	
 }
 
-function _buildSearInputOnChangeFunc(searchinput,refsDocsTable,refDocsListEnabledByIdNode) {
+function _buildSearInputOnChangeFunc(searchinput,selectedOnlyCheckbox,refsDocsTable,refDocsListEnabledByIdNode,refDocsList) {
 	
 	let retrieveItemsOptionsError=function(msg) { footer_showAlert(ERROR, msg); }
 	
@@ -272,29 +269,39 @@ function _buildSearInputOnChangeFunc(searchinput,refsDocsTable,refDocsListEnable
 		 
 		 searchinput.style["border-color"]="orange";
 		 let refreshAndClear=function(itemsReceivedMsg) {
-			 console.log("### clearing current contents");
 			 clearNodeChildren(refsDocsTable);
-			 refsDocsTable.innerHTML="";
-			 refsDocsTable.handleSearchedItems(itemsReceivedMsg);
+		 	 refsDocsTable.handleSearchedItems(itemsReceivedMsg);
 			 
 			 if (searchinput.value.length>0) { searchinput.style["border-color"]="green"; }
 			 else { searchinput.style["border-color"]="grey"; }
 		 }
 		 
 		 let customQuery=searchinput.value;
+		 // combine default field filter with user custom filter
 		 if (refDocsListEnabledByIdNode.mxquery!=null && refDocsListEnabledByIdNode.mxquery.length>0) {
 			 customQuery="("+customQuery+") AND ("+refDocsListEnabledByIdNode.mxquery+")";	 
 		 }
 		 
+		// combine current filter with only currently selected documents
+		 if (selectedOnlyCheckbox.checked) {
+			curSelectDocsRequest=_commons_perspective_buildStrQueryGetRefItems(refDocsList);
+			if (curSelectDocsRequest.length>0) {
+				if (customQuery.length>0) { customQuery=customQuery+" AND ("+curSelectDocsRequest+")"; }
+				else { customQuery=curSelectDocsRequest; }
+			}
+		 }		
+		 
 		 refDocsListEnabledByIdNode.mxCustomQuery=customQuery;
 		 let queryError=function(errorMsg) { refsDocsTable.handleSearchedItems(null,true);}
+		 
+		 //console.log("query="+refDocsListEnabledByIdNode.mxCustomQuery);
 		 
 		 clearTimeout(searchinput.refineListQueryTimer);
 		 searchinput.refineListQueryTimer=setTimeout(
 			function() {     				        
 				 MxApi.requestCatalogItems({"fromIdx":0,
 					"size":NB_ELEMENTS_TO_RETRIEVE,
-					"query":searchinput.currentQuery,
+					"query":refDocsListEnabledByIdNode.mxCustomQuery,
 					"successCallback":refreshAndClear,
 					"errorCallback":retrieveItemsOptionsError});
 			 
@@ -326,7 +333,7 @@ function _buildTableOnScrollFunc(refsDocsTable,refDocsListEnabledByIdNode) {
 }
 
 
-function _buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListEnabledByIdMap,onChangeCallBack) {
+function _buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListEnabledByIdMap,refDocsList,onChangeCallBack) {
 	
 	refDocsListEnabledByIdNode.innerHTML="";
 	
@@ -341,9 +348,10 @@ function _buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListE
 	
 	// handle reach scroll bottom: retrieve and list additional items 
 	let refsDocsTable=docsListFieldset.querySelector("._refsdocs_table_");
+	
 	// callback function invoked when receiving new items list
 	refsDocsTable.handleSearchedItems=_buildHandleSearchedItemsFunc(itemId,refsDocsTable,termDesc,refDocsListEnabledByIdMap,onChangeCallBack);
-		
+	
 	let refsDocsTableCont=docsListFieldset.querySelector("._refsdocs_table_container_");
 	
 	// ask for more items when reaching bottom
@@ -358,9 +366,26 @@ function _buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListE
 	searchinput.onkeydown=function(event) {
 		if (event) { /*event.preventDefault();*/ event.stopPropagation(); }			 			 
 	}
+	
+	let selectedOnlyCheckbox=docsListFieldset.querySelector("._selected_only_checkbox_");
+	selectedOnlyCheckbox.style.display="block";
+	
 	// each time user changes input contents
 	// wait for 1s and then update listed elements
-	searchinput.oninput=_buildSearInputOnChangeFunc(searchinput,refsDocsTable,refDocsListEnabledByIdNode);
+	searchinput.oninput=_buildSearInputOnChangeFunc(searchinput,selectedOnlyCheckbox,refsDocsTable,refDocsListEnabledByIdNode,refDocsList);
+	selectedOnlyCheckbox.onchange=searchinput.oninput;
+	
+	let editTextMode=docsListFieldset.querySelector("._edit_text_mode_");
+	editTextMode.style.display="block";
+	editTextMode.onclick=function(e) {
+		refDocsListStr="";
+		for (i=0;i<refDocsList.length;i++) {
+			curDocId=refDocsList[i];
+			if (refDocsListStr.length>0) { refDocsListStr+=","; }
+			refDocsListStr+=curDocId;
+		}
+		console.log(refDocsListStr);
+	}
 	
 	// force one first request to populate the list
  	searchinput.oninput(null);
@@ -382,7 +407,7 @@ function _commons_perspective_buildRefsDocsEditableList(itemId,docIdsListStr,ter
 	refDocsListEnabledByIdNode.innerHTML=docIdsListStr;
 	
 	
-	_buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListEnabledByIdMap,onChangeCallBack);
+	_buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListEnabledByIdMap,refDocsList,onChangeCallBack);
 	
 	
 	return refDocsListEnabledByIdNode;
@@ -458,11 +483,15 @@ function _commons_perspective_buildEditableReferenceTerm(catalogDesc,tabIdx,sect
 			style="display:none;max-height:8rem;overflow:auto;">
    <legend class="mx-perspective-field-legend">
    		<table>
-   		<tr><td class="_legend_" ></td></tr>   		
+   		<tr><td colspan="3" class="_legend_" ></td></tr>   		
    		<tr>
-   			<td><input style="display:none;border:2px solid grey" type="text" placeholder="<s:text name="Items.filterThat" /> ..."  
-   										title="Quick Filter Displayed List" class="small _search_input_" >
+   			<td><input type="checkbox" style="display:none" class="_selected_only_checkbox_" 
+   							title="<s:text name='Items.filterListSelectedOnly'/>"></td>
+   				<td>
+   				<input style="display:none;border:2px solid grey" type="text" placeholder="<s:text name="Items.filterThat" /> ..."  
+   										title="<s:text name='Items.filterList'/>" class="small _search_input_" >
 			</td>
+			<td><div style="display:none;border:1px solid grey;padding:0.2rem;" class="_edit_text_mode_" >T</div></td>
 			
    		</tr>
    		</table>

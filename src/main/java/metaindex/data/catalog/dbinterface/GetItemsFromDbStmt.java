@@ -57,7 +57,7 @@ class GetItemsFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 	
 	private ICatalog _catalog;
 	private ESDocumentsRequestBuilder _requestsBuilder;
-	
+	private String _query="";
 	
 	
 	/**
@@ -78,6 +78,7 @@ class GetItemsFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 			ElasticSearchConnector ds) throws DataProcessException { 
 		super(ds);
 		_catalog=c;
+		_query=query;
 		
 		// Applying proper raw field for terms requiring it
 		for (IPair<String,SORTING_ORDER> curSort : sort) {
@@ -151,7 +152,7 @@ class GetItemsFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 			
 		// ex: occurs when syntax error in user search query 
 		} catch (ElasticsearchStatusException e) {
-			throw new DataProcessException("Possibly wrong query syntax : "+e.getMessage(),e);
+			throw new DataProcessException("Possibly wrong query syntax : "+_query+" : "+e.getMessage(),e);
 		} catch (ElasticsearchException e) {
 			//e.printStackTrace();
 			throw new DataProcessException(e.getRootCause().getMessage(),e);
