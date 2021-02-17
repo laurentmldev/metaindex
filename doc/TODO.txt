@@ -4,7 +4,7 @@
 v2.1.2:
 -------
 
-click link: go back
+Navigation History : list of recently consulted documents (in current session) +  go to previous/next
 
 stats of chat messages
 
@@ -32,8 +32,6 @@ BUG: create an account: clicking on Go Back -> sends an email ...!
 #115 keep track of user last login
 
 #116 trace access to welcome and tutorials videos
-
-#117 when too many documents and too many fields, edit mode of links takes too long to get ready
 
 create new item : press enter shall keep popup open (like click on green button)
 
@@ -195,6 +193,7 @@ v2.1.2
 	x progress bar title: items.downloadItems.gexf.extract
 	x add link 'type' in generated data (name of the field)
 
+#117 when too many documents and too many fields, edit mode of links takes too long to get ready
 
 v2.1.1
 	

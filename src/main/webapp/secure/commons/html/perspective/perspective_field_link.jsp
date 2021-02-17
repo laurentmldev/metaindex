@@ -11,7 +11,7 @@ where contents is a coma-separated list of documents IDs.
  -->		  
  <script type="text/javascript" >
  
- const NB_ELEMENTS_TO_RETRIEVE=7;
+ const NB_ELEMENTS_TO_RETRIEVE=15;
  
 //--------------- H E L P E R S ------------------
 
@@ -19,7 +19,7 @@ where contents is a coma-separated list of documents IDs.
 function _commons_perspective_buildStrQueryGetRefItems(itemIdsArray) {
 	let query="";
 	for (var i=0;i<itemIdsArray.length;i++) {
-		if (query.length>0) { query+=" or "; }
+		if (query.length>0) { query+=" OR "; }
 		query+="_id:"+itemIdsArray[i];	
 	}
 	return query;
@@ -204,12 +204,12 @@ function _buildHandleChoiceOnClickFunc(newRow,item,multiSelectAllowed,checkbox,c
 		 newRow.classList.remove("editable-bg-transition");
 		 newRow.style.background="yellow";
 
-		let onSuccessCallback=function(fieldname,newvalue) {
+		 let onSuccessCallback=function(fieldname,newvalue) {
 			 newRow.classList.add("editable-bg-transition");
 			 newRow.style.background="";
-		}
+		 }
 
-		onChangeCallBack(newValue,onSuccessCallback);
+		 onChangeCallBack(newValue,onSuccessCallback);
 	}
 	return myOnClickFunc;
 }
@@ -260,7 +260,9 @@ function _buildHandleSearchedItemsFunc(itemId,refsDocsTable,termDesc,refDocsList
 	return buildHandleSearchedItemsFunc;	
 }
 
-function _buildSearInputOnChangeFunc(searchinput,selectedOnlyCheckbox,refsDocsTable,refDocsListEnabledByIdNode,refDocsList) {
+function _buildSearInputOnChangeFunc(searchinput,selectedOnlyCheckbox,refsDocsTable,
+								refDocsListEnabledByIdNode,refDocsList,refreshDelayMs) {
+	if (refreshDelayMs==null) { refreshDelayMs=0; }
 	
 	let retrieveItemsOptionsError=function(msg) { footer_showAlert(ERROR, msg); }
 	
@@ -306,7 +308,7 @@ function _buildSearInputOnChangeFunc(searchinput,selectedOnlyCheckbox,refsDocsTa
 					"errorCallback":retrieveItemsOptionsError});
 			 
 		    }, 
-		    1000);
+		    refreshDelayMs);
 	}
 	return onSearchInputChangeFunc;
 }
@@ -333,7 +335,7 @@ function _buildTableOnScrollFunc(refsDocsTable,refDocsListEnabledByIdNode) {
 }
 
 
-function _buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListEnabledByIdMap,refDocsList,onChangeCallBack) {
+function _buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListEnabledByIdMap,refDocsList,onChangeCallBack,successCallback) {
 	
 	refDocsListEnabledByIdNode.innerHTML="";
 	
@@ -360,42 +362,87 @@ function _buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListE
 	// inner search filter
 	let searchinput = docsListFieldset.querySelector("._search_input_");
 	searchinput.style.display="block";
-	searchinput.onkeypress=function(event) {
-		if (event) { /*event.preventDefault();*/ event.stopPropagation(); }
-	}
-	searchinput.onkeydown=function(event) {
-		if (event) { /*event.preventDefault();*/ event.stopPropagation(); }			 			 
-	}
 	
 	let selectedOnlyCheckbox=docsListFieldset.querySelector("._selected_only_checkbox_");
 	selectedOnlyCheckbox.style.display="block";
 	
 	// each time user changes input contents
 	// wait for 1s and then update listed elements
-	searchinput.oninput=_buildSearInputOnChangeFunc(searchinput,selectedOnlyCheckbox,refsDocsTable,refDocsListEnabledByIdNode,refDocsList);
-	selectedOnlyCheckbox.onchange=searchinput.oninput;
-	
-	let editTextMode=docsListFieldset.querySelector("._edit_text_mode_");
-	editTextMode.style.display="block";
-	editTextMode.onclick=function(e) {
-		refDocsListStr="";
-		for (i=0;i<refDocsList.length;i++) {
-			curDocId=refDocsList[i];
-			if (refDocsListStr.length>0) { refDocsListStr+=","; }
-			refDocsListStr+=curDocId;
+	searchinput.oninput=_buildSearInputOnChangeFunc(searchinput,selectedOnlyCheckbox,
+							refsDocsTable,refDocsListEnabledByIdNode,refDocsList,
+							1000 /*delay after typing before refreshing the list (ms)*/);
+	selectedOnlyCheckbox.onchange=_buildSearInputOnChangeFunc(searchinput,selectedOnlyCheckbox,
+			refsDocsTable,refDocsListEnabledByIdNode,refDocsList);
+	searchinput.onkeypress=function(e) {
+		if (e) { 
+			event.stopPropagation(); 
+			if (e.keyCode=='13' || e.key=="Enter") {
+				selectedOnlyCheckbox.onchange(e);
+			}
 		}
-		console.log(refDocsListStr);
+	}
+	searchinput.onkeydown=function(event) {
+		if (event) { event.stopPropagation(); }			 			 
+	}
+	
+	selectedOnlyCheckbox.onchange=_buildSearInputOnChangeFunc(searchinput,selectedOnlyCheckbox,
+							refsDocsTable,refDocsListEnabledByIdNode,refDocsList);
+	
+	// build 'text mode' edition
+	let editTextModeIcon=docsListFieldset.querySelector("._edit_text_mode_");
+	let textModeContainer=docsListFieldset.querySelector("._links_list_text__");
+	
+	let textModeOnChangeFunc=function(pk,fieldName,fieldValue,editableSuccessCallback, errorCallback) { 
+		onChangeCallBack(fieldValue,editableSuccessCallback); 
+	}
+	
+	refDocsListStr="";
+	for (i=0;i<refDocsList.length;i++) {
+		curDocId=refDocsList[i];
+		if (refDocsListStr.length>0) { refDocsListStr+=","; }
+		refDocsListStr+=curDocId;
+	}
+	let textEditabledNode=xeditable_create_text_field(
+			itemId /* pk */,
+			termDesc.name,
+			true /*show fieldName*/,
+			refDocsListStr,
+			textModeOnChangeFunc,
+			successCallback
+			);
+	
+	clearNodeChildren(textModeContainer);
+	textModeContainer.appendChild(textEditabledNode);	
+	xeditable_finishEditableFields();
+	editTextModeIcon.style.display="block";
+	editTextModeIcon.isActive=false;
+	editTextModeIcon.onclick=function(e) {
+		if (editTextModeIcon.isActive==true) {
+			textModeContainer.style.display='none';
+			refsDocsTableCont.style.display='block';
+			editTextModeIcon.classList.remove('mx-text-button-active');
+			searchinput.disabled=false;
+			selectedOnlyCheckbox.disabled=false;
+			editTextModeIcon.isActive=false;			
+		} else {
+			textModeContainer.style.display='block';
+			refsDocsTableCont.style.display='none';
+			editTextModeIcon.classList.add('mx-text-button-active');
+			searchinput.disabled=true;
+			selectedOnlyCheckbox.disabled=true;
+			editTextModeIcon.isActive=true;
+		}
 	}
 	
 	// force one first request to populate the list
- 	searchinput.oninput(null);
+ 	selectedOnlyCheckbox.onchange(null);
 	 	 
 	
 }
 
 //build list of children connected to a given document
 //return div containing datafield with refs
-function _commons_perspective_buildRefsDocsEditableList(itemId,docIdsListStr,termDesc,onChangeCallBack) {	
+function _commons_perspective_buildRefsDocsEditableList(itemId,docIdsListStr,termDesc,onChangeCallBack,successCallback) {	
 		
 	let refDocsList=docIdsListStr.split(",");
 	let refDocsListEnabledByIdMap=[];
@@ -407,7 +454,7 @@ function _commons_perspective_buildRefsDocsEditableList(itemId,docIdsListStr,ter
 	refDocsListEnabledByIdNode.innerHTML=docIdsListStr;
 	
 	
-	_buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListEnabledByIdMap,refDocsList,onChangeCallBack);
+	_buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListEnabledByIdMap,refDocsList,onChangeCallBack,successCallback);
 	
 	
 	return refDocsListEnabledByIdNode;
@@ -436,12 +483,14 @@ function _commons_perspective_buildEditableReferenceTerm(catalogDesc,tabIdx,sect
 	 }
 	 let onRefsListChangeCallBack=function(newValue,guiSuccessCallback) {
 		 let successCallbackWithGui=function(fieldname,newvalue) {
-			 guiSuccessCallback(fieldname,newvalue);
+			 if (guiSuccessCallback!=null) {
+				 guiSuccessCallback(fieldname,newvalue); 
+			 }
 			 onRefsUpdateSuccessCallback(fieldname,newvalue);
 		 }
 		 onChangeCallback(itemId,termDesc.name,newValue,successCallbackWithGui,onRefsUpdateErrorCallback);
 	 }
-	 let refsListNode=_commons_perspective_buildRefsDocsEditableList(itemId,fieldValue,termDesc,onRefsListChangeCallBack);
+	 let refsListNode=_commons_perspective_buildRefsDocsEditableList(itemId,fieldValue,termDesc,onRefsListChangeCallBack,onRefsUpdateSuccessCallback);
 	 valueNode.appendChild(refsListNode);		 		 
 	 
 	 
@@ -482,7 +531,7 @@ function _commons_perspective_buildEditableReferenceTerm(catalogDesc,tabIdx,sect
 <fieldset id="_perspective_field_reference_refsdocs_fieldset_template_"  class="form-control-group modals-form-control" 
 			style="display:none;max-height:8rem;overflow:auto;">
    <legend class="mx-perspective-field-legend">
-   		<table>
+   		<table class="_links_list_table_">
    		<tr><td colspan="3" class="_legend_" ></td></tr>   		
    		<tr>
    			<td><input type="checkbox" style="display:none" class="_selected_only_checkbox_" 
@@ -491,31 +540,23 @@ function _commons_perspective_buildEditableReferenceTerm(catalogDesc,tabIdx,sect
    				<input style="display:none;border:2px solid grey" type="text" placeholder="<s:text name="Items.filterThat" /> ..."  
    										title="<s:text name='Items.filterList'/>" class="small _search_input_" >
 			</td>
-			<td><div style="display:none;border:1px solid grey;padding:0.2rem;" class="_edit_text_mode_" >T</div></td>
+			<td><div style="display:none;" class="mx-text-button _edit_text_mode_" 
+									title="<s:text name='Items.editLinksTextMode'/>">T</div></td>
 			
    		</tr>
-   		</table>
+   		</table>   		
    	</legend>
-   
+   <div style="display:none;" class="_links_list_text__"></div>
    <div class="_refsdocs_table_container_" style="overflow:auto;max-height:10vh"">
-
-   <table class="table table-striped" style="margin-bottom:0.2rem display:none"  >
-	   <tbody class="_refsdocs_table_"  style="overflow:auto" >
-	   	
-	   </tbody>   
-   </table>
-      </div>
-   <!--
-   function scrolled(event) {
-   const container = event.target.body
-   const {clientHeight, scrollHeight, scrollY: scrollTop} = container
-
-   if (clientHeight + scrollY >= scrollHeight) {
-    scrolledToBottom(event);
-   }
-}
-   -->
+	   <table class="table table-striped" style="margin-bottom:0.2rem display:none"  >
+		   <tbody class="_refsdocs_table_"  style="overflow:auto" >
+		   	
+		   </tbody>   
+	   </table>
+    </div>
+   
 </fieldset>
+
 <table id="_perspective_field_reference_refsdocs_fieldset_template_raw_container_" style="display:none" >
 	<tr class="editable-bg-transition _raw_" >
   		<td class="_selector_" style="display:none;width:2rem;padding:0;margin:0;">

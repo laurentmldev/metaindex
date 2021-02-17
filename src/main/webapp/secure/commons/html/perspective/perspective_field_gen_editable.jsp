@@ -60,18 +60,15 @@
 		successCallback);
 
  }
-  
-
 
 
  function _commons_perspective_build_editable_field(catalogDesc,tabIdx,sectionIdx,fieldIdx,fieldContainerNode,fieldVisuDesc,termDesc,
  					itemId,fieldValue,successCallback) {
  	 
- 	let fieldNode=document.getElementById("_commons_perspectives_field_editable_template_").cloneNode(true);
+ 	 let fieldNode=document.getElementById("_commons_perspectives_field_editable_template_").cloneNode(true);
  	 fieldNode.id="";
  	 fieldNode.style.display="block";
  	 
-
  	 function onChangeCallback(pk,fieldName,fieldValue,successCallback, errorCallback){	 
  	 	 if (fieldValue instanceof Array) { fieldValue=array2str(fieldValue); }		 
  	  	 MxApi.requestFieldValueUpdate({
