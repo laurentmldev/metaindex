@@ -17,10 +17,11 @@
      </div>
 	<table><tr>
 		<td><h1 id="MxGui.details.title.text" class="h3 mb-0 text-gray-800"></h1></td>  
-		<td id="MxGui.details.count" class="text-center small" style="padding-left:1rem;display:none">
+		<td id="MxGui.details.count" class="text-center" style="padding-left:1rem;display:none">
 			<span id="MxGui.details.count.matchNumber" >0</span> 
 			/ 
 			<span id="MxGui.details.count.totalNumber" class="text-center small">0</span>
+					
 		</td>
 		<td>
 		  <div class="dropdown no-arrow mx-1" style="padding-left:1em;">
@@ -37,8 +38,11 @@
                 </h6>
                 
               </div>
+              
           </div>
 		</td>
+		<td><div title="<s:text name="globals.prevElement"/>" style="margin-left:2rem;" onclick="_details_prev();"> <i id="details_prev_arrow" class="mx-history-disabled-nav-button mx-help-icon far fa-caret-left" style="font-weight:bold;font-size:2rem;"></i></div></td>
+		<td><div title="<s:text name="globals.nextElement"/>" onclick="_details_next();"> <i id="details_next_arrow"  class="mx-history-disabled-nav-button mx-help-icon far fa-caret-right"  style="font-weight:bold;font-size:2rem;"></i></div></td>
 		
 	</tr></table>          
 </div>
@@ -58,6 +62,8 @@
  
  <script type="text/javascript" >
  
+ var _details_cards_history=[];
+ var _details_cards_history_current_index=-1;
  
  var _detailsInsertSpot=document.getElementById("MxGui.details.insertspot");
  var _detailsBulkActionsInsertSpot=document.getElementById("MxGui.details.bulkactions.insertspot");
@@ -71,12 +77,71 @@
 	 _detailsInsertSpot.classList.remove("mx-current-item-area-closed");		
  }
 
+ function _details_prev() {
+	 _details_cards_history_current_index--;
+	 if (_details_cards_history_current_index<0) { 
+		 _details_cards_history_current_index=0;
+		 return;
+	 }
+	 
+	 if (_details_cards_history_current_index==0) {
+		 document.getElementById("details_prev_arrow").classList.add("mx-history-disabled-nav-button");
+	 }
+	 
+	 if (_details_cards_history_current_index<_details_cards_history.length-1) {
+		 document.getElementById("details_next_arrow").classList.remove("mx-history-disabled-nav-button");
+	 }
+	 
+	 let prevCard=_details_cards_history[_details_cards_history_current_index];
+	 if (prevCard==null) { return; }// just in case 
+	 MxGuiCards.deselectAll();
+	 MxGuiDetails.populate(prevCard,true /*don't modify history with it*/);
+	 MxGuiDetails.open();
+	 MxGuiDetails.showAlert(prevCard.getName(),1000);
+ }
+ 
+
+ function _details_next() {
+	 _details_cards_history_current_index++;
+	 if (_details_cards_history_current_index>_details_cards_history.length-1) {
+	 	_details_cards_history_current_index=_details_cards_history.length-1; 
+	 	return;
+	 }
+	 
+	 if (_details_cards_history_current_index==_details_cards_history.length-1) {
+		 document.getElementById("details_next_arrow").classList.add("mx-history-disabled-nav-button");
+	 }
+	 
+	 if (_details_cards_history_current_index>0) {
+		 document.getElementById("details_prev_arrow").classList.remove("mx-history-disabled-nav-button");
+	 }
+	 
+	 let nextCard=_details_cards_history[_details_cards_history_current_index];
+	 if (nextCard==null) { return; }// just in case 
+	 
+	 MxGuiDetails.showAlert(nextCard.getName(),1000);
+	 MxGuiCards.deselectAll();
+	 MxGuiDetails.populate(nextCard,true /*don't modify history with it*/);
+	 MxGuiDetails.open();
+ }
+ 
  function details_clear() {
 	_detailsInsertSpot.close();
 	clearNodeChildren(_detailsInsertSpot);		
  }
 
- function details_populate(card) {	 
+ function details_populate(card,nohistory) {
+	 if (!nohistory) {
+		 if (_details_cards_history_current_index!=_details_cards_history.length-1) {
+			 _details_cards_history.length=_details_cards_history_current_index+1;
+		 }
+	 	_details_cards_history.push(card);
+	 	_details_cards_history_current_index=_details_cards_history.length-1;
+	 	if (_details_cards_history.length>1) {
+	 		document.getElementById("details_prev_arrow").classList.remove("mx-history-disabled-nav-button");
+	 	}
+	 }
+	 
 	// function declared in specific details page
 	var newDetailsNode = details_buildContents(card);
 	details_clear();	

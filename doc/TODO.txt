@@ -4,7 +4,7 @@
 v2.1.2:
 -------
 
-Navigation History : list of recently consulted documents (in current session) +  go to previous/next
+
 
 stats of chat messages
 
@@ -188,6 +188,8 @@ Done:
 -----
 
 v2.1.2
+
+#120 Navigation History : list of recently consulted documents (in current session) +  go to previous/next
 
 #114 export GEXF :
 	x progress bar title: items.downloadItems.gexf.extract

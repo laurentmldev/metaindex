@@ -52,6 +52,7 @@ function card_buildNewCard(objDescr) {
 	// name
 	let name = newCard.querySelector("._name_");
 	name.innerHTML=MxGuiCards.extractName(objDescr);
+	newCard.getName=function() { return name.innerHTML; };// useful to get name associated to this card
 	
 	// anchor
 	let anchor = newCard.querySelector("._anchor_");

@@ -347,7 +347,7 @@
 		
  			<button type="button" class="btn btn-default btn-sm editable-cancel alert alert-info"
  			style="margin:0.2em;"
- 			onclick="_curItemCard.click();_curItemCard=null;" >
+ 			onclick="if (_curItemCard!=null) { _curItemCard.click(); }; MxGuiDetails.close(); _curItemCard=null;" >
  				<i class="fa fa-times" aria-hidden="true"></i> 				 
  			</button>
  		
