@@ -14,7 +14,10 @@
   
 </head>
 
-
+<!-- do not use onload here (already defined in javascript
+		you can declare a local_onload() function 
+		which will be called by the main onload function if defined.
+	 -->
 <body id="page-top" 
 	
 	onkeypress="event.stopPropagation();	
@@ -133,6 +136,7 @@
   // called (if defined) from commons/html/head-onload.jsp
   	function local_onload() {	  	
 		enableKibanaFrame();
+		MxGuiDetails.showHistoNavArrows();
   	}
   </script>
   <script type="text/javascript">

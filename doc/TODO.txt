@@ -22,7 +22,7 @@ BUG: create an account: clicking on Go Back -> sends an email ...!
 	- tutos page need a valid session. If we go directly there, we are forwarded to welcome page
 	
 #112 when first login/enter catalog, items won't log
-	- add msg: please refresh page if nothing happien within few seconds
+	- add msg: please refresh page if nothing happens within few seconds
     
 #113 welcome page:
 	x smaller images on welcome page
@@ -35,8 +35,6 @@ BUG: create an account: clicking on Go Back -> sends an email ...!
 
 create new item : press enter shall keep popup open (like click on green button)
 
-# 118 bug: when renaming a perspective, it actually adds a new one, but keep previous one
-
 #35 Fields: multi shall be visible only if enum is not empty
 
 #119 multi-values displayed as keywords-boxes in read-only
@@ -44,6 +42,9 @@ create new item : press enter shall keep popup open (like click on green button)
 
 v2.1.y:
 -------
+
+#118 bug: when renaming a perspective, it actually adds a new one, but keep previous one
+
 #10 websocket connection refused after session timeout and re-login (TBC)
 
 # delete all items, not only max 10000 items (ELK limit)

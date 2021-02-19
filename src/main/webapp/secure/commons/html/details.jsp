@@ -41,8 +41,8 @@
               
           </div>
 		</td>
-		<td><div title="<s:text name="globals.prevElement"/>" style="margin-left:2rem;" onclick="_details_prev();"> <i id="details_prev_arrow" class="mx-history-disabled-nav-button mx-help-icon far fa-caret-left" style="font-weight:bold;font-size:2rem;"></i></div></td>
-		<td><div title="<s:text name="globals.nextElement"/>" onclick="_details_next();"> <i id="details_next_arrow"  class="mx-history-disabled-nav-button mx-help-icon far fa-caret-right"  style="font-weight:bold;font-size:2rem;"></i></div></td>
+		<td><div title="<s:text name="globals.prevElement"/>" style="margin-left:2rem;" onclick="_details_prev();"> <i id="details_prev_arrow" class="mx-history-disabled-nav-button mx-help-icon far fa-caret-left" style="display:none;font-weight:bold;font-size:2rem;"></i></div></td>
+		<td><div title="<s:text name="globals.nextElement"/>" onclick="_details_next();"> <i id="details_next_arrow"  class="mx-history-disabled-nav-button mx-help-icon far fa-caret-right"  style="display:none;font-weight:bold;font-size:2rem;"></i></div></td>
 		
 	</tr></table>          
 </div>
@@ -225,4 +225,9 @@
  MxGuiDetails.getNbTotalItems=details_getNbTotalItems;
  MxGuiDetails.setTitle=details_setTitle;
  MxGuiDetails.showAlert=details_showAlert;
+ // enable navigation within previously clicked elements
+ MxGuiDetails.showHistoNavArrows=function() {
+	 document.getElementById("details_prev_arrow").style.display='block';
+	 document.getElementById("details_next_arrow").style.display='block'; 
+ }
  </script>
