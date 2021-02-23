@@ -262,14 +262,19 @@ height:40px;
 	margin-top:1.5rem;
 }
 .mx-slideshow-title {
-	font-weight:bold !important;
+	font-weight:normal;
 	color:#77b !important;
-	font-size:1.8rem !important;
+	font-size:1.5rem !important;
+	background:none !important;
 }
 
 .mx-welcome-globaltext {
-	font-size:2rem;
+	font-size:0.8rem;
 	color:#777;
+	margin:0;
+	padding:0;
+	text-shadow:none;
+	
 }
 .mx_welcome_card_ul li {
 	text-align:left;
@@ -314,7 +319,7 @@ height:40px;
 	margin-left:1rem;
 	margin-right:1rem;
 	border-radius:5px;
-	color:#eee;
+	color:white;
 	padding:1rem;		
 	font-size:0.8rem;
 			
@@ -359,7 +364,7 @@ height:40px;
 	color:grey;
 	font-size:0.7rem;
 	padding:0;
-	margin:2rem;
+	margin:2rem;	
 }
 .mx-left-button {
 	padding-left:0.5rem;
@@ -522,12 +527,17 @@ height:40px;
 }
 
 .mx-welcome-li {
-	color:#777;
-	list-style-type:'\2713';
-	font-size:1rem;
-	font-weight:bold;
+	color:#444;
+	/*list-style-type:'\203A';*/
+	list-style-type:'\2705';	
+	font-size:1.2rem;
+	font-weight:normal;
 	margin-top:1.2rem;
-	padding-left:1rem;	
+	padding-left:1rem;
+	border:none;
+	border-radius:3px;	
+	background:none;
+	
 }
 
 <s:include value="mx-chat.css" />

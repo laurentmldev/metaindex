@@ -5,14 +5,26 @@ v2.1.2:
 -------
 
 
+add error msg when cyclic stats email could not be sent : can be sign that email connection is down ...
+
+
+remove active/maintenance mode
+
+backup/restore server contents:
+	
+	
+	* SQL	
+		SELECT * FROM [rest of your query] INTO OUTFILE '/tmp/outfile'
+		LOAD DATA INFILE /tmp/outfile' INTO TABLE access;
+	
+	- from admin user
+	
 
 stats of chat messages
 
 allow access to several pages without session (tutorials for ex) 
 
 [ERROR] 2021-02-12 08:25:13.414 [clientInboundChannel-127] MxDbSearchItem - Unhandled date format : '2021-02-09 07:37:58.331'
-
-cannot download GEXF file in debug mode : confirm its ok in docker prod mode
 
 BUG: create an account: clicking on Go Back -> sends an email ...!
 
@@ -24,10 +36,6 @@ BUG: create an account: clicking on Go Back -> sends an email ...!
 #112 when first login/enter catalog, items won't log
 	- add msg: please refresh page if nothing happens within few seconds
     
-#113 welcome page:
-	x smaller images on welcome page
-	- more consistent police
-
 	
 #115 keep track of user last login
 
@@ -190,6 +198,10 @@ Done:
 
 v2.1.2
 
+#113 welcome page:
+	x smaller images on welcome page
+	x more consistent font
+	
 #120 Navigation History : list of recently consulted documents (in current session) +  go to previous/next
 
 #114 export GEXF :
@@ -197,6 +209,8 @@ v2.1.2
 	x add link 'type' in generated data (name of the field)
 
 #117 when too many documents and too many fields, edit mode of links takes too long to get ready
+
+x cannot download GEXF file in debug mode : confirm its ok in docker prod mode
 
 v2.1.1
 	

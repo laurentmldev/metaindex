@@ -70,10 +70,11 @@
             		</tr></table>
             	</div>
           
-        		<div class="app-title" style="font-size:4vw;padding:0;margin:0;width:60vw;text-align:center;">
-			 		<span class="scale-color-white">M</span><span class="app-title2 scale-color-white" style="color:white;">etainde</span><span class="scale-color-white">X</span>            		            			
+        		<div style="padding:0;margin:0;width:60vw;text-align:center;line-height:1;">
+			 		<span style="font-size:4vw;" class="app-title"  ><span class="scale-color-white">M</span><span class="app-title2 scale-color-white" style="color:white;">etainde</span><span class="scale-color-white">X</span></span>
+			 		<div class="mx-welcome-globaltext"><s:text name="welcome.generalPresentation"/></div>            		            			
             	</div>	 	   			 	
-	 	
+	 			
 	 	
 	 	
 	 	<div><table><tr>
@@ -95,27 +96,29 @@
     <div class="row justify-content-center"  >
     	<center>
      	 	
-			<div style="text-align:left;font-size:1rem;text-shadow:none;padding:0;margin:0;margi-top:1rem;font-weight:bold">
+			<div style="text-align:left;font-size:1rem;text-shadow:none;padding:0;margin:0;margin-top:3rem;font-weight:bold">
             	<ul class="app-title" style="text-align:left;font-size:1rem;text-shadow:none;padding-top:0;">
-	            	<li style="list-style-type:'';margin-bottom:1rem;padding-bottom:0;text-align:center;"><center>
-	            	<table><tr><td>
-	            		<a href="signup?origin=welcome"  
-					 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" 
-					 		style="font-size:1.2rem;background:#6c6;border-color:white;margin-left:0.3rem;text-shadow:none;width:20vw"
-					 		><s:text name="signup.createYourAccount" /></a>
-	            	</td><td>
+	            	<li style="list-style-type:'';margin-bottom:3rem;padding-bottom:0;text-align:center;"><center>
+	            	<table style="width:90%"><tr>
+	            	
+	            	<td><center>
 	            	
 	            		<a href="Tutorials"  
 					 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" 
-					 		style="font-size:1.2rem;background:#66c;border-color:white;margin-left:0.3rem;text-shadow:none;width:20vw"
+					 		style="font-size:1.2rem;background:#66c;border-color:white;color:white;margin-left:0.3rem;text-shadow:none;width:20vw"
 					 		><s:text name="tutorials.welcometitle" /></a>
-					 	</td></tr></table>
+					 	</center></td>
+					<td><center>
+	            		<a href="signup?origin=welcome"  
+					 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" 
+					 		style="font-size:1.2rem;background:#6c6;border-color:white;color:white;margin-left:0.3rem;text-shadow:none;width:20vw"
+					 		><s:text name="signup.createYourAccount" /></a>
+	            	</center></td>
+	            	 	
+					 	</tr></table>
 	            	</center></li>
 	            	 
-	            	 <li class="mx-welcome-globaltext" style="margin-top:2rem;width:90vw;list-style-type:'';" >
-	            	 	<center><div><s:text name="welcome.generalPresentation"/></div></center>
-	            	 </li>
-	            	<li class="" style="margin-top:2rem;width:90vw;list-style-type:'';" >
+	            	<li class="" style="width:90vw;list-style-type:'';" >
 	            		<table><tr>
 	            			<td style="width:45%">
 	            				<center>
@@ -145,7 +148,7 @@
 					        	</center>
 	            			</td>
 	            			<td style="width:45%">
-	            				<center><div style="font-size:1.3rem;"><s:text name="welcome.exploreYourData" /></div></center>
+	            				<!-- center><div style="font-size:1.3rem;"><s:text name="welcome.exploreYourData" /></div></center-->
 	            				<ul>
 	            				<li class="mx-welcome-li" ><s:text name="welcome.features.teamWork" /></li>
 	            				<li class="mx-welcome-li" ><s:text name="welcome.features.injectdata" /></li>
@@ -170,19 +173,24 @@
 	   </center>
 	  
 	</div>
-        
- <footer class="sticky-footer bg-white">
+        <center>
+ <footer class="sticky-footer" style="background:#eee;margin:0;padding:0.2rem;width:40vw;">
         <div class="container my-auto">
           <div class="mx-copyright text-center my-auto">
-            <span><b><s:text name="globals.copyright"/></b> - MetaindeX v<s:property value="mxVersion"/><br/><s:property value="mxFooterInfo"/></span>
-          </div>
-          <center><div>
+          <center>
+          <table><tr><td><center>
+            <span><b><s:text name="globals.copyright"/></b><br/>MetaindeX v<s:property value="mxVersion"/><br/><s:property value="mxFooterInfo"/></span>
+          
+          <center>
+          </td><td>
 		<a class="" href="https://secure.europeanssl.eu" target="_blank" style="">
            			<img src="https://secure.europeanssl.eu/seal/metaindex.fr/150" 
-           			style="margin-top:1rem" />
+           			style="margin-left:3rem;" />
            			
 		</a>	
-		</div></center>
+		</td></tr></table>
+		</center>
+		</div>
         </div>
         <div  id="cookies-alert-div"
         	  class="container fixed-bottom mx-cookies-alert" 
@@ -196,7 +204,7 @@
         </div>
          
   </footer>
-   
+   </center>
       
 	 
   <!-- Bootstrap core JavaScript-->
