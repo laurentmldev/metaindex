@@ -70,6 +70,9 @@ public interface IUserProfileData extends ICatalogUser,IPlanUser,IObserver<IProc
     public IGuiTheme getGuiTheme();
     public Collection<IGuiTheme> getGuiThemes();
     
+    public Date getLastLoginDate();
+    public void setLastLoginDate(Date date);
+    
     public void setCurNbCatalogsCreated(Integer nbCatalogs);
 	
 	/// load user data and associated roles

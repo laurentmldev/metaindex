@@ -100,6 +100,10 @@ public class UserProfileData implements IUserProfileData
 	// processing tasks by id
 	private Map<Integer,IProcessingTask> _runningProcessingTasks = new ConcurrentHashMap<Integer,IProcessingTask>();
 
+	// used to detect inactive users 
+	// not implemented yet in framework, need to check manually in DB
+	private Date _lastLoginDate=new Date(0);
+	
 	// for auto-refresh processing
 	private Date _lastUpdate=new Date(0);
 	
@@ -182,30 +186,41 @@ public class UserProfileData implements IUserProfileData
 		}
 		try {
 			this.acquireLock();
-			this._isLoggedIn=true;
-			Boolean result =Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().createOrUpdateCatalogStatisticsUser(this);
-	    	if (!result) {
-	    		log.error("unable to update user details in statistics environment.");
-    		}
+			if (this._isLoggedIn==false) {
+				this._isLoggedIn=true;
+				this.setLastLoginDate(new Date());
+		    	Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface().getUpdateUserLastLoginDateIntoDbStmt(this).execute();
+				Boolean result =Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().createOrUpdateCatalogStatisticsUser(this);
+		    	if (!result) {
+		    		log.error("unable to update user details in statistics environment.");
+	    		}
+		    	log.info("User '"+this.getName()+"' logged-in");
+			}
 	    	this.releaseLock();
 		} catch(InterruptedException e) {
 			this.releaseLock();
 			throw new DataProcessException("Unable to perform user login : "+e.getMessage(),e);
 		}
 		
-		log.info("User '"+this.getName()+"' logged-in");
+		
 		
 	}
 	
 	@Override
 	public void logOut() throws DataProcessException {
-		
-		// exit from current catalog if any
-		if (this.getCurrentCatalog()!=null) {
-			this.getCurrentCatalog().quit(this);
+		try {
+			this.acquireLock();
+			// exit from current catalog if any
+			if (this.getCurrentCatalog()!=null) {
+				this.getCurrentCatalog().quit(this);
+			}
+			this._isLoggedIn=false;
+			//log.info("User '"+this.getName()+"' logged-out");
+			this.releaseLock();
+		} catch(InterruptedException e) {
+			this.releaseLock();
+			throw new DataProcessException("Unable to perform user logout : "+e.getMessage(),e);
 		}
-		this._isLoggedIn=false;
-		//log.info("User '"+this.getName()+"' logged-out");
 	}
 	
 	@Override
@@ -778,6 +793,14 @@ public class UserProfileData implements IUserProfileData
 	@Override
 	public String getLocalFsFilesPath() {
 		return Globals.Get().getUserdataFsPathUsers()+"/"+getId();
+	}
+	@Override
+	public Date getLastLoginDate() {
+		return _lastLoginDate;
+	}
+	@Override
+	public void setLastLoginDate(Date date) {
+		_lastLoginDate=date;		
 	}
 	
 }

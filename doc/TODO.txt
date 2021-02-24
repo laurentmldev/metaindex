@@ -7,18 +7,10 @@ v2.1.2:
 
 add error msg when cyclic stats email could not be sent : can be sign that email connection is down ...
 
+test strongly backup/restore procedure, including with SQL migration: 
+	- kibana would not start again : Error: Cluster client cannot be used after it has been closed
 
 remove active/maintenance mode
-
-backup/restore server contents:
-	
-	
-	* SQL	
-		SELECT * FROM [rest of your query] INTO OUTFILE '/tmp/outfile'
-		LOAD DATA INFILE /tmp/outfile' INTO TABLE access;
-	
-	- from admin user
-	
 
 stats of chat messages
 
@@ -36,8 +28,6 @@ BUG: create an account: clicking on Go Back -> sends an email ...!
 #112 when first login/enter catalog, items won't log
 	- add msg: please refresh page if nothing happens within few seconds
     
-	
-#115 keep track of user last login
 
 #116 trace access to welcome and tutorials videos
 
@@ -50,6 +40,9 @@ create new item : press enter shall keep popup open (like click on green button)
 
 v2.1.y:
 -------
+
+backup/restore contents of a given catalog (def+docs+data):
+	
 
 #118 bug: when renaming a perspective, it actually adds a new one, but keep previous one
 
@@ -197,6 +190,8 @@ Done:
 -----
 
 v2.1.2
+
+#115 keep track of user last login (in DB only)
 
 #113 welcome page:
 	x smaller images on welcome page

@@ -16,7 +16,7 @@ See full version of LICENSE in <https://fsf.org/>
 */
 
 
-select '######## CREATING METAINDEX SQL DATABASE STRUCTURE ########' as '';
+select '######## CREATING METAINDEX SQL DATABASE STRUCTURE - v2.1.2 ########' as '';
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -260,6 +260,7 @@ CREATE TABLE `users` (
   `guitheme_id` int(32) NOT NULL DEFAULT '1',
   /* if changed, change it also in plans table, and signup.jsp file */
   `category` ENUM('PERSONAL','STUDENT_SEARCHER', 'NONPROFIT', 'ADMINISTRATION','BUSINESS') NOT NULL DEFAULT 'STUDENT_SEARCHER',  
+  `lastLogin` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 

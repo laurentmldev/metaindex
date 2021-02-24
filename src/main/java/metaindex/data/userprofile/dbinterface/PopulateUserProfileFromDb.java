@@ -29,7 +29,7 @@ class PopulateUserProfileFromDb extends SQLPopulateStmt<IUserProfileData>   {
 
 	public static final String SQL_REQUEST = 
 			"select users.user_id,users.email,users.password, "
-			+"users.nickname,users.guilanguage_id,users.guitheme_id,users.category,role,users.lastUpdate,"
+			+"users.nickname,users.guilanguage_id,users.guitheme_id,users.category,role,users.lastLogin,users.lastUpdate,"
 			+" user_roles.lastUpdate,users.enabled,"
 			+" user_plans.plan_id, user_plans.startDate,user_plans.endDate,user_plans.nbQuotaWarnings,user_plans.lastUpdate"
 			+" from users,user_roles,user_plans";
@@ -64,9 +64,9 @@ class PopulateUserProfileFromDb extends SQLPopulateStmt<IUserProfileData>   {
 			_data.add(d);
 		}
 		
-		Timestamp dbDateUsers = rs.getTimestamp(9);
-		Timestamp dbDateRoles = rs.getTimestamp(10);
-		Timestamp dbDatePlans = rs.getTimestamp(16);
+		Timestamp dbDateUsers = rs.getTimestamp(10);
+		Timestamp dbDateRoles = rs.getTimestamp(11);
+		Timestamp dbDatePlans = rs.getTimestamp(17);
 		Timestamp newerDbDate = dbDateUsers;
 		if (newerDbDate.before(dbDateRoles)) { newerDbDate=dbDateRoles; }
 		if (newerDbDate.before(dbDatePlans)) { newerDbDate=dbDatePlans; }
@@ -81,13 +81,14 @@ class PopulateUserProfileFromDb extends SQLPopulateStmt<IUserProfileData>   {
 		d.setGuiThemeId(rs.getInt(6));
 		d.setCategory(CATEGORY.valueOf(rs.getString(7)));
 		d.setRole(USER_ROLE.valueOf(rs.getString(8)));
+		d.setLastLoginDate(rs.getTimestamp(9));
 		d.setLastUpdate(newerDbDate);
-		d.setEnabled(rs.getBoolean(11));
+		d.setEnabled(rs.getBoolean(12));
 		
-		d.setPlanId(rs.getInt(12));
-		d.setPlanStartDate(rs.getDate(13));
-		d.setPlanEndDate(rs.getDate(14));
-		d.setPlanNbQuotaWarnings(rs.getInt(15));
+		d.setPlanId(rs.getInt(13));
+		d.setPlanStartDate(rs.getDate(14));
+		d.setPlanEndDate(rs.getDate(15));
+		d.setPlanNbQuotaWarnings(rs.getInt(16));
 		
 		return d;
 	}

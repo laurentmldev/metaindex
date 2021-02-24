@@ -51,6 +51,14 @@ public class SqlDbInterface  extends SQLDatabaseInterface<IUserProfileData>
 	public SQLWriteStmt<IUserProfileData> getUpdateUserProfileIntoDbStmt(List<IUserProfileData> data) throws DataProcessException {
 		return new UpdateUserProfileIntoDb(data, getDataConnector());
 	}
+	public SQLWriteStmt<IUserProfileData> getUpdateUserLastLoginDateIntoDbStmt(List<IUserProfileData> data) throws DataProcessException {
+		return new UpdateUserLastLoginDateIntoDb(data, getDataConnector());
+	}
+	public SQLWriteStmt<IUserProfileData> getUpdateUserLastLoginDateIntoDbStmt(IUserProfileData data) throws DataProcessException {
+		List<IUserProfileData> list = new ArrayList<>();
+		list.add(data);
+		return new UpdateUserLastLoginDateIntoDb(list, getDataConnector());
+	}
 	
 	public SQLWriteStmt<IUserProfileData> getUpdateUserProfileIntoDbStmt(IUserProfileData data) throws DataProcessException {
 		List<IUserProfileData> list = new ArrayList<>();
