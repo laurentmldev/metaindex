@@ -166,6 +166,10 @@ public class WsControllerItem extends AMxWSController {
     		answer.setItems(results.get(0).getItems());
     		
     		
+    		// add a delay here to mimic some server delay to answer
+    		//if (Globals.Get().isDevMode()==true) {
+    		//	Thread.sleep(5000);
+    		//}
     		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),
     												"/queue/items", 
     												getCompressedRawString(answer));

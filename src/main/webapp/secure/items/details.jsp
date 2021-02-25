@@ -341,8 +341,7 @@
 </div>
 
  <div id="MxGuiDetails._templates_.item_details" style="display:none" >
- 
-          
+           
  	 <nav class="navbar navbar-expand navbar-light topbar static-top" >
 		
  			<button type="button" class="btn btn-default btn-sm editable-cancel alert alert-info"

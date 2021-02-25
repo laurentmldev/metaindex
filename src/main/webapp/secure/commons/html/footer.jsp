@@ -59,6 +59,7 @@ var WARNING="WARNING";
 var ERROR="ERROR";
 var SUCCESS="SUCCESS";
 // level : SUCCESS|ERROR|WARNING|INFO
+// return: the displayed msg
 function footer_showAlert(level, msg, details, timeToLiveMs) {
 	alertNb++;
 	if (details==null) { details=[]; }
@@ -117,14 +118,17 @@ function footer_showAlert(level, msg, details, timeToLiveMs) {
 		}
 	}
 	
+	newMsgNode.clear=function() { guiMessagesInsertSpot.removeChild(newMsgNode); };
+	
 	guiMessagesInsertSpot.append(newMsgNode);
 	
 	newMsgNode.timer = setInterval(function() { 
 		clearInterval(newMsgNode.timer); 
-		guiMessagesInsertSpot.removeChild(newMsgNode); 
+		newMsgNode.clear(); 
 	}, timeToLiveMs);
 	
 	
+	return newMsgNode;
 }
 
 </script>

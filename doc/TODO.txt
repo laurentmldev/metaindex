@@ -10,25 +10,18 @@ add error msg when cyclic stats email could not be sent : can be sign that email
 test strongly backup/restore procedure, including with SQL migration: 
 	- kibana would not start again : Error: Cluster client cannot be used after it has been closed
 
-#121 remove active/maintenance mode
-
 stats of chat messages
 
 allow access to several pages without session (tutorials for ex) 
 
 [ERROR] 2021-02-12 08:25:13.414 [clientInboundChannel-127] MxDbSearchItem - Unhandled date format : '2021-02-09 07:37:58.331'
 
-BUG: create an account: clicking on Go Back -> sends an email ...!
 
 #111 tutorials:
 	- force activate subtitles
 	- add msg: "please remember to activate subtitles"
 	- tutos page need a valid session. If we go directly there, we are forwarded to welcome page
-	
-#112 when first login/enter catalog, items won't log
-	- add msg: please refresh page if nothing happens within few seconds
     
-
 #116 trace access to welcome and tutorials videos
 
 create new item : press enter shall keep popup open (like click on green button)
@@ -190,6 +183,13 @@ Done:
 -----
 
 v2.1.2
+
+#112 add msg to refresh if items do not load
+
+BUG: create an account: clicking on Go Back -> sends an email ...!
+ -> could not reproduce
+ 
+#121 remove active/maintenance mode
 
 #115 keep track of user last login (in DB only)
 

@@ -10,6 +10,10 @@
  var _fromIdx=0;
  var _size=NB_ITEMS_PER_REQUEST;
  
+ // time to display a help msg if items don't get loaded after a while
+ var refreshPageMsgTimer=null;
+ var refreshPageAlertMsg=null;
+ 
  function ws_handlers_refreshItemsGui() {
 	MxApi.requestGetCatalogs({'catalogId':<s:property value="currentCatalog.id"/>, 'successCallback':handleMxWsCatalogs});
 	ws_handlers_requestItemsSearch(MxGuiHeader.getCurrentSearchQuery());
@@ -21,6 +25,14 @@
 	}
 	else {
 		footer_showAlert(SUCCESS, "<s:text name="global.connectedToServer" />");
+		
+		// this timer is cleared if items received in between
+		refreshPageMsgTimer = setInterval(function() { 
+			clearInterval(refreshPageMsgTimer); 
+			refreshPageMsgTimer=null;
+			refreshPageAlertMsg=footer_showAlert(INFO, "<s:text name="global.refreshPageIfPageIsStillBlankWithinFewSeconds" />",null,10000);
+		}, 5000);
+		
 		ws_handlers_refreshItemsGui();
 	}
  }
@@ -139,7 +151,19 @@
 function retrieveItemsError(msg) { footer_showAlert(ERROR, msg); }
 
 function retrieveItemsSuccess(itemsAnswerMsg) {
-	 
+	
+	// clear timer displaying amsg to refresh page if no items displayed
+	// we've just received them so everything is ok now
+	// no need to display this msg
+	if (refreshPageMsgTimer!=null) { 
+		clearInterval(refreshPageMsgTimer);
+		refreshPageMsgTimer=null;
+	}
+	if (refreshPageAlertMsg!=null) {
+		refreshPageAlertMsg.clear();
+		refreshPageAlertMsg=null;
+	}
+	
 	// ensure we have received catalog info before displaying item
 	if (MxGuiDetails.getCurCatalogDescription()==null) {
 		let timer=setInterval(function() { 
