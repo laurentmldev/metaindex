@@ -123,7 +123,7 @@ public class Globals {
 	private Log log = LogFactory.getLog(Globals.class);
 	private final String DB_DATASOURCE_SQL = "dataSource";
 	
-	public enum APPLICATION_STATUS { STOPPED, RUNNING, FAILURE, MAINTENANCE };
+	public enum APPLICATION_STATUS { STOPPED, RUNNING, FAILURE };
 	private APPLICATION_STATUS _applicationStatus = APPLICATION_STATUS.STOPPED;	
 	
 	private SQLDataConnector _sqlConnector;
@@ -341,13 +341,7 @@ public class Globals {
 		
 		return _propertiesMap.get(propsName);
 	}
-	public APPLICATION_STATUS getApplicationStatus() {
-		String mxPropStatus=GetMxProperty("mx.status");
-		if(		   (_applicationStatus==APPLICATION_STATUS.RUNNING
-				|| _applicationStatus==APPLICATION_STATUS.STOPPED)
-				&& mxPropStatus.equals("MAINTENANCE")) {
-			_applicationStatus=APPLICATION_STATUS.MAINTENANCE;
-		}		
+	public APPLICATION_STATUS getApplicationStatus() {		
 		return _applicationStatus;
 	}
 	public void setApplicationStatus(APPLICATION_STATUS applicationStatus) {
@@ -360,7 +354,6 @@ public class Globals {
 	public String getDetailsStr() {
 
 		return   "\n	###### MetaindeX v"+Globals.GetMxProperty("mx.version")+"  ######"+"\n"
-				+"- mx.status="+Globals.GetMxProperty("mx.status")+"\n"
 				+"- mx.devmode="+isDevMode()+"\n"
 				+"- mx.host="+Globals.GetMxProperty("mx.host")+"\n"
 				+"- mx.protocol="+Globals.GetMxProperty("mx.protocol")+"\n"

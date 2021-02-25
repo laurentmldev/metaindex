@@ -3,8 +3,6 @@
 
 <c:url value="/loginprocess" var="loginUrl"/>
 
-
-
 <c:if test="${mxDevMode == true}" >
   	<nav class="navbar navbar-expand topbar static-top"
   			style="background:orange;height:2rem;color:white;font-weight:bold;">
@@ -34,12 +32,10 @@
               
               <div class="col-lg-12">
                 <div class="p-2">
-           	<c:if test="${mxStatus == 'MAINTENANCE'}">
-           		<div class="maintenance"><p><s:text name="global.maintenance" /></p></div>
-           	</c:if>
-	
-           	<c:if test="${mxStatus == 'ACTIVE'}">
-           	
+           		
+           	<%--mxAppStatus: STOPPED, RUNNING, FAILURE--%>
+           	<c:if test="${mxAppStatus == 'RUNNING'}">
+           		
                  <div id="contentsInsertSpot" ></div>
                  
                  </c:if>

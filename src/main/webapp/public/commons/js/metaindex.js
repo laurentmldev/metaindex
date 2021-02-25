@@ -416,7 +416,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		var parsedMsg = JSON.parse(mxServerHeartbeatMsg.body);
 		if (parsedMsg.applicationStatus!=curApplicationStatus) {
 			curApplicationStatus=parsedMsg.applicationStatus;
-			// FAILURE|MAINTENANCE|STOPPED|RUNNING			
+			// FAILURE|STOPPED|RUNNING			
 			myself._callback_ServerHeartbeatEvent(parsedMsg.applicationStatus);			
 		}
 		if (myself._callback_ServerHeartbeatEvent_debug==true) {

@@ -132,7 +132,7 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
   			}
 	  					
 			// set user language and guitheme
-			if (getCurrentUserProfile()!=null && !getMxStatus().equals("MAINTENANCE") && getCurrentUserProfile().isLoggedIn()) {
+			if (getCurrentUserProfile()!=null && Globals.Get().getApplicationStatus().equals(APPLICATION_STATUS.RUNNING) && getCurrentUserProfile().isLoggedIn()) {
 				
 				setSessionLanguage(	getCurrentUserProfile().getGuiLanguage().getShortname(),request,
 									ActionContext.getContext());
@@ -232,11 +232,12 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 	}	
 	
 	public String getMxVersion() { return Globals.GetMxProperty("mx.version"); }
-	public String getMxStatus() { return Globals.GetMxProperty("mx.status"); }
 	public String getMxFooterInfo() {return Globals.GetMxProperty("mx.footer.info"); } 
 	
 	public String getMxRole() {	return _userProfileData.getRole().toString(); }
 	public Boolean getMxDevMode() {	return Globals.Get().isDevMode(); }
+	
+	public String getMxAppStatus() { return Globals.Get().getApplicationStatus().toString(); }
 	
 	
 	/** TODO temporary for avoiding Struts auto populate error on form submit for those fields */

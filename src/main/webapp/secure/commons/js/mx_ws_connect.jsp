@@ -16,7 +16,7 @@
 // initialized when calling mx_ws_connect function
 var MxApi=null;
 
-// event : HEARTBEAT_TIMEOUT|FAILURE|MAINTENANCE|STOPPED|RUNNING
+// event : HEARTBEAT_TIMEOUT|FAILURE|STOPPED|RUNNING
 function handleMxWsHeartbeatEvent(event) {
 	if (event=='HEARTBEAT_TIMEOUT') {
 		footer_showAlert(ERROR, "<s:text name="metaindex.disconnected" />",null,999999999);

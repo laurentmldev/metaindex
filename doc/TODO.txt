@@ -10,7 +10,7 @@ add error msg when cyclic stats email could not be sent : can be sign that email
 test strongly backup/restore procedure, including with SQL migration: 
 	- kibana would not start again : Error: Cluster client cannot be used after it has been closed
 
-remove active/maintenance mode
+#121 remove active/maintenance mode
 
 stats of chat messages
 
