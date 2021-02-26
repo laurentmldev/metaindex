@@ -12,8 +12,7 @@ test strongly backup/restore procedure, including with SQL migration:
 #116 trace access to 
 	- welcome and tutorials videos
 	- chat messages
-
-allow access to some public pages without session (tutorials for ex) 
+ 
 
 [ERROR] 2021-02-12 08:25:13.414 [clientInboundChannel-127] MxDbSearchItem - Unhandled date format : '2021-02-09 07:37:58.331'
 
@@ -22,9 +21,6 @@ allow access to some public pages without session (tutorials for ex)
 	- add msg: "please remember to activate subtitles"
 	- tutos page need a valid session. If we go directly there, we are forwarded to welcome page
     
-create new item : press enter shall keep popup open (like click on green button)
-
-#35 Fields: multi shall be visible only if enum is not empty
 
 
 
@@ -181,6 +177,11 @@ Done:
 
 v2.1.2
 
+create new item : press enter shall keep popup open (like click on green button)
+
+#35 Fields: multi shall be visible only if enum is not empty
+	-> canceled, not relevant
+	
 #119 multi-values displayed as keywords-boxes in read-only
 
 #112 add msg to refresh if items do not load

@@ -572,11 +572,25 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFile
 //{ id:"xxx",type:"dropdown",defaultValue:"xxx", values:[{text:'xxx',value:'xxx'}], important:'true',disabled:'true' }]
 // { id:"xxx",type:"dropdown",defaultValue:"xxx", values:['val1','val2'], important:'true',disabled:'false' }]
 // { id:"xxx",type:"multiselect",values:['val1','val2'], important:'true' }]
-
- function _commons_popups_makeMultiInputsPopup(title,fieldsList,onValidCallback) {
-		
+function _commons_popups_makeMultiInputsPopup(title,fieldsList,onValidCallback,keepPopupWhenPressOk) {
+	
+	 if (keepPopupWhenPressOk==null) { keepPopupWhenPressOk=false; }
+	 
 	 let newPopup = document.getElementById("_commons_popups_multi_input_template_").cloneNode(true);
 	 
+	 newPopup.onkeypress=function(event) {
+		 event.stopPropagation();  		 
+	 		// when pressing enter
+	  		if (event.which==13||event.keycode==13) { 
+	  			let formNodes=this.querySelectorAll('._form_input_');
+	 			 for (var i=0;i<formNodes.length;i++) {
+	 				 let curFormNode=formNodes[i];			 
+	 				 curFormNode.onchange();
+	 			 }
+	  			this.querySelector('._button_ok_').click(); 
+	  			if (keepPopupWhenPressOk==false) { this.style.display='none'; }
+	  		}
+	 }
 	 let resultFields={};
 	 let resultFiles=[];
 	 
@@ -694,17 +708,7 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFile
  </script>
 
   <div class="modal mx-modal _modal_root_" id="_commons_popups_multi_input_template_" 
-  	onkeypress="event.stopPropagation();  	
- 		// when pressing enter
-  		if (event.which==13||event.keycode==13) { 
-  			let formNodes=this.querySelectorAll('._form_input_');
- 			 for (var i=0;i<formNodes.length;i++) {
- 				 let curFormNode=formNodes[i];			 
- 				 curFormNode.onchange();
- 			 }
-  			this.querySelector('._button_ok_').click(); 
-  			this.style.display='none';
-  		}"
+  	
  	onkeydown="event.stopPropagation();
   			// when pressing escape, close modal
   			if (event.which==27||event.keycode==27) {

@@ -345,7 +345,7 @@ function _builCreateNewItemForm(catalogDescr) {
 	
 	// create item modal
 	let createItemForm=MxGuiPopups.newMultiInputsPopup(popupHeaderNode,
-													fieldsList,onValidFormCallback);
+													fieldsList,onValidFormCallback,true);
 	createItemForm.id="createItemForm";
 	return createItemForm;
 }
