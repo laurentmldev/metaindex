@@ -13,6 +13,7 @@ using classpath local versions for spring XSD, otherwise it does not work offlin
 <http>	
 	<intercept-url pattern="/**" requires-channel="https" />	
 	<intercept-url pattern="/welcome" access="permitAll" />
+	<intercept-url pattern="/Tutorials" access="permitAll" />
 	<intercept-url pattern="/loginform" access="permitAll" />
 	<intercept-url pattern="/loginprocess" access="permitAll" />
 	<intercept-url pattern="/logoutprocess" access="permitAll" />
@@ -39,7 +40,7 @@ using classpath local versions for spring XSD, otherwise it does not work offlin
 	<logout invalidate-session="true" logout-url="/logoutprocess"  logout-success-url="/loginform?logout" />
 	<access-denied-handler error-page="/Error401" />	
 	
-	<session-management invalid-session-url="/welcome" session-authentication-error-url="/loginform?error">
+	<session-management  session-authentication-error-url="/loginform?error">
 		<concurrency-control max-sessions="3" error-if-maximum-exceeded="true" />
 	</session-management>
 	
