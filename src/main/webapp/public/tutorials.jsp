@@ -231,7 +231,10 @@ function goBack() { window.location.href=origin; }
  		<tr><td><center>
  			<h3 id="tuto-title" ></h3>
  			<h5  id="tuto-desc"></h5>
- 			<div style="font-size:0.8rem"><a href="#tuto-links"><s:text name="tutorials.seeUsefulLinksBelow" /></a></div>
+ 			<div style="font-size:1rem">
+ 					<a href="#tuto-links"><s:text name="tutorials.seeUsefulLinksBelow" /></a>
+ 					<span style="font-weight:bold;margin-left:3rem;color:#66a;"><s:text name="tutorials.enableSubtitles"/></span>
+ 			</div>
  			<div>
  				 <video id="tuto-video" width="1000" height="550" style="border:none;background:" controls>
 					  <source  id="tuto-video-source" src="" type="video/mp4">					  

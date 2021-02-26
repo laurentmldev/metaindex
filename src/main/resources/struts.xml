@@ -25,7 +25,7 @@
 </global-exception-mappings>
 
 		<!-- Welcome page -->
-		<action name="welcome" class="metaindex.app.beans.BeanProfile">
+		<action name="welcome" class="metaindex.app.beans.BeanWelcome">
 			<result name="BeanProcess_SUCCESS" >/public/welcome.jsp</result>			
 		</action>
 		
@@ -117,7 +117,7 @@
 		</action> 
 		
 		<!-- Tutos -->
-		<action name="Tutorials" class="metaindex.app.beans.BeanProfile">
+		<action name="Tutorials" class="metaindex.app.beans.BeanTutorials">
 			<result name="BeanProcess_SUCCESS" >/public/tutorials.jsp</result>			
 		</action>
 		

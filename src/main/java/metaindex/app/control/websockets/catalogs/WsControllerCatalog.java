@@ -38,6 +38,8 @@ import metaindex.app.periodic.statistics.catalog.CreateCatalogMxStat;
 import metaindex.app.periodic.statistics.catalog.DeleteCatalogMxStat;
 import metaindex.app.periodic.statistics.catalog.SetCustoCatalogMxStat;
 import metaindex.app.periodic.statistics.catalog.UpdateLexicCatalogMxStat;
+import metaindex.app.periodic.statistics.publicpages.WelcomePageMxStat;
+import metaindex.app.periodic.statistics.user.ChatMsgMxStat;
 import metaindex.app.periodic.statistics.user.ErrorOccuredMxStat;
 import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.CatalogChatMsg;
@@ -861,6 +863,8 @@ public class WsControllerCatalog extends AMxWSController {
 		chatMsg.setText(requestMsg.getChatMessage());
 		chatMsg.setTimestamp(new Date());
 		cat.postMessage(user, chatMsg);
+		
+		Globals.GetStatsMgr().handleStatItem(new ChatMsgMxStat(user));
 		    		
     }
 
