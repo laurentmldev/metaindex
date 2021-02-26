@@ -80,8 +80,8 @@ public class MxDbSearchItem implements IDbItem {
 		}
 		catch(Exception e) { 
 			//throw new DataProcessException("Unhandled date format : "+dateStr,e); 
-			log.error("Unhandled date format : '"+dateStr+"'");	
-			//e.printStackTrace();
+			log.error("Unhandled date format : '"+dateStr+"', setting it to epoch.");	
+			e.printStackTrace();
 			setLastModifTimestamp(new Date(0));			
 		}
 		

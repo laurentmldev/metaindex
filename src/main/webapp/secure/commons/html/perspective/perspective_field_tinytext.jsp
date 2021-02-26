@@ -32,8 +32,25 @@
  	 
  	 // value
  	 let valueNode = fieldNode.querySelector("._value_");
- 	 let displayedStr=truncate(fieldValue,TINYTEXT_MAX_DISPLAY_NB_CHARS,true); 	 
- 	 valueNode.innerHTML=displayedStr;
+ 	 // if enum then display each value in a box
+ 	 if (mx_helpers_isDatatypeEnumOk(termDesc.datatype) 
+				&& termDesc.enumsList.length>1  
+					&& termDesc.enumsList[0]!=""){
+ 		 let valuesList=fieldValue.split(',');
+ 		 
+ 		 for (var i=0;i<valuesList.length;i++) {
+			curValToDisplay=truncate(valuesList[i],TINYTEXT_MAX_DISPLAY_NB_CHARS,true);
+			let enumValNode=document.getElementById("_commons_perspectives_field_readonly_template_tinytext_enumval").cloneNode(true);
+			enumValNode.style.display='block';
+			enumValNode.innerHTML=curValToDisplay;
+			valueNode.appendChild(enumValNode);
+ 		 }
+ 		
+ 	 } else {
+ 		let displayedStr=truncate(fieldValue,TINYTEXT_MAX_DISPLAY_NB_CHARS,true); 	 
+ 	 	 valueNode.innerHTML=displayedStr;	 
+ 	 }
+ 	 
  	
  	// size 
  	 let textSizeClass="mx-perspective-field-text-size-"+fieldVisuDesc.size;
@@ -57,10 +74,14 @@
 
 
 <div style="display:none;" class="mx-perspective-field" id="_commons_perspectives_field_readonly_template_tinytext"  >
-	<table style="height:100%;width:100%"><tr>
+	<table style="width:100%;"><tr>
 		<td class="mx-perspective-field-title"><span class="_title_"></span></td>
-		<td class="_value_"></td>
+		<td><div style="width:100%;max-height:10vh;overflow:auto;" class="_value_"></div></td>
 	</tr></table>               
+</div>
+
+<div style="display:none;" class="mx-perspective-field-enumval" id="_commons_perspectives_field_readonly_template_tinytext_enumval"  >
+	               
 </div>
 
 
