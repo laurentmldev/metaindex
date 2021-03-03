@@ -31,6 +31,7 @@ import org.apache.commons.logging.LogFactory;
 
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
+import metaindex.data.term.ICatalogTerm.TERM_DATATYPE;
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.AStreamHandler;
@@ -73,6 +74,16 @@ public class GexfDumper<T extends IFieldValueMapObject> extends AStreamHandler<T
 		return "string";	
 	}
 	
+	private String _getEnumAttrId(ICatalogTerm t, Integer enumPos) {
+		return t.getId().toString()+"."+enumPos.toString();
+	}
+	
+	private Boolean _isTermToBeSplit(ICatalogTerm t) {
+		return t.getIsMultiEnum()==true && t.getEnumsList().size()>0 
+    			&& (t.getDatatype()==TERM_DATATYPE.TINY_TEXT 
+    			 || t.getDatatype()==TERM_DATATYPE.INTEGER
+    			 || t.getDatatype()==TERM_DATATYPE.FLOAT);
+	}
 	protected void addCustomAttributes() throws XMLStreamException {};
 	@Override
 	public void beforeFirst() {
@@ -126,6 +137,7 @@ public class GexfDumper<T extends IFieldValueMapObject> extends AStreamHandler<T
             _xmlStreamWriter.writeStartElement("attributes");
             _xmlStreamWriter.writeAttribute("class","node");
             for (ICatalogTerm t : getNodesDataTermsList()) {
+            	
 				Integer id = t.getId();
 				String name = t.getName();
 				RAW_DATATYPE type = t.getRawDatatype();
@@ -136,6 +148,27 @@ public class GexfDumper<T extends IFieldValueMapObject> extends AStreamHandler<T
 				_xmlStreamWriter.writeAttribute("title",name);
 				_xmlStreamWriter.writeAttribute("type",gexfType);				
 				_xmlStreamWriter.writeEndElement();
+				
+				// for basic types with multi enum, we consider each possible enum value as a separate 'boolean' field
+            	// so that we can discriminate it easily when analyzing graph properties
+            	// Ex: term 'color' enum: red|green|blue becomes 3 bool attributes 'color:red','color:green','color:blue'
+            	// For now we only do that for TinyText, Int and Float types
+            	if (_isTermToBeSplit(t)) {
+            		Integer enumPos=0;
+            		for (String enumVal : t.getEnumsList()) {
+            			enumPos++;
+	            		String enumid = _getEnumAttrId(t,enumPos);
+						String enumname = t.getName()+":"+enumVal;
+						String enumgexfType = "boolean";
+						_xmlStreamWriter.writeCharacters("\n			");
+						_xmlStreamWriter.writeStartElement("attribute");
+						_xmlStreamWriter.writeAttribute("id",enumid);
+						_xmlStreamWriter.writeAttribute("title",enumname);
+						_xmlStreamWriter.writeAttribute("type",enumgexfType);				
+						_xmlStreamWriter.writeEndElement();
+            		}
+				}
+            	
 			}
             addCustomAttributes();
             _xmlStreamWriter.writeCharacters("\n		");
@@ -191,15 +224,29 @@ public class GexfDumper<T extends IFieldValueMapObject> extends AStreamHandler<T
 			_xmlStreamWriter.writeCharacters("\n				");
 			_xmlStreamWriter.writeStartElement("attvalues");
 			
-			for (ICatalogTerm term : this.getNodesDataTermsList()) {
+			for (ICatalogTerm t : this.getNodesDataTermsList()) {
 				
-				Object val = item.getValue(term.getName());
+				Object val = item.getValue(t.getName());
 				if (val!=null) { 
 					_xmlStreamWriter.writeCharacters("\n					");
 					_xmlStreamWriter.writeStartElement("attvalue");
-					_xmlStreamWriter.writeAttribute("for",term.getId().toString());
+					_xmlStreamWriter.writeAttribute("for",t.getId().toString());
 					_xmlStreamWriter.writeAttribute("value",val.toString());	
 					_xmlStreamWriter.writeEndElement();
+					
+					if (_isTermToBeSplit(t)) {
+						String[] termEnumValues = val.toString().split(",");
+						for (String curEnumVal : termEnumValues) {
+							Integer enumPos = t.getEnumsList().indexOf(curEnumVal);
+							if (enumPos!=-1) {
+								_xmlStreamWriter.writeCharacters("\n					");
+								_xmlStreamWriter.writeStartElement("attvalue");
+								_xmlStreamWriter.writeAttribute("for",_getEnumAttrId(t,enumPos+1));
+								_xmlStreamWriter.writeAttribute("value","true");	
+								_xmlStreamWriter.writeEndElement();
+							}
+						}
+					}
 				}
 				
 			}

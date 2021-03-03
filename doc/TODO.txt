@@ -7,10 +7,7 @@ v2.1.2:
 test strongly backup/restore procedure, including with SQL migration: 
 	- kibana would not start again : Error: Cluster client cannot be used after it has been closed
 
-#124 add retry button on offline page
-
-#122 GEXF export shall split multi-value as separate boolean field
-#123 GEXF export shall allow to define weight to a LINK
+#123 GEXF export shall allow to define weight to a LINK: xxx:{weight:4,toto:"blabla"},
 	
 #126 improve plans and quotas colors
  
@@ -171,6 +168,10 @@ Done:
 -----
 
 v2.1.2
+
+#122 GEXF export shall split multi-value as separate boolean field
+
+#124 add retry button on offline page
 
 #125 welcome page : all screenshots shall have same size
 
