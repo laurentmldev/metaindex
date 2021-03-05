@@ -7,10 +7,26 @@ v2.1.2:
 test strongly backup/restore procedure, including with SQL migration: 
 	- kibana would not start again : Error: Cluster client cannot be used after it has been closed
 
-#123 GEXF export shall allow to define weight to a LINK: xxx:{weight:4,toto:"blabla"},
+
 	
 #126 improve plans and quotas colors
  
+ add in help and tutos that IDs shall not contain ',' (separator) nor ':' (weights for links)
+  	+ check in parser that IDs do not contain such characters.
+  	
+you shall not pass : auto-redirect to login page if user is logged out
+
+mapping to a field different from default one (matching by name) does not seem to work (field ignored?)
+
+#123 GEXF export shall allow to define weight to a LINK: xxx:4
+	link edit: 
+		- when click on global checkbox while nobody is selected (in multi mode) -> elk error because of empty search ("_id:")
+		- when editing several link weights are edited, only the last modified one is applied
+		- link weight does notappear in enum with multi=false, when selecting a new one
+
+add tmp files path in start-up synthesis in logs
+
+importing file: matching table: choosing twice DATE will show twice the text
 
 v2.1.y:
 -------
@@ -169,6 +185,7 @@ Done:
 
 v2.1.2
 
+#123 GEXF export shall allow to define weight to a LINK: xxx:4
 #122 GEXF export shall split multi-value as separate boolean field
 
 #124 add retry button on offline page

@@ -260,14 +260,22 @@ public class GexfDumper<T extends IFieldValueMapObject> extends AStreamHandler<T
 				Object val = item.getValue(term.getName());
 				if (val!=null) { 
 					String idsListStr=val.toString();
-					String[] linksIds = idsListStr.split(",");
-					for (String curTargetId : linksIds) {
+					String[] linksArrays = idsListStr.split(",");
+					// a link is represented as coma-separated list of target IDs
+					// optionally, link weight is specified with additional suffix ':<weight>'
+					// for example "xaezdfd,xaRRd5fff:4,fjkdlkeke"
+					// if missing, default value is 1
+					for (String curLinkStr : linksArrays) {
+						String[] curLinkArray=curLinkStr.split(":");
+						String curTargetId=curLinkArray[0];
+						String curLinkWeight="1";
+						if (curLinkArray.length>1) { curLinkWeight=curLinkArray[1]; } 
 						_xmlStreamWriterEdges.writeCharacters("\n			");
 						_xmlStreamWriterEdges.writeStartElement("edge");
 						_xmlStreamWriterEdges.writeAttribute("id",_nbEdges.toString());
 						_xmlStreamWriterEdges.writeAttribute("source",item.getId());
 						_xmlStreamWriterEdges.writeAttribute("target",curTargetId);
-						_xmlStreamWriterEdges.writeAttribute("wheight","1");// default edge weight
+						_xmlStreamWriterEdges.writeAttribute("wheight",curLinkWeight);
 						
 						_xmlStreamWriterEdges.writeCharacters("\n				");
 						_xmlStreamWriterEdges.writeStartElement("attvalues");

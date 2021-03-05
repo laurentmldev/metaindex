@@ -16,11 +16,11 @@ where contents is a coma-separated list of documents IDs.
 //--------------- H E L P E R S ------------------
 
 
-function _commons_perspective_buildStrQueryGetRefItems(itemIdsArray) {
+function _commons_perspective_buildStrQueryGetRefItems(linksTable) {
 	let query="";
-	for (var i=0;i<itemIdsArray.length;i++) {
+	for (var i=0;i<linksTable.length;i++) {
 		if (query.length>0) { query+=" OR "; }
-		query+="_id:"+itemIdsArray[i];	
+		query+="_id:"+linksTable[i].id;	
 	}
 	return query;
 }
@@ -62,6 +62,37 @@ function  _commons_perspective_setValueWithItemFullName(itemId,objectToSet,thisR
 	mx_helpers_getItemDetailsById(itemId,receivedCurItemCallback);	
 }
 
+function _parseLinksList(docIdsListStr) {
+	
+	let idsList=docIdsListStr.replace(/([^:,]+)(\:\d+)?($|,)/g,"$1$3").split(",");
+	let weightsList=docIdsListStr.replace(/[^:,]+(\:(\d+))?($|,)/g,"$2$3").split(",");
+	
+	// list of links and weights
+	let linksTable=[];
+	for (var i=0;i<idsList.length;i++) {
+		let curId=idsList[i];
+		let curWeight=weightsList[i];
+		if (curWeight.length==0) { curWeight=1; }
+		linksTable.push({"id":curId,"weight":curWeight});
+	}
+	
+	return linksTable;
+}
+
+function _getLinkWeight(linksTable,targetId) {
+	for (var i=0;i<linksTable.length;i++) {
+		if (linksTable[i].id==targetId) { return linksTable[i].weight; }
+	}
+	return 1;
+}
+function _setLinkWeight(linksTable,targetId,weightVal) {
+	for (var i=0;i<linksTable.length;i++) {
+		if (linksTable[i].id==targetId) { 
+			return linksTable[i].weight=weightVal; }
+	}
+	return 1;
+}
+
 // -------------- READONLY-------------------
 
 
@@ -69,7 +100,7 @@ function  _commons_perspective_setValueWithItemFullName(itemId,objectToSet,thisR
 // return div containing datafield with refs
 function _commons_perspective_buildRefsDocsList(itemId,docIdsListStr,termDesc) {	
 	
-	let refDocsList=docIdsListStr.split(",");
+	let linksTable=_parseLinksList(docIdsListStr);
 	let refDocsListEnabledByIdNode = document.createElement("div");
 	refDocsListEnabledByIdNode.innerHTML=docIdsListStr;
 	
@@ -78,7 +109,7 @@ function _commons_perspective_buildRefsDocsList(itemId,docIdsListStr,termDesc) {
 		//console.log("retrieved "+itemsAnswerMsg.items.length+" children blabla");
 		refDocsListEnabledByIdNode.innerHTML="";
 		
-		let docsListFieldset = document.getElementById("_perspective_field_reference_refsdocs_fieldset_template_").cloneNode(true);
+		let docsListFieldset = document.getElementById("_perspective_field_link_refsdocs_fieldset_template_").cloneNode(true);
 		docsListFieldset.id=itemId+"_"+termDesc.name+"_docslist_readonly";
 		docsListFieldset.style.display='block';
 		refDocsListEnabledByIdNode.appendChild(docsListFieldset);
@@ -87,22 +118,30 @@ function _commons_perspective_buildRefsDocsList(itemId,docIdsListStr,termDesc) {
 		let legend= docsListFieldset.querySelector("._legend_");
 		legend.innerHTML="References : "+itemsAnswerMsg.items.length;
 		legend.onclick=function() {
-			MxGuiHeader.setCurrentSearchQuery(_commons_perspective_buildStrQueryGetRefItems(refDocsList));
+			MxGuiHeader.setCurrentSearchQuery(_commons_perspective_buildStrQueryGetRefItems(linksTable));
 			MxGuiHeader.refreshSearch();		
 		}
 		
 		// refs docs table
-		let refsDocsTable=docsListFieldset.querySelector("._refsdocs_table_");
+		let refsDocsTableNode=docsListFieldset.querySelector("._refsdocs_table_");
 		
 		for (var idx=0;idx<itemsAnswerMsg.items.length;idx++) {
 			 var item=itemsAnswerMsg.items[idx];
-			 let newRow=document.getElementById("_perspective_field_reference_refsdocs_fieldset_template_raw_container_").querySelector("._raw_").cloneNode(true);
+			 
+			 
+			 let newRow=document.getElementById("_perspective_field_link_refsdocs_fieldset_template_raw_container_RO_").querySelector("._raw_").cloneNode(true);
 			 newRow.style.display="table-row";
 			
-			 // contents
-			 let newRowContents=newRow.querySelector("._refdoc_col_");
-			 newRowContents.appendChild(_commons_perspective_buildLinkToItem(item.id,item.name,item.id));
-			 refsDocsTable.appendChild(newRow);
+			 // item name (clickable)
+			 let newRowLink=newRow.querySelector("._refdoc_col_");
+			 newRowLink.appendChild(_commons_perspective_buildLinkToItem(item.id,item.name,item.id));
+			 
+			 // link weight
+			 let newRowWeight=newRow.querySelector("._link_weight_col_");
+			 let weightVal=_getLinkWeight(linksTable,item.id);
+			 if (weightVal!=1) { newRowWeight.innerHTML=weightVal; }			 
+			 
+			 refsDocsTableNode.appendChild(newRow);
 
 		}	
 		
@@ -110,7 +149,7 @@ function _commons_perspective_buildRefsDocsList(itemId,docIdsListStr,termDesc) {
 	
 	 // cannot build query with JSON object because one of the keys is dynamic
 	 // query = get all children having current document as parent
-     let queryJsonStr = _commons_perspective_buildStrQueryGetRefItems(refDocsList);
+     let queryJsonStr = _commons_perspective_buildStrQueryGetRefItems(linksTable);
 	 
 	 retrieveItemsOptionsError=function(msg) { footer_showAlert(ERROR, msg); }
 	 MxApi.requestCatalogItems({"fromIdx":0,
@@ -166,21 +205,32 @@ function _commons_perspective_build_readonly_field_reference(catalogDesc,tabIdx,
 // -------- EDITABLE ---------
 
 
-function _buildHandleChoiceOnClickFunc(newRow,item,multiSelectAllowed,checkbox,checkBoxesById,refDocsListEnabledByIdMap,onChangeCallBack) {
+function _buildHandleChoiceOnClickFunc(newRow,item,multiSelectAllowed,checkbox,checkBoxesById,linksTable,refDocsListEnabledByIdMap,weightInputNode,onChangeCallBack) {
+	
 	
 	let myOnClickFunc=function(e) {
 		 event.stopPropagation();
-			
+		 
+		 					
     	 let newValue="";
     	 // multi select (checkbox)
     	 if (multiSelectAllowed) {
-    		 if (checkbox.checked) { refDocsListEnabledByIdMap[item.id]=true; }
-			 else { refDocsListEnabledByIdMap[item.id]=false; } 
+    		 if (checkbox.checked) { 
+    			 refDocsListEnabledByIdMap[item.id]=true;
+    			 weightInputNode.style.display='block';
+    		 }
+			 else { 
+				 refDocsListEnabledByIdMap[item.id]=false;
+				 weightInputNode.style.display='none';
+			 } 
 			 						 
 			 for (var curItemId in refDocsListEnabledByIdMap) {
 				 if (refDocsListEnabledByIdMap[curItemId]==true) {
 					 if (newValue.length>0) { newValue+=","; }
 					 newValue+=curItemId;
+					 let weight=_getLinkWeight(linksTable,curItemId);
+					 if (curItemId==item.id) {weight=weightInputNode.value; }
+					 if (weight!=1) { newValue+=":"+weight; }
 				 }
 			 }
 		 // single select (radio button)	 
@@ -196,8 +246,10 @@ function _buildHandleChoiceOnClickFunc(newRow,item,multiSelectAllowed,checkbox,c
     		//console.log(checkBoxesById);
     		
     		checkBoxesById[item.id].checked=true;
-    		refDocsListEnabledByIdMap[item.id]=true;						 
-			newValue=item.id;
+    		refDocsListEnabledByIdMap[item.id]=true;	
+    		newValue=item.id;
+    		let weight=weightInputNode.value;
+			 if (weight!=1) { newValue+=":"+weight; }
     		
     	 }
     				    	
@@ -214,7 +266,10 @@ function _buildHandleChoiceOnClickFunc(newRow,item,multiSelectAllowed,checkbox,c
 	return myOnClickFunc;
 }
 
-function _buildHandleSearchedItemsFunc(itemId,refsDocsTable,termDesc,refDocsListEnabledByIdMap,onChangeCallBack) {
+
+
+
+function _buildHandleSearchedItemsFunc(itemId,linksTable,refsDocsTableNode,termDesc,refDocsListEnabledByIdMap,onChangeCallBack) {
 	
 		let buildHandleSearchedItemsFunc=function(itemsAnswerMsg) {
 			
@@ -227,12 +282,12 @@ function _buildHandleSearchedItemsFunc(itemId,refsDocsTable,termDesc,refDocsList
 				 let item=itemsAnswerMsg.items[idx];
 				
 				 // add a new row for the new document do be listed
-				 let newRow=document.getElementById("_perspective_field_reference_refsdocs_fieldset_template_raw_container_").querySelector("._raw_").cloneNode(true);
+				 let newRow=document.getElementById("_perspective_field_link_refsdocs_fieldset_template_raw_container_").querySelector("._raw_").cloneNode(true);
 				 newRow.style.display="table-row";
 				 
 				 // selector checkbox
 				 let selector=newRow.querySelector("._selector_");
-				 selector.style.display="block";
+				 selector.style.display="table-cell";
 				 let checkbox=selector.querySelector("._selector_checkbox_");
 				 
 				 let multiSelectAllowed=mx_helpers_isDatatypeMultiEnumOk(termDesc.datatype) && termDesc.isMultiEnum==true;
@@ -245,13 +300,27 @@ function _buildHandleSearchedItemsFunc(itemId,refsDocsTable,termDesc,refDocsList
 			     if (refDocsListEnabledByIdMap[item.id]==true) {					 
 					 checkbox.checked=true;
 				 } 	
-			     // click on checkbox
-			     checkbox.onclick=_buildHandleChoiceOnClickFunc(newRow,item,multiSelectAllowed,checkbox,checkBoxesById,refDocsListEnabledByIdMap,onChangeCallBack);
+			     
+				 // doc name
+				 let newRowDocTitle=newRow.querySelector("._refdoc_col_");
+				 newRowDocTitle.appendChild(_commons_perspective_buildLinkToItem(item.id,item.name,item.id));				 
+
+				 // link weight
+				 let newRowWeight=newRow.querySelector("._link_weight_col_");
+				 let weightVal=_getLinkWeight(linksTable,item.id);
+				 let weightInputNode=document.getElementById("_perspective_field_link_weight_input_").cloneNode(true);
+				 if (refDocsListEnabledByIdMap[item.id]==true) { weightInputNode.style.display='block'; }
+				 weightInputNode.value=weightVal;
+				 newRowWeight.append(weightInputNode);	
 				 
-				 // contents
-				 let newRowContents=newRow.querySelector("._refdoc_col_");
-				 newRowContents.appendChild(_commons_perspective_buildLinkToItem(item.id,item.name,item.id));
-				 refsDocsTable.appendChild(newRow);
+				// click on checkbox
+			     checkbox.onclick=_buildHandleChoiceOnClickFunc(newRow,item,multiSelectAllowed,checkbox,
+			    		 	checkBoxesById,linksTable,refDocsListEnabledByIdMap,weightInputNode,onChangeCallBack);
+				 
+				 newRowWeight.onchange=_buildHandleChoiceOnClickFunc(newRow,item,multiSelectAllowed,checkbox,
+						 	checkBoxesById,linksTable,refDocsListEnabledByIdMap,weightInputNode,onChangeCallBack);
+				 
+				 refsDocsTableNode.appendChild(newRow);
 				 		
 			}	
 		
@@ -260,8 +329,8 @@ function _buildHandleSearchedItemsFunc(itemId,refsDocsTable,termDesc,refDocsList
 	return buildHandleSearchedItemsFunc;	
 }
 
-function _buildSearInputOnChangeFunc(searchinput,selectedOnlyCheckbox,refsDocsTable,
-								refDocsListEnabledByIdNode,refDocsList,refreshDelayMs) {
+function _buildSearInputOnChangeFunc(searchinput,selectedOnlyCheckbox,refsDocsTableNode,
+								refDocsListEnabledByIdNode,linksTable,refreshDelayMs) {
 	if (refreshDelayMs==null) { refreshDelayMs=0; }
 	
 	let retrieveItemsOptionsError=function(msg) { footer_showAlert(ERROR, msg); }
@@ -271,8 +340,8 @@ function _buildSearInputOnChangeFunc(searchinput,selectedOnlyCheckbox,refsDocsTa
 		 
 		 searchinput.style["border-color"]="orange";
 		 let refreshAndClear=function(itemsReceivedMsg) {
-			 clearNodeChildren(refsDocsTable);
-		 	 refsDocsTable.handleSearchedItems(itemsReceivedMsg);
+			 clearNodeChildren(refsDocsTableNode);
+		 	 refsDocsTableNode.handleSearchedItems(itemsReceivedMsg);
 			 
 			 if (searchinput.value.length>0) { searchinput.style["border-color"]="green"; }
 			 else { searchinput.style["border-color"]="grey"; }
@@ -286,7 +355,7 @@ function _buildSearInputOnChangeFunc(searchinput,selectedOnlyCheckbox,refsDocsTa
 		 
 		// combine current filter with only currently selected documents
 		 if (selectedOnlyCheckbox.checked) {
-			curSelectDocsRequest=_commons_perspective_buildStrQueryGetRefItems(refDocsList);
+			curSelectDocsRequest=_commons_perspective_buildStrQueryGetRefItems(linksTable);
 			if (curSelectDocsRequest.length>0) {
 				if (customQuery.length>0) { customQuery=customQuery+" AND ("+curSelectDocsRequest+")"; }
 				else { customQuery=curSelectDocsRequest; }
@@ -294,7 +363,7 @@ function _buildSearInputOnChangeFunc(searchinput,selectedOnlyCheckbox,refsDocsTa
 		 }		
 		 
 		 refDocsListEnabledByIdNode.mxCustomQuery=customQuery;
-		 let queryError=function(errorMsg) { refsDocsTable.handleSearchedItems(null,true);}
+		 let queryError=function(errorMsg) { refsDocsTableNode.handleSearchedItems(null,true);}
 		 
 		 //console.log("query="+refDocsListEnabledByIdNode.mxCustomQuery);
 		 
@@ -313,7 +382,7 @@ function _buildSearInputOnChangeFunc(searchinput,selectedOnlyCheckbox,refsDocsTa
 	return onSearchInputChangeFunc;
 }
 
-function _buildTableOnScrollFunc(refsDocsTable,refDocsListEnabledByIdNode) {
+function _buildTableOnScrollFunc(refsDocsTableNode,refDocsListEnabledByIdNode) {
 	
 	let retrieveItemsOptionsError=function(msg) { footer_showAlert(ERROR, msg); }
 	
@@ -324,10 +393,10 @@ function _buildTableOnScrollFunc(refsDocsTable,refDocsListEnabledByIdNode) {
 				query=refDocsListEnabledByIdNode.mxCustomQuery;
 			}
 		    //console.log("### reached bottom, completing with query: '"+query+"'");
-			MxApi.requestCatalogItems({"fromIdx":refsDocsTable.children.length,
+			MxApi.requestCatalogItems({"fromIdx":refsDocsTableNode.children.length,
 				 						"size":NB_ELEMENTS_TO_RETRIEVE,
 				 						"query":query,
-				 						"successCallback":refsDocsTable.handleSearchedItems,
+				 						"successCallback":refsDocsTableNode.handleSearchedItems,
 				 						"errorCallback":retrieveItemsOptionsError});
 		}
 	}
@@ -335,11 +404,11 @@ function _buildTableOnScrollFunc(refsDocsTable,refDocsListEnabledByIdNode) {
 }
 
 
-function _buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListEnabledByIdMap,refDocsList,onChangeCallBack,successCallback) {
+function _buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListEnabledByIdMap,linksTable,onChangeCallBack,successCallback) {
 	
 	refDocsListEnabledByIdNode.innerHTML="";
 	
-	let docsListFieldset = document.getElementById("_perspective_field_reference_refsdocs_fieldset_template_").cloneNode(true);
+	let docsListFieldset = document.getElementById("_perspective_field_link_refsdocs_fieldset_template_").cloneNode(true);
 	docsListFieldset.id=itemId+"_"+termDesc.name+"_docslist_edit";
 	docsListFieldset.style.display='block';
 	refDocsListEnabledByIdNode.appendChild(docsListFieldset);
@@ -349,15 +418,15 @@ function _buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListE
 	legend.innerHTML="Select Elements";
 	
 	// handle reach scroll bottom: retrieve and list additional items 
-	let refsDocsTable=docsListFieldset.querySelector("._refsdocs_table_");
+	let refsDocsTableNode=docsListFieldset.querySelector("._refsdocs_table_");
 	
 	// callback function invoked when receiving new items list
-	refsDocsTable.handleSearchedItems=_buildHandleSearchedItemsFunc(itemId,refsDocsTable,termDesc,refDocsListEnabledByIdMap,onChangeCallBack);
+	refsDocsTableNode.handleSearchedItems=_buildHandleSearchedItemsFunc(itemId,linksTable,refsDocsTableNode,termDesc,refDocsListEnabledByIdMap,onChangeCallBack);
 	
 	let refsDocsTableCont=docsListFieldset.querySelector("._refsdocs_table_container_");
 	
 	// ask for more items when reaching bottom
-	refsDocsTableCont.onscroll=_buildTableOnScrollFunc(refsDocsTable,refDocsListEnabledByIdNode);
+	refsDocsTableCont.onscroll=_buildTableOnScrollFunc(refsDocsTableNode,refDocsListEnabledByIdNode);
 	
 	// inner search filter
 	let searchinput = docsListFieldset.querySelector("._search_input_");
@@ -369,10 +438,10 @@ function _buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListE
 	// each time user changes input contents
 	// wait for 1s and then update listed elements
 	searchinput.oninput=_buildSearInputOnChangeFunc(searchinput,selectedOnlyCheckbox,
-							refsDocsTable,refDocsListEnabledByIdNode,refDocsList,
+							refsDocsTableNode,refDocsListEnabledByIdNode,linksTable,
 							1000 /*delay after typing before refreshing the list (ms)*/);
 	selectedOnlyCheckbox.onchange=_buildSearInputOnChangeFunc(searchinput,selectedOnlyCheckbox,
-			refsDocsTable,refDocsListEnabledByIdNode,refDocsList);
+			refsDocsTableNode,refDocsListEnabledByIdNode,linksTable);
 	searchinput.onkeypress=function(e) {
 		if (e) { 
 			event.stopPropagation(); 
@@ -386,7 +455,7 @@ function _buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListE
 	}
 	
 	selectedOnlyCheckbox.onchange=_buildSearInputOnChangeFunc(searchinput,selectedOnlyCheckbox,
-							refsDocsTable,refDocsListEnabledByIdNode,refDocsList);
+							refsDocsTableNode,refDocsListEnabledByIdNode,linksTable);
 	
 	// build 'text mode' edition
 	let editTextModeIcon=docsListFieldset.querySelector("._edit_text_mode_");
@@ -397,10 +466,12 @@ function _buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListE
 	}
 	
 	refDocsListStr="";
-	for (i=0;i<refDocsList.length;i++) {
-		curDocId=refDocsList[i];
+	for (i=0;i<linksTable.length;i++) {
+		let curDocId=linksTable[i].id;
+		let curDocWeight=linksTable[i].weight;
 		if (refDocsListStr.length>0) { refDocsListStr+=","; }
 		refDocsListStr+=curDocId;
+		if (curDocWeight!=1) { refDocsListStr+=":"+curDocWeight; }
 	}
 	let textEditabledNode=xeditable_create_text_field(
 			itemId /* pk */,
@@ -444,17 +515,17 @@ function _buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListE
 //return div containing datafield with refs
 function _commons_perspective_buildRefsDocsEditableList(itemId,docIdsListStr,termDesc,onChangeCallBack,successCallback) {	
 		
-	let refDocsList=docIdsListStr.split(",");
+	let linksTable=_parseLinksList(docIdsListStr);
 	let refDocsListEnabledByIdMap=[];
-	for (var i=0;i<refDocsList.length;i++) {
-		let curItemId=refDocsList[i];
+	for (var i=0;i<linksTable.length;i++) {
+		let curItemId=linksTable[i].id;
 		refDocsListEnabledByIdMap[curItemId]=true;
 	}
 	let refDocsListEnabledByIdNode = document.createElement("div");
 	refDocsListEnabledByIdNode.innerHTML=docIdsListStr;
 	
 	
-	_buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListEnabledByIdMap,refDocsList,onChangeCallBack,successCallback);
+	_buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListEnabledByIdMap,linksTable,onChangeCallBack,successCallback);
 	
 	
 	return refDocsListEnabledByIdNode;
@@ -528,7 +599,7 @@ function _commons_perspective_buildEditableReferenceTerm(catalogDesc,tabIdx,sect
 	</tr></table>               
 </div>
 
-<fieldset id="_perspective_field_reference_refsdocs_fieldset_template_"  class="form-control-group modals-form-control" 
+<fieldset id="_perspective_field_link_refsdocs_fieldset_template_"  class="form-control-group modals-form-control" 
 			style="display:none;max-height:8rem;overflow:auto;">
    <legend class="mx-perspective-field-legend">
    		<table class="_links_list_table_">
@@ -557,16 +628,38 @@ function _commons_perspective_buildEditableReferenceTerm(catalogDesc,tabIdx,sect
    
 </fieldset>
 
-<table id="_perspective_field_reference_refsdocs_fieldset_template_raw_container_" style="display:none" >
+
+	
+<input id="_perspective_field_link_weight_input_" class="_perspective_field_link_weight_input_" 
+				type="number" style="width:3em;height:3em;display:none" min="1" value="1"/>
+	
+
+<table id="_perspective_field_link_refsdocs_fieldset_template_raw_container_" style="display:none;" >
 	<tr class="editable-bg-transition _raw_" >
-  		<td class="_selector_" style="display:none;width:2rem;padding:0;margin:0;">
+  		<td class="_selector_" style="display:none;width:2em;max-width:2em;padding:0;padding-left:2px;margin:0;vertical-align:middle;">
   			<input  style="display:none"  class="_selector_checkbox_" type="checkbox" >
   			<input style="display:none" class="_selector_radio_" type="radio">
   		</td>
-  		<td style="padding:0;font-size:0.6rem" class="_refdoc_col_" >
+  		<td class="_link_weight_col_" 
+  				style="padding:0;font-size:0.6rem;width:10%;font-weight:bold;text-align:center;vertical-align:middle;color:#9a9a9a;"  
+  					title="<s:text name="Items.link.weight"/>" >
   		
   		</td>
+  		<td style="padding:0;font-size:0.6rem;vertical-align:middle;padding-left:0.3em;" class="_refdoc_col_" >
   		
+  		</td>
+  	</tr>
+</table>
+<table id="_perspective_field_link_refsdocs_fieldset_template_raw_container_RO_" style="display:none;" >
+	<tr class="editable-bg-transition _raw_" >
+  		<td style="padding:0;font-size:0.6rem;vertical-align:middle;" class="_refdoc_col_" >
+  		
+  		</td>
+  		<td class="_link_weight_col_" 
+  				style="padding:0;font-size:0.6rem;width:10%;padding-right:0.3em;font-weight:bold;text-align:end;vertical-align:middle;color:#9a9a9a;"  
+  					title="<s:text name="Items.link.weight"/>" >
+  		
+  		</td>
   		
   	</tr>
 </table>

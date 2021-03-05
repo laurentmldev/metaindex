@@ -48,7 +48,7 @@ public class GexfGroupByDumper<T extends IFieldValueMapObject> extends GexfDumpe
 	List<Object> _groupLabels = new ArrayList<>();
 	List<Integer> _groupSize = new ArrayList<>();
 	
-	// cache noddes ids for which group has already been identified
+	// cache nodes ids for which group has already been identified
 	Map<String,Integer> _targetId2groupIdx=new HashMap<>();
 	
 	// [srcGroupIdx][targetGroupIdx]=weight	
@@ -93,10 +93,12 @@ public class GexfGroupByDumper<T extends IFieldValueMapObject> extends GexfDumpe
 	public void handle(T item) {
 		
 		// identify src group from 'group term' in current node
+		String nodeId=item.getId();		
 		Object edgeSrc = item.getValue(_groupTerm.getName());			
 		if (edgeSrc==null) { return; }
 		Integer curItemGroupIdx=getGroupIdx(edgeSrc);
-		_groupSize.set(curItemGroupIdx,_groupSize.get(curItemGroupIdx)+1);
+		_groupSize.set(curItemGroupIdx,_groupSize.get(curItemGroupIdx)+1);		
+		_targetId2groupIdx.put(nodeId,curItemGroupIdx);
 		
 		// identify target node from 'edge term' in current node
 		// if group of this target node is not known yet we keep it in pending edges list
@@ -104,7 +106,11 @@ public class GexfGroupByDumper<T extends IFieldValueMapObject> extends GexfDumpe
 		if (edgeTargetIdO!=null) 
 		{ 
 			String edgeTargetIds = edgeTargetIdO.toString();
-			for (String edgeTargetId : edgeTargetIds.split(",")) {
+			for (String edgeTargetIdAndWeight : edgeTargetIds.split(",")) {
+				String[] edgeDesc=edgeTargetIdAndWeight.split(":");
+				String edgeTargetId=edgeDesc[0];
+				Integer edgeTargetWeight=1;
+				if (edgeDesc.length>1) { edgeTargetWeight=new Integer(edgeDesc[1]); }
 				
 				Object targetGroupIdxO=_targetId2groupIdx.get(edgeTargetId);
 				// if unknown target
@@ -112,25 +118,31 @@ public class GexfGroupByDumper<T extends IFieldValueMapObject> extends GexfDumpe
 					if (_pendingEdges.get(edgeTargetId)==null) { _pendingEdges.put(edgeTargetId, new HashMap<Integer,Integer>()); }
 					Integer curPendingWeight = _pendingEdges.get(edgeTargetId).get(curItemGroupIdx);
 					if (curPendingWeight==null) { curPendingWeight=0; }
-					_pendingEdges.get(edgeTargetId).put(curItemGroupIdx,curPendingWeight+1);
+					_pendingEdges.get(edgeTargetId).put(curItemGroupIdx,curPendingWeight+edgeTargetWeight);
+					//log.error("### adding link to "+edgeTargetId+":"+edgeTargetWeight+" as pending group "+curItemGroupIdx);
 				} else {
 					Integer targetGroupIdx=(Integer)targetGroupIdxO;
 					if (_groupEdges.get(curItemGroupIdx)==null) { _groupEdges.put(curItemGroupIdx, new HashMap<Integer,Integer>()); }
 					if (_groupEdges.get(curItemGroupIdx).get(targetGroupIdx)==null) { _groupEdges.get(curItemGroupIdx).put(targetGroupIdx,0); }
 					Integer curWeight=_groupEdges.get(curItemGroupIdx).get(targetGroupIdx);			
-					_groupEdges.get(curItemGroupIdx).put(targetGroupIdx,curWeight+1);
+					_groupEdges.get(curItemGroupIdx).put(targetGroupIdx,curWeight+edgeTargetWeight);
+					//log.error("### adding link to "+edgeTargetId+":"+edgeTargetWeight+" as group "+curItemGroupIdx);
 				}
 			}
 		}
 		// check for pending edges pointing to this node and if found, 
 		// assign them to corresponding target group in edges list
-		String nodeId=item.getId();
+		// adding cumulated weights 
 		if (_pendingEdges.get(nodeId)!=null) {
 			for (Integer curSrcGroupIdx : _pendingEdges.get(nodeId).keySet()) {
-				Integer weight =  _pendingEdges.get(nodeId).get(curSrcGroupIdx);
-				if (_groupEdges.get(curSrcGroupIdx)==null) { _groupEdges.put(curSrcGroupIdx, new HashMap<>()); } 
-				_groupEdges.get(curSrcGroupIdx).put(curItemGroupIdx,weight);	
-				_targetId2groupIdx.put(nodeId,curItemGroupIdx);				
+				Integer curPendingWeight =  _pendingEdges.get(nodeId).get(curSrcGroupIdx);
+				Integer groupWeight=0;
+				if (_groupEdges.get(curSrcGroupIdx)==null) { _groupEdges.put(curSrcGroupIdx, new HashMap<>()); }
+				// if current source->dest has already a weight, we cumulate it
+				if (_groupEdges.get(curSrcGroupIdx).get(curItemGroupIdx)!=null) {
+					groupWeight=new Integer(_groupEdges.get(curSrcGroupIdx).get(curItemGroupIdx));
+				} 					
+				_groupEdges.get(curSrcGroupIdx).put(curItemGroupIdx,curPendingWeight+groupWeight);
 			}
 			_pendingEdges.remove(nodeId);
 		}
@@ -196,7 +208,7 @@ public class GexfGroupByDumper<T extends IFieldValueMapObject> extends GexfDumpe
 					_xmlStreamWriterEdges.writeAttribute("id", curSrcGroupIdx+"_"+curTargetGroupIdx);
 					_xmlStreamWriterEdges.writeAttribute("source",curSrcGroupIdx.toString());
 					_xmlStreamWriterEdges.writeAttribute("target",curTargetGroupIdx.toString());
-					_xmlStreamWriterEdges.writeAttribute("weight",weight.toString());// default edge weight
+					_xmlStreamWriterEdges.writeAttribute("weight",weight.toString());
 					_xmlStreamWriterEdges.writeEndElement();
 					curTargetGroupIdx++;
 				}

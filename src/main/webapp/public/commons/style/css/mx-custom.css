@@ -143,6 +143,15 @@ a.anchor_top {
 	border:1px dotted grey;
 }
 
+.mx-perspective-field-link-weight-button-plus,.mx-perspective-field-link-weight-button-less {	
+	width:1.5em;
+	height:1.5em;
+	text-align:center;
+	color:white;	
+	font-weight:bold;
+	
+}
+
 .mx-search-input {
 width:30vw !important;
 height:40px;
