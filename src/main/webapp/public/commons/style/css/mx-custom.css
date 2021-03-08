@@ -111,10 +111,12 @@ a.anchor_top {
 
 .mx-perspective-field {	
 	background:inherit;
-	border:none;
+	/*border:1px dashed orange;*/
 	width:min-content;
-	margin-right:10vw;
-	margin-left:5vw;
+	vertical-align:middle;
+	text-align:center;
+	/*margin-right:10vw;
+	margin-left:5vw;*/
 	/*
 	max-width:50vw !important;
 	min-width:100px !important;

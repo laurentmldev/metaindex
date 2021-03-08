@@ -16,13 +16,9 @@ test strongly backup/restore procedure, including with SQL migration:
   	
 you shall not pass : auto-redirect to login page if user is logged out
 
-mapping to a field different from default one (matching by name) does not seem to work (field ignored?)
+when importing CSV/Excel:
+	- mapping to a field different from default one (matching by name) does not seem to work (field ignored?)
 
-#123 GEXF export shall allow to define weight to a LINK: xxx:4
-	link edit: 
-		- when click on global checkbox while nobody is selected (in multi mode) -> elk error because of empty search ("_id:")
-		- when editing several link weights are edited, only the last modified one is applied
-		- link weight does notappear in enum with multi=false, when selecting a new one
 
 add tmp files path in start-up synthesis in logs
 
@@ -186,6 +182,11 @@ Done:
 v2.1.2
 
 #123 GEXF export shall allow to define weight to a LINK: xxx:4
+	link edit: 
+		- when click on global checkbox while nobody is selected (in multi mode) -> elk error because of empty search ("_id:")
+		- when editing several link weights are edited, only the last modified one is applied
+		- link weight does notappear in enum with multi=false, when selecting a new one
+		
 #122 GEXF export shall split multi-value as separate boolean field
 
 #124 add retry button on offline page
