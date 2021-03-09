@@ -37,6 +37,7 @@ public abstract class ACsvParser<TTo> implements IFieldsListParser<String,TTo> {
 	private Log log = LogFactory.getLog(ACsvParser.class);
 	
 	private static final String MX_SEP_ESCAPE_STR="__MX_ESCAPED_SEPARATOR__";
+	private static final String MX_CLEAR_CELL_STR="__empty__";
 	private String _csvSeparator=";";
 	private String _commentsMarker="#";
 	private String _stringIdentifier="\"";
@@ -139,15 +140,23 @@ public abstract class ACsvParser<TTo> implements IFieldsListParser<String,TTo> {
 			colidx++;
 			String curColContents=cols[colidx-1];
 			
+			
+			
 			// ignore empty fields. When used fields need some mandatory data,
 			// this avoid useless error to be raised.
 			// Example : when type is elasticsearch geo-point : it cannot have empty value 
 			if (curColContents.length()==0) { continue; }
 			
+			// clear existing cell contents if forced by user
+			if (curColContents.equals(MX_CLEAR_CELL_STR)) {
+				curColContents="";
+			}
+			
 			// restore escaped separator
 			curColContents=curColContents.replaceAll(MX_SEP_ESCAPE_STR, this.getCsvSeparator());
 			
 			String csvFieldName = coldef.getFirst();
+			
 			PARSING_FIELD_TYPE fieldType = coldef.getSecond();
 			if (this.getChosenFieldsMapping().size()>0 && !this.getChosenFieldsMapping().containsKey(csvFieldName)) {
 				continue;

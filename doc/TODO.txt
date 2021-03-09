@@ -11,18 +11,19 @@ test strongly backup/restore procedure, including with SQL migration:
 	
 #126 improve plans and quotas colors
  
- add in help and tutos that IDs shall not contain ',' (separator) nor ':' (weights for links)
+#123 add in help and tutos that IDs shall not contain ',' (separator) nor ':' (weights for links)
   	+ check in parser that IDs do not contain such characters.
   	
-you shall not pass : auto-redirect to login page if user is logged out
+#128 "access denied" page shall forward to login page if user is not logged in
 
-when importing CSV/Excel:
-	- mapping to a field different from default one (matching by name) does not seem to work (field ignored?)
+#129 add tmp files path in start-up synthesis in logs
 
+#130 send is "server up" email at startup
 
-add tmp files path in start-up synthesis in logs
+remove catalogs actions icon (which is empty)
 
-importing file: matching table: choosing twice DATE will show twice the text
+use '__empty__' as special value to clear cell contents
+
 
 v2.1.y:
 -------
@@ -180,6 +181,10 @@ Done:
 -----
 
 v2.1.2
+
+#127 when importing CSV/Excel:
+	- mapping to a field different from default one (matching by name) does not seem to work (field ignored?)
+	- choosing twice DATE will show twice the text
 
 #123 GEXF export shall allow to define weight to a LINK: xxx:4
 	link edit: 

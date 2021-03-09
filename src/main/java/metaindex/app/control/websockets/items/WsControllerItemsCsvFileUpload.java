@@ -169,7 +169,7 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
     					|| dbType==RAW_DATATYPE.Tshort) {
     				parsingType=PARSING_FIELD_TYPE.NUMBER;
     			}
-    			csvParsingType.add(new BasicPair<String,PARSING_FIELD_TYPE>(termName,parsingType));
+    			csvParsingType.add(new BasicPair<String,PARSING_FIELD_TYPE>(csvColName,parsingType));
     			    			
     		}
     		

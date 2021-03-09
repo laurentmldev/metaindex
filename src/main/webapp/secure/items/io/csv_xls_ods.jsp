@@ -28,7 +28,10 @@ function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeF
 	let choiceIgnoreNode=document.createElement("option");
 	choiceIgnoreNode.value="ignore";
 	choiceIgnoreNode.innerHTML="- ignore -";
-	choiceIgnoreNode.onclick=function() { checkBox.checked=false; onColsSelectionsChangeFunc(); }
+	choiceIgnoreNode.onclick=function() { 
+		clearNodeChildren(commentZone);
+		checkBox.checked=false; onColsSelectionsChangeFunc(); 
+	}
 	if (found==false) { choiceIgnoreNode.selected=true; }
 	colTermNodeSelect.appendChild(choiceIgnoreNode);
 
@@ -41,6 +44,7 @@ function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeF
 			choiceNode.selected=true;
 			found=true;			
 		}		
+		choiceNode.onclick=function(e) { clearNodeChildren(commentZone); }
 		colTermNodeSelect.appendChild(choiceNode);
 	}
 	
@@ -49,24 +53,31 @@ function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeF
 	idChoiceNode.value="_id";
 	idChoiceNode.innerHTML="* ID *";
 	colTermNodeSelect.appendChild(idChoiceNode);
-	idChoiceNode.onclick=function() { checkBox.checked=true; onColsSelectionsChangeFunc(); }
+	idChoiceNode.onclick=function() {
+		clearNodeChildren(commentZone);
+		checkBox.checked=true; onColsSelectionsChangeFunc(); 
+	}
  	if (csvColName=="_id" || csvColName=="id") {
 		idChoiceNode.selected=true;
 		found=true;	
 	}
 	
-	if (badTermName!=true) {
+	if (badTermName!=true && found==false) {
 		for (datatypeIdx in mx_helpers_FIELDS_DATATYPES) {
 			let datatypeStr=mx_helpers_FIELDS_DATATYPES[datatypeIdx];
 			let choiceNode=document.createElement("option");
 			choiceNode.value="__new__"+datatypeStr;
 			choiceNode.innerHTML="<s:text name="Items.uploadItems.newField" />: "+datatypeStr;
 			colTermNodeSelect.appendChild(choiceNode);
-			choiceNode.onclick=function() { checkBox.checked=true; onColsSelectionsChangeFunc(); }
+			choiceNode.onclick=function() {
+				clearNodeChildren(commentZone);
+				checkBox.checked=true; onColsSelectionsChangeFunc(); 
+			}
 			
 			// use TINY_TEXT as default new data type
 			if (datatypeStr=="TINY_TEXT") {
 				checkBox.onclick=function() {
+					clearNodeChildren(commentZone);
 					if (checkBox.checked==true) { choiceNode.selected=true; }
 					else { choiceIgnoreNode.selected=true; }
 					onColsSelectionsChangeFunc();
@@ -76,10 +87,11 @@ function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeF
 			if (datatypeStr=="DATE" && isExcelFile==true) { 
 				let basicFunc=choiceNode.onclick;
 				choiceNode.onclick=function() {
+					clearNodeChildren(commentZone);
 					basicFunc();
 					//alert('Using Dates in Excel file alert');
 					let warningExcelDateNode=document.createElement("div");
-					warningExcelDateNode.innerHTML="<s:text name="Items.uploadItems.warningDatesWithExcel" />";
+					warningExcelDateNode.innerHTML="<s:text name="Items.uploadItems.warningDatesWithExcel" />";					
 					commentZone.append(warningExcelDateNode);
 				}
 			}
