@@ -65,6 +65,10 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 		
 		try { 
 			
+			// app initialization is done here in order to ensure that all necessary beans 
+			// are available.
+			// (there is probably more elegant callback or annotation way to do that).
+			// Draw back is that we need a first connection for application to be totally initialized.
 			if (Globals.Get().getApplicationStatus()==APPLICATION_STATUS.STOPPED) {
 					Globals.Get().init();
 					Globals.Get().setApplicationStatus(APPLICATION_STATUS.RUNNING);								

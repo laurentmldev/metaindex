@@ -295,7 +295,16 @@ public class Globals {
 		log.info("Starting MetaindeX SFTP server ... ");
 		_catalogsDrive=new SftpCatalogsDrive(Integer.valueOf(
 						Globals.GetMxProperty("mx.drive.sftp.port")));
-		_catalogsDrive.start();		
+		_catalogsDrive.start();	
+		
+		// send an email to ensure this service is functional
+		this.sendEmail(Globals.GetMxProperty("mx.mailer.admin_recipient"), "Server Started !", 
+					"Dear and beloved admin,<br/><br/>"
+					+"Your MetaindeX server just started on '"+Globals.GetMxProperty("mx.host")+"'"
+					+" (devMode="+isDevMode()+") and if you can read this email "
+					+"then its a good sign that everything is working fine.<br/><br/>"
+					+"See you soon ;)<br/>");
+							
 		
 	}
 	
