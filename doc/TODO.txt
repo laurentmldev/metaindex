@@ -10,11 +10,6 @@ test strongly backup/restore procedure, including with SQL migration:
 	
 #126 improve plans and quotas colors
  
-#123 add in help and tutos :
-	- that IDs shall not contain ',' (separator) nor ':' (weights for links)
-  			+ check in parser that IDs do not contain such characters.
-  	- use '__empty__' as special value to clear cell contents
-
 
 remove catalogs actions icon (which is empty)
 
@@ -190,6 +185,9 @@ v2.1.2
 		- when click on global checkbox while nobody is selected (in multi mode) -> elk error because of empty search ("_id:")
 		- when editing several link weights are edited, only the last modified one is applied
 		- link weight does notappear in enum with multi=false, when selecting a new one
+		- add in help text :
+			- that IDs shall not contain ',' (separator) nor ':' (weights for links)
+  			- use '__empty__' as special value to clear cell contents
 		
 #122 GEXF export shall split multi-value as separate boolean field
 
