@@ -21,14 +21,29 @@
   <!-- Custom styles for this template-->
   <link href="${webAppBaseUrl}/public/commons/style/css/sb-admin-2.css" rel="stylesheet">
 
+  <script type="text/javascript">
+  
+  // if user is not logged in, forward to login page
+  // but leave current page visible a little bit, so that
+  // user can kind of follow what happens.
+  var isUserLoggedIn="${currentUserProfile.loggedIn}";
+  if (isUserLoggedIn=="false") {
+	  let timer = setInterval(function() { 
+			clearInterval(timer); 
+			window.location.href="${webAppBaseUrl}/loginform"; 
+		}, 1000/*delay ms*/);
+	  
+	  
+  }
+  </script>
 </head>
+
 
 <body id="page-top">
 
   <!-- Page Wrapper -->
   <div id="wrapper" style="height:100vh;">
-    
-
+    	
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column" 
     	style="background-image:url('${webAppBaseUrl}/public/commons/media/img/bluescreen-of-death.jpg');">
