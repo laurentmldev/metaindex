@@ -15,8 +15,6 @@ test strongly backup/restore procedure, including with SQL migration:
   			+ check in parser that IDs do not contain such characters.
   	- use '__empty__' as special value to clear cell contents
 
-#129 add tmp files path in start-up synthesis in logs
-
 #130 send is "server up" email at startup
 
 remove catalogs actions icon (which is empty)
@@ -178,6 +176,8 @@ Done:
 -----
 
 v2.1.2
+
+#129 add tmp files path in start-up synthesis in logs
 
 #128 "access denied" page shall forward to login page if user is not logged in
 

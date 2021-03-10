@@ -360,6 +360,7 @@ public class Globals {
 				+"- mx.port="+Globals.GetMxProperty("mx.port")+"\n"
 				+"- mx.appname="+Globals.GetMxProperty("mx.appname")+"\n"
 				+"- mx.userdata.path="+Globals.GetMxProperty("mx.userdata.path")+"\n"
+				+"- tmp files path="+Globals.Get().getWebappsTmpFsPath()+"\n"
 				+"- ------------------------ DRIVES CONF ------------------------"+"\n"
 				+"- mx.drive.sftp.port="+Globals.GetMxProperty("mx.drive.sftp.port")+"\n"
 				+"- ------------------------ KIBANA USER ACCESS ------------------------"+"\n"
