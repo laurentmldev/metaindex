@@ -55,12 +55,12 @@ function addPlanCheckoutBreakDown(id,name,checkoutBreakdownMsg) {
 	
 }
 
-function makePlanPresentationRow(id,name,nbCatalogs,nbDocs,nbMBytes,yearlyCostEuros,currentPlanId,popupWindow,
+function makePlanPresentationRow(planIndex,id,name,nbCatalogs,nbDocs,nbMBytes,yearlyCostEuros,currentPlanId,popupWindow,
 				availableForPurchase, curPlanEndDateStr) {
 	
 	if (availableForPurchase==false && id!=currentPlanId) { return null; }
 	let popupElement = popupWindow.querySelector(".modal-body");
-	let colorIdx=id%PLANS_COLORS.length - 1;
+	let colorIdx=planIndex%PLANS_COLORS.length - 1;
 	//console.log("### plan "+name+" : id="+id+" colorIdx="+colorIdx+" color="+PLANS_COLORS[colorIdx]);	
 	let rowColor=PLANS_COLORS[colorIdx];
 		
@@ -238,7 +238,7 @@ function plans_modal_addHeaderMenu() {
 	bodynode.appendChild(plansTable);
 		
 	let curPlanId=<s:property value="currentUserProfile.plan.id"/>;
-	let nodePres_curPlan = makePlanPresentationRow(
+	let nodePres_curPlan = makePlanPresentationRow(0,
 						curPlanId,
 						"<s:property value="currentUserProfile.plan.name"/>",
 						<s:property value="currentUserProfile.plan.quotaCatalogsCreated"/>,
@@ -253,11 +253,12 @@ function plans_modal_addHeaderMenu() {
 
 		plansTable.appendChild(nodePres_curPlan); 
 	
-
+		let planIndex=0;
 	<c:forEach items="${plansList}" var="item">
+		planIndex=planIndex+1;
 	   if (${item.id}!=curPlanId && ${item.availableForPurchase}==true) {
 		   
-			let nodePres_plan${item.id} = makePlanPresentationRow(
+			let nodePres_plan${item.id} = makePlanPresentationRow(planIndex,
 								${item.id},
 								"${item.name}",
 								${item.quotaCatalogsCreated},

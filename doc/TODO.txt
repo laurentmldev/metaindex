@@ -7,11 +7,7 @@ v2.1.2:
 test strongly backup/restore procedure, including with SQL migration: 
 	- kibana would not start again : Error: Cluster client cannot be used after it has been closed
 
-	
-#126 improve plans and quotas colors
- 
-
-
+	 
 
 v2.1.y:
 -------
@@ -169,6 +165,8 @@ Done:
 -----
 
 v2.1.2
+
+#126 improve plans and quotas colors
 
 hide catalogs bulk-actions icon (which is empty)
 
