@@ -11,7 +11,6 @@ test strongly backup/restore procedure, including with SQL migration:
 #126 improve plans and quotas colors
  
 
-remove catalogs actions icon (which is empty)
 
 
 v2.1.y:
@@ -170,6 +169,8 @@ Done:
 -----
 
 v2.1.2
+
+hide catalogs bulk-actions icon (which is empty)
 
 #129 add tmp files path in start-up synthesis in logs
 

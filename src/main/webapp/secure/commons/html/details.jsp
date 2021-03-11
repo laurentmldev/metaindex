@@ -24,7 +24,8 @@
 					
 		</td>
 		<td>
-		  <div class="dropdown no-arrow mx-1" style="padding-left:1em;">
+		  <div  id="MxGui.details.bulkactions.button"
+		  		class="dropdown no-arrow mx-1" style="padding-left:1em;">
               <a class="dropdown-toggle" href="#" id="actionsDropdown" 
               	role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-list fa-fw"></i>
@@ -32,9 +33,9 @@
               </a>
               <!-- Dropdown - Actions -->
               <div class="dropdown-list dropdown-menu dropdown-menu-right shadow" aria-labelledby="actionsDropdown"
-              		id="MxGui.details.bulkactions.insertspot">
+              		id="MxGui.details.bulkactions.insertspot" >
                 <h6 class="dropdown-header">
-                  Actions
+                  Actions pop
                 </h6>
                 
               </div>
@@ -219,6 +220,7 @@
  MxGuiDetails.close=_detailsInsertSpot.close;
  MxGuiDetails.getInsertSpot=function() { return _detailsInsertSpot; }
  MxGuiDetails.getBulkActionsInsertSpot=function() { return _detailsBulkActionsInsertSpot; }
+ MxGuiDetails.HideBulkActionsButton=function() { document.getElementById("MxGui.details.bulkactions.button").style.display="none"; }
  MxGuiDetails.setNbMatchingItems=details_setNbMatchingItems;
  MxGuiDetails.getNbMatchingItems=details_getNbMatchingItems;
  MxGuiDetails.setNbTotalItems=details_setNbTotalItems;

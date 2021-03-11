@@ -203,7 +203,7 @@ function details_reconfirm_delete_catalog(catId) {
 			);	
 }
 
- 
+ MxGuiDetails.HideBulkActionsButton();
  MxGuiDetails.setTitle("<s:text name="Catalogs.title" />");
  MxGuiDetails.setCurCatalogDescription=function(curCommDesc) { _curCatalogDesc=curCommDesc; }
  MxGuiDetails.getCurCatalogDescription=function() { return _curCatalogDesc; }
@@ -216,6 +216,7 @@ function details_reconfirm_delete_catalog(catId) {
 	 if (objDescr["vocabulary"] != null) { return objDescr.vocabulary.name; }
 	 else { return objDescr.name; }
  }
+ 
  </script>
  
  
