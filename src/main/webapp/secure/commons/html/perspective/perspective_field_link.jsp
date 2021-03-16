@@ -11,7 +11,6 @@ where contents is a coma-separated list of documents IDs.
  -->		  
  <script type="text/javascript" >
  
- const NB_ELEMENTS_TO_RETRIEVE=3;
  
 //--------------- H E L P E R S ------------------
 

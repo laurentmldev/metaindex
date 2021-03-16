@@ -73,6 +73,10 @@ input[type="file"] {
 	
 }
 
+.mx-perspective-field-img:hover {
+	cursor:pointer;
+}
+
 .mx-details-container {
   display: grid;
   grid-gap: 15px; 

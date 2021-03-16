@@ -32,6 +32,7 @@
  	 
  	 // value
  	 let valueNode = fieldNode.querySelector("._value_");
+ 	 valueNode.title=termDesc.name;
  	 // if enum then display each value in a box
  	 if (mx_helpers_isDatatypeEnumOk(termDesc.datatype) 
 				&& termDesc.enumsList.length>1  

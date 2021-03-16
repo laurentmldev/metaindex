@@ -12,7 +12,9 @@ where contents is a coma-separated list of documents IDs.
  <script type="text/javascript" >
  
 // -------- EDITABLE ---------
-
+// amount of elements batch to load when reaching bottom of the list in edit mode
+ const NB_ELEMENTS_TO_RETRIEVE=30;
+ 
 
 function _buildLinksOnChangeFunc(newRow,item,multiSelectAllowed,checkbox,checkBoxesById,linksTable,refsDocsTableNode,refDocsListEnabledByIdMap,weightInputNode,onChangeCallBack) {
 	

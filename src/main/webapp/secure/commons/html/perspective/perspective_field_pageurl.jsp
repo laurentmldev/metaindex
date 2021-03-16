@@ -15,9 +15,12 @@
  	 fieldNode.style.display="block";
  	 
  	 // title
- 	 let title = fieldNode.querySelector("._title_");
- 	 if (fieldVisuDesc.showTitle==true) { title.innerHTML=mx_helpers_getTermName(termDesc, catalogDesc)+": "; }
- 	 else { title.style.display='none'; }
+ 	 let titleNode = fieldNode.querySelector("._title_");
+ 	 if (fieldVisuDesc.showTitle==true) { 
+ 		titleNode.innerHTML=mx_helpers_getTermName(termDesc, catalogDesc)+": ";
+ 		titleNode.title=termDesc.name;
+ 	 }
+ 	 else { titleNode.style.display='none'; }
  	 
  	 
  	 // value

@@ -7,10 +7,15 @@ v2.1.2:
 test strongly backup/restore procedure, including with SQL migration: 
 	- kibana would not start again : Error: Cluster client cannot be used after it has been closed
 
-	 
 
+
+	 
+	 
 v2.1.y:
 -------
+
+#118 bug: when renaming a perspective, it actually adds a new one, but keep previous one
+	editing perspective: the first perspecive in the list is opened each time we add a field in a second perspective
 
 [ERROR] 2021-02-12 08:25:13.414 [clientInboundChannel-127] MxDbSearchItem - Unhandled date format : '2021-02-09 07:37:58.331'
 	--> added exception. pb to be confirmed
@@ -19,7 +24,6 @@ v2.1.y:
     
 backup/restore contents of a given catalog (def+docs+data):
 	
-#118 bug: when renaming a perspective, it actually adds a new one, but keep previous one
 
 #10 websocket connection refused after session timeout and re-login (TBC)
 
@@ -27,7 +31,6 @@ backup/restore contents of a given catalog (def+docs+data):
 
 #64 type longtext (rich?) pour étude du language / analyse de corpus
 
-#94 when uploading CSV, empty fields might mean "clear contents" while currently it means "ignore it" (i.e. "leave it as is")
 
 
 add reconcile/reconstruct tools
@@ -41,8 +44,7 @@ backup/restore a given catalog
 offline page: add a try-again button
 
 GEXF export : 
-	- include/exclude self-references
-	- export multi fields as separate boolean so that we can discriminate them in Gephi
+	- include/exclude self-references	
 	
 See Omeka interface for web-publishing features 
 
@@ -61,9 +63,7 @@ traductions anglaises vérifier avec Naomie ?
 deploy fail2ban
 
 
-trace last login date to detect zombie users 
-
-use SQL type "json" for json data lie perspectives
+use SQL datatype "json" for json data (like perspectives)
 
 timepicker:quickRanges : centuries, middleAge,ancien régime, renaissance
 timepicker:timeDefaults 
@@ -166,6 +166,9 @@ Done:
 
 v2.1.2
 
+field lexic name is used as field name in edit mode:
+	"Following field(s) listed in section 'Section' do not exist in the catalog : Synthesis"
+
 #126 improve plans and quotas colors
 
 hide catalogs bulk-actions icon (which is empty)
@@ -178,6 +181,9 @@ hide catalogs bulk-actions icon (which is empty)
 	- mapping to a field different from default one (matching by name) does not seem to work (field ignored?)
 	- choosing twice DATE will show twice the text
 	- use '__empty__' as special value to clear cell contents
+			--> (#94 when uploading CSV, empty fields might mean "clear contents" while currently it means "ignore it" (i.e. "leave it as is"))
+			
+trace last login date to detect zombie users 
 
 #123 GEXF export shall allow to define weight to a LINK: xxx:4
 	link edit: 
@@ -186,7 +192,7 @@ hide catalogs bulk-actions icon (which is empty)
 		- link weight does notappear in enum with multi=false, when selecting a new one
 		- add in help text :
 			- that IDs shall not contain ',' (separator) nor ':' (weights for links)
-  			- use '__empty__' as special value to clear cell contents
+  			
 		
 #122 GEXF export shall split multi-value as separate boolean field
 

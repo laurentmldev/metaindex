@@ -88,10 +88,11 @@ function _commons_perspective_build_readonly_field_reference(catalogDesc,tabIdx,
 	 fieldNode.id="";
 	 fieldNode.style.display="block";
 	 // title
-	 let title = fieldNode.querySelector("._title_");	 
+	 let titleNode = fieldNode.querySelector("._title_");	 
 	 
-	 title.innerHTML=mx_helpers_getTermName(termDesc, catalogDesc)+": "; 
-	 if (fieldVisuDesc.showTitle==false) { title.style.display='none'; }
+	 titleNode.innerHTML=mx_helpers_getTermName(termDesc, catalogDesc)+": "; 
+	 titleNode.title=termDesc.name;
+	 if (fieldVisuDesc.showTitle==false) { titleNode.style.display='none'; }
 	 
 	 // value
 	 let valueNode = fieldNode.querySelector("._value_");

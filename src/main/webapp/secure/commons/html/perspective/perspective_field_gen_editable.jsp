@@ -53,8 +53,9 @@
  	// else simple text
 	return xeditable_create_text_field(
 		itemId /* pk */,
-		/*termDesc.name*/
-		mx_helpers_getTermName(termDesc, catalogDesc),true /*show fieldName*/,
+		/*keep original field name (termDesc.name) rather than lexic value when editing 
+		  so that there is no ambiguity*/
+		termDesc.name,true /*show fieldName*/,
 		curTermValue,
 		onChangeCallback,
 		successCallback);
