@@ -328,7 +328,7 @@ public static final Integer NB_DAYS_PLAN_DISCOUNT=182;// approx. half a year
 					u.getText("Profile.plans.discount") + " -50% "
 								+u.getText("Profile.plans.currentPlan")
 								+" <span style='color:black'>"+curPlan.getName()+"</span>",
-					discountValue,
+					-discountValue,
 					BREAKDOWN_ENTRY_TYPE.discount,
 					"€"));
 			totalYearlyCostHT-=discountValue;
