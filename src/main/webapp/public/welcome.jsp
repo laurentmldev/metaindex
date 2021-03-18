@@ -77,19 +77,19 @@
 	 			
 	 	
 	 	
-	 	<div style="position:fixed;margin-left:85%;"><table><tr>
-		 	<td><a href="contactform?origin=welcome"  
+	 	<div style="position:fixed;margin-left:85%;"><table>
+		 	<tr><td><a href="contactform?origin=welcome"  
 		 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" 
-		 		style="background:#bbb;border-color:white;text-shadow:none;width:10vw;padding:0;vertical-align:middle;font-size:1.2rem;padding:0.2rem;"
+		 		style="background:#bbb;border-color:#aaa;text-shadow:none;width:10vw;padding:0;vertical-align:middle;font-size:1.2rem;padding:0.2rem;"
 		 		><s:text name="contactform.title" /></a>	 
 		 		</td></tr>
 		 	<tr><td style="margin-top:5rem;">			 	 	
 		 	<a href="loginform"  
 		 	    class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" 
-		 		style="margin-top:0.3rem;background:#bbb;border-color:white;text-shadow:none;width:10vw;padding:0;vertical-align:middle;font-size:1.2rem;padding:0.2rem;" >
+		 		style="margin-top:0.3rem;background:#aaa;border-color:#999;text-shadow:none;width:10vw;padding:0;vertical-align:middle;font-size:1.2rem;padding:0.2rem;" >
 		 		<s:text name="signin.signin" /></a>
-		 	</td>
-	 	</tr></table></div>
+		 	</td></tr>
+	 	</table></div>
 	 			
 	 </nav>
 	 		
