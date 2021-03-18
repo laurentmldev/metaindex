@@ -59,32 +59,34 @@
   	</nav>
   </c:if>
   
-	 <nav class="navbar navbar-expand navbar-light bg-white topbar static-top mx_welcome_navbar" 
-	 		style="background:#aaa;height:5rem">
+	 <nav class="navbar navbar-expand navbar-light topbar static-top mx_welcome_navbar" 
+	 		style="background:#aaa;height:8rem;background: linear-gradient(to bottom, #ffffff 0%, #bababa 100%);">
 	 	
 	 		 	
-            	<div id="language_buttons">
+            	<div id="language_buttons" style="position:fixed;margin-left:1rem;">
             		<table style="margin-left:1rem;width:10vw;"><tr>
             		<td><a onclick="window.location.href=URL_add_parameter(location.href, 'language', 'en');"><img src="${webAppBaseUrl}/public/commons/media/img/flags/UK.png" class="mx-lang-flag scale" /></a></td>
             		<td><a onclick="window.location.href=URL_add_parameter(location.href, 'language', 'fr');"><img src="${webAppBaseUrl}/public/commons/media/img/flags/France.png" class="mx-lang-flag scale"/></a></td>
             		</tr></table>
             	</div>
           
-        		<div style="padding:0;margin:0;width:60vw;text-align:center;line-height:1;">
-			 		<span style="font-size:4vw;" class="app-title"  ><span class="scale-color-white">M</span><span class="app-title2 scale-color-white" style="color:white;">etainde</span><span class="scale-color-white">X</span></span>
+        		<div style="padding:0;margin:0;width:60vw;text-align:center;line-height:1;position:fixed;margin-left:19%;">
+			 		<span style="font-size:5vw;" class="app-title"  ><span class="scale-color-white">M</span><span class="app-title2 scale-color-white" style="color:white;">etainde</span><span class="scale-color-white">X</span></span>
 			 		<div class="mx-welcome-globaltext"><s:text name="welcome.generalPresentation"/></div>            		            			
             	</div>	 	   			 	
 	 			
 	 	
 	 	
-	 	<div><table><tr>
+	 	<div style="position:fixed;margin-left:85%;"><table><tr>
 		 	<td><a href="contactform?origin=welcome"  
 		 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" 
-		 		style="background:#bbb;border-color:white;text-shadow:none;width:10vw"
+		 		style="background:#bbb;border-color:white;text-shadow:none;width:10vw;padding:0;vertical-align:middle;font-size:1.2rem;padding:0.2rem;"
 		 		><s:text name="contactform.title" /></a>	 
-		 		</td><td>			 	 	
-		 	<a href="loginform"  class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" 
-		 		style="background:#bbb;border-color:white;margin-left:0.3rem;text-shadow:none;width:10vw" >
+		 		</td></tr>
+		 	<tr><td style="margin-top:5rem;">			 	 	
+		 	<a href="loginform"  
+		 	    class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" 
+		 		style="margin-top:0.3rem;background:#bbb;border-color:white;text-shadow:none;width:10vw;padding:0;vertical-align:middle;font-size:1.2rem;padding:0.2rem;" >
 		 		<s:text name="signin.signin" /></a>
 		 	</td>
 	 	</tr></table></div>
