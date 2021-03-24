@@ -3,8 +3,12 @@
 v2.1.3:
 -------
 
+
+
+go to top of the page is over chat icons
+
 #118 bug: when renaming a perspective, it actually adds a new one, but keep previous one
-	editing perspective: the first perspecive in the list is opened each time we add a field in a second perspective
+	editing perspective: the first perspective in the list is opened each time we add a field in a second perspective
 
 [ERROR] 2021-02-12 08:25:13.414 [clientInboundChannel-127] MxDbSearchItem - Unhandled date format : '2021-02-09 07:37:58.331'
 	--> added exception. pb to be confirmed
@@ -21,10 +25,8 @@ backup/restore contents of a given catalog (def+docs+data):
 #64 type longtext (rich?) pour étude du language / analyse de corpus
 
 
-
 add reconcile/reconstruct tools
 	- integrate Jupyter ?
-
 
 backup/restore a given catalog
 	- from command line
@@ -152,6 +154,10 @@ Backlog:
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+
+v2.1.3
+
+auto load next items does not work on main items page (on server)
 
 v2.1.2
 

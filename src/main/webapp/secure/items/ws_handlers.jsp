@@ -201,9 +201,9 @@ function retrieveItemsSuccess(itemsAnswerMsg) {
 
 $(window).scroll(function() {
 
-	   let isScrollBottom=$(window).scrollTop() + $(window).height() == $(document).height();
+	   let isScrollBottom=$(document).height() - ($(window).scrollTop() + $(window).height()) < 1;
 	   let needMoreResults=MxGuiCards.getNbCards()<MxGuiDetails.getNbMatchingItems();
-	   
+	   	   
 	   if(isScrollBottom && needMoreResults) {		  	 
 	 		 let query = MxGuiHeader.getCurrentSearchQuery();
 	 		 let selectedFiltersNames=MxGuiLeftBar.getSelectedFiltersNames();
