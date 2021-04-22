@@ -86,6 +86,13 @@ input[type="file"] {
   /*  grid-template-columns: 1fr 1fr 0fr; */
   grid-auto-flow: dense;
 }
+
+.mx-navbar {
+	box-shadow: 0rem 0.08rem 0.2rem 0rem #bbb;
+}
+.mx-card {
+	box-shadow: 0.1rem 0.15rem 0.3rem 0rem #999;
+}
 .mx-details-card {
 	background:none;
 }

@@ -55,7 +55,7 @@
   	</nav>
   </c:if>
   
-        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-2 static-top shadow">
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-2 static-top mx-navbar">
 		
           <!-- Sidebar Toggle (Topbar) -->
           <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
@@ -222,8 +222,8 @@
   	footerCancelButton.innerHTML=noText;
   	footerCancelButton.classList.add('btn');
   	footerCancelButton.classList.add('btn-info');
-  	footerCancelButton.classList.add('btn-sm');
-  	footerCancelButton.style="margin:0;height:3rem;";
+  	footerCancelButton.classList.add('btn-sm');  	
+  	footerCancelButton.style="margin:0;height:3rem;color:#555";
   	footerCancelButton.onclick=function() { MxGuiHeader.hideInfoModal(); }
   	
   	

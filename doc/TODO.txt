@@ -4,6 +4,10 @@ v2.1.3:
 -------
 
 
+only "items panel" shall scroll when many items (not the whole window), so that we still keep visible the menu and the
+search bar
+
+rename download -> export ?
 
 go to top of the page is over chat icons
 
@@ -158,6 +162,11 @@ Done:
 v2.1.3
 
 auto load next items does not work on main items page (on server)
+
+remove all items: "Oops don't do that" text not visible because color shall be white and it is brown
+smaller shadow under query search bar
+
+
 
 v2.1.2
 

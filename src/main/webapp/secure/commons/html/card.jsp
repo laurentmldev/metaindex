@@ -191,7 +191,7 @@ MxGuiCards.getNbCards=card_getNbCards;
 
 </script>
 
-      <div id="MxGui._templates_.card" class="card mb-4" style="display:none;" >
+      <div id="MxGui._templates_.card" class="card mb-4 mx-card" style="display:none;" >
 		<a class="_anchor_ anchor_middle" name="" ></a>
        	 <img src="" alt="" class="card-img-top _img_" style="display:none;min-height:7rem">
        	 <span class="_no_img_" style="display:none;min-height:7rem"></span>
