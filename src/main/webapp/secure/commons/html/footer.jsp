@@ -24,7 +24,7 @@
         	  style="margin-bottom:22px;margin-left:22px;max-width:50%;" >
         </div>
         <div class="container my-auto">
-          <div class="mx-copyright text-center my-auto">
+          <div class="mx-copyright text-center">
             <div><s:text name="globals.copyright"/> - MetaindeX v<s:property value="mxVersion"/> <s:property value="mxFooterInfo"/></div>
             <a href="#" onclick="showTermsAndConditions();"><s:text name="signup.termsAndCondition"/></a>            
           </div>

@@ -107,13 +107,13 @@
 	            	
 	            		<a href="Tutorials"  
 					 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" 
-					 		style="font-size:1.2rem;background:#66c;border-color:white;color:white;margin-left:0.3rem;text-shadow:none;width:20vw"
+					 		style="font-size:1.2rem;background:#99e;border-color:#ccc;color:white;margin-left:0.3rem;text-shadow:none;width:20vw"
 					 		><s:text name="tutorials.welcometitle" /></a>
 					 	</center></td>
 					<td><center>
 	            		<a href="signup?origin=welcome"  
 					 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" 
-					 		style="font-size:1.2rem;background:#6c6;border-color:white;color:white;margin-left:0.3rem;text-shadow:none;width:20vw"
+					 		style="font-size:1.2rem;background:#8c8;border-color:#ccc;color:white;margin-left:0.3rem;text-shadow:none;width:20vw"
 					 		><s:text name="signup.createYourAccount" /></a>
 	            	</center></td>
 	            	 	

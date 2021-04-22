@@ -77,7 +77,7 @@
 	          <s:include value="details.jsp"></s:include>
 	          
 	          <!-- Contents -->
-	          <div id="MxGui.cards.insertspot" class="card-deck col-sm-2 " style="max-width:100%">          	
+	          <div id="MxGui.cards.insertspot" class="card-deck col-sm-2 " style="max-width:100%;height:70vh;overflow:auto;padding:1rem;">          	
 					<!-- CARDS ARE INSERTED HERE -->
 	  		  </div>
 			  <div id="empty-placeholder" style="color:#aaa;display:none;width:100%" ><center>
@@ -137,9 +137,44 @@
   	function local_onload() {	  	
 		enableKibanaFrame();
 		MxGuiDetails.showHistoNavArrows();
+		enableAutoFeedOnScrollDown();
   	}
   </script>
   <script type="text/javascript">
+  
+  function enableAutoFeedOnScrollDown() {
+	  let cardsInserspot=document.getElementById("MxGui.cards.insertspot");
+	  cardsInserspot.onscroll=function() {
+		  //console.log(cardsInserspot);
+		   //console.log("height="+cardsInserspot.height+" pos="+cardsInserspot.scrollTop);
+		   
+		   let isScrollBottom=cardsInserspot.scrollTopMax - cardsInserspot.scrollTop < 1;
+	  	   let needMoreResults=MxGuiCards.getNbCards()<MxGuiDetails.getNbMatchingItems();
+	  	   	   
+	  	   if(isScrollBottom && needMoreResults) {		  	 
+	  	 		 let query = MxGuiHeader.getCurrentSearchQuery();
+	  	 		 let selectedFiltersNames=MxGuiLeftBar.getSelectedFiltersNames();
+	  	 		 let sortString = MxGuiHeader.getCurrentSearchSortString();
+	  	 		 let reversedOrder = MxGuiHeader.getCurrentSearchReversedOrder();
+	  	 		  
+	  		  	 retrieveItemsError=function(msg) { footer_showAlert(ERROR, msg); }
+	  			 _fromIdx=_fromIdx+NB_ITEMS_PER_REQUEST;
+	  			 
+	  			 MxApi.requestCatalogItems({"fromIdx":_fromIdx,
+	  				 						"size":NB_ITEMS_PER_REQUEST,
+	  				 						"query":query,
+	  				 						"filtersNames":selectedFiltersNames,
+	  				 						"sortByFieldName":sortString,
+	  				 						"reverseSortOrder":reversedOrder,
+	  				 						"successCallback":retrieveItemsSuccess,
+	  				 						"errorCallback":retrieveItemsError});
+	  			
+	  	   }
+	  	   
+	  	   
+	  	};
+
+  }
 //configure Kibana Frame
   function enableKibanaFrame() {
 	  let kibanaFrameParent=document.getElementById("kibana_frame_cont");

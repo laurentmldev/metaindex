@@ -199,34 +199,6 @@ function retrieveItemsSuccess(itemsAnswerMsg) {
 	 
 }
 
-$(window).scroll(function() {
-
-	   let isScrollBottom=$(document).height() - ($(window).scrollTop() + $(window).height()) < 1;
-	   let needMoreResults=MxGuiCards.getNbCards()<MxGuiDetails.getNbMatchingItems();
-	   	   
-	   if(isScrollBottom && needMoreResults) {		  	 
-	 		 let query = MxGuiHeader.getCurrentSearchQuery();
-	 		 let selectedFiltersNames=MxGuiLeftBar.getSelectedFiltersNames();
-	 		 let sortString = MxGuiHeader.getCurrentSearchSortString();
-	 		 let reversedOrder = MxGuiHeader.getCurrentSearchReversedOrder();
-	 		  
-		  	 retrieveItemsError=function(msg) { footer_showAlert(ERROR, msg); }
-			 _fromIdx=_fromIdx+NB_ITEMS_PER_REQUEST;
-			 
-			 MxApi.requestCatalogItems({"fromIdx":_fromIdx,
-				 						"size":NB_ITEMS_PER_REQUEST,
-				 						"query":query,
-				 						"filtersNames":selectedFiltersNames,
-				 						"sortByFieldName":sortString,
-				 						"reverseSortOrder":reversedOrder,
-				 						"successCallback":retrieveItemsSuccess,
-				 						"errorCallback":retrieveItemsError});
-			
-	   }
-	   
-	   
-	});
-
 // items search requested explicitly by user
 function ws_handlers_requestItemsSearch(query,selectedFiltersNames,sortByFieldName,reversedSortOrder) {
 	
