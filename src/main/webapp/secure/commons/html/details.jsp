@@ -35,7 +35,7 @@
               <div class="dropdown-list dropdown-menu dropdown-menu-right shadow" aria-labelledby="actionsDropdown"
               		id="MxGui.details.bulkactions.insertspot" >
                 <h6 class="dropdown-header">
-                  Actions pop
+                  Actions
                 </h6>
                 
               </div>
