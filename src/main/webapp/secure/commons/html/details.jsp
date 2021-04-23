@@ -28,7 +28,7 @@
 		  		class="dropdown no-arrow mx-1" style="padding-left:1em;">
               <a class="dropdown-toggle" href="#" id="actionsDropdown" 
               	role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-list fa-fw"></i>
+                <i class="fas fa-cog fa-fw"></i>
                 
               </a>
               <!-- Dropdown - Actions -->
