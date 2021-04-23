@@ -320,7 +320,8 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 					catalogCard.descr.itemsUrlPrefix /* cur value */,		
 					details_customOnUrlPrefixChange,
 					successCallbackUrlPrefixChange);
-			urlPrefix.append(editableFieldUrlPrefixNode);			
+			urlPrefix.append(editableFieldUrlPrefixNode);
+			editableFieldUrlPrefixNode.disableMaxWidth();
 		} else { urlPrefix.innerHTML=catalogCard.descr.itemsUrlPrefix; }
 		
 	// items name
@@ -602,7 +603,7 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
 						             </span>
 						        </td>
-						        <td class="_url_prefix_"></td>						        
+						        <td class="_url_prefix_" style="max-width:90%"></td>						        
 						      </tr>		      
 						    </tbody>
 						  </table>						  						

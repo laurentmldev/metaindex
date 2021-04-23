@@ -69,6 +69,9 @@
 	
 	_xeditable_fields.push(fieldValueNode);
 	
+	newFieldNode.disableMaxWidth=function() {
+		fieldValueNode.style["max-width"]="";
+	}
 	return newFieldNode;
 
  }

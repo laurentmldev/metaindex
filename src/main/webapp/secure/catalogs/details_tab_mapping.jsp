@@ -125,6 +125,7 @@
 						details_termOnEnumsListChange,
 						successCallbackEnumChange);
 			fieldEnumNode.append(editableFieldEnumNode);
+			editableFieldEnumNode.disableMaxWidth();
 		} else { fieldEnumNode.innerHTML=termDesc.enumsList; }
 		//console.log(termName+":"+termDesc.datatype);
 		if (mx_helpers_isDatatypeEnumOk(termDesc.datatype)) {

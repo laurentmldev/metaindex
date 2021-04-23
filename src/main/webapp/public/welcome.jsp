@@ -60,7 +60,7 @@
   </c:if>
   
 	 <nav class="navbar navbar-expand navbar-light topbar static-top mx_welcome_navbar" 
-	 		style="background:#aaa;height:8rem;background: linear-gradient(to bottom, #ffffff 0%, #bababa 100%);">
+	 		style="">
 	 	
 	 		 	
             	<div id="language_buttons" style="position:fixed;margin-left:1rem;">
@@ -79,14 +79,12 @@
 	 	
 	 	<div style="position:fixed;margin-left:85%;"><table>
 		 	<tr><td><a href="contactform?origin=welcome"  
-		 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" 
-		 		style="background:#bbb;border-color:#aaa;text-shadow:none;width:10vw;padding:0;vertical-align:middle;font-size:1.2rem;padding:0.2rem;"
-		 		><s:text name="contactform.title" /></a>	 
+		 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale mx-welcome-navbar-btn " >
+		 		<s:text name="contactform.title" /></a>	 
 		 		</td></tr>
 		 	<tr><td style="margin-top:5rem;">			 	 	
 		 	<a href="loginform"  
-		 	    class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale" 
-		 		style="margin-top:0.3rem;background:#aaa;border-color:#999;text-shadow:none;width:10vw;padding:0;vertical-align:middle;font-size:1.2rem;padding:0.2rem;" >
+		 	    class="mx-welcome-navbar-btn nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale " >
 		 		<s:text name="signin.signin" /></a>
 		 	</td></tr>
 	 	</table></div>

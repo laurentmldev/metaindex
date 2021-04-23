@@ -388,7 +388,7 @@
                 
               </a>
               <!-- Dropdown - Actions -->
-              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow  animated--grow-in" 
+              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" 
               		aria-labelledby="actionsDropdown"
               		id="details.itemsactions.insertspot"
               		style="position:relative;margin-top:10rem;margin-left:2rem;font-size:0.7rem">
@@ -403,7 +403,7 @@
 			 	  		delete_dbid=""
 			 			onConfirm="ws_handlers_deleteItem(this.delete_dbid);" onCancel=""
 			 			style="margin-left:1em;font-size:0.7rem;"> 
-			 			<s:text name="Items.delete" />
+			 			<i class="fa fa-times" aria-hidden="true"></i> <s:text name="Items.delete" />
 			 		</button>
 			 
 			

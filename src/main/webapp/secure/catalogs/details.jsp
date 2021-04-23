@@ -204,7 +204,7 @@ function details_reconfirm_delete_catalog(catId) {
 }
 
  MxGuiDetails.HideBulkActionsButton();
- MxGuiDetails.setTitle("<s:text name="Catalogs.title" />");
+ MxGuiDetails.setTitle("<s:text name="Catalogs.configurationPanel" />");
  MxGuiDetails.setCurCatalogDescription=function(curCommDesc) { _curCatalogDesc=curCommDesc; }
  MxGuiDetails.getCurCatalogDescription=function() { return _curCatalogDesc; }
  MxGuiDetails.getDetailsNode=details_getCatalogDetailsNode;
@@ -220,11 +220,11 @@ function details_reconfirm_delete_catalog(catId) {
  </script>
  
  
- <div id="MxGui._templates_.catalog_details" style="display:none;margin-top:2rem;">
+ <div id="MxGui._templates_.catalog_details" style="display:none;margin-top:2rem;text-align:left;">
  	
  	
- 
-		<table style="margin-bottom:1rem;">
+ 		
+		<table style="margin:0.5rem;margin-bottom:2rem;">
  		<tr>
  			<td><h2 class="_title_" style="font-weight:bold;margin-right:2rem;"></h2></td>
  		<td  >
@@ -239,16 +239,7 @@ function details_reconfirm_delete_catalog(catId) {
  		<td style="padding-left:1rem;padding-right:1rem;width:min-contents;text-align:center;font-size:1.4rem;">
  			<span class="_nbdocs_"  ></span> <span class="_nbdocs_name_"></span>
  		</td>
- 	</tr>
- 	</table>
- 	<hr/> 
- 	<table>
- 	<tr>
- 		<td>
- 			<h2 style='font-size:1.5rem'><s:text name="Catalogs.configurationPanel" /></h2> 			
- 		</td>
-	 	
-	 		
+ 	 		
  		<td>
  			
 	 		<span class="_notFoundInDb_" style="display:none">
@@ -264,28 +255,28 @@ function details_reconfirm_delete_catalog(catId) {
  		<td class="dropdown no-arrow mx-1" style="padding-left:1em;">
               <a class="dropdown-toggle" href="#" id="actionsDropdown" 
               	role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-list fa-fw" style="font-size:1rem;"></i>
+                <i class="fas fa-cog fa-fw" style="font-size:1rem;"></i>
                 
               </a>
               <!-- Dropdown - Actions -->
-              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow" aria-labelledby="actionsDropdown"
-              		id="details.itemsactions.insertspot">
-                <h6 class="dropdown-header" >
-                  Actions
-                </h6>
+              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow" 
+              aria-labelledby="actionsDropdown"
+              		id="details.itemsactions.insertspot"
+              		>
+                <h6 class="dropdown-header" >Actions</h6>
                
 		 		<button type="button" class="_button_delete_ btn btn-default btn-sm alert alert-danger" 	  		
 		 	  		data-toggle="confirmation"
 		 	  		delete_dbid=""
 		 			onConfirm="details_reconfirm_delete_catalog(this.delete_dbid);" onCancel=""
-		 			style="margin-left:1em;"><i class="fa fa-times" aria-hidden="true"></i> 
-		 			<s:text name="Catalogs.delete" />
+		 			style="margin-left:1em;">
+		 			<i class="fa fa-times" aria-hidden="true"></i> <s:text name="Catalogs.delete" />
 		 		</button>
               </div>          
 		</td>
 		</tr>
 		</table>
-		
+		<hr/>
  	
 
 				<nav>

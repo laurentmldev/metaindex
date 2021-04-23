@@ -81,6 +81,7 @@
 							details_onLexicChange,
 							successCallbackOnChange);
 				value.append(editableFieldLexicNode);
+				editableFieldLexicNode.disableMaxWidth();
 			} else { value.innerHTML=curCatalogVocabularyData[curVocEntry]; }
 			
 			 entry.appendChild(title);
@@ -125,6 +126,7 @@
 							successCallbackOnChange);
 				
 				 value.appendChild(editableFieldLexicNode);
+				 editableFieldLexicNode.disableMaxWidth();
 			} 
 			else { value.innerHTML=curValue; }
 			 entry.appendChild(title);

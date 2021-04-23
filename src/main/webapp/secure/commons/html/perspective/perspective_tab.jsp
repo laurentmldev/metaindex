@@ -225,7 +225,7 @@ var _curTabIndex=0;
 		<div class="nav nav-tabs nav-fill _tabnav_insertspot_" id="nav-tab" role="tablist">		
 		</div>
 	</nav>
-	<div class="tab-content py-1 px-1 px-sm-0 _tabcontents_insertspot_" >
+	<div class="tab-content px-sm-0 _tabcontents_insertspot_" >
 		
 	</div>
 </div>	

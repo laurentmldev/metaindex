@@ -77,7 +77,7 @@
 	          <s:include value="details.jsp"></s:include>
 	          
 	          <!-- Contents -->
-	          <div id="MxGui.cards.insertspot" class="card-deck col-sm-2 " style="max-width:100%;height:70vh;overflow:auto;padding:1rem;">          	
+	          <div id="MxGui.cards.insertspot" class="card-deck col-sm-2 " style="max-width:100%;max-height:70vh;overflow:auto;padding:1rem;">          	
 					<!-- CARDS ARE INSERTED HERE -->
 	  		  </div>
 			  <div id="empty-placeholder" style="color:#aaa;display:none;width:100%" ><center>

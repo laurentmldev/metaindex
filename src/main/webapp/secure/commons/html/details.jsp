@@ -48,10 +48,11 @@
 	</tr></table>          
 </div>
  
- 
+ <center>
  
  <div id="MxGui.details.insertspot" class="navbar-nav  mx-active-item-details mx-current-item-area-closed container  " > 	 
  </div>
+ </center>
  <%-- s:include value="./details-right.jsp" /--%>
 
  <div id="_mx_details_alert_" class="mx-alert-light alert fade show alert-light alert-dismissible" 
