@@ -195,6 +195,7 @@ public class UserProfileData implements IUserProfileData
 		    		log.error("unable to update user details in statistics environment.");
 	    		}
 		    	log.info("User '"+this.getName()+"' logged-in");
+		    	log.info(this.getDetailsStr());
 			}
 	    	this.releaseLock();
 		} catch(InterruptedException e) {
@@ -602,7 +603,15 @@ public class UserProfileData implements IUserProfileData
 		return _lastUpdate;
 	}
 	@Override 
-	public void setLastUpdate(Date newDate) { _lastUpdate=newDate; }
+	public void setLastUpdate(Date newDate) { 
+		_lastUpdate=newDate; 
+	}
+	@Override 
+	public void setLastUpdateIfNewer(Date newDate) { 
+		if (newDate.getTime()>_lastUpdate.getTime()) {
+			_lastUpdate=newDate; 
+		}
+	}
 
 	@Override
 	public Boolean shallBeProcessed(Date testedUpdateDate) {
@@ -647,8 +656,7 @@ public class UserProfileData implements IUserProfileData
 		// avoid periodic process on dummy or empty profile objects
 		if (getName().length()==0) { return; }
 		
-		List<Integer> userCatalogsIds = this.getUserCatalogsIds();
-		Date prevCurDate = this.getLastUpdate();
+		Long prevChangeTime = this.getLastUpdate().getTime();
 		Boolean onlyIfDbcontentsUpdated=true;
 		List<IUserProfileData> list = new ArrayList<>();
 		list.add(this);		
@@ -656,10 +664,11 @@ public class UserProfileData implements IUserProfileData
 		Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface().getPopulateAccessRightsFromDbStmt(list,onlyIfDbcontentsUpdated).execute();
 		
 		// detect if contents actually changed
-		if (this.getLastUpdate().after(prevCurDate)) { 
+		if (this.getLastUpdate().getTime() > prevChangeTime) { 
 			// catalogs access rights might have changed
 			// so we update roles in Kibana env. and Drive server
 			
+			//log.error("### updates detected in DB on "+this+" : "+this.getLastUpdate().getTime()+" > "+prevChangeTime);
 			Boolean result =Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().createOrUpdateCatalogStatisticsUser(this);
 	    	if (!result) {
 	    		log.error("unable to update user details in statistics environment.");
@@ -722,6 +731,7 @@ public class UserProfileData implements IUserProfileData
 				+"\n\t- id: "+this.getId()
 				+"\n\t- nickname: "+this.getNickname()
 				+"\n\t- enabled: "+this.isEnabled()
+				+"\n\t- lastUpdate: "+this.getLastUpdate().getTime()
 				+"\n\t- role: "+this.getRole().toString()
 				+"\n\t- language: "+this.getGuiLanguageShortname()
 				+"\n\t- theme: "+this.getGuiThemeShortname()

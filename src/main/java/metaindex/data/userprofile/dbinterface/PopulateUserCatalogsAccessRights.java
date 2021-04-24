@@ -57,7 +57,7 @@ class PopulateUserCatalogsAccessRights extends SQLPopulateStmt<IUserProfileData>
 		String accessRightsStr=rs.getString(4);
 		USER_CATALOG_ACCESSRIGHTS accessRights = USER_CATALOG_ACCESSRIGHTS.valueOf(accessRightsStr);
 		d.setUserCatalogAccessRights(catalogId, accessRights);
-		d.setLastUpdate(rs.getTimestamp(5));
+		d.setLastUpdateIfNewer(rs.getTimestamp(5));
 		return d;
 	}
 

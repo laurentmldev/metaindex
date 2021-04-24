@@ -82,7 +82,7 @@ class PopulateUserProfileFromDb extends SQLPopulateStmt<IUserProfileData>   {
 		d.setCategory(CATEGORY.valueOf(rs.getString(7)));
 		d.setRole(USER_ROLE.valueOf(rs.getString(8)));
 		d.setLastLoginDate(rs.getTimestamp(9));
-		d.setLastUpdate(newerDbDate);
+		d.setLastUpdateIfNewer(newerDbDate);
 		d.setEnabled(rs.getBoolean(12));
 		
 		d.setPlanId(rs.getInt(13));

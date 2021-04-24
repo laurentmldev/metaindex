@@ -136,7 +136,8 @@ public interface IUserProfileData extends ICatalogUser,IPlanUser,IObserver<IProc
 	 */
 	public Date getItemsLastChangeDate();
 	
-	public void setLastUpdate(Date newDate);
+	public void setLastUpdate(Date newDate);	
+	public void setLastUpdateIfNewer(Date newDate);
 	
 	// used to ensure that on more than one session for a user at the same time
 	String getRemoteAddress();
