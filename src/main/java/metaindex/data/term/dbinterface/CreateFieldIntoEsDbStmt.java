@@ -15,6 +15,8 @@ See full version of LICENSE in <https://fsf.org/>
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.indices.PutMappingRequest;
@@ -22,7 +24,6 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
 import metaindex.data.catalog.ICatalog;
-import metaindex.data.term.CatalogTerm;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
 import toolbox.database.elasticsearch.ElasticSearchConnector;
@@ -31,6 +32,8 @@ import toolbox.exceptions.DataProcessException;
 
 class CreateFieldIntoEsDbStmt extends ESWriteStmt<ICatalogTerm>   {
 
+	static private Log log = LogFactory.getLog(CreateFieldIntoEsDbStmt.class);
+	
 	ICatalog _catalog;
 	List<ICatalogTerm> _data = new ArrayList<ICatalogTerm>();
 	public CreateFieldIntoEsDbStmt(ICatalog c, List<ICatalogTerm> terms, ElasticSearchConnector ds) throws DataProcessException { 
@@ -39,7 +42,7 @@ class CreateFieldIntoEsDbStmt extends ESWriteStmt<ICatalogTerm>   {
 		_catalog=c;
 	}
 	
-	private void addTermToELKBuider(ICatalogTerm t,
+	private void addTermToELKBuilder(ICatalogTerm t,
 									XContentBuilder builder,
 									/*optional*/List<ICatalogTerm> implicitTerms)
 											throws IOException {
@@ -56,21 +59,23 @@ class CreateFieldIntoEsDbStmt extends ESWriteStmt<ICatalogTerm>   {
             // ElasticSearch to sort search results following this field
             if (ICatalogTerm.getRawDatatype(t.getDatatype())==RAW_DATATYPE.Ttext) {
             	builder.field("fielddata", true);// allow significant terms search
-            	builder.startObject("fields");
-            	{
-            		builder.startObject("keyword"); {
-	            		builder.field("type", "keyword");
+            	
+            	// long text shall be stored separately 
+                if (t.getDatatype()== ICatalogTerm.TERM_DATATYPE.LONG_TEXT) {
+                	builder.field("store", true);            
+                }
+                else {
+	            	builder.startObject("fields");
+	            	{
+	            		builder.startObject("keyword"); {
+		            		builder.field("type", "keyword");
+		            	} builder.endObject();
 	            	} builder.endObject();
-            	} builder.endObject();
+                }
             }
+            
+            // date
             else if (ICatalogTerm.getRawDatatype(t.getDatatype())==RAW_DATATYPE.Tdate) {
-            	/* century dates field not ready yet
-            	if (implicitTerms!=null) {
-	            	ICatalogTerm centuryImplicitTerm = ICatalogTerm.BuildCatalogTerm(RAW_DATATYPE.Tinteger);
-	            	centuryImplicitTerm.setName(termName+"_century");
-	            	implicitTerms.add(centuryImplicitTerm);
-            	}
-            	*/
             	
     			builder.field("ignore_malformed", "true");
     			builder.field("null_value", "1970/01/01");
@@ -121,7 +126,11 @@ class CreateFieldIntoEsDbStmt extends ESWriteStmt<ICatalogTerm>   {
             	} builder.endObject();
             }
             
+                            
+            
         } builder.endObject();
+        
+        log.error("##### "+builder.toString());
 	}
 	@Override
 	public Boolean execute() throws DataProcessException {
@@ -139,14 +148,30 @@ class CreateFieldIntoEsDbStmt extends ESWriteStmt<ICatalogTerm>   {
 			        // some of the terms require the creation of extra complementary terms
 			        // Ex: for each date we create a century field
 			        for (ICatalogTerm t : _data) {
-			    		addTermToELKBuider(t,builder,implicitTerms);
+			    		addTermToELKBuilder(t,builder,implicitTerms);
 					}	
 			    	
 			        for (ICatalogTerm t : implicitTerms) {
-			    		addTermToELKBuider(t,builder,null);
+			    		addTermToELKBuilder(t,builder,null);
 					}	
 			    	
-			      } builder.endObject();
+			  } builder.endObject(); // end-of 'properties'
+
+			  
+			  /* Disabled for now : 
+			   * seems the we nned to re-index for adding a new field in the _source 'excludes' list.
+			   
+		        // long test shall be excluded from _source default result to avoid 
+		        // to optimize response time with long data
+		        if (t.getDatatype()== ICatalogTerm.TERM_DATATYPE.LONG_TEXT) {
+		        	builder.startObject("_source"); {
+		        		builder.array("excludes", "toto");        		
+	        		} builder.endObject();
+	        	}
+	          */
+	            
+			   	
+			        
 			} builder.endObject();
 			request.source(builder);
 					

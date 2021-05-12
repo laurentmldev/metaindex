@@ -6,6 +6,7 @@
 <s:include value="./perspective_field_pageurl.jsp"></s:include>
 <s:include value="./perspective_field_imageurl.jsp"></s:include>
 <s:include value="./perspective_field_link.jsp"></s:include>
+<s:include value="./perspective_field_longtext.jsp"></s:include>
  
 <s:include value="./perspective_field_gen_customizable.jsp"></s:include>
 <s:include value="./perspective_field_gen_editable.jsp"></s:include>

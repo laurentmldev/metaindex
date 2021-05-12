@@ -4,7 +4,7 @@
  
  
 
-<!--------------- TINYTEXT -------------->		  
+<!--------------- TINY_TEXT -------------->		  
  <script type="text/javascript" >
 
  var TINYTEXT_MAX_DISPLAY_NB_CHARS=120;

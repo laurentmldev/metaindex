@@ -180,11 +180,12 @@ function mx_helpers_getItemDetailsById(itemId, receivedItemContentsCallback) {
 
 // matches Metaindex DB table 'catalog_terms', enum of field 'datatype'
 // used to generate dropdown box in Field type
-//var mx_helpers_FIELDS_DATATYPES = [	"TINY_TEXT","RICH_TEXT","DATE","INTEGER","FLOAT","PAGE_URL","IMAGE_URL","AUDIO_URL","VIDEO_URL","GEO_POINT",
+//var mx_helpers_FIELDS_DATATYPES = [	"TINY_TEXT","LONG_TEXT","DATE","INTEGER","FLOAT","PAGE_URL","IMAGE_URL","AUDIO_URL","VIDEO_URL","GEO_POINT",
 //									,"LINK"];
-var mx_helpers_FIELDS_DATATYPES = [	"TINY_TEXT","DATE","INTEGER","FLOAT","PAGE_URL","IMAGE_URL","LINK","GEO_POINT"];
-//var mx_helpers_FIELDS_DATATYPES_text = ["TINY_TEXT","RICH_TEXT","PAGE_URL","IMAGE_URL","AUDIO_URL","VIDEO_URL","LINK"];
+var mx_helpers_FIELDS_DATATYPES = [	"TINY_TEXT","LONG_TEXT","DATE","INTEGER","FLOAT","PAGE_URL","IMAGE_URL","LINK","GEO_POINT"];
+//var mx_helpers_FIELDS_DATATYPES_text = ["TINY_TEXT","LONG_TEXT","PAGE_URL","IMAGE_URL","AUDIO_URL","VIDEO_URL","LINK"];
 var mx_helpers_FIELDS_DATATYPES_text = ["TINY_TEXT","PAGE_URL","IMAGE_URL","LINK"];
+var mx_helpers_FIELDS_DATATYPES_longtext = ["LONG_TEXT"];
 var mx_helpers_FIELDS_DATATYPES_date = ["DATE"];
 var mx_helpers_FIELDS_DATATYPES_integer = ["INTEGER"];
 var mx_helpers_FIELDS_DATATYPES_float = ["FLOAT"];
@@ -201,6 +202,7 @@ function mx_helpers_getDataTypesChoice(curDatatype) {
 		else if (curDatatype=="FLOAT") { dataTypesList=mx_helpers_FIELDS_DATATYPES_float;}
 		else if (curDatatype=="GEO_POINT") { dataTypesList=mx_helpers_FIELDS_DATATYPES_geo_point;}
 		else if (curDatatype=="LINK") { dataTypesList=mx_helpers_FIELDS_DATATYPES_text;}
+		else if (curDatatype=="LONG_TEXT") { dataTypesList=mx_helpers_FIELDS_DATATYPES_longtext;}
 		// text
 		else { dataTypesList=mx_helpers_FIELDS_DATATYPES_text;}
 	}

@@ -20,6 +20,9 @@
  	else if (termDesc.datatype=="LINK") {
  		_commons_perspective_build_readonly_field_reference(catalogDesc,tabIdx,sectionIdx,fieldIdx,fieldContainerNode,fieldVisuDesc,termDesc,itemId,fieldValue);
  	}
+ 	else if (termDesc.datatype=="LONG_TEXT") {
+ 		_commons_perspective_build_readonly_field_longtext(catalogDesc,tabIdx,sectionIdx,fieldIdx,fieldContainerNode,fieldVisuDesc,termDesc,fieldValue);
+ 	}
  	else {
  		_commons_perspective_build_readonly_field_tinytext(catalogDesc,tabIdx,sectionIdx,fieldIdx,fieldContainerNode,fieldVisuDesc,termDesc,fieldValue);
  	}

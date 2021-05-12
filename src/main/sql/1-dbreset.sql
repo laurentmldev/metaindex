@@ -93,7 +93,7 @@ CREATE TABLE `catalog_terms` (
 `catalog_term_id` int(32) NOT NULL,
   `catalog_id` int(32) NOT NULL,
   -- this list shall be coherent with ICatalogTerm.TERM_DATATYPE enum definition.
-  `datatype` ENUM('TINY_TEXT', 'RICH_TEXT', 'DATE', 'INTEGER', 'FLOAT', 'PAGE_URL', 'IMAGE_URL', 'AUDIO_URL', 'VIDEO_URL', 'GEO_POINT','LINK') ,
+  `datatype` ENUM('TINY_TEXT', 'LONG_TEXT', 'DATE', 'INTEGER', 'FLOAT', 'PAGE_URL', 'IMAGE_URL', 'AUDIO_URL', 'VIDEO_URL', 'GEO_POINT','LINK') ,
   `name` varchar(45) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `enumsList` varchar(1024) NOT NULL DEFAULT "",-- only meaningful if some enums are defined for this term
   `isMultiEnum` boolean NOT NULL DEFAULT false,-- only meaningful if some enums are defined for this term

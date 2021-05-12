@@ -7,19 +7,22 @@
 
 
 //-------- Blank --------
- function _commons_popups_makeBlankPopup(title,closeButtonText,maxWidth,maxHeight,bgColor) {
+ function _commons_popups_makeBlankPopup(title,closeButtonText,maxWidth,maxHeight,bgColor,width,height) {
 	 let newPopup = document.getElementById("_commons_popups_blank_input_template_").cloneNode(true);
 	 newPopup.id="";
 	 
 	 let modal=newPopup.querySelector(".modal-dialog");
 	 let styleStr="";
 	 if (maxWidth!=null) { styleStr+="max-width:"+maxWidth+";"; }
+	 if (width!=null) { styleStr+="width:"+width+";"; }
 	 if (bgColor!=null) { styleStr+="background-color:"+bgColor+";"; }
 	 if (styleStr!="") { modal.style=styleStr; }
 	 
 	 modal=newPopup.querySelector(".modal-content");
 	 styleStr="";
 	 if (maxHeight!=null) { styleStr+="max-height:"+maxHeight+";"; }
+	 if (height!=null) { styleStr+="height:"+height+";"; }
+	 
 	 if (styleStr!="") { modal.style=styleStr; }
 	 
 	 
@@ -39,6 +42,7 @@
 		 if (newPopup.style.display=='block') { newPopup.hide(); }
 		 else { newPopup.show(); }
 	 }
+	 newPopup.getCloseButton=function() { return closeButton; }
 	 
 	 
 	 return newPopup;
@@ -191,6 +195,8 @@
 	 
 	 newPopup.show=function() { newPopup.style.display="block"; }
 	 newPopup.hide=function() { newPopup.style.display="none"; }
+	 newPopup.getText=function() { return inputNode.value; }
+	 newPopup.getText=function(text) { inputNode.value=text; }
 	 return newPopup;
  }
  
@@ -239,6 +245,7 @@
 //-------- Multi-fields Popup Form --------
 
 // fieldsList: [ { id:"xxx",type:"text",title:"xxx",defaultValue:"xxx", important:'false',disabled:'false' },
+//				 { id:"xxx",type:"longtext",title:"xxx",defaultValue:"xxx", important:'false',disabled:'false' },
 //				 { id:"xxx",type:"dropdown",defaultValue:"xxx", values:[{text:'xxx',value:'xxx'}], important:'true',disabled:'true' }]
 // 				 { id:"xxx",type:"dropdown",defaultValue:"xxx", values:['val1','val2'], important:'true',disabled:'false' }]
 // 				 { id:"xxx",type:"multiselect",values:['val1','val2'], important:'true' }
@@ -257,8 +264,9 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFile
 	
 	// for file-url, behaviour is specialized down there for drag and drop,
 	// but basic behaviour is a normal text field
-	if (curFieldDescr.type=="text" || curFieldDescr.type=="file-url") {
+	if (curFieldDescr.type=="text" ||curFieldDescr.type=="longtext" || curFieldDescr.type=="file-url") {
 		if (curFieldDescr.type=="file-url") { newFormInput=document.getElementById("_commons_popups_formfileurl_input_template_").cloneNode(true); }
+		else if (curFieldDescr.type=="lontext") { newFormInput=document.getElementById("_commons_popups_formlongtext_input_template_").cloneNode(true); }
 		else { newFormInput=document.getElementById("_commons_popups_formtext_input_template_").cloneNode(true); }
 		newFormInput.id=curFieldDescr.id;
 		newFormInput.style.display="block";
@@ -568,8 +576,10 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFile
 }
  
  
-//fieldsList: [ { id:"xxx",type:"text",title:"xxx",defaultValue:"xxx", important:'false',disabled:'false' },
-//{ id:"xxx",type:"dropdown",defaultValue:"xxx", values:[{text:'xxx',value:'xxx'}], important:'true',disabled:'true' }]
+//fieldsList: [ 
+// { id:"xxx",type:"text",title:"xxx",defaultValue:"xxx", important:'false',disabled:'false' },
+// { id:"xxx",type:"longtext",title:"xxx",defaultValue:"xxx", important:'false',disabled:'false' },
+// { id:"xxx",type:"dropdown",defaultValue:"xxx", values:[{text:'xxx',value:'xxx'}], important:'true',disabled:'true' }]
 // { id:"xxx",type:"dropdown",defaultValue:"xxx", values:['val1','val2'], important:'true',disabled:'false' }]
 // { id:"xxx",type:"multiselect",values:['val1','val2'], important:'true' }]
 function _commons_popups_makeMultiInputsPopup(title,fieldsList,onValidCallback,keepPopupWhenPressOk) {
@@ -783,6 +793,20 @@ function _commons_popups_makeMultiInputsPopup(title,fieldsList,onValidCallback,k
    <input  type="text" style="width:90%;border:none;"
    			class="_form_input_  card  modals-form-control bg-light border-0 small " 
    			/>
+   
+   		
+   </fieldset>
+   
+    
+  <fieldset id="_commons_popups_formlongtext_input_template_"  class="form-control-group card  modals-form-control" style="display:none;max-height:40vh;overflow:auto;">
+   <legend style="width:auto;margin:0;padding:0;" class="form-control-group-legend ">
+   						<span class="_legend_" style="margin-left:0.5rem;margin-right:0.5rem;" ></span>
+   						<i class="fas fa-fw fa-lock-open _locked_" style="margin-right:0.5rem;" 
+   						title="<s:text name="globals.lockerExplain" />" ></i>
+   	</legend>
+   <textarea  style="width:90%;border:none;"
+   			class="_form_input_ mx-perspective-textarea card  modals-form-control bg-light border-0 small " ></textarea>
+   		
    
    		
    </fieldset>

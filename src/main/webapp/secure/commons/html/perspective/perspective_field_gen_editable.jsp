@@ -15,7 +15,13 @@
 			return _commons_perspective_buildEditableReferenceTerm(catalogDesc,tabIdx,sectionIdx,fieldIdx,
 				 	fieldContainerNode,fieldVisuDesc,termDesc,
 					itemId,curTermValue,successCallback,onChangeCallback);
-	 } 
+	 }
+	 
+	 else if (termDesc.datatype=="LONG_TEXT") { 		
+			return _commons_perspective_buildEditableLongTextTerm(catalogDesc,tabIdx,sectionIdx,fieldIdx,
+				 	fieldContainerNode,fieldVisuDesc,termDesc,
+					itemId,curTermValue,successCallback,onChangeCallback);
+	 }
 	
 	 // list or multi choice
  	 if (mx_helpers_isDatatypeEnumOk(termDesc.datatype) 

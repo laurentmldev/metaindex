@@ -24,10 +24,9 @@ public interface ICatalogTerm extends IIdentifiable<Integer>{
 	// /!\ this list shall be coherent with : 
 	// - SQL field 'catalog_terms.datatype' enum definition.
 	// - webapp/secure/commons/js/mx_helpers.jsp
-	// - webapp/secure/catalogs/details.jsp
 	public enum TERM_DATATYPE { UNKNOWN,
 								TINY_TEXT, 
-								RICH_TEXT, 
+								LONG_TEXT, 
 								DATE, 
 								INTEGER, 
 								FLOAT, 
@@ -61,6 +60,7 @@ public interface ICatalogTerm extends IIdentifiable<Integer>{
 		if (datatype==TERM_DATATYPE.DATE) { return RAW_DATATYPE.Tdate; }
 		if (datatype==TERM_DATATYPE.GEO_POINT) { return RAW_DATATYPE.Tgeo_point; }
 		if (datatype==TERM_DATATYPE.LINK) { return RAW_DATATYPE.Ttext; }
+		if (datatype==TERM_DATATYPE.LONG_TEXT) { return RAW_DATATYPE.Ttext; }
 		return RAW_DATATYPE.Ttext;
 	}
 

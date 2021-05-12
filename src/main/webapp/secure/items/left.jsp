@@ -234,6 +234,10 @@ function _left_build_newitem_form_field_desc(termId,termDesc,catalogDesc) {
 		fieldFormDef.values.unshift(" ");
 		
 	} 
+	else if (termDesc.datatype=="LONG_TEXT") {
+		fieldFormDef.type="longtext";
+		fieldFormDef.defaultValue="";
+	}
 	else if (mx_helpers_isDatatypeMultiEnumOk(termDesc.datatype) && termDesc.enumsList!="" && termDesc.isMultiEnum==true) {
 		fieldFormDef.type="multiselect";
 		fieldFormDef.defaultValue="";
