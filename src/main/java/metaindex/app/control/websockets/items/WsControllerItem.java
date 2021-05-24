@@ -56,7 +56,11 @@ import toolbox.utils.StreamHandler;
 public class WsControllerItem extends AMxWSController {
 	
 	private Log log = LogFactory.getLog(WsControllerItem.class);
-	private final Integer MAX_ELASTIC_SEARCH_RESULT_SIZE=10000; 
+	private final Integer MAX_ELASTIC_SEARCH_RESULT_SIZE=10000;
+	
+	// map[userId][catalogId_requestId]=curFieldValue
+	private static Map<Integer,Map<String,String> >  _pendingUsersMultipartValues
+						= new java.util.concurrent.ConcurrentHashMap<>();
 	
 	@Autowired
 	public WsControllerItem(SimpMessageSendingOperations messageSender) {
@@ -225,6 +229,48 @@ public class WsControllerItem extends AMxWSController {
 			return;         		
     	}
     	
+    	// if multipart value (too long for a single WebSocket message)  
+    	// we split it in several chunks
+    	if (requestMsg.getNbChunks()>1) {
+    		
+    		// build a unique ID to avoid collision if several user perform this operation at the same time
+    		String requestFullId=c.getId()+"_"+requestMsg.getRequestId();
+    		
+    		Map<String,String> pendingMultipartValuesMap = _pendingUsersMultipartValues.get(user.getId());
+    		// initialize container for pensing values of this user
+    		if (pendingMultipartValuesMap==null) {
+    			pendingMultipartValuesMap=new java.util.concurrent.ConcurrentHashMap<>();
+    			_pendingUsersMultipartValues.put(user.getId(),pendingMultipartValuesMap);
+    		}
+    		
+			
+    		// if we just received the first chunk of a multipart value (i.e. too long for a single update through websockets)
+    		// we prepare container to store partial value of the field while receiving successive chunks
+    		if (!pendingMultipartValuesMap.containsKey(requestFullId)) {
+    			pendingMultipartValuesMap.put(requestFullId,"");
+    		}
+    		
+    		String curValue=pendingMultipartValuesMap.get(requestFullId);
+    		curValue+=requestMsg.getFieldValue();
+    		
+    		// complete current incomplete value with received chunk
+			pendingMultipartValuesMap.put(requestFullId,curValue);
+			
+			// if not last chunk, send msg to client to send us next chunk
+			if (requestMsg.getCurChunkNb()<requestMsg.getNbChunks()) {
+    			answer.setIsSuccess(true);
+        		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),
+        												"/queue/field_value", 
+        												getRawString(answer));
+        		return;
+			}
+			// else (if we just received last chunk) 
+			// finalize value and continue normal processing
+			else {
+				requestMsg.setFieldValue(pendingMultipartValuesMap.get(requestFullId));
+				pendingMultipartValuesMap.remove(requestFullId);
+			}    		
+    	}
     	try {
     		c.acquireLock();
     		Date now = new Date();

@@ -16,6 +16,8 @@ public class WsMsgUpdateFieldValue_request  {
 	private String _itemId="";
 	private String _fieldName="";
 	private String _fieldValue="";
+	private Integer _nbChunks=0;
+	private Integer _curChunkNb=0;
 	
 	
 	public WsMsgUpdateFieldValue_request() {
@@ -61,5 +63,23 @@ public class WsMsgUpdateFieldValue_request  {
 	public void setFieldValue(String fieldValue) {
 		this._fieldValue = fieldValue;
 	}
-	
+
+
+	public Integer getNbChunks() {
+		return _nbChunks;
+	}
+
+
+	public void setNbChunks(Integer nbChunks) {
+		this._nbChunks = nbChunks;
+	}
+
+	public Integer getCurChunkNb() {
+		return _curChunkNb;
+	}
+
+
+	public void setCurChunkNb(Integer curChunkNb) {
+		this._curChunkNb = curChunkNb;
+	}	
 }

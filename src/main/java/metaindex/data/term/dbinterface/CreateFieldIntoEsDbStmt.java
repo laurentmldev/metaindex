@@ -159,7 +159,7 @@ class CreateFieldIntoEsDbStmt extends ESWriteStmt<ICatalogTerm>   {
 
 			  
 			  /* Disabled for now : 
-			   * seems the we nned to re-index for adding a new field in the _source 'excludes' list.
+			   * seems the we need to re-index for adding a new field in the _source 'excludes' list.
 			   
 		        // long test shall be excluded from _source default result to avoid 
 		        // to optimize response time with long data

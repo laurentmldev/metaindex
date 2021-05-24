@@ -21,6 +21,7 @@ function stripStr(str) { return str.replace(/^\s*/,"").replace(/\s*$/,""); }
 // ----
 
 // shouldn't be too big otherwise risk of WS deconnexion because max. size limit reached.
+var MX_WS_FIELD_VALUE_MAX_CHARS = 5;
 var MX_WS_UPLOAD_FILE_MAX_LINES = 500;
 var MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE = 50000;
 var MX_WS_UPLOAD_FILE_SEND_PERIOD_MS = 30;
@@ -1634,7 +1635,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	// contains error/success callback functions of each field update request
 	this.requestFieldValueUpdateCallbacks=[];
 	
-	// dataObj {
+	// dataObj { 
 	//   id (item id)
 	//   fieldName
 	//   fieldValue
@@ -1643,6 +1644,13 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	// }
 	this.requestFieldValueUpdate= function(dataObj) {
 		
+		// if value contents is too long, split it in several chunks to send it
+		if (dataObj.fieldValue.length>MX_WS_FIELD_VALUE_MAX_CHARS) {
+			myself.requestMultipartFieldValueUpdate(dataObj);
+			return;
+		}
+		//var curRequestId=new Date().getTime();//myself.requestFieldValueUpdateCallbacks.length;
+		//myself.requestFieldValueUpdateCallbacks[curRequestId]=dataObj;
 		var curRequestId=myself.requestFieldValueUpdateCallbacks.length;
 		myself.requestFieldValueUpdateCallbacks.push(dataObj);
 		
@@ -1660,12 +1668,79 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		
 		var jsonStr = JSON.stringify({ 	"requestId" : curRequestId,
 										"itemId" : dataObj.id,
+										"nbchunks" : 1,
 										"fieldName" : dataObj.fieldName,
 										"fieldValue" : dataObj.fieldValue});
 		//console.log("sending new value : "+jsonStr);
 		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/update_field_value", {}, jsonStr);
 	}
+	
+	
+	// dataObj {
+	//   id (item id)
+	//   fieldName
+	//   fieldValue
+	//   successCallback (func)
+	//   errorCallback (func)(msg)
+	// }
+	this.requestMultipartFieldValueUpdate= function(dataObj) {
+		
+		//console.log(new Date().getTime());
+		if (dataObj.requestId==null) {
+			// TODO: need a more unique ID, so that same operation
+			// can betried again if failed 
+			//var curRequestId=new Date().getTime();
+			//dataObj.requestId=curRequestId;
+			//myself.requestFieldValueUpdateCallbacks[curRequestId]=dataObj;
+			var curRequestId=myself.requestFieldValueUpdateCallbacks.length;
+			myself.requestFieldValueUpdateCallbacks.push(dataObj);
+				
+			if (dataObj.id==null || dataObj.id=="") { dataObj.errorCallback("MxApi ERROR : field 'id' is empty"); return; }
+			if (dataObj.fieldName==null || dataObj.fieldName=="") { dataObj.errorCallback("MxApi ERROR : field 'fieldName' is empty"); return; }
+			if (dataObj.fieldValue==null) { dataObj.errorCallback("MxApi ERROR : field 'fieldValue' is null"); return; }
+		}		
+		// if this is the first sending, prepare the data to be sent chunk by chunk into dataStillToSend variable
+		if (dataObj.dataStillToSend==null) {
+			// if it is not a string, we expect a Json value, to be encoded
+			if (typeof(dataObj.fieldValue)!="string") {
+				dataObj.fieldValue=JSON.stringify(dataObj.fieldValue);
+			}
+			dataObj.fieldValue=dataObj.fieldValue.trim();
+			dataObj.dataStillToSend=dataObj.fieldValue;
+		}		
+		
+		// calculate total nb of chunks
+		if (dataObj.nbchunks==null) {
+			dataObj.nbchunks = Math.ceil(dataObj.fieldValue.length/MX_WS_FIELD_VALUE_MAX_CHARS);
+			dataObj.curChunkNb=0;
+			
+		}
+		dataObj.curChunkNb=dataObj.curChunkNb+1;
+		
+		// send the next chunk. once response from server will be received will send next chunk
+		let curValueChunk=dataObj.dataStillToSend.substr(0,MX_WS_FIELD_VALUE_MAX_CHARS);
+		console.log("["+curValueChunk+"]");
+		
+		// prepare next chunk: if we sent emty data it means we're done.
+		if (curValueChunk.length==0) { return; }
+		else { dataObj.dataStillToSend=dataObj.dataStillToSend.substr(MX_WS_FIELD_VALUE_MAX_CHARS); }
+		
+		console.log("sending chunk "+dataObj.curChunkNb+"/"+dataObj.nbchunks);
+		
+		// actually send current chunk
+		let jsonStr = JSON.stringify({ 	"requestId" : curRequestId,
+									"itemId" : dataObj.id,
+									"nbChunks" : dataObj.nbchunks,
+									"curChunkNb": dataObj.curChunkNb,
+									"fieldName" : dataObj.fieldName,
+									"fieldValue" : curValueChunk});
+		//console.log("sending new value : "+jsonStr);
+		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
+		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/update_field_value", {}, jsonStr);
+		
+	}
+	
 	
 	// each field update request is given with a callback to be executed
 	// in case of success or failure.
@@ -1675,9 +1750,17 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		var parsedMsg = JSON.parse(updateFieldResponseMsg.body);
 		let requestId=parsedMsg.requestId;
 		let requestObj=myself.requestFieldValueUpdateCallbacks[requestId];
+		console.log("requestId="+requestId+" -> obj="+requestObj);
 		if (requestObj==null) { return; }
-		if (parsedMsg.isSuccess==true) { requestObj.successCallback(parsedMsg.fieldName,
-																	parsedMsg.fieldValue); }
+		if (parsedMsg.isSuccess==true) { 
+			if (requestObj.dataStillToSend!=null) {
+				myself.requestMultipartFieldValueUpdate(requestObj);				
+			}
+			else {
+				requestObj.successCallback(parsedMsg.fieldName,
+							parsedMsg.fieldValue);
+			}
+		}
 		else {
 			let errorMsg=parsedMsg.rejectMessage;
 			// ensure error message is not empty
@@ -1686,6 +1769,8 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			requestObj.errorCallback(errorMsg); 
 		}		
 	}
+	
+
 	
 	
 //------- Update Term definition --------

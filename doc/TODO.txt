@@ -3,6 +3,10 @@
 v2.1.4:
 -------
 	
+when user quit a catalog, purge map of pending multipart fields values in WsControllerItem
+
+help text for LONG_TEXT type
+
 #64 type longtext (rich?) pour étude du language / analyse de corpus
 
 	--> textarea with line number
@@ -13,7 +17,7 @@ v2.1.4:
 
 	update SQL def for renaming datatype RICH_TEXT into LONG_TEXT 
 	--> ALTER TABLE `catalog_terms` CHANGE `datatype` `datatype` ENUM('TINY_TEXT','LONG_TEXT','DATE','INTEGER','FLOAT','PAGE_URL','IMAGE_URL','AUDIO_URL','VIDEO_URL','GEO_POINT','LINK') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;	
-	--> error : #1265 - Data truncated for column 'datatype' at row 2
+	
 	
 	
 
