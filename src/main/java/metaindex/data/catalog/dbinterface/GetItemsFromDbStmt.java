@@ -136,6 +136,10 @@ class GetItemsFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 					if (!data.containsKey(ICatalogTerm.MX_TERM_LASTMODIF_USERID)) {
 						data.put(ICatalogTerm.MX_TERM_LASTMODIF_USERID, 0);
 					}
+					// TODO: truncate LONG_TEXT fields to longuest authorized length
+					// (full contents to be retrieved over dedicated request from user)
+					
+					
 					IDbItem item = new MxDbSearchItem(
 												hit.getId(), data,
 												_catalog.getItemNameFields(),

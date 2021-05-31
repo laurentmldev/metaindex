@@ -47,6 +47,7 @@ import toolbox.database.IDbItem;
 import toolbox.database.IDbSearchResult.SORTING_ORDER;
 import toolbox.database.elasticsearch.ESBulkProcess;
 import toolbox.exceptions.DataProcessException;
+import toolbox.utils.AProcessingTask;
 import toolbox.utils.BasicPair;
 import toolbox.utils.IPair;
 import toolbox.utils.IStreamHandler;
@@ -235,9 +236,9 @@ public class WsControllerItem extends AMxWSController {
     		
     		// build a unique ID to avoid collision if several user perform this operation at the same time
     		String requestFullId=c.getId()+"_"+requestMsg.getRequestId();
-    		
+;
     		Map<String,String> pendingMultipartValuesMap = _pendingUsersMultipartValues.get(user.getId());
-    		// initialize container for pensing values of this user
+    		// initialize container for pending values of this user
     		if (pendingMultipartValuesMap==null) {
     			pendingMultipartValuesMap=new java.util.concurrent.ConcurrentHashMap<>();
     			_pendingUsersMultipartValues.put(user.getId(),pendingMultipartValuesMap);
@@ -262,13 +263,22 @@ public class WsControllerItem extends AMxWSController {
         		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),
         												"/queue/field_value", 
         												getRawString(answer));
+        		user.sendGuiProgressMessage(
+        				requestMsg.getRequestId(),
+        				requestMsg.getFieldName(),
+            			AProcessingTask.pourcentage(new Long(requestMsg.getCurChunkNb()), new Long(requestMsg.getNbChunks())));
         		return;
 			}
 			// else (if we just received last chunk) 
 			// finalize value and continue normal processing
 			else {
 				requestMsg.setFieldValue(pendingMultipartValuesMap.get(requestFullId));
-				pendingMultipartValuesMap.remove(requestFullId);
+				// clean any pending value for this user (we consider only one at a time is expected here)
+				_pendingUsersMultipartValues.remove(user.getId());
+				user.sendGuiProgressMessage(
+        				requestMsg.getRequestId(),
+        				requestMsg.getFieldName(),
+            			100.0F);
 			}    		
     	}
     	try {

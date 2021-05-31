@@ -2,8 +2,8 @@
 
 v2.1.4:
 -------
-	
-when user quit a catalog, purge map of pending multipart fields values in WsControllerItem
+
+as admin, need to know how many users are currently logged in
 
 help text for LONG_TEXT type
 
@@ -131,6 +131,7 @@ rename 'perspective' into 'layout' ?
 Backlog:
 --------
 
+- big maps: https://kepler.gl/
 - Kibana logs rotating daily 
 - construire un graph schéma conceptuel
 	Un schéma conceptuel (ou carte conceptuelle) est une représentation structurée d'un ensemble de concepts reliés sémantiquement. Les concepts sont liés par des lignes fléchées auxquelles sont accolés un mot ou deux décrivant leur relation : « mène à », « prévient que », « favorise », etc.

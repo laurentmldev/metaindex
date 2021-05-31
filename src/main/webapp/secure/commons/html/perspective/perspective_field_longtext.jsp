@@ -44,6 +44,7 @@
 		successCallback(fieldName,newValue);
 		valueNode.value=newValue;
 		textArea.value=newValue;
+		valueNode.style.border="none";
 		footer_showAlert(SUCCESS, "<s:text name="Catalogs.field.UpdateDone" />");
 		popupWindow.hide();
 		
@@ -52,12 +53,15 @@
 		 footer_showAlert(WARNING, "<s:text name="Catalogs.field.couldNotUpdate" /> : "+msg); 
 	 } 			  				 
 	
- 	 
+ 	 let showWorkInProgress=function() {
+ 		valueNode.style.border="2px solid yellow"; 
+ 	 }
  	 // ok button
  	 let okButton = fieldNode.querySelector("._ok_button_");
  	 okButton.onclick=function(e) {
  		event.preventDefault();
  		event.stopPropagation();
+ 		showWorkInProgress()
  		onChangeCallback(itemId,termDesc.name,valueNode.value,localSuccessCallback,onUpdateErrorCallback);
  	 }
  	 
@@ -84,9 +88,8 @@
  		let basicCloseActionFunc=saveButton.onclick;
  		saveButton.onclick=function(e) {
  			basicCloseActionFunc(e);
- 					  				 
- 			 onChangeCallback(itemId,termDesc.name,textArea.value,localSuccessCallback,onUpdateErrorCallback);
- 			 
+ 			showWorkInProgress();  				 
+ 			onChangeCallback(itemId,termDesc.name,textArea.value,localSuccessCallback,onUpdateErrorCallback); 			 
  		}
  		
  		
