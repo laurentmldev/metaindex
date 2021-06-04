@@ -87,7 +87,6 @@ input[type="file"] {
 	text-align:left;
 	width:100%;	
 	overflow:auto;
-	background:#eee;
 }
 .mx-perspective-field-longtext:hover {
 	cursor:pointer;

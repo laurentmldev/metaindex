@@ -173,12 +173,12 @@ function createROFullTextPopup(textArea,itemId,termDesc,catalogDesc,
 
 <div style="display:none;width:100%;" class="mx-perspective-field" id="_commons_perspectives_field_readonly_template_longtext"  >
 	<div class="_title_ "></div>
-	<pre class="_value_ mx-perspective-field-longtext"  style="max-height:8vh;max-width:15vw;" ></pre>	               
+	<pre class="_value_ mx-perspective-field-longtext mx-perspective-field-longtext-bckg"  style="max-height:8vh;max-width:15vw;" ></pre>	               
 </div>
 
 <div style="display:none;width:100%;" class="mx-perspective-field" id="_commons_perspectives_field_editable_template_longtext"  >
 	<div class="_title_"></div>
-	<pre class="_value_ mx-perspective-field-longtext"  style="max-height:8vh;max-width:15vw;"
+	<pre class="_value_ mx-perspective-field-longtext mx-perspective-field-longtext-bckg"  style="max-height:8vh;max-width:15vw;"
 		title="<s:text name="Catalogs.field.FullEdit" />"
 	></pre>
 	
