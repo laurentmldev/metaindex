@@ -74,6 +74,11 @@ input[type="file"] {
 	
 }
 
+.mx-perspective-details-header {
+	border-radius: 2px;
+	margin-top: 0.4rem;	
+}
+
 .mx-perspective-field-img:hover {
 	cursor:pointer;
 }

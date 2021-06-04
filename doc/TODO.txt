@@ -7,10 +7,25 @@ when item is empty, show a msg with "you can add fields to this item by clicking
 as admin, need to know how many users are currently logged in
 
 
+CSV import: remove quotes when starting and ending a field value (and none in the middle)
 
+ 
 #64 type longtext pour étude du language / analyse de corpus
 
-	--> textarea with line number
+	when text field is too big (>998457 chars)
+		search_phase_execution_exception
+		all shards failed
+		
+		Wrapper@<host>/kibana/33912/bundles/core/core.entry.js:28:7854
+		_createSuperInternal@<host>/kibana/33912/bundles/core/core.entry.js:28:6991
+		HttpFetchError@<host>/kibana/33912/bundles/core/core.entry.js:28:9621
+		_callee3$@<host>/kibana/33912/bundles/core/core.entry.js:34:109213
+		l@<host>/kibana/33912/bundles/kbn-ui-shared-deps/kbn-ui-shared-deps.js:368:155323
+		s/o._invoke</<@<host>/kibana/33912/bundles/kbn-ui-shared-deps/kbn-ui-shared-deps.js:368:155077
+		_/</e[t]@<host>/kibana/33912/bundles/kbn-ui-shared-deps/kbn-ui-shared-deps.js:368:155680
+		fetch_asyncGeneratorStep@<host>/kibana/33912/bundles/core/core.entry.js:34:102354
+		_next@<host>/kibana/33912/bundles/core/core.entry.js:34:102694
+				
 	
 	when putting mapping _source excludes:
 		Suppressed: org.elasticsearch.client.ResponseException: method [PUT], host [http://localhost:9200], URI [/chaps/_mapping?master_timeout=30s&timeout=30s], status line [HTTP/1.1 400 Bad Request]
@@ -19,19 +34,19 @@ as admin, need to know how many users are currently logged in
 	update SQL def for renaming datatype RICH_TEXT into LONG_TEXT 
 	--> ALTER TABLE `catalog_terms` CHANGE `datatype` `datatype` ENUM('TINY_TEXT','LONG_TEXT','DATE','INTEGER','FLOAT','PAGE_URL','IMAGE_URL','AUDIO_URL','VIDEO_URL','GEO_POINT','LINK') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;	
 	
-	only load first part of long text. Must click to get full long text in specific viewer/editor.
 	help text for LONG_TEXT type
 	
-	upload from CSV as a text file (.txt or .doc or .odt)	
-	
-	download as CSV: export as separate text files 
-	
-	disc space stats not displayed when over-quota
+	upload from CSV as a text file (.txt or .doc or .odt) ?		
+	download as CSV: export as separate text files ?
+
+	count index size for disc space quota (see next topic) 	
 	
 
 # include ELK disck space for quota calculation?
 	GET /_cat/indices?v
 	GET /_cluster/stats summarizes
+
+disc space stats not displayed when over-quota
 
 rename download -> export ?
 
@@ -52,7 +67,7 @@ backup/restore contents of a given catalog (def+docs+data):
 
 # delete all items, not only max 10000 items (ELK limit)
 
-
+kibana fails to display very long texts
 
 add reconcile/reconstruct tools
 	- integrate Jupyter ?

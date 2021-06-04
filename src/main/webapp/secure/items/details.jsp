@@ -346,7 +346,7 @@
 
  <div id="MxGuiDetails._templates_.item_details" style="display:none" >
            
- 	 <nav class="navbar navbar-expand navbar-light topbar static-top" >
+ 	 <nav class="navbar navbar-expand navbar-light topbar static-top mx-perspective-details-header" >
 		
  			<button type="button" class="btn btn-default btn-sm editable-cancel alert alert-info"
  			style="margin:0.2em;"
