@@ -236,16 +236,20 @@
 		else { perspectiveDefinition=MxGuiDetails.getCurCatalogDescription().perspectives[this.value]; }
 		
 		if (_curEditMode=="edit" && mx_helpers_isCatalogWritable(MxGuiDetails.getCurCatalogDescription().userAccessRights)) { 
+			
 			MxGuiPerspective.buildEditablePerspective(fieldsInsertSpot,
 					MxGuiDetails.getCurCatalogDescription(),
 					perspectiveDefinition,
-					itemCard.descr.id,fieldsValuesMap,editSuccessCallback);
+					itemCard.descr.id,fieldsValuesMap,
+					editSuccessCallback,
+					ws_handlers_requestItemLongFieldValue);
 		} else {
 			
 			MxGuiPerspective.buildReadOnlyPerspective(fieldsInsertSpot,
 				MxGuiDetails.getCurCatalogDescription(),
 				perspectiveDefinition,
-				itemCard.descr.id,fieldsValuesMap);
+				itemCard.descr.id,fieldsValuesMap,
+				ws_handlers_requestItemLongFieldValue);
 			
 		}
 	}

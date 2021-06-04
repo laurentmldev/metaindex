@@ -82,7 +82,9 @@ public class WsControllerItem extends AMxWSController {
 					    				1, // nb docs
 					    				"_id:"+documentId,
 					    				preFilters,							    				
-					    				sortByFieldName).execute(new StreamHandler<DbSearchResult>(results));
+					    				sortByFieldName,
+					    				ICatalogTerm.MX_FIELD_VALUE_MAX_LENGTH)
+							.execute(new StreamHandler<DbSearchResult>(results));
 			
 			if (results.size()!=1 || results.get(0).getItems().size()!=1) { 
 				return null; 
@@ -97,6 +99,7 @@ public class WsControllerItem extends AMxWSController {
 		
 		
 	}
+	
     @MessageMapping("/get_catalog_items")
     @SubscribeMapping ( "/user/queue/items")
     public void handleItemsRequest(SimpMessageHeaderAccessor headerAccessor, 
@@ -159,7 +162,9 @@ public class WsControllerItem extends AMxWSController {
 							    				requestMsg.getSize(),
 							    				requestMsg.getQuery(),
 							    				preFilters,							    				
-							    				sortByFieldName).execute(new StreamHandler<DbSearchResult>(results));
+							    				sortByFieldName,
+							    				ICatalogTerm.MX_FIELD_VALUE_MAX_LENGTH)
+							.execute(new StreamHandler<DbSearchResult>(results));
     		
     		answer.setIsSuccess(true);
     		// seems to return null value when 0 hits
@@ -203,6 +208,101 @@ public class WsControllerItem extends AMxWSController {
     	}
     	
     }
+    
+
+    /**
+     * When field contents is too long, it is truncated by default.
+     * Full contents of long fields shall be requested explicitly using this WS message.
+     */
+    @MessageMapping("/get_item_field_full_value")
+    @SubscribeMapping ( "/user/queue/item_field_full_value")
+    public void handleItemFieldFullValueRequest(SimpMessageHeaderAccessor headerAccessor, 
+    					WsMsgGetItemFieldFullValue_request requestMsg) throws Exception {
+
+    	IUserProfileData user = getUserProfile(headerAccessor);	
+    	WsMsgGetItemFieldFullValue_answer answer = new WsMsgGetItemFieldFullValue_answer(requestMsg);
+    	
+    	// ensure user is currently in a catalog
+    	if (user.getCurrentCatalog()==null) { 
+    		answer.setRejectMessage(user.getText("Items.server.noCatalogCurrentlySelected"));
+    		
+    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/item_field_full_value", 
+    				getCompressedRawString(answer));
+    		return;
+    	}
+    	
+    	if (!this.userHasReadAccess(user,user.getCurrentCatalog())) { 
+    		answer.setRejectMessage(user.getText("globals.noAccessRights"));
+			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/item_field_full_value", answer);
+			return;         		
+    	}
+    	
+    	try {
+    		
+    		List<String> preFilters = new ArrayList<>();
+    		List< IPair<String,SORTING_ORDER> > sortByFieldName = new ArrayList<>();    		
+			List<DbSearchResult> results = new ArrayList<>();
+			
+			Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
+							.getLoadDocsFromDbStmt(user.getCurrentCatalog(),
+							    				0,/*from index 0*/ 
+							    				1,/*only one item as a result*/
+							    				"_id:"+requestMsg.getItemId(),
+							    				preFilters,							    				
+							    				sortByFieldName,
+							    				ICatalogTerm.MX_FIELD_VALUE_NO_MAX_LENGTH)
+							.execute(new StreamHandler<DbSearchResult>(results));
+			
+			answer.setIsSuccess(true);
+    		assert(results.size()==1);    		
+    		if(results.get(0).getItems().size()!=1) {
+    			answer.setRejectMessage(user.getText("Items.noSuchItemForLongField",
+    					requestMsg.getItemId(),
+    					requestMsg.getFieldName()));
+						    		
+    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/item_field_full_value", answer);
+    			return;
+    		}
+    		IDbItem item = results.get(0).getItems().get(0);
+    		if (!item.getData().containsKey(requestMsg.getFieldName())) {
+    			answer.setRejectMessage(user.getText("Items.noSuchFieldInItem",
+    													requestMsg.getFieldName(),
+    													requestMsg.getItemId()));    			
+    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/item_field_full_value", answer);
+    			return;
+    		}
+    		String longFieldValue=item.getData().get(requestMsg.getFieldName()).toString();
+    		answer.setFieldValue(longFieldValue);
+    		
+    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),
+					"/queue/item_long_field", 
+					getCompressedRawString(answer));
+    	} 
+    	
+    	catch (DataProcessException e) 
+    	{
+    		answer.setIsSuccess(false);
+    		//log.error("DataProcessException while retrieving items : "+e.getMessage());
+    		e.printStackTrace();
+    		answer.setRejectMessage(user.getText("Items.server.DbErrorOccured",e.getMessage()));
+    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/item_field_full_value", 
+					getCompressedRawString(answer));    
+    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.get_catalog_items.db_error"));
+    	}
+    	
+    	catch (Exception e) 
+    	{
+    		answer.setIsSuccess(false);
+    		log.error("Exception while retrieving items : "+e.getMessage());
+    		e.printStackTrace();    		
+    		answer.setRejectMessage(user.getText("Items.server.ErrorOccured"));
+    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/item_field_full_value", 
+					getCompressedRawString(answer));
+    		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.get_catalog_items.server_error"));
+    	}
+    	
+    }
+    
     
     @MessageMapping("/update_field_value")
     @SubscribeMapping ( "/user/queue/field_value")
@@ -433,7 +533,9 @@ public class WsControllerItem extends AMxWSController {
 									size,
 				    				requestMsg.getQuery(),
 				    				preFilters,
-				    				new ArrayList< IPair<String,SORTING_ORDER> >()).execute(new StreamHandler<DbSearchResult>(results));
+				    				new ArrayList< IPair<String,SORTING_ORDER> >(),
+				    				ICatalogTerm.MX_FIELD_VALUE_MAX_LENGTH)
+							.execute(new StreamHandler<DbSearchResult>(results));
     		
     			// only one query --> only one result
     			assert(results.size()==1);

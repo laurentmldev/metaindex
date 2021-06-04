@@ -2,12 +2,13 @@
 
 v2.1.4:
 -------
-
+when item is empty, show a msg with "you can add fields to this item by clicking on button up there"  
+ 
 as admin, need to know how many users are currently logged in
 
-help text for LONG_TEXT type
 
-#64 type longtext (rich?) pour étude du language / analyse de corpus
+
+#64 type longtext pour étude du language / analyse de corpus
 
 	--> textarea with line number
 	
@@ -18,7 +19,14 @@ help text for LONG_TEXT type
 	update SQL def for renaming datatype RICH_TEXT into LONG_TEXT 
 	--> ALTER TABLE `catalog_terms` CHANGE `datatype` `datatype` ENUM('TINY_TEXT','LONG_TEXT','DATE','INTEGER','FLOAT','PAGE_URL','IMAGE_URL','AUDIO_URL','VIDEO_URL','GEO_POINT','LINK') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;	
 	
+	only load first part of long text. Must click to get full long text in specific viewer/editor.
+	help text for LONG_TEXT type
 	
+	upload from CSV as a text file (.txt or .doc or .odt)	
+	
+	download as CSV: export as separate text files 
+	
+	disc space stats not displayed when over-quota
 	
 
 # include ELK disck space for quota calculation?
@@ -173,6 +181,10 @@ Backlog:
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+
+v2.1.4
+
+#64 type long_text pour étude du language / analyse de corpus
 
 v2.1.3
 

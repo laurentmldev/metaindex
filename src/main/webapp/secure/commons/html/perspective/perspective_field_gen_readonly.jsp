@@ -7,7 +7,9 @@
 <!--------------- Generic Customizable Field -------------->		  
  <script type="text/javascript" >
 
- function _commons_perspective_build_readonly_field(catalogDesc,tabIdx,sectionIdx,fieldIdx,fieldContainerNode,fieldVisuDesc,termDesc,itemId,fieldValue) {
+ function _commons_perspective_build_readonly_field(catalogDesc,tabIdx,sectionIdx,fieldIdx,
+		 							fieldContainerNode,fieldVisuDesc,termDesc,itemId,fieldValue,
+		 							getLongFieldFullValueCallback/*for long_text fields only*/) {
  	 if (fieldValue==null) { fieldValue=""; }
  	if (termDesc.datatype=="IMAGE_URL") {
  		_commons_perspective_build_readonly_field_image_url(catalogDesc,tabIdx,sectionIdx,fieldIdx,fieldContainerNode,fieldVisuDesc,termDesc,fieldValue);
@@ -21,7 +23,7 @@
  		_commons_perspective_build_readonly_field_reference(catalogDesc,tabIdx,sectionIdx,fieldIdx,fieldContainerNode,fieldVisuDesc,termDesc,itemId,fieldValue);
  	}
  	else if (termDesc.datatype=="LONG_TEXT") {
- 		_commons_perspective_build_readonly_field_longtext(catalogDesc,tabIdx,sectionIdx,fieldIdx,fieldContainerNode,fieldVisuDesc,termDesc,fieldValue);
+ 		_commons_perspective_build_readonly_field_longtext(itemId,catalogDesc,tabIdx,sectionIdx,fieldIdx,fieldContainerNode,fieldVisuDesc,termDesc,fieldValue,getLongFieldFullValueCallback);
  	}
  	else {
  		_commons_perspective_build_readonly_field_tinytext(catalogDesc,tabIdx,sectionIdx,fieldIdx,fieldContainerNode,fieldVisuDesc,termDesc,fieldValue);

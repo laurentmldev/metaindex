@@ -266,10 +266,14 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			myself._stompClient.subscribe('/user/queue/download_items_graphgroupby_response',myself._handleDownloadItemsGraphGroupByAnswer);
 			myself._stompClient.subscribe('/user/queue/created_item',myself._handleCreatedItemResponseMsg);
 			myself._stompClient.subscribe('/user/queue/upload_userdata_files_response',myself._handleUploadFilesAnswer);
-			myself._stompClient.subscribe('/user/queue/upload_userdata_file_contents_progress',myself._handleUploadFilesContentsAnswer);			
+			myself._stompClient.subscribe('/user/queue/upload_userdata_file_contents_progress',myself._handleUploadFilesContentsAnswer);
+			
 			
 			// fields
+			// "set field value" answer
 			myself._stompClient.subscribe('/user/queue/field_value',myself._handleUpdateFieldResponseMsg);
+			// "get field full value" answer (ie not truncated if field is very long)
+			myself._stompClient.subscribe('/user/queue/item_long_field',myself._handleItemFieldFullValueMsg);
 			
 			// misc
 			myself._stompClient.subscribe('/user/queue/gui_messaging',myself._handleGuiMsgFromServer);
@@ -1631,6 +1635,71 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	}
 
 
+//------- Retrieve Item field full value (useful when field is vry long and truncated) --------
+	
+	// contains error/success callback functions of each field update request
+	this.requestItemFieldFullValueCallbacks=[];	
+	
+	// dataObj {
+	//   itemId="abc123"
+	//   fieldName="blabla"
+	//   successCallback (func)(itemId,fieldName,fieldValue)
+	//   errorCallback (func)(msg)
+	// }
+	this.requestItemFieldFullValue = function(dataObj) {
+		if (dataObj.itemId==null) { 
+			console.log("ERROR: requestItemFieldFullValue: missing parameter 'itemId'");
+			return;			
+		}
+		if (dataObj.fieldName==null) { 
+			console.log("ERROR: requestItemFieldFullValue: missing parameter 'fieldName'");
+			return;
+		}
+
+		if (myself._callback_CatalogItems_debug==true) {
+			console.log("MxAPI Requesting [Item Full Field Value]");
+		}
+		
+		var curRequestId=myself.requestItemFieldFullValueCallbacks.length;
+		myself.requestItemFieldFullValueCallbacks.push(dataObj);
+		
+		let requestObj = {"requestId" : curRequestId,
+					"itemId":dataObj.itemId, 
+					"fieldName":dataObj.fieldName
+					};
+		//console.log(requestObj);
+		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
+		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/get_item_field_full_value", {}, 
+						JSON.stringify(requestObj));
+	}	
+	
+	this._handleItemFieldFullValueMsg= function (mxItemFieldFullValueMsg) {
+				
+    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
+		// Items are GZIP and Base64 encoded
+		let base64Msg = mxItemFieldFullValueMsg.body;
+		let bytesGzip = window.atob(base64Msg);
+		let inflatedMsg = pako.ungzip(bytesGzip,{ to: 'string' }); 
+			
+		var parsedMsg = JSON.parse(inflatedMsg);
+		
+		let requestId=parsedMsg.requestId;
+		let requestObj=myself.requestItemFieldFullValueCallbacks[requestId];
+		if (requestObj==null) { return; }
+		if (parsedMsg.isSuccess==true) {
+			requestObj.successCallback(parsedMsg.fieldValue); 
+		}
+		else {
+			let errorMsg=parsedMsg.rejectMessage;
+			// ensure error message is not empty
+			// (otherwise can lead to some mis behaviour in user app (ex: x-editable) )
+			if (errorMsg==undefined) { errorMsg="get field full value refused by server, sorry." }
+			requestObj.errorCallback(errorMsg); 
+		}			
+	}
+
+
+	
 //------- Update Field Value --------
 	// contains error/success callback functions of each field update request
 	this.requestFieldValueUpdateCallbacks=[];

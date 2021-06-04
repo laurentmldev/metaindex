@@ -199,6 +199,18 @@ function retrieveItemsSuccess(itemsAnswerMsg) {
 	 
 }
 
+
+// requesting full value of a long field (truncated by default otherwise)
+function ws_handlers_requestItemLongFieldValue(itemId,fieldName,handleFullValueCallback) {
+	
+	let errorCallback=function(errormsg) { footer_showAlert(ERROR, msg.rejectMessage); }			 
+	 MxApi.requestItemFieldFullValue({
+		 						"itemId":itemId,
+		 						"fieldName":fieldName,
+		 						"successCallback":handleFullValueCallback,
+		 						"errorCallback":errorCallback});
+} 
+
 // items search requested explicitly by user
 function ws_handlers_requestItemsSearch(query,selectedFiltersNames,sortByFieldName,reversedSortOrder) {
 	

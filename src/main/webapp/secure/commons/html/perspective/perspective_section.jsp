@@ -12,7 +12,8 @@
 var _deleteSectionFuncsById={};
 
 function _commons_perspective_build_section(catalogDesc,perspectiveData,tabIdx,sectionIdx,sectionContainerNode,editMode,
-		 																			itemId,fieldsValueMap,editSuccessCallback) {
+		 												itemId,fieldsValueMap,editSuccessCallback,
+		 												getLongFieldFullValueCallback/*for long_text fields only*/) {
 		
 		 let sectionDefinition=perspectiveData.tabs[tabIdx].sections[sectionIdx];
 		 	
@@ -193,7 +194,8 @@ function _commons_perspective_build_section(catalogDesc,perspectiveData,tabIdx,s
  			}
  			_commons_perspective_build_field(catalogDesc,perspectiveData,tabIdx,sectionIdx,fieldIdx,bodyNode,curFieldTermDesc,editMode,
  																											itemId,curFieldValue,
- 																											editSuccessCallback);
+ 																											editSuccessCallback,
+ 																											getLongFieldFullValueCallback);
  			 		
 	 	 }	
 		 if (listOfMissingTermsInCatalog!="") {

@@ -78,6 +78,24 @@ input[type="file"] {
 	cursor:pointer;
 }
 
+.mx-perspective-field-longtext {
+	text-align:left;
+	width:100%;	
+	overflow:auto;
+	background:#eee;
+}
+.mx-perspective-field-longtext:hover {
+	cursor:pointer;
+	
+}
+
+.mx-perspective-field-longtext-pleasewait {
+	text-align:center;	
+	color:#67a;
+	font-weight:bold;
+}
+
+
 .mx-details-container {
   display: grid;
   grid-gap: 15px; 

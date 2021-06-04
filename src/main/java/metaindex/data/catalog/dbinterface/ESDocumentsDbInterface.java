@@ -55,17 +55,19 @@ public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem>
 	public ESReadStreamStmt<DbSearchResult> getLoadDocsFromDbStmt(ICatalog c, Integer fromIdx, Integer size,
 														String query,
 														List<String> filter, 
-														List< IPair<String,SORTING_ORDER> > sort) 
+														List< IPair<String,SORTING_ORDER> > sort,
+														Integer strFieldsMaxLength) 
 					throws DataProcessException {
-		return new GetItemsFromDbStmt(c,fromIdx,size,query,filter,sort,getDataConnector());
+		return new GetItemsFromDbStmt(c,fromIdx,size,query,filter,sort,strFieldsMaxLength,getDataConnector());
 	}
 	
 	public ESReadStreamStmt<DbSearchResult> getLoadDocsStreamFromDbStmt(ICatalog c, Long fromIdx, Long size,
 			String query,
 			List<String> filter, 
-			List< IPair<String,SORTING_ORDER> > sort) 
+			List< IPair<String,SORTING_ORDER> > sort,
+			Integer strFieldsMaxLength) 
 	throws DataProcessException {
-	return new GetItemsStreamFromDbStmt(c,fromIdx,size,query,filter,sort,getDataConnector());
+	return new GetItemsStreamFromDbStmt(c,fromIdx,size,query,filter,sort,strFieldsMaxLength,getDataConnector());
 	}
 	
 	// -- update document field value

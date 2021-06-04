@@ -12,6 +12,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +60,29 @@ class GetItemsFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 	private ESDocumentsRequestBuilder _requestsBuilder;
 	private String _query="";
 	
+	// -1 = no limit
+	private Integer _strFieldsMaxLength=0;
+	
+	public static void filterData(Map<String,Object> data, Integer strMaxLength) {
+		// handle elements not created by metaindex, missing lastmodif and userId special fields
+		if (!data.containsKey(ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP)) {
+			data.put(ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP, ICatalogTerm.MX_TERM_EPOCH_TIMESTAMP);
+		}
+		if (!data.containsKey(ICatalogTerm.MX_TERM_LASTMODIF_USERID)) {
+			data.put(ICatalogTerm.MX_TERM_LASTMODIF_USERID, 0);
+		}
+		// truncate too long fields to longuest authorized length
+		// dedicated viewing shall be used for very long values.
+		if (strMaxLength>0) {
+			for (String k : data.keySet()) {
+				Object o = data.get(k);
+				if (o instanceof String && ((String)o).length()>strMaxLength) {
+					String truncatedStr=((String)o).substring(0,strMaxLength);
+					data.put(k,truncatedStr+" ...");
+				}
+			}
+		}		
+	}
 	
 	/**
 	 * Retrieve list of items from ElasticSearch
@@ -75,10 +99,12 @@ class GetItemsFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 			String query,
 			List<String> prefilters, 
 			List< IPair<String,SORTING_ORDER> > sort, 
+			Integer strFieldsMaxLength,
 			ElasticSearchConnector ds) throws DataProcessException { 
 		super(ds);
 		_catalog=c;
 		_query=query;
+		_strFieldsMaxLength=strFieldsMaxLength;
 		
 		// Applying proper raw field for terms requiring it
 		for (IPair<String,SORTING_ORDER> curSort : sort) {
@@ -127,19 +153,12 @@ class GetItemsFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 				result.setFromIdx(new Long(_requestsBuilder.getFromIdx()));
 				SearchHit[] hits = searchResponse.getHits().getHits();
 				
+				
+				
 				for (SearchHit hit : hits) {
 					Map<String,Object> data = hit.getSourceAsMap();
-					// handle elements not created by metaindex, missing lastmodif and userId special fields
-					if (!data.containsKey(ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP)) {
-						data.put(ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP, ICatalogTerm.MX_TERM_EPOCH_TIMESTAMP);
-					}
-					if (!data.containsKey(ICatalogTerm.MX_TERM_LASTMODIF_USERID)) {
-						data.put(ICatalogTerm.MX_TERM_LASTMODIF_USERID, 0);
-					}
-					// TODO: truncate LONG_TEXT fields to longuest authorized length
-					// (full contents to be retrieved over dedicated request from user)
-					
-					
+					filterData(data,this._strFieldsMaxLength);
+										
 					IDbItem item = new MxDbSearchItem(
 												hit.getId(), data,
 												_catalog.getItemNameFields(),

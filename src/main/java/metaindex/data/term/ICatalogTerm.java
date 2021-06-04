@@ -20,6 +20,11 @@ import toolbox.utils.IIdentifiable;
 
 public interface ICatalogTerm extends IIdentifiable<Integer>{
 	
+	// used to truncate fields value when too long
+	// if so, full field can be retrieved through a dedicated api/viewer
+	// This value is used in GetItemsFromDbStmt when building items contents
+	public static final Integer MX_FIELD_VALUE_MAX_LENGTH = 5000;
+	public static final Integer MX_FIELD_VALUE_NO_MAX_LENGTH = -1;
 	
 	// /!\ this list shall be coherent with : 
 	// - SQL field 'catalog_terms.datatype' enum definition.

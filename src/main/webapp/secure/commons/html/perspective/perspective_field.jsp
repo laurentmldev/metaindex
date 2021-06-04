@@ -20,7 +20,8 @@ var _deleteFieldFuncsById={};
  function _commons_perspective_build_field(catalogDesc,perspectiveData,tabIdx,sectionIdx,fieldIdx,fieldContainerNode,termDesc,
 		 											editMode,
 		 											itemId,fieldValue, /* only for edit and for read-only modes*/
-		 											successCallback /* only for edit mode */) {
+		 											successCallback /* only for edit mode */,
+		 											getLongFieldFullValueCallback/*for long_text fields only*/) {
 	 
 	 let fieldVisuDesc=perspectiveData.tabs[tabIdx].sections[sectionIdx].fields[fieldIdx];
 	 if (editMode==MxGuiPerspective.MODE_CUSTOMIZE) {
@@ -30,11 +31,11 @@ var _deleteFieldFuncsById={};
 		 if (fieldValue==null) { console.log("perspective_field : missing field value"); return ; }
 		 if (successCallback==null) { console.log("perspective_field : missing successCallback value"); return ; }
 		 return _commons_perspective_build_editable_field(catalogDesc,tabIdx,sectionIdx,fieldIdx,fieldContainerNode,fieldVisuDesc,termDesc,
-				 					itemId,fieldValue,successCallback);
+				 					itemId,fieldValue,successCallback,getLongFieldFullValueCallback);
 	 }
 	else if (editMode==MxGuiPerspective.MODE_READ_ONLY) {
 		return _commons_perspective_build_readonly_field(catalogDesc,tabIdx,sectionIdx,fieldIdx,fieldContainerNode,fieldVisuDesc,termDesc,
-									itemId,fieldValue);
+									itemId,fieldValue,getLongFieldFullValueCallback);
 	 }
  }
 

@@ -7,11 +7,86 @@
 <!--------------- LONG_TEXT -------------->		  
  <script type="text/javascript" >
 
+function createEditableFullTextPopup(textArea,itemId,termDesc,catalogDesc,
+		getFullFieldContentsCallback,
+		onChangeCallback,successCallback,onUpdateErrorCallback,showWorkInProgress) {
+	
+	let popupWindow = MxGuiPopups.newBlankPopup("<s:text name="Catalogs.field.Editing" /> '"
+			+mx_helpers_getTermName(termDesc, catalogDesc)+"'",
+				"<s:text name="Catalogs.field.Save" />","80vw","100%",
+							"#aaa",null,"90vh"); 		
+	 MxGuiDetailsRightBar.addContents(popupWindow);
+	 
+	// body
+		let popupBody=popupWindow.querySelector(".modal-body");
+		textArea.classList.add("mx-perspective-textarea");
+		textArea.disabled=true;
+		textArea.value="<s:text name="Items.pleaseWaitWhileLoadingFullContents" />";
+		textArea.style["width"]="90%";
+		textArea.style["height"]="90%";
+		textArea.style["font-size"]="1.2rem";
+		textArea.onkeypress=function(event) { event.stopPropagation(); }
+		textArea.onkeydown=function(event) {
+	 		if (event.key=='ArrowRight') { event.stopPropagation(); }
+			else if (event.key=='ArrowLeft') { event.stopPropagation(); }
+			else if (event.key=='Enter') { event.stopPropagation(); }
+	 	 }
+		popupBody.appendChild(textArea);
+		
+		let saveButton = popupWindow.getCloseButton();
+		let basicCloseActionFunc=saveButton.onclick;
+		saveButton.onclick=function(e) {
+			basicCloseActionFunc(e);
+			showWorkInProgress();  				 
+			onChangeCallback(itemId,termDesc.name,textArea.value,successCallback,onUpdateErrorCallback); 			 
+		}
+	
+		// loading full contents for this field
+		let setFullValue=function(fullValue) {
+			textArea.value=fullValue;
+			textArea.disabled=false;			
+		}				 		
+		popupWindow.show();
+		
+		// retrieve the full value of the field
+		// to populate our text area
+		getFullFieldContentsCallback(itemId,termDesc.name,setFullValue);	
+}
 
+
+function createROFullTextPopup(textArea,itemId,termDesc,catalogDesc,
+		getFullFieldContentsCallback) {
+	
+	let popupWindow = MxGuiPopups.newBlankPopup("<s:text name="Catalogs.field" /> '"
+			+mx_helpers_getTermName(termDesc, catalogDesc)+"'",
+				"<s:text name="Items.close" />","80vw","100%",
+							"#aaa",null,"90vh"); 		
+	 MxGuiDetailsRightBar.addContents(popupWindow);
+	 
+	// body
+		let popupBody=popupWindow.querySelector(".modal-body");
+		textArea.innerHTML="<div class='mx-perspective-field-longtext-pleasewait'><s:text name="Items.pleaseWaitWhileLoadingFullContents" /></div>";
+		textArea.style["width"]="90%";
+		textArea.style["height"]="90%";
+		//textArea.style["font-size"]="0rem";
+		textArea.classList.add("mx-perspective-field-longtext");
+		popupBody.appendChild(textArea);
+		
+		// loading full contents for this field
+		let setFullValue=function(fullValue) {
+			textArea.innerHTML=fullValue;
+		}				 		
+		popupWindow.show();
+		
+		// retrieve the full value of the field
+		// to populate our text area
+		getFullFieldContentsCallback(itemId,termDesc.name,setFullValue);	
+}
+	
 	
  function _commons_perspective_buildEditableLongTextTerm(catalogDesc,tabIdx,sectionIdx,fieldIdx,
 		 fieldContainerNode,fieldVisuDesc,termDesc,
-		 itemId,fieldValue,successCallback,onChangeCallback) {
+		 itemId,fieldValue,successCallback,onChangeCallback,getFullFieldContentsCallback) {
  	
  	 let fieldNode=document.getElementById("_commons_perspectives_field_editable_template_longtext").cloneNode(true);
  	 fieldNode.id="";
@@ -25,24 +100,18 @@
  	 // value
  	 let valueNode = fieldNode.querySelector("._value_");
  	 valueNode.title=termDesc.name; 	 
- 	 valueNode.value=fieldValue;	 
- 	 valueNode.onkeypress=function(e) {
- 		event.stopPropagation(); 
+ 	 valueNode.innerHTML=fieldValue;	
+ 	 if (fieldValue.length==0) {
+ 		valueNode.innerHTML="<s:text name='Items.clickToEditLongField' />";
  	 }
- 	 valueNode.onkeydown=function(event) {
- 		event.stopPropagation();  		
- 	 }
- 	 // input for popup fullpage editing
- 	 let popupWindow = MxGuiPopups.newBlankPopup("<s:text name="Catalogs.field.Editing" /> '"+mx_helpers_getTermName(termDesc, catalogDesc)+"'",
- 				"<s:text name="Catalogs.field.Save" />","80vw","100%",
- 							"#aaa",null,"90vh"); 		
- 	 MxGuiDetailsRightBar.addContents(popupWindow);
+ 	 
+ 	 // input for popup fullpage editing 	 
  	 let textArea=document.createElement("textarea");
 
  	 // edition callbacks
 	 let localSuccessCallback=function(fieldName,newValue) {
 		successCallback(fieldName,newValue);
-		valueNode.value=newValue;
+		valueNode.innerHTML=newValue;
 		textArea.value=newValue;
 		valueNode.style.border="none";
 		footer_showAlert(SUCCESS, "<s:text name="Catalogs.field.UpdateDone" />");
@@ -56,44 +125,13 @@
  	 let showWorkInProgress=function() {
  		valueNode.style.border="2px solid yellow"; 
  	 }
- 	 // ok button
- 	 let okButton = fieldNode.querySelector("._ok_button_");
- 	 okButton.onclick=function(e) {
- 		event.preventDefault();
- 		event.stopPropagation();
- 		showWorkInProgress()
- 		onChangeCallback(itemId,termDesc.name,valueNode.value,localSuccessCallback,onUpdateErrorCallback);
- 	 }
- 	 
- 	// popup button
- 	 let popupButton = fieldNode.querySelector("._popup_button_");
- 	 popupButton.onclick=function(e) {
- 		
- 		
- 		// body
- 		let popupBody=popupWindow.querySelector(".modal-body");
- 		textArea.classList.add("mx-perspective-textarea");
- 		textArea.value=fieldValue;
- 		textArea.style["width"]="90%";
- 		textArea.style["height"]="90%";
- 		textArea.style["font-size"]="1.2rem";
- 		textArea.onkeypress=function(event) { event.stopPropagation(); }
- 		textArea.onkeydown=function(event) {
- 	 		if (event.key=='ArrowRight') { event.stopPropagation(); }
- 			else if (event.key=='ArrowLeft') { event.stopPropagation(); }
- 			else if (event.key=='Enter') { event.stopPropagation(); }
- 	 	 }
- 		popupBody.appendChild(textArea);
- 		let saveButton = popupWindow.getCloseButton();
- 		let basicCloseActionFunc=saveButton.onclick;
- 		saveButton.onclick=function(e) {
- 			basicCloseActionFunc(e);
- 			showWorkInProgress();  				 
- 			onChangeCallback(itemId,termDesc.name,textArea.value,localSuccessCallback,onUpdateErrorCallback); 			 
- 		}
- 		
- 		
- 		popupWindow.show();
+ 	  
+ 	// open popup to get full contents 	 
+ 	valueNode.onclick=function(e) {
+ 		 // open popup
+ 		createEditableFullTextPopup(textArea,itemId,termDesc,catalogDesc,
+					getFullFieldContentsCallback,
+					onChangeCallback,localSuccessCallback,onUpdateErrorCallback,showWorkInProgress)
  	 }
  	
  	 
@@ -102,7 +140,8 @@
  
  
 	
- function _commons_perspective_build_readonly_field_longtext(catalogDesc,tabIdx,sectionIdx,fieldIdx,fieldContainerNode,fieldVisuDesc,termDesc,fieldValue) {
+ function _commons_perspective_build_readonly_field_longtext(itemId,catalogDesc,tabIdx,sectionIdx,fieldIdx,fieldContainerNode,
+		 fieldVisuDesc,termDesc,fieldValue,getFullFieldContentsCallback) {
  		 
  	 let fieldNode=document.getElementById("_commons_perspectives_field_readonly_template_longtext").cloneNode(true);
  	 fieldNode.id="";
@@ -113,10 +152,17 @@
  	 if (fieldVisuDesc.showTitle==true) { title.innerHTML=mx_helpers_getTermName(termDesc, catalogDesc)+": "; }
  	 else { title.style.display='none'; }
  	 
+ 	// input for popup fullpage editing 	 
+ 	 let textArea=document.createElement("pre");
+ 	
  	 // value
  	 let valueNode = fieldNode.querySelector("._value_");
  	 valueNode.title=termDesc.name; 	 
- 	 valueNode.innerHTML=fieldValue;	 
+ 	 valueNode.innerHTML=fieldValue;	  	 
+	 valueNode.onclick=function(e) {
+		 // open popup
+		createROFullTextPopup(textArea,itemId,termDesc,catalogDesc, getFullFieldContentsCallback);
+	 }
  	
  	 fieldContainerNode.appendChild(fieldNode);
   }
@@ -126,22 +172,14 @@
 
 
 <div style="display:none;width:100%;" class="mx-perspective-field" id="_commons_perspectives_field_readonly_template_longtext"  >
-	<div class="_title_"></div>
-	<pre style="text-align:left;width:100%;max-height:10vh;overflow:auto;background:#eee;" class="_value_"></pre>	               
+	<div class="_title_ "></div>
+	<pre class="_value_ mx-perspective-field-longtext"  style="max-height:8vh;max-width:15vw;" ></pre>	               
 </div>
 
 <div style="display:none;width:100%;" class="mx-perspective-field" id="_commons_perspectives_field_editable_template_longtext"  >
 	<div class="_title_"></div>
-	<textarea rows="5" style="" class="_value_ mx-perspective-textarea"></textarea>
-			
-	<button type="button" class="_popup_button_ btn btn-default btn-sm alert alert-info" 
-				style="margin:0.2rem;padding:0.2rem;width:2rem;height:2rem;"
-				title="<s:text name="Catalogs.field.FullEdit" />" >
-				<i class="fa fa-align-left fa-sm"></i>
-	</button>
-	<button type="button" class="_ok_button_ btn btn-default btn-sm alert alert-success" 
-				style="margin:0.2rem;padding:0.2rem;width:4rem;height:2rem;" >
-				<s:text name="Catalogs.field.Save" />
-	</button>
-    	               
+	<pre class="_value_ mx-perspective-field-longtext"  style="max-height:8vh;max-width:15vw;"
+		title="<s:text name="Catalogs.field.FullEdit" />"
+	></pre>
+	
 </div>

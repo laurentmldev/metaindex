@@ -35,7 +35,8 @@ var _curPerspectiveTabs=[];
  // editMode: MxGuiPerspective.MODE_CUSTOMIZE|MxGuiPerspective.MODE_EDIT_CONTENTS|MxGuiPerspective.MODE_READ_ONLY
  function _commons_perspective_build(insertSpot,catalogDesc,perspectiveData,editMode,
 		 										// only used in EDIT / RO modes
-		 										itemId,fieldsValueMap,editSuccessCallback) {
+		 										itemId,fieldsValueMap,editSuccessCallback,
+		 										getLongFieldFullValueCallback/*for long_text fields only*/) {
 	 
 	 	let curPerspectiveId="perspective_"+perspectiveData.id;
 		let perspectiveNode = document.getElementById("_details_perspective_template_").cloneNode(true);
@@ -139,7 +140,9 @@ var _curPerspectiveTabs=[];
 	 		// some refresh to be improved, don't know why
 	 		// pb occures when deleting a tab, closing catalog and opening it again
 	 		if (curTabDef==null) { continue; }	 		
-	 		let tabNode = _commons_perspective_build_tab(catalogDesc,perspectiveData,tabidx,tabsContainerNode,editMode,itemId,fieldsValueMap,editSuccessCallback);
+	 		let tabNode = _commons_perspective_build_tab(catalogDesc,perspectiveData,tabidx,tabsContainerNode,editMode,itemId,
+	 				fieldsValueMap,editSuccessCallback,
+	 				getLongFieldFullValueCallback);
 	 		 
 	 		if (MxGuiPerspective.getCurrentTabIndex()==tabidx) {
 	 			tabNodeToActivate=tabNode;
@@ -163,19 +166,25 @@ var _curPerspectiveTabs=[];
  }
 
 MxGuiPerspective.buildCustomizablePerspective=function(insertSpot,catalogDesc,perspectiveData) {
-	let perspectiveNode = _commons_perspective_build(insertSpot,catalogDesc,perspectiveData,MxGuiPerspective.MODE_CUSTOMIZE,catalogDesc.id);
+	let perspectiveNode = _commons_perspective_build(insertSpot,catalogDesc,perspectiveData,MxGuiPerspective.MODE_CUSTOMIZE,
+			catalogDesc.id);
 	// need to refresh confirmation and xeditable forms once they are defined
 	details_postBuildContents();
 	return perspectiveNode;
 }
-MxGuiPerspective.buildEditablePerspective=function(insertSpot,catalogDesc,perspectiveData,itemId,fieldsValueMap,editSuccessCallback) {
-	let perspectiveNode = _commons_perspective_build(insertSpot,catalogDesc,perspectiveData,MxGuiPerspective.MODE_EDIT_CONTENTS,itemId,fieldsValueMap,editSuccessCallback);
+MxGuiPerspective.buildEditablePerspective=function(insertSpot,catalogDesc,perspectiveData,itemId,fieldsValueMap,
+		editSuccessCallback,getLongFieldFullValueCallback/*for long_text fields only*/) {
+	let perspectiveNode = _commons_perspective_build(insertSpot,catalogDesc,perspectiveData,MxGuiPerspective.MODE_EDIT_CONTENTS,
+			itemId,fieldsValueMap,editSuccessCallback,
+			getLongFieldFullValueCallback/*for long_text fields only*/);
 	// need to refresh confirmation and xeditable forms once they are defined
 	details_postBuildContents();
 	return perspectiveNode;
 }
-MxGuiPerspective.buildReadOnlyPerspective=function(insertSpot,catalogDesc,perspectiveData,itemId,fieldsValueMap) {
-	let perspectiveNode = _commons_perspective_build(insertSpot,catalogDesc,perspectiveData,MxGuiPerspective.MODE_READ_ONLY,itemId,fieldsValueMap);
+MxGuiPerspective.buildReadOnlyPerspective=function(insertSpot,catalogDesc,perspectiveData,
+			itemId,fieldsValueMap,getLongFieldFullValueCallback /*for long_text fields only*/) {
+	let perspectiveNode = _commons_perspective_build(insertSpot,catalogDesc,perspectiveData,MxGuiPerspective.MODE_READ_ONLY,
+			itemId,fieldsValueMap,null/*no editCallback in RO mode*/,getLongFieldFullValueCallback);
 	// need to refresh confirmation and xeditable forms once they are defined
 	details_postBuildContents();
 	return perspectiveNode;

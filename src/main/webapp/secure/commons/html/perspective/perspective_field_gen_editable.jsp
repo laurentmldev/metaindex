@@ -9,7 +9,8 @@
 
  function _commons_perspective_buildEditableTerm(catalogDesc,tabIdx,sectionIdx,fieldIdx,
 		 	fieldContainerNode,fieldVisuDesc,termDesc,
-			itemId,curTermValue,successCallback,onChangeCallback) {		 		
+			itemId,curTermValue,successCallback,onChangeCallback,
+			getFullFieldContentsCallback /*for long_text fields only */) {		 		
  	
 	 if (termDesc.datatype=="LINK") { 		
 			return _commons_perspective_buildEditableReferenceTerm(catalogDesc,tabIdx,sectionIdx,fieldIdx,
@@ -20,7 +21,8 @@
 	 else if (termDesc.datatype=="LONG_TEXT") { 		
 			return _commons_perspective_buildEditableLongTextTerm(catalogDesc,tabIdx,sectionIdx,fieldIdx,
 				 	fieldContainerNode,fieldVisuDesc,termDesc,
-					itemId,curTermValue,successCallback,onChangeCallback);
+					itemId,curTermValue,successCallback,onChangeCallback,
+					getFullFieldContentsCallback);
 	 }
 	
 	 // list or multi choice
@@ -70,7 +72,8 @@
 
 
  function _commons_perspective_build_editable_field(catalogDesc,tabIdx,sectionIdx,fieldIdx,fieldContainerNode,fieldVisuDesc,termDesc,
- 					itemId,fieldValue,successCallback) {
+ 					itemId,fieldValue,successCallback,
+ 					getFullFieldContentsCallback /*for long_text fields only */) {
  	 
  	 let fieldNode=document.getElementById("_commons_perspectives_field_editable_template_").cloneNode(true);
  	 fieldNode.id="";
@@ -89,7 +92,10 @@
  	  
  	 let newEditableFieldNode = _commons_perspective_buildEditableTerm(catalogDesc,tabIdx,sectionIdx,fieldIdx,
  			 	fieldContainerNode,fieldVisuDesc,termDesc,
-				itemId,fieldValue,successCallback,onChangeCallback);		
+				itemId,fieldValue,
+				successCallback,
+				onChangeCallback,
+				getFullFieldContentsCallback);		
  	 newEditableFieldNode.classList.add("mx-perspective-field"); 
  	 newEditableFieldNode.onclick=function(event) { event.stopPropagation(); }
  	 fieldNode.appendChild(newEditableFieldNode);

@@ -13,7 +13,9 @@ var _deleteTabFuncsById={};
 var _curTabIndex=0;
 
  // itemId= document id in items, or perspective title in catalog customization
- function _commons_perspective_build_tab(catalogDesc,perspectiveData,tabIdx,tabsContainerNode,editMode,itemId,fieldsValueMap,editSuccessCallback) {
+ function _commons_perspective_build_tab(catalogDesc,perspectiveData,tabIdx,tabsContainerNode,editMode,itemId,fieldsValueMap,
+		 	editSuccessCallback,
+		 	getLongFieldFullValueCallback/*for long_text fields only*/) {
 			 
 	 let tabDefinition=perspectiveData.tabs[tabIdx];
 	 if (tabDefinition==null) {
@@ -124,7 +126,9 @@ var _curTabIndex=0;
  		 // some refresh to be improved, don't know why
  		 // pb occures when deleting a section
  		 if (curSectionDef==null) { continue; }
- 		_commons_perspective_build_section(catalogDesc,perspectiveData,tabIdx,sectionIdx,tabContentsNode,editMode,itemId,fieldsValueMap,editSuccessCallback);
+ 		_commons_perspective_build_section(catalogDesc,perspectiveData,tabIdx,sectionIdx,tabContentsNode,editMode,itemId,
+ 						fieldsValueMap,editSuccessCallback,
+ 						getLongFieldFullValueCallback/*for long_text fields only*/);
  	 }
 	 
 	 // add-new-section trailing card

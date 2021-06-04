@@ -119,7 +119,8 @@ public class ESDownloadProcess extends AProcessingTask   {
 					    				this.getTargetNbData(),
 					    				this.getQuery(),
 					    				this.getPreFilters(),							    				
-					    				this.getSortByFieldName()).execute(new StreamForwarder());
+					    				this.getSortByFieldName(),
+					    				-1 /*no length limit on fields values*/).execute(new StreamForwarder());
 			
 			
     		

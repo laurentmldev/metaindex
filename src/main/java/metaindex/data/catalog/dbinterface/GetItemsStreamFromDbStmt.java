@@ -68,6 +68,9 @@ class GetItemsStreamFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 	private Long _fromIdx=-1L;
 	private Long _maxNbDocs=-1L;
 	
+	// -1 = no limit
+	private Integer _strFieldsMaxLength=0;
+	
 	private String _query="";
 	private List<String> _prefilters = new ArrayList<>();
 	private List< IPair<String,SORTING_ORDER> > _sort = new ArrayList<>();
@@ -89,6 +92,7 @@ class GetItemsStreamFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 			String query,
 			List<String> prefilters, 
 			List< IPair<String,SORTING_ORDER> > sort, 
+			Integer strFieldsMaxLength,
 			ElasticSearchConnector ds) throws DataProcessException { 
 		super(ds);
 		_catalog=c;
@@ -97,6 +101,7 @@ class GetItemsStreamFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 		_query=query;
 		_prefilters=prefilters;
 		_sort=sort;
+		_strFieldsMaxLength=strFieldsMaxLength;
 		
 		// Applying proper raw field for terms requiring it
 		for (IPair<String,SORTING_ORDER> curSort : _sort) {
@@ -132,13 +137,8 @@ class GetItemsStreamFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 		    	if (_curDocIdx<_fromIdx) { continue; }
 		    	
 				Map<String,Object> data = hit.getSourceAsMap();
-				// handle elements not created by metaindex, missing lastmodif and userId special fields
-				if (!data.containsKey(ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP)) {
-					data.put(ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP, ICatalogTerm.MX_TERM_EPOCH_TIMESTAMP);
-				}
-				if (!data.containsKey(ICatalogTerm.MX_TERM_LASTMODIF_USERID)) {
-					data.put(ICatalogTerm.MX_TERM_LASTMODIF_USERID, 0);
-				}
+				GetItemsFromDbStmt.filterData(data,_strFieldsMaxLength);
+				
 				IDbItem item = new MxDbSearchItem(
 											hit.getId(), data,
 											_catalog.getItemNameFields(),
