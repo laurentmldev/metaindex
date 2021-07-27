@@ -28,6 +28,7 @@ public class WsMsgCsvFileUploadContents_request {
 	private Integer processingTaskId = 0;
 	private Integer _clientFileId = 0;
 	private String _compressedCsvLineStr = "";
+	private Integer _msgNb = 0;
 	
 	/// when line is itself too big to be sent over WebSockets
 	/// it must be split into several chunks
@@ -82,6 +83,14 @@ public class WsMsgCsvFileUploadContents_request {
 
 	public void setCurChunkNb(Integer curChunkNb) {
 		this._curChunkNb = curChunkNb;
+	}
+
+	public Integer getMsgNb() {
+		return _msgNb;
+	}
+
+	public void setMsgNb(Integer msgNb) {
+		this._msgNb = msgNb;
 	}
 
 	

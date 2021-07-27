@@ -56,9 +56,13 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
 	
 	private Log log = LogFactory.getLog(WsControllerItemsCsvFileUpload.class);
 	
-	// Map<UserId, Map<processingTaskId,compressedCsvLineChunks[]> >
-	private static Map<Integer, Map<Integer,String[]> > _pendingCsvBigLinesUpload = 
-										new java.util.concurrent.ConcurrentHashMap<>();
+	// map[UserId][processingTaskId][msgId]=chunksList[]
+	private static Map<Integer, Map<Integer, Map<Integer,String[]> > > _pendingMessagesMapUser = 
+										new java.util.concurrent.ConcurrentHashMap<>();  
+	
+	// map[UserId][processingTaskId]=next MsgId to decode
+	private static Map<Integer, Map<Integer, Integer> > _nextMsgIdToDecodeByUser = 
+										new java.util.concurrent.ConcurrentHashMap<>();  
 	
 	@Autowired
 	public WsControllerItemsCsvFileUpload(SimpMessageSendingOperations messageSender) {
@@ -75,7 +79,7 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
 	    	IUserProfileData user = getUserProfile(headerAccessor);
 	    	ICatalog c = user.getCurrentCatalog();
 	    	
-	    	log.error("### expecting "+requestMsg.getTotalNbEntries()+" lines");
+	    	//log.error("### expecting "+requestMsg.getTotalNbEntries()+" lines");
     		ESBulkProcess procTask = Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
     						.getNewItemsBulkProcessor(user, user.getCurrentCatalog(), 
  													user.getText("Items.serverside.createFromCsvTask"), 
@@ -259,6 +263,7 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
     		
     	
     		// set-up the parser and start the processing task
+    		log.error("### adding proc task "+procTask.getId());
     		user.addProcessingTask(procTask);
     		csvParser.setCsvColsTypes(csvParsingType);
     		csvParser.setChosenFieldsMapping(requestMsg.getChosenFieldsMapping());
@@ -296,12 +301,67 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
 		JSONArray parsedStr = new JSONArray(jsonArrayStr);
  		List<Object> csvLinesObj = parsedStr.toList();
  		for (Object o : csvLinesObj) {
- 			rst.add(o.toString());
+ 			rst.add(o.toString()); 			
  		}
  		return rst;
 	}
 
 	
+	private void processReceivedMessages(Integer userId, Integer processingTaskId, 
+											ACsvParser<IDbItem> csvParser,ESBulkProcess procTask) 
+						throws IOException, ParseException, DataProcessException {
+		
+		
+		
+		// retrieve data structures
+		Map<Integer,Integer> nextMsgToDecodeByProcId = _nextMsgIdToDecodeByUser.get(userId);
+    	Integer nextMsgIdToDecoce = nextMsgToDecodeByProcId.get(processingTaskId);
+    	if (nextMsgIdToDecoce==null) {
+    		nextMsgToDecodeByProcId.put(processingTaskId,1);
+    		nextMsgIdToDecoce=1;
+    	}
+    	
+    	Map<Integer,Map<Integer,String[]>> pendingMessagesMapProcId = _pendingMessagesMapUser.get(userId);
+    	Map<Integer,String[]> pendingMessagesById = 
+				pendingMessagesMapProcId.get(processingTaskId);
+    	
+    	
+    	List<Integer> processedMsgIds = new ArrayList<>();
+    	//log.error("###	- decoding phase from msg "+nextMsgIdToDecoce);
+    	// process all messages fully received, in proper order
+		while (pendingMessagesById.get(nextMsgIdToDecoce)!=null) {
+			
+			//log.error("###		- decoding msg "+nextMsgIdToDecoce);
+			
+			String[] msgChunks = pendingMessagesById.get(nextMsgIdToDecoce);
+			
+			// ensure all chunks could be received			
+			List<String> csvRows;
+			String fullCompressedBase64Str="";
+			for (String curChunk:msgChunks) { 
+				if (curChunk==null) { return; }
+				fullCompressedBase64Str+=curChunk; 
+			}
+			
+			csvRows=decodeCompressedCsvLineStr(fullCompressedBase64Str);
+			List<IDbItem> parsedItemsToIndex = csvParser.parseAll(csvRows);
+			
+			procTask.postDataToIndexOrUpdate(parsedItemsToIndex);
+			
+			//log.error("###	- msg "+nextMsgIdToDecoce+" --> "+parsedItemsToIndex.size());
+		
+			processedMsgIds.add(nextMsgIdToDecoce);
+			nextMsgIdToDecoce++;
+			nextMsgToDecodeByProcId.put(processingTaskId,nextMsgIdToDecoce);
+			
+		}		
+		
+		// removing already processed msgs from the list
+		for (Integer msgId : processedMsgIds) {
+			pendingMessagesById.remove(msgId);
+		}
+	
+	}
     /**
      * Send the processingTaskId back to _client when a new task is created
      * @param headerAccessor
@@ -313,58 +373,40 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
     										WsMsgCsvFileUploadContents_request requestMsg) {
     	
     	
-		
-    	
     	Integer taskId = requestMsg.getProcessingTaskId();
-    	
+    	    	
 	    try {
 	    	
 	    	IUserProfileData user = getUserProfile(headerAccessor);
-	    
-	    	// initialize pending requests table for current user
-	    	if (!_pendingCsvBigLinesUpload.containsKey(user.getId())) {
-	    		_pendingCsvBigLinesUpload.put(user.getId(),new java.util.concurrent.ConcurrentHashMap<>());
-	    	}
-	    	Map<Integer,String[]> curUserPendingCsvLines = _pendingCsvBigLinesUpload.get(user.getId());
-	    	
-	    	log.error("### receiving chunk "+requestMsg.getCurChunkNb()+"/"+requestMsg.getTotalNbChunks());
-		
-			// starting a new one
-			if (!curUserPendingCsvLines.containsKey(taskId)) {
-				curUserPendingCsvLines.put(requestMsg.getProcessingTaskId(),new String[requestMsg.getTotalNbChunks()]);
-			}	
-			String[] chunksArray = curUserPendingCsvLines.get(requestMsg.getProcessingTaskId());
-			chunksArray[requestMsg.getCurChunkNb()-1]=requestMsg.getCompressedCsvLineStr();
-			
-			// if all chunks received, decode, decompress and process it
-			List<String> csvRows;
-			if (requestMsg.getCurChunkNb().equals(requestMsg.getTotalNbChunks())) {
-				String fullCompressedBase64Str="";
-				for (String curChunk:chunksArray) { fullCompressedBase64Str+=curChunk; }
-				csvRows=decodeCompressedCsvLineStr(fullCompressedBase64Str);
-				requestMsg.setCsvLines(csvRows);
-			}
-			
-			// wait for next chunk
-			else {
-				log.error("### waiting for next chunk");
-				return;
-			}
-			
 	    	ESBulkProcess procTask;
 	    	
     		IProcessingTask pt = user.getProcessingTask(taskId);
     		if (pt==null) {
-    			log.error("Processing Task '"+requestMsg.getProcessingTaskId()
-    					+"' does not match any running procesing task for user '"+user.getName()+"', request ignored.");
-				return;
+    			// ignore unknown processing task (it may have been aborted due to a parsing error in previous contents typically)
+    			return;
     		}
+    		
+    		
 			if (pt instanceof ESBulkProcess) { procTask=(ESBulkProcess)pt;}
 			else {
 				log.error("Processing Task '"+pt.getId()+"' is not from proper type, request ignored.");
 				return;
 			}
-			
+						
+			// ensure previous data is finished to be processed before starting next one
+    		// (preserve order of data sent)
+    		procTask.lock();
+    		
+	    	// initialize pending requests table for current user
+	    	if (!_pendingMessagesMapUser.containsKey(user.getId())) {
+	    		_pendingMessagesMapUser.put(user.getId(),new java.util.concurrent.ConcurrentHashMap<>());
+	    		_nextMsgIdToDecodeByUser.put(user.getId(),new java.util.concurrent.ConcurrentHashMap<>());
+	    		
+	    	}
+	    	Map<Integer,Map<Integer,String[]>> pendingMessagesMapProcId = _pendingMessagesMapUser.get(user.getId());
+	    	
+	    	//Thread.sleep(500);
+    		    		
     		if (procTask.isAllDataReceived()) {
     			log.error("Processing task '"+procTask.getName()+"' already finalized, unable to add more items to process.");
     			return;
@@ -380,18 +422,34 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
     			return;
     		}
     		
-    		// ensure previous data is finished to be processed before starting next one
-    		// (preserve order of data sent)
-    		procTask.lock();
-    		List<IDbItem> parsedItemsToIndex = csvParser.parseAll(requestMsg.getCsvLines());  
-    		procTask.postDataToIndexOrUpdate(parsedItemsToIndex);
-    		
-    		procTask.unlock();    		
+			// starting a new one
+			if (!pendingMessagesMapProcId.containsKey(taskId)) {
+				pendingMessagesMapProcId.put(requestMsg.getProcessingTaskId(),new java.util.concurrent.ConcurrentHashMap<>());
+			}	
+			
+			Map<Integer,String[]> pendingMessagesById = 
+								pendingMessagesMapProcId.get(requestMsg.getProcessingTaskId());
+			
+			
+			if (pendingMessagesById.get(requestMsg.getMsgNb())==null) {
+				pendingMessagesById.put(requestMsg.getMsgNb(),new String[requestMsg.getTotalNbChunks()]);
+			}
+			String[] curMsgChunksList= pendingMessagesById.get(requestMsg.getMsgNb());
+			curMsgChunksList[requestMsg.getCurChunkNb()-1]=requestMsg.getCompressedCsvLineStr();
+			//log.error("### adding chunk "+requestMsg.getCurChunkNb()+": "+requestMsg.getCompressedCsvLineStr());
+			//procTask.unlock();
+			//procTask.lock();
+			
+			processReceivedMessages(user.getId(), requestMsg.getProcessingTaskId(),csvParser,procTask);
+			procTask.unlock();
 
-	    } catch (ParseException e) 
+	    } 
+	    catch (ParseException e) 
 		{
+	    	
 	    	try {
-				IUserProfileData user = getUserProfile(headerAccessor);
+	    		log.error("Aborting CSV upload operation due to parsing errors in user's input data");
+	    		IUserProfileData user = getUserProfile(headerAccessor);
 				IProcessingTask pt = user.getProcessingTask(taskId);
 				pt.abort();
 				String msg = user.getText("Items.serverside.uploadItems.parseFailed", 
@@ -409,17 +467,20 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
     				headerAccessor.getUser().getName(),
     				"/queue/upload_filter_file_contents_progress", 
     				msg);
-		}   
-	    catch (IOException|DataProcessException | InterruptedException e) 
+		}  
+	    catch (Throwable e) 
 		{
-	    	try {
+	    	log.error("Aborting CSV upload operation due to server error");
+    		e.printStackTrace();
+    		
+	    	try {	    		
 				IUserProfileData user = getUserProfile(headerAccessor);
 				IProcessingTask pt = user.getProcessingTask(taskId);
 				pt.abort();
 				user.sendGuiErrorMessage(user.getText("Items.serverside.bulkprocess.failed", pt.getName()+" : "+e.getMessage()));
 				
 			} catch (DataProcessException e1) {
-				e.printStackTrace();
+				e1.printStackTrace();
 			}
 		} 
 	    

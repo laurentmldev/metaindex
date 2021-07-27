@@ -74,7 +74,7 @@ public class ESBulkProcess extends AProcessingTask   {
 	    public void afterBulk(long executionId, BulkRequest request,
 	            BulkResponse response) {
 	    		    	
-	    	log.error("	### bulk response");
+	    	
 	    		List<String> errors = new ArrayList<String>();	    		
 	    		for (BulkItemResponse bulkItemResponse : response) {
 	    			_bulkItemIndex++;
@@ -89,7 +89,7 @@ public class ESBulkProcess extends AProcessingTask   {
 	    
 	    	
 	    	_process.addProcessedNbData(new Long(response.getItems().length));
-	    	
+	    	//log.error("	### bulk response "+_process.getProcessedNbData()+"/"+_process.getTargetNbData());
 	    	getActiveUser().sendGuiProgressMessage(
 	    			_process.getId(),
 	    			getActiveUser().getText("Items.serverside.bulkprocess.progress", _process.getName()),
@@ -182,7 +182,7 @@ public class ESBulkProcess extends AProcessingTask   {
 	}
 	
 	public void postDataToIndexOrUpdate(List<IDbItem> d) throws DataProcessException {
-		log.error("### posting "+d.size()+" items");
+		//log.error("### posting "+d.size()+" items");
 		if (!isRunning()) {
 			throw new DataProcessException("Processing not ready, unable to post data before");
 		}
@@ -202,8 +202,8 @@ public class ESBulkProcess extends AProcessingTask   {
 			
 		}
 		
-		postDataToIndex(itemsToIndex);
-		postDataToUpdate(itemsToUpdate);
+		if (itemsToIndex.size()>0) { postDataToIndex(itemsToIndex); }
+		if (itemsToUpdate.size()>0) { postDataToUpdate(itemsToUpdate); }
 		
 	}
 	
@@ -217,8 +217,11 @@ public class ESBulkProcess extends AProcessingTask   {
 			IndexRequest request = new IndexRequest().source(itemToIndex.getData());
 			_processor.add(request);
 		}
+		
+		//log.error("	### posting "+d.size()+" elements to index");
 		_nbIndexedData+=d.size();
 		this.addReceivedNbData(new Long(d.size()));
+						
 	}
 	
 	/** Update document or create it with requested id if it does not exist */
@@ -238,11 +241,14 @@ public class ESBulkProcess extends AProcessingTask   {
 			UpdateRequest request = new UpdateRequest().id(docId).doc(itemToUpdate.getData());
 			IndexRequest insertIfNotExistRequest = new IndexRequest().id(docId).source(itemToUpdate.getData());
 			request.upsert(insertIfNotExistRequest);
-			log.error("	### sending");
-			_processor.add(request);
+			
+			_processor.add(request);			
+			
 		}
+		//log.error("	### posting "+d.size()+" elements to update");
 		if (errors.size()>0) { sendErrorMessageToUser("Some data could not be updated",errors); }
 		this.addReceivedNbData(new Long(d.size()));
+				
 	}
 	public void postDataToDelete(List<IDbItem> d) throws DataProcessException {
 		if (!isRunning()) {
@@ -279,7 +285,7 @@ public class ESBulkProcess extends AProcessingTask   {
 			}
 		}
 
-		log.error("### stopping");
+		//log.error("### stopping");
 		stop();
 
 	}
@@ -294,38 +300,50 @@ public class ESBulkProcess extends AProcessingTask   {
 	public void stop() {
 		
 		try {
+			log.error("### Stop1");
 			_stoppingProcessingLock.acquire();
+			log.error("### Stop2");
 			if (this.isTerminated() && !this.isRunning()) {
+				log.error("### Stop3");
 				_stoppingProcessingLock.release();
 				return; 
 			}			
+			log.error("### Stop4");
 			Boolean success = _processor.awaitClose(30L, TimeUnit.SECONDS);
+			log.error("### Stop5");
 			_processor.close();
+			log.error("### Stop6");
 			ESWriteStmt.waitUntilEsIndexRefreshed(_catalog.getName(),_datasource);
+			log.error("### Stop7");
 			getActiveUser().getCurrentCatalog().loadStatsFromDb();
-			
+			log.error("### Stop8");
 			if (!success) {
 				log.error("Unable to await end of ES bulk processor "+getName());
 				getActiveUser().sendGuiErrorMessage(getActiveUser().getText("Items.serverside.bulkprocess.failed", getName()));
 			} else {
+				log.error("### Stop9");
 				// notify active user that its processing finished
 				if (!this.isTerminated()) {
+					log.error("### Stop10");
 					getActiveUser().sendGuiErrorMessage(getActiveUser().getText("Items.serverside.bulkprocess.failedAfterNItems", 
 							getName(),
 							this.getProcessedNbData().toString(),
 							this.getTargetNbData().toString()));
 				} else {
+					log.error("### Stop11");
 					getActiveUser().sendGuiSuccessMessage(getActiveUser().getText("Items.serverside.bulkprocess.success", 
 							getName(),
 							this.getProcessedNbData().toString()));
 				}
 												
 			}
-			
+			log.error("### Stop12");
 			// notify all users that some contents changed
 			getActiveUser().notifyCatalogContentsChanged(CATALOG_MODIF_TYPE.DOCS_LIST, this.getProcessedNbData());	
 			_interruptFlag=true;
+			log.error("### Stop13");
 			_stoppingProcessingLock.release();
+			log.error("### Stop14");
 			joinRunnerThread();
 
 		} catch (InterruptedException | DataProcessException e) {
@@ -334,12 +352,15 @@ public class ESBulkProcess extends AProcessingTask   {
 			_stoppingProcessingLock.release();
 			
 		}
+		
+		log.error("### Stop15");
 		getActiveUser().sendGuiProgressMessage(
     			getId(),
     			getActiveUser().getText("Items.serverside.bulkprocess.progress", getName()),
     			AProcessingTask.pourcentage(getProcessedNbData(), getTargetNbData()), false /*processing ended*/);
-		
+		log.error("### Stop16");
 		getActiveUser().removeProccessingTask(this.getId());
+		log.error("### Stop17");
 	}
 	@Override
 	public void abort() {

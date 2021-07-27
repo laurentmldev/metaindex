@@ -26,6 +26,9 @@ public interface ICatalogTerm extends IIdentifiable<Integer>{
 	public static final Integer MX_FIELD_VALUE_MAX_LENGTH = 5000;
 	public static final Integer MX_FIELD_VALUE_NO_MAX_LENGTH = -1;
 	
+	// if changed, update also value in perspective°field_longtext.jsp and error text 'Items.longtext.tooLong'
+	public static final Integer MX_FIELD_LONGTEXT_MAX_NBCHARS = 990000;
+	
 	// /!\ this list shall be coherent with : 
 	// - SQL field 'catalog_terms.datatype' enum definition.
 	// - webapp/secure/commons/js/mx_helpers.jsp

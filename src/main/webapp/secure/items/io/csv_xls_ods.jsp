@@ -9,6 +9,7 @@
 
 
 
+
 //showCsvPrevisu : build a line of the 'CSV-columns table'
 function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeFunc,isExcelFile) {
 	

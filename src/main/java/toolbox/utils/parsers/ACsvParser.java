@@ -23,8 +23,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import metaindex.app.control.websockets.items.WsControllerItemsCsvFileUpload;
-
 
 /**
  * Convert CSV lines into decoded fields. Need to be overridden in order
@@ -37,7 +35,7 @@ public abstract class ACsvParser<TTo> implements IFieldsListParser<String,TTo> {
 	private Log log = LogFactory.getLog(ACsvParser.class);
 	
 	private static final String MX_SEP_ESCAPE_STR="__MX_ESCAPED_SEPARATOR__";
-	public static final String MX_CR_ESCAPE_STR="__MX_CR__";
+	public static final String MX_CR_ESCAPE_STR="__CR__";
 	private static final String MX_CLEAR_CELL_STR="__empty__";
 	private String _csvSeparator=";";
 	private String _commentsMarker="#";
@@ -88,8 +86,10 @@ public abstract class ACsvParser<TTo> implements IFieldsListParser<String,TTo> {
 				parseErrors.add("l."+_nbLinesParsed+" : "+e.getMessage());
 			}
 		}
-
-		if (parseErrors.size()>0) { throw new ParseException(parseErrors); }
+		
+		if (parseErrors.size()>0) { 
+			throw new ParseException(parseErrors); 
+		}
 		return result;
 	
 	}	

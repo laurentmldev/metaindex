@@ -7,6 +7,10 @@
 <!--------------- LONG_TEXT -------------->		  
  <script type="text/javascript" >
 
+
+ // if changed, update also error message 'Items.longtext.tooLong'
+ var MX_LONG_TEXT_MAX_NB_CHARS=990000;
+ 
 function createEditableFullTextPopup(textArea,itemId,termDesc,catalogDesc,
 		getFullFieldContentsCallback,
 		onChangeCallback,successCallback,onUpdateErrorCallback,showWorkInProgress) {
@@ -36,6 +40,10 @@ function createEditableFullTextPopup(textArea,itemId,termDesc,catalogDesc,
 		let saveButton = popupWindow.getCloseButton();
 		let basicCloseActionFunc=saveButton.onclick;
 		saveButton.onclick=function(e) {
+			if (textArea.value.length>MX_LONG_TEXT_MAX_NB_CHARS) {
+				footer_showAlert(ERROR, "<s:text name="Items.longtext.tooLong" />");
+				return;
+			}
 			basicCloseActionFunc(e);
 			showWorkInProgress();  				 
 			onChangeCallback(itemId,termDesc.name,textArea.value,successCallback,onUpdateErrorCallback); 			 

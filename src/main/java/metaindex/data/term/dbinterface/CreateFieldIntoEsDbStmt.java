@@ -130,7 +130,6 @@ class CreateFieldIntoEsDbStmt extends ESWriteStmt<ICatalogTerm>   {
             
         } builder.endObject();
         
-        log.error("##### "+builder.toString());
 	}
 	@Override
 	public Boolean execute() throws DataProcessException {

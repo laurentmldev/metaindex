@@ -47,7 +47,7 @@ public abstract class AProcessingTask implements IProcessingTask {
 	private static final Integer PROCESSING_TASK_ID_START=1000;
 	
 	synchronized public static Integer getNewProcessingTaskId() {
-		return PROCESSING_TASK_ID_START+processingTasksCounter++;
+		return PROCESSING_TASK_ID_START+processingTasksCounter++;		
 	}
 	
 	private RunnerThread _runnerThread; 

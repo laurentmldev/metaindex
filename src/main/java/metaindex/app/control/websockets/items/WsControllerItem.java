@@ -388,6 +388,12 @@ public class WsControllerItem extends AMxWSController {
     		// use proper object mapping
     		// in case some datatype needs a JSON object rather than a basic not a string
     		String termValueStr = requestMsg.getFieldValue().trim(); 
+    		if (termValueStr.length()>ICatalogTerm.MX_FIELD_LONGTEXT_MAX_NBCHARS) {
+    			answer.setRejectMessage(user.getText("Items.longtext.tooLong"));
+    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/field_value", answer);
+    			return;
+    		}
+    		
     		Object termValue=termValueStr;
     		ICatalogTerm termDef = c.getTerms().get(requestMsg.getFieldName());
     		if (termDef==null) {

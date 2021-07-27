@@ -1,36 +1,52 @@
 
 
+
 v2.2.0:
 -------
 
-Pa$s0rd -> manque le W
+DTS API
+teic/oxgarage integration
+TXM integration ?
 
-DTS API + teic/oxgarage integration
+
+v2.1.4:
+-------
+
+#132 support big files (100K+) CSV upload with minimal impacting perfo for other users. 
+
+welcome page: 
+	- add link to sources in github
+	- collaborate: not on first line
+	- add expected config (Firefox vXXX) 
+
+when importing CSV
+	- unable to add a new field from mapping popup once a first import has been done
+	- choosing a different field is not applied
+	- unchecking a field is not applied
+
+clicking to a first catalog, then another one then enter leads user to the first catalog
+	
+more realistic/consistent "empty catalog contents" picture (Excel file screenshot)
+
+accept when dropping files over catalog overview page
+
+
+as an admin: want to known how many persons are currently logged in: REST API ?
+
+generate group-by chapeliers: 
+	- progress bar blocks in the middle while file is actually properly generated
+	- select several links
+
+
+catalog acquire lock: automatically unlock after X hours ?
+
 
 when item is empty, show a msg with "you can add fields to this item by clicking on button up there"  
  
 as admin, need to know how many users are currently logged in
 
-
-CSV import: remove quotes when starting and ending a field value (and none in the middle)
-
  
 #64 type longtext pour étude du language / analyse de corpus
-
-	when text field is too big (>998457 chars)
-		search_phase_execution_exception
-		all shards failed
-		
-		Wrapper@<host>/kibana/33912/bundles/core/core.entry.js:28:7854
-		_createSuperInternal@<host>/kibana/33912/bundles/core/core.entry.js:28:6991
-		HttpFetchError@<host>/kibana/33912/bundles/core/core.entry.js:28:9621
-		_callee3$@<host>/kibana/33912/bundles/core/core.entry.js:34:109213
-		l@<host>/kibana/33912/bundles/kbn-ui-shared-deps/kbn-ui-shared-deps.js:368:155323
-		s/o._invoke</<@<host>/kibana/33912/bundles/kbn-ui-shared-deps/kbn-ui-shared-deps.js:368:155077
-		_/</e[t]@<host>/kibana/33912/bundles/kbn-ui-shared-deps/kbn-ui-shared-deps.js:368:155680
-		fetch_asyncGeneratorStep@<host>/kibana/33912/bundles/core/core.entry.js:34:102354
-		_next@<host>/kibana/33912/bundles/core/core.entry.js:34:102694
-				
 	
 	when putting mapping _source excludes:
 		Suppressed: org.elasticsearch.client.ResponseException: method [PUT], host [http://localhost:9200], URI [/chaps/_mapping?master_timeout=30s&timeout=30s], status line [HTTP/1.1 400 Bad Request]
@@ -39,11 +55,7 @@ CSV import: remove quotes when starting and ending a field value (and none in th
 	update SQL def for renaming datatype RICH_TEXT into LONG_TEXT 
 	--> ALTER TABLE `catalog_terms` CHANGE `datatype` `datatype` ENUM('TINY_TEXT','LONG_TEXT','DATE','INTEGER','FLOAT','PAGE_URL','IMAGE_URL','AUDIO_URL','VIDEO_URL','GEO_POINT','LINK') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;	
 	
-	x help text for LONG_TEXT type
 	
-	upload from CSV as a text file (.txt or .doc or .odt) ?		
-	download as CSV: export as separate text files ?
-
 	count index size for disc space quota (see next topic) 
 	
 	complementary stats for long_text:
@@ -206,9 +218,31 @@ Backlog:
 Done:
 -----
 
+
 v2.1.4
 
 #64 type long_text pour étude du language / analyse de corpus
+	- added limitation to 990000 chars (998457 chars seems to be the max for Kibana) --> 
+		search_phase_execution_exception
+		all shards failed
+		
+		Wrapper@<host>/kibana/33912/bundles/core/core.entry.js:28:7854
+		_createSuperInternal@<host>/kibana/33912/bundles/core/core.entry.js:28:6991
+		HttpFetchError@<host>/kibana/33912/bundles/core/core.entry.js:28:9621
+		_callee3$@<host>/kibana/33912/bundles/core/core.entry.js:34:109213
+		l@<host>/kibana/33912/bundles/kbn-ui-shared-deps/kbn-ui-shared-deps.js:368:155323
+		s/o._invoke</<@<host>/kibana/33912/bundles/kbn-ui-shared-deps/kbn-ui-shared-deps.js:368:155077
+		_/</e[t]@<host>/kibana/33912/bundles/kbn-ui-shared-deps/kbn-ui-shared-deps.js:368:155680
+		fetch_asyncGeneratorStep@<host>/kibana/33912/bundles/core/core.entry.js:34:102354
+		_next@<host>/kibana/33912/bundles/core/core.entry.js:34:102694
+				
+		
+	- upload from CSV / download as CSV
+	
+	- help text for LONG_TEXT type
+			
+Pa$s0rd -> manque le W
+CSV import: remove quotes when starting and ending a field value
 
 v2.1.3
 

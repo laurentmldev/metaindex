@@ -23,7 +23,7 @@ function stripStr(str) { return str.replace(/^\s*/,"").replace(/\s*$/,""); }
 // shouldn't be too big otherwise risk of WS deconnexion because max. size limit reached.
 var MX_WS_FIELD_VALUE_MAX_CHARS = 5000;
 var MX_WS_UPLOAD_FILE_MAX_LINES = 500;
-var MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE = 3000;//50000 tmp lml;
+var MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE = 100000000;
 var MX_WS_UPLOAD_FILE_SEND_PERIOD_MS = 30;
 
 var MX_DOWNSTREAM_MSG="down";
@@ -35,6 +35,8 @@ if (window.Prototype) {
 	console.log("[Metaindex] Warning: Current page seems to be using Prototype.js which defines a wrong redefinition of Array 'toJSON' function. Disabling it.");
 	delete Array.prototype.toJSON;
 }
+
+
 
 
 // Object MetaindexJSAPI
@@ -767,7 +769,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		let nbItemsToBeCreated=0;
 		
 		// instantiate a new FileReader object to count total amount of items 
-		// t be created
+		// to be created
    
     	let curLineNb=0;
     	
@@ -837,6 +839,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	    //console.log("fileHandle="+fileHandle);
 	    //dumpStructure(mx_csv_files_to_be_uploaded);
 	    let serverProcessingTaskId=parsedMsg.processingTaskId;
+	    //console.log("starting file upload, proc task id = "+serverProcessingTaskId)
 	    
 	    if (csvRows==null) { return; }
 	    //console.log("received file upload answer : file = "+fileHandle.value);
@@ -849,26 +852,66 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			myself._callback_UploadCsv(parsedMsg); 
 		}
     	
-    	let totalNbValidLines=csvRows.length-1;
+    	let totalNbValidLines=mx_csv_files_to_be_uploaded[fileIndex].totalNbEntries;
     	let nbLinesSent=0;
-    	// count total number of valid lines (without spaces nor comments)
-    	for (var idx=1;idx<csvRows.length;idx++) {
-    		let curLine=csvRows[idx];
-    		if (curLine.length==0 || curLine[0]=='#') {
-    			totalNbValidLines--;
+    	let msgNb=0;
+
+
+    	
+    	
+    	var myWorker = new Worker('public/commons/js/metaindex_csvupload.wrk.js');
+    	myWorker.onmessage=function(e) {
+    		if (e.data.cmd=="SEND") {
+    			myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
+    			myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/upload_filter_file_contents", {},
+    					JSON.stringify(e.data.jsonData));	
     		}
+    		else if (e.data.cmd=="END") {
+    			if (finishCallback!=null) { finishCallback(); }
+    			console.log("### all data sent!");
+    		}
+    		
     	}
-    	while (nbLinesSent<totalNbValidLines) {    		
+    	console.log("posting wrkr msg");
+    	myWorker.postMessage({cmd:"START",params:{
+    									"uri":myself._url+myself.MX_WS_ENDPOINT,
+						    			"serverProcessingTaskId":serverProcessingTaskId,						    			
+						    			"csvRows":csvRows,
+						    			"totalNbValidLines":totalNbValidLines,
+						    			//"finishCallback":finishCallback,
+						    			"fileMaxLinesForUpload":MX_WS_UPLOAD_FILE_MAX_LINES,
+						    			//"callback_NetworkEvent":myself._callback_NetworkEvent,
+						    			//"stompClient":myself._stompClient,
+						    			"mxWsPrefix":myself.MX_WS_APP_PREFIX
+						    			
+    										}
+    	});
+    	
+    	////////////
+    	/*
+    	let sendCsvContentsFunc=function() {
+    		
+    		if (nbLinesSent==totalNbValidLines) {
+    			if (finishCallback!=null) { finishCallback(); }
+    			return;
+    		}
+    		
     		let curLine=csvRows[curLineNb];
     		
     		// ignore first line (header)
-    		if (curLineNb==0||curLine.length==0||curLine[0]=='#') { curLineNb++; continue; }
+    		if (curLineNb==0||curLine.length==0||curLine[0]=='#') { 
+    			curLineNb++; 
+    			sendCsvContentsFunc();
+    			return;
+    		}
     		nbLinesSent++;
     		
     		curLinesWsBuffer.push(curLine);
+    		//console.log("### "+curLineNb+":"+curLine+" /// "+nbLinesSent+"/"+totalNbValidLines);
     		
     		if (curLineNb % MX_WS_UPLOAD_FILE_MAX_LINES==0 || nbLinesSent==totalNbValidLines) {
-    			//console.log("### sending "+curLinesWsBuffer.length+" lines ("+(nbLinesSent)+" / "+(totalNbValidLines)+")");
+    			msgNb++;
+    			//console.log("	### sending msg "+msgNb+" with "+curLinesWsBuffer.length+" lines ("+(nbLinesSent)+" / "+(totalNbValidLines)+")");
     			//console.log(curLinesWsBuffer);
     			
     			let strJsonArrayCsvLines=JSON.stringify(curLinesWsBuffer);
@@ -878,33 +921,49 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
     			let remainingDataToSend=base64BufferCsvLines;
     			let totalNbChunks=Math.ceil(remainingDataToSend.length/MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE);
     			let curChunkNb=0;
+    			
+    			// msg might be divided into several raw chunks if some column contents is especially long.
     			while (remainingDataToSend.length>0) {
     				curChunkNb=curChunkNb+1;
-    				let curChunktoSend=remainingDataToSend.substr(0,MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE-1);
-    				remainingDataToSend=remainingDataToSend.substr(MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE-1);
+    				let curChunktoSend=remainingDataToSend.substr(0,MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE);
+    				remainingDataToSend=remainingDataToSend.substr(MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE);
     				
-    				//console.log("sending CSV chunk "+curChunkNb+"/"+totalNbChunks+": "
-    				//		+remainingDataToSend.length+"B remaining after that one");
+    				
+    				//console.log("sending msg "+msgNb+" : CSV chunk "+curChunkNb+"/"+totalNbChunks+": "
+    				//		+remainingDataToSend.length+"B remaining after that one. >> "+curChunktoSend);
     				
 	    			let jsonData = { 
 	    				 "compressedCsvLineStr" : curChunktoSend,
 						 "processingTaskId" : serverProcessingTaskId,
 						 "totalNbLines" : totalNbValidLines,
 						 "totalNbChunks" : totalNbChunks,
-						 "curChunkNb" : curChunkNb
+						 "curChunkNb" : curChunkNb,
+						 "msgNb" : msgNb
 	    				};
 	    				    			
+	    			
+	    			//console.log("### sending msg "+msgNb);
 	    			myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 	    			myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/upload_filter_file_contents", {},
-	    					JSON.stringify(jsonData));
+	    					JSON.stringify(jsonData));	    			
+	    			
     			}
+    			//console.log("### nbLinesSent="+nbLinesSent);
+    			
     			curLinesWsBuffer=[];
     		}
-    		curLineNb++;	    		
+    		curLineNb++;				 			
+    		//console.log("### nbLine="+curLineNb);
+    		
+			
     	}
     	
-    	if (finishCallback!=null) { finishCallback(); }
-    		    
+    	// keep function in separate function, to keep easier future optim f this heavy processing
+    	while (nbLinesSent!=totalNbValidLines) {
+    		sendCsvContentsFunc();
+    	}
+    	*/
+    	
 	}
 	
 
@@ -1666,7 +1725,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 	}
 
 
-//------- Retrieve Item field full value (useful when field is vry long and truncated) --------
+//------- Retrieve Item field full value (useful when field is very long and truncated) --------
 	
 	// contains error/success callback functions of each field update request
 	this.requestItemFieldFullValueCallbacks=[];	

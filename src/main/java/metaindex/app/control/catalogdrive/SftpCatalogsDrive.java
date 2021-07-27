@@ -75,7 +75,10 @@ public class SftpCatalogsDrive implements ICatalogsDrive {
 				_serverLock.release();
 				return; 
 			}
-			_isStarted=true;		
+			_isStarted=true;	
+			if (_server==null) {
+				log.error("SFTP server not instanciated (yet), unable to start it.");
+			}
 			_server.start();
 			log.info("Catalogs drive accessible at SFTP port '"+getPort()+"'");
 			_serverLock.release();
