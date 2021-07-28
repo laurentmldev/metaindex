@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import metaindex.app.control.websockets.items.WsESBulkProcess;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.userprofile.IUserProfileData;
@@ -79,13 +80,13 @@ public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem>
 	}
 	
 	// -- create new documents
-	public ESBulkProcess getNewItemsBulkProcessor(IUserProfileData u,
+	public WsESBulkProcess getNewItemsBulkProcessor(IUserProfileData u,
 												  ICatalog c, 
 												  String name, 
 												  Integer expectedNbActions,
 												  Date timestamp) throws DataProcessException 
 	{
-		return new ESBulkProcess(u,name,expectedNbActions,c,timestamp,getDataConnector());
+		return new WsESBulkProcess(u,name,expectedNbActions,c,timestamp,getDataConnector());
 	}
 	
 	public class IdsStreamHandler extends AStreamHandler<IDbItem> {

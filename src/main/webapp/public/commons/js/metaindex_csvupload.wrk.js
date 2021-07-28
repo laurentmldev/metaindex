@@ -3,7 +3,7 @@ importScripts('https://metaindex.fr:20000/webapp/public/commons/deps/pako.min.js
 
 var MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE = 100000000;
 var MX_WS_UPLOAD_MSG_SEP_MS = 50;
-var MX_WS_UPLOAD_NBPACKETS_BEFORE_BREATH= 5000;
+var MX_WS_UPLOAD_NBPACKETS_BEFORE_BREATH= 100;
 
 function mxPerformCsvUpload(serverProcessingTaskId,csvRows,totalNbValidLines,finishCallback,fileMaxLinesForUpload) {
 		
@@ -104,7 +104,6 @@ function mxPerformCsvUpload(serverProcessingTaskId,csvRows,totalNbValidLines,fin
     	*/
     	
     	var timer = setInterval(function() {
-	    		//console.log("plop");
     			let nbIter=0;
     			while (nbLinesSent<totalNbValidLines && nbIter<MX_WS_UPLOAD_NBPACKETS_BEFORE_BREATH) {
     				nbIter++;
@@ -113,7 +112,6 @@ function mxPerformCsvUpload(serverProcessingTaskId,csvRows,totalNbValidLines,fin
 	    		if (nbLinesSent>=totalNbValidLines) {
 	    			clearInterval(timer);
 	    			postMessage({"cmd":"END"});
-	    			console.log("### all data sent to server!");
 	    		}
 	    	},
 	    	MX_WS_UPLOAD_MSG_SEP_MS);

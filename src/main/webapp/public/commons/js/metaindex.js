@@ -827,11 +827,14 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		
 		if (myself._callback_UploadCsv_debug==true) {
 			console.log("[MxApi] Received answer to request for 'Upload Items from CSV' accepted : "+parsedMsg.isSuccess);
-			if (parsedMsg.isSuccess==false) {
-				console.log("Reject msg = "+parsedMsg.rejectMessage);
-			}
+			
 		}
 
+		if (parsedMsg.isSuccess==false) {
+			footer_showAlert(ERROR, parsedMsg.rejectMessage);
+			return;
+		}
+		
 		let fileIndex=parsedMsg.clientFileId;
 	    //console.log("file index = "+fileIndex);
 	    let csvRows=mx_csv_files_to_be_uploaded[fileIndex].csvRows;
@@ -855,9 +858,6 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
     	let totalNbValidLines=mx_csv_files_to_be_uploaded[fileIndex].totalNbEntries;
     	let nbLinesSent=0;
     	let msgNb=0;
-
-
-    	
     	
     	var myWorker = new Worker('public/commons/js/metaindex_csvupload.wrk.js');
     	myWorker.onmessage=function(e) {
@@ -868,11 +868,11 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
     		}
     		else if (e.data.cmd=="END") {
     			if (finishCallback!=null) { finishCallback(); }
-    			console.log("### all data sent!");
+    			//console.log("### all data sent!");
     		}
     		
     	}
-    	console.log("posting wrkr msg");
+    	
     	myWorker.postMessage({cmd:"START",params:{
     									"uri":myself._url+myself.MX_WS_ENDPOINT,
 						    			"serverProcessingTaskId":serverProcessingTaskId,						    			
@@ -886,83 +886,6 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 						    			
     										}
     	});
-    	
-    	////////////
-    	/*
-    	let sendCsvContentsFunc=function() {
-    		
-    		if (nbLinesSent==totalNbValidLines) {
-    			if (finishCallback!=null) { finishCallback(); }
-    			return;
-    		}
-    		
-    		let curLine=csvRows[curLineNb];
-    		
-    		// ignore first line (header)
-    		if (curLineNb==0||curLine.length==0||curLine[0]=='#') { 
-    			curLineNb++; 
-    			sendCsvContentsFunc();
-    			return;
-    		}
-    		nbLinesSent++;
-    		
-    		curLinesWsBuffer.push(curLine);
-    		//console.log("### "+curLineNb+":"+curLine+" /// "+nbLinesSent+"/"+totalNbValidLines);
-    		
-    		if (curLineNb % MX_WS_UPLOAD_FILE_MAX_LINES==0 || nbLinesSent==totalNbValidLines) {
-    			msgNb++;
-    			//console.log("	### sending msg "+msgNb+" with "+curLinesWsBuffer.length+" lines ("+(nbLinesSent)+" / "+(totalNbValidLines)+")");
-    			//console.log(curLinesWsBuffer);
-    			
-    			let strJsonArrayCsvLines=JSON.stringify(curLinesWsBuffer);
-    			let bytesGzip = pako.gzip(strJsonArrayCsvLines,{ to: 'string' });    			
-    			let base64BufferCsvLines = window.btoa(bytesGzip);    			
-    			    			
-    			let remainingDataToSend=base64BufferCsvLines;
-    			let totalNbChunks=Math.ceil(remainingDataToSend.length/MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE);
-    			let curChunkNb=0;
-    			
-    			// msg might be divided into several raw chunks if some column contents is especially long.
-    			while (remainingDataToSend.length>0) {
-    				curChunkNb=curChunkNb+1;
-    				let curChunktoSend=remainingDataToSend.substr(0,MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE);
-    				remainingDataToSend=remainingDataToSend.substr(MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE);
-    				
-    				
-    				//console.log("sending msg "+msgNb+" : CSV chunk "+curChunkNb+"/"+totalNbChunks+": "
-    				//		+remainingDataToSend.length+"B remaining after that one. >> "+curChunktoSend);
-    				
-	    			let jsonData = { 
-	    				 "compressedCsvLineStr" : curChunktoSend,
-						 "processingTaskId" : serverProcessingTaskId,
-						 "totalNbLines" : totalNbValidLines,
-						 "totalNbChunks" : totalNbChunks,
-						 "curChunkNb" : curChunkNb,
-						 "msgNb" : msgNb
-	    				};
-	    				    			
-	    			
-	    			//console.log("### sending msg "+msgNb);
-	    			myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
-	    			myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/upload_filter_file_contents", {},
-	    					JSON.stringify(jsonData));	    			
-	    			
-    			}
-    			//console.log("### nbLinesSent="+nbLinesSent);
-    			
-    			curLinesWsBuffer=[];
-    		}
-    		curLineNb++;				 			
-    		//console.log("### nbLine="+curLineNb);
-    		
-			
-    	}
-    	
-    	// keep function in separate function, to keep easier future optim f this heavy processing
-    	while (nbLinesSent!=totalNbValidLines) {
-    		sendCsvContentsFunc();
-    	}
-    	*/
     	
 	}
 	

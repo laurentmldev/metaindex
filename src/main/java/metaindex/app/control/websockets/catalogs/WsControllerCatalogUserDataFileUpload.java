@@ -43,7 +43,7 @@ public class WsControllerCatalogUserDataFileUpload extends AMxWSController {
 	
 	private Log log = LogFactory.getLog(WsControllerCatalogUserDataFileUpload.class);
 	
-	private static final Long MAX_UPLOAD_SIZE_MBYTES=30L; // 30Mo max, otherwise go via SFTP
+	private static final Long MAX_UPLOAD_SIZE_MBYTES=15L; // 15Mo max, otherwise go via SFTP
 	@Autowired
 	public WsControllerCatalogUserDataFileUpload(SimpMessageSendingOperations messageSender) {
 		super(messageSender);		

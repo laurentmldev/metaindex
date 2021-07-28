@@ -43,7 +43,7 @@ import toolbox.database.elasticsearch.ESBulkProcess;
 import toolbox.database.elasticsearch.ESDataProcessException;
 import toolbox.database.sql.SQLDataProcessException;
 import toolbox.exceptions.DataProcessException;
-
+import toolbox.utils.AProcessingTask;
 import toolbox.utils.BasicPair;
 import toolbox.utils.IPair;
 import toolbox.utils.IProcessingTask;
@@ -56,13 +56,9 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
 	
 	private Log log = LogFactory.getLog(WsControllerItemsCsvFileUpload.class);
 	
-	// map[UserId][processingTaskId][msgId]=chunksList[]
-	private static Map<Integer, Map<Integer, Map<Integer,String[]> > > _pendingMessagesMapUser = 
-										new java.util.concurrent.ConcurrentHashMap<>();  
-	
-	// map[UserId][processingTaskId]=next MsgId to decode
-	private static Map<Integer, Map<Integer, Integer> > _nextMsgIdToDecodeByUser = 
-										new java.util.concurrent.ConcurrentHashMap<>();  
+	// limit size of CSV files to upload at once, in order to mitigate
+	// risks of server lock down
+	private static final Integer MAX_CSV_UPLOAD_NB_ELEMENTS = 250000;
 	
 	@Autowired
 	public WsControllerItemsCsvFileUpload(SimpMessageSendingOperations messageSender) {
@@ -80,10 +76,30 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
 	    	ICatalog c = user.getCurrentCatalog();
 	    	
 	    	//log.error("### expecting "+requestMsg.getTotalNbEntries()+" lines");
-    		ESBulkProcess procTask = Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
+    		WsESBulkProcess procTask = Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
     						.getNewItemsBulkProcessor(user, user.getCurrentCatalog(), 
- 													user.getText("Items.serverside.createFromCsvTask"), 
-													requestMsg.getTotalNbEntries(),now);    		
+ 													user.getText("Items.serverside.createFromCsvTask",requestMsg.getTotalNbEntries().toString()),
+													requestMsg.getTotalNbEntries(),now);    
+    		
+
+	    	// limit size of CSV files to upload at once, in order to mitigate
+	    	// risks of server lock down
+	    	if (requestMsg.getTotalNbEntries()>MAX_CSV_UPLOAD_NB_ELEMENTS ) {
+	    		String msgStr = user.getText("Items.serverside.createFromCsvTask.tooManyEntries",
+	    				requestMsg.getTotalNbEntries().toString(),MAX_CSV_UPLOAD_NB_ELEMENTS.toString());
+    			WsMsgCsvFileUpload_answer msg = new WsMsgCsvFileUpload_answer(
+						procTask.getId(),requestMsg.getClientFileId());
+				msg.setIsSuccess(false);
+				msg.setRejectMessage(msgStr);
+				
+				this.messageSender.convertAndSendToUser(
+	    				headerAccessor.getUser().getName(),
+	    				"/queue/upload_items_csv_response", 
+	    				msg);
+				
+				return;
+	    	}
+	    	
     		UserItemCsvParser csvParser = new UserItemCsvParser();
     		csvParser.setCsvSeparator(requestMsg.getSeparator());
     		List<IPair<String,PARSING_FIELD_TYPE>> csvParsingType = new ArrayList<IPair<String,PARSING_FIELD_TYPE>>();    		
@@ -292,76 +308,7 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
     	
     }
     
-    
-
-	public static List<String> decodeCompressedCsvLineStr(String totalZippedCsvData) throws IOException {
-		
-		List<String> rst = new ArrayList<String>();
-		String jsonArrayStr=AMxWSController.getUncompressedRawString(totalZippedCsvData);
-		JSONArray parsedStr = new JSONArray(jsonArrayStr);
- 		List<Object> csvLinesObj = parsedStr.toList();
- 		for (Object o : csvLinesObj) {
- 			rst.add(o.toString()); 			
- 		}
- 		return rst;
-	}
-
 	
-	private void processReceivedMessages(Integer userId, Integer processingTaskId, 
-											ACsvParser<IDbItem> csvParser,ESBulkProcess procTask) 
-						throws IOException, ParseException, DataProcessException {
-		
-		
-		
-		// retrieve data structures
-		Map<Integer,Integer> nextMsgToDecodeByProcId = _nextMsgIdToDecodeByUser.get(userId);
-    	Integer nextMsgIdToDecoce = nextMsgToDecodeByProcId.get(processingTaskId);
-    	if (nextMsgIdToDecoce==null) {
-    		nextMsgToDecodeByProcId.put(processingTaskId,1);
-    		nextMsgIdToDecoce=1;
-    	}
-    	
-    	Map<Integer,Map<Integer,String[]>> pendingMessagesMapProcId = _pendingMessagesMapUser.get(userId);
-    	Map<Integer,String[]> pendingMessagesById = 
-				pendingMessagesMapProcId.get(processingTaskId);
-    	
-    	
-    	List<Integer> processedMsgIds = new ArrayList<>();
-    	//log.error("###	- decoding phase from msg "+nextMsgIdToDecoce);
-    	// process all messages fully received, in proper order
-		while (pendingMessagesById.get(nextMsgIdToDecoce)!=null) {
-			
-			//log.error("###		- decoding msg "+nextMsgIdToDecoce);
-			
-			String[] msgChunks = pendingMessagesById.get(nextMsgIdToDecoce);
-			
-			// ensure all chunks could be received			
-			List<String> csvRows;
-			String fullCompressedBase64Str="";
-			for (String curChunk:msgChunks) { 
-				if (curChunk==null) { return; }
-				fullCompressedBase64Str+=curChunk; 
-			}
-			
-			csvRows=decodeCompressedCsvLineStr(fullCompressedBase64Str);
-			List<IDbItem> parsedItemsToIndex = csvParser.parseAll(csvRows);
-			
-			procTask.postDataToIndexOrUpdate(parsedItemsToIndex);
-			
-			//log.error("###	- msg "+nextMsgIdToDecoce+" --> "+parsedItemsToIndex.size());
-		
-			processedMsgIds.add(nextMsgIdToDecoce);
-			nextMsgIdToDecoce++;
-			nextMsgToDecodeByProcId.put(processingTaskId,nextMsgIdToDecoce);
-			
-		}		
-		
-		// removing already processed msgs from the list
-		for (Integer msgId : processedMsgIds) {
-			pendingMessagesById.remove(msgId);
-		}
-	
-	}
     /**
      * Send the processingTaskId back to _client when a new task is created
      * @param headerAccessor
@@ -378,7 +325,7 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
 	    try {
 	    	
 	    	IUserProfileData user = getUserProfile(headerAccessor);
-	    	ESBulkProcess procTask;
+	    	WsESBulkProcess procTask;
 	    	
     		IProcessingTask pt = user.getProcessingTask(taskId);
     		if (pt==null) {
@@ -387,25 +334,12 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
     		}
     		
     		
-			if (pt instanceof ESBulkProcess) { procTask=(ESBulkProcess)pt;}
+			if (pt instanceof WsESBulkProcess) { procTask=(WsESBulkProcess)pt;}
 			else {
 				log.error("Processing Task '"+pt.getId()+"' is not from proper type, request ignored.");
 				return;
 			}
-						
-			// ensure previous data is finished to be processed before starting next one
-    		// (preserve order of data sent)
-    		procTask.lock();
-    		
-	    	// initialize pending requests table for current user
-	    	if (!_pendingMessagesMapUser.containsKey(user.getId())) {
-	    		_pendingMessagesMapUser.put(user.getId(),new java.util.concurrent.ConcurrentHashMap<>());
-	    		_nextMsgIdToDecodeByUser.put(user.getId(),new java.util.concurrent.ConcurrentHashMap<>());
-	    		
-	    	}
-	    	Map<Integer,Map<Integer,String[]>> pendingMessagesMapProcId = _pendingMessagesMapUser.get(user.getId());
-	    	
-	    	//Thread.sleep(500);
+
     		    		
     		if (procTask.isAllDataReceived()) {
     			log.error("Processing task '"+procTask.getName()+"' already finalized, unable to add more items to process.");
@@ -422,52 +356,15 @@ public class WsControllerItemsCsvFileUpload extends AMxWSController {
     			return;
     		}
     		
-			// starting a new one
-			if (!pendingMessagesMapProcId.containsKey(taskId)) {
-				pendingMessagesMapProcId.put(requestMsg.getProcessingTaskId(),new java.util.concurrent.ConcurrentHashMap<>());
-			}	
+    		// post chunk data as is and free the current thread
+    		// uncompress and actual posting is done in separate thread 
+    		// to avoid lock-down when big files are received
+    		procTask.postWsMsgChunk(requestMsg.getCompressedCsvLineStr(),
+    				requestMsg.getMsgNb(),requestMsg.getCurChunkNb(), requestMsg.getTotalNbChunks());
 			
-			Map<Integer,String[]> pendingMessagesById = 
-								pendingMessagesMapProcId.get(requestMsg.getProcessingTaskId());
-			
-			
-			if (pendingMessagesById.get(requestMsg.getMsgNb())==null) {
-				pendingMessagesById.put(requestMsg.getMsgNb(),new String[requestMsg.getTotalNbChunks()]);
-			}
-			String[] curMsgChunksList= pendingMessagesById.get(requestMsg.getMsgNb());
-			curMsgChunksList[requestMsg.getCurChunkNb()-1]=requestMsg.getCompressedCsvLineStr();
-			//log.error("### adding chunk "+requestMsg.getCurChunkNb()+": "+requestMsg.getCompressedCsvLineStr());
-			//procTask.unlock();
-			//procTask.lock();
-			
-			processReceivedMessages(user.getId(), requestMsg.getProcessingTaskId(),csvParser,procTask);
-			procTask.unlock();
 
 	    } 
-	    catch (ParseException e) 
-		{
-	    	
-	    	try {
-	    		log.error("Aborting CSV upload operation due to parsing errors in user's input data");
-	    		IUserProfileData user = getUserProfile(headerAccessor);
-				IProcessingTask pt = user.getProcessingTask(taskId);
-				pt.abort();
-				String msg = user.getText("Items.serverside.uploadItems.parseFailed", 
-						pt.getName(),
-						new Integer(e.getParseErrors().size()).toString());
-		
-				user.sendGuiErrorMessage(msg,e.getParseErrors());
-				
-			} catch (DataProcessException e1) {
-				e.printStackTrace();				
-			}
-	    	
-			WsMsgCsvFileUploadContents_answer msg = new WsMsgCsvFileUploadContents_answer(requestMsg.getClientFileId());
-			this.messageSender.convertAndSendToUser(
-    				headerAccessor.getUser().getName(),
-    				"/queue/upload_filter_file_contents_progress", 
-    				msg);
-		}  
+	   
 	    catch (Throwable e) 
 		{
 	    	log.error("Aborting CSV upload operation due to server error");

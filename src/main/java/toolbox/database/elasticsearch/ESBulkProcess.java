@@ -29,19 +29,17 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.common.unit.TimeValue;
 
 import metaindex.app.control.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
-import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.database.IDbItem;
-import toolbox.database.elasticsearch.ElasticSearchConnector;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.AProcessingTask;
 import toolbox.utils.parsers.ACsvParser;
 
 public class ESBulkProcess extends AProcessingTask   {
 
-	private Log log = LogFactory.getLog(Catalog.class);
+	private Log log = LogFactory.getLog(ESBulkProcess.class);
 	
 	private static final Integer BULK_FLUSH_TRESHOLD=500;
 	private static final Long BULK_FLUSH_SECONDS=1L;
@@ -89,13 +87,16 @@ public class ESBulkProcess extends AProcessingTask   {
 	    
 	    	
 	    	_process.addProcessedNbData(new Long(response.getItems().length));
+	    	
+	    	_bulkProcessLock.release();
+	    	
 	    	//log.error("	### bulk response "+_process.getProcessedNbData()+"/"+_process.getTargetNbData());
-	    	getActiveUser().sendGuiProgressMessage(
+	    	if (_process.getProcessedNbData()%1000==0) {
+	    		getActiveUser().sendGuiProgressMessage(
 	    			_process.getId(),
 	    			getActiveUser().getText("Items.serverside.bulkprocess.progress", _process.getName()),
 	    			AProcessingTask.pourcentage(_process.getProcessedNbData(), _process.getTargetNbData()));
-	    	
-	    	_bulkProcessLock.release();
+	    	}
 	    }
 
 	    @Override
@@ -120,6 +121,8 @@ public class ESBulkProcess extends AProcessingTask   {
 	public ACsvParser<IDbItem> getParser() { return _parser; }
 	public void setParser(ACsvParser<IDbItem> parser) { this._parser = parser; }
 	//----
+	
+	public IUserProfileData getActiveUser() { return _activeUser; }
 	
 	public ESBulkProcess(IUserProfileData u, 
 						 String name, 
@@ -381,6 +384,9 @@ public class ESBulkProcess extends AProcessingTask   {
     			AProcessingTask.pourcentage(getProcessedNbData(), getTargetNbData()), false /*processing ended*/);
 		
 		getActiveUser().removeProccessingTask(this.getId());
+	}
+	protected Boolean isInterruptFlagActive() {
+		return _interruptFlag;
 	}
 	
 
