@@ -43,7 +43,7 @@ public class WsControllerCatalogUserDataFileUpload extends AMxWSController {
 	
 	private Log log = LogFactory.getLog(WsControllerCatalogUserDataFileUpload.class);
 	
-	private static final Long MAX_UPLOAD_SIZE_MBYTES=15L; // 15Mo max, otherwise go via SFTP
+	private static final Long MAX_UPLOAD_SIZE_MBYTES=50L; // 50Mo max, otherwise go via SFTP
 	@Autowired
 	public WsControllerCatalogUserDataFileUpload(SimpMessageSendingOperations messageSender) {
 		super(messageSender);		
@@ -202,7 +202,7 @@ public class WsControllerCatalogUserDataFileUpload extends AMxWSController {
     								requestMsg.getRawContents());
     		    		
 	    }   
-	    catch (DataProcessException e) 
+	    catch (DataProcessException|InterruptedException e) 
 		{
 	    	try {
 				IUserProfileData user = getUserProfile(headerAccessor);

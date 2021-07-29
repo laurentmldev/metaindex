@@ -189,7 +189,7 @@ public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem>
 												  String name, 
 												  String targetFileName,
 												  ICatalogTerm groupingTerm,
-												  ICatalogTerm edgingTerm,
+												  List<ICatalogTerm> edgeTermsList,
 												  Long maxNbItems,
 												  Long fromIndex,
 												  String query,
@@ -203,7 +203,7 @@ public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem>
 				name,
 				maxNbItems,
 				groupingTerm,
-				edgingTerm,
+				edgeTermsList,
 				timestamp,
 				targetFileName);
 		

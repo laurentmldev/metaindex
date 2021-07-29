@@ -103,7 +103,7 @@ public class ESDownloadProcess extends AProcessingTask   {
 					// seems to return null value when 0 hits
 		    		Long totalHits = loadedResult.getTotalHits();
 		    		if (totalHits==null) { 
-		    			log.error("No Hits for given CSV-dump request");			    			
+		    			log.warn("No Hits for given data extraction request");			    			
 		    		}
 		    		_streamHandler.setTargetNbData(totalHits);
 		    		setTargetNbData(totalHits);

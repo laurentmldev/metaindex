@@ -13,6 +13,7 @@ See full version of LICENSE in <https://fsf.org/>
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,6 +39,9 @@ public class HandleFileUploadProcess extends AProcessingTask   {
 	private String _uploadPath="";
 	private Map<Integer,FileBinOutstream> _fileOutstreams = new HashMap<>();
 	private Map<Integer,FileDescriptor> _fileDescriptors = new HashMap<>();
+	
+	private Semaphore _processorLock = new Semaphore(1,true);
+	private Map<Integer, Map<Integer, byte[]> > _pendingFileData = new HashMap<>();
 	
 	
 	public HandleFileUploadProcess(IUserProfileData u, 
@@ -77,12 +81,22 @@ public class HandleFileUploadProcess extends AProcessingTask   {
 		getActiveUser().sendGuiErrorMessage(msg);		
 	}
 
-	public void postFileData(Integer fileId,Integer sequenceNumber, byte[] rawData) throws DataProcessException {
+	public void postFileData(Integer fileId,Integer sequenceNumber, byte[] rawData) throws DataProcessException, InterruptedException {
+		
 		if (!_fileOutstreams.containsKey(fileId)) {
 			throw new DataProcessException("No such file id in current processing");
 		}
-		setCurFileId(fileId);
-		_fileOutstreams.get(fileId).write(sequenceNumber,rawData);
+		_processorLock.acquire();
+		try {
+			setCurFileId(fileId);
+			if (!_pendingFileData.containsKey(fileId)) { _pendingFileData.put(fileId,new HashMap<>()); }
+			_pendingFileData.get(fileId).put(sequenceNumber, rawData);
+		} catch(Throwable e) {
+			e.printStackTrace();
+			_processorLock.release();
+		}
+		_processorLock.release();
+		
 	}
 	
 	@Override
@@ -103,13 +117,32 @@ public class HandleFileUploadProcess extends AProcessingTask   {
     			getActiveUser().getText("Items.serverside.bulkprocess.progress", getName()),
     			AProcessingTask.pourcentage(getProcessedNbData(),getTargetNbData()));
 		
+		List<Integer> seqNbsToRemove = new ArrayList<>();
+		
 		while (!this.isAllDataProcessed() && !_interruptFlag) {
 			try { 
+				
+				// dump pending files sequences
+				_processorLock.acquire();
+				for (Integer fileId : _pendingFileData.keySet()) {
+					Map<Integer,byte[]> curFilePendingData = _pendingFileData.get(fileId);					
+					for (Integer pendingSeqNb : curFilePendingData.keySet()) {
+						_fileOutstreams.get(fileId).write(pendingSeqNb,curFilePendingData.get(pendingSeqNb));
+						seqNbsToRemove.add(pendingSeqNb);
+					}
+					for (Integer seqNbToRemove : seqNbsToRemove) {
+						curFilePendingData.remove(seqNbToRemove);
+					}
+					seqNbsToRemove.clear();
+				}
+				_processorLock.release();
 				// wait for having received all data to be processed 
-				Thread.sleep(500);				
-			} catch (InterruptedException e) { 
+				Thread.sleep(500);		
+				
+			} catch (DataProcessException|InterruptedException e) { 
 				e.printStackTrace(); 
-			}
+				_processorLock.release();
+			} 
 		}
 
 		stop();
