@@ -41,7 +41,7 @@ import toolbox.utils.filetools.FileSystemUtils;
 public class GexfDumper<T extends IFieldValueMapObject> extends AStreamHandler<T>   {
 
 	private Log log = LogFactory.getLog(GexfDumper.class);
-	private static final Integer EDGE_TYPE_ATTRIBUTE_ID = 0;
+	public static final Integer EDGE_TYPE_ATTRIBUTE_ID = 0;
 	
 	private List<ICatalogTerm> _nodesDataTermsList=new ArrayList<>();
 	private List<ICatalogTerm> _edgesTermsList=new ArrayList<>();
@@ -290,7 +290,7 @@ public class GexfDumper<T extends IFieldValueMapObject> extends AStreamHandler<T
 						
 						_xmlStreamWriterEdges.writeCharacters("\n				");
 						_xmlStreamWriterEdges.writeEndElement();//attvalues
-						
+						_xmlStreamWriterEdges.writeCharacters("\n			");						
 						_xmlStreamWriterEdges.writeEndElement();// edge
 						_nbEdges++;
 					}

@@ -1,5 +1,8 @@
 package metaindex.app.control.websockets.items.messages;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /*
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -14,7 +17,7 @@ See full version of LICENSE in <https://fsf.org/>
 public class WsMsgGraphDownloadGroupBy_request extends WsMsgGetItems_request {
 
 	private Integer _groupingTermId = null;
-	private Integer _edgeTermId = null;
+	private List<Integer> _edgesTermsIdsList= new ArrayList<>();
 	
 	public Integer getGroupingTermId() {
 		return _groupingTermId;
@@ -22,11 +25,13 @@ public class WsMsgGraphDownloadGroupBy_request extends WsMsgGetItems_request {
 	public void setGroupingTermId(Integer groupingTermId) {
 		this._groupingTermId = groupingTermId;
 	}
-	public Integer getEdgeTermId() {
-		return _edgeTermId;
+	
+	public List<Integer> getEdgesTermIdsList() {
+		return _edgesTermsIdsList;
 	}
-	public void setEdgeTermId(Integer edgeTermId) {
-		this._edgeTermId = edgeTermId;
+
+	public void setEdgesTermIdsList(List<Integer> idsList) {
+		this._edgesTermsIdsList= idsList;		
 	}
 		
 	

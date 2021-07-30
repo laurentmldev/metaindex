@@ -125,9 +125,9 @@ function _buildGexfGroupByForm(catalogDescr,sortedTermsNames) {
 				
 	}	
 	
-	
+
 	// edges data
-	let edgesSelectionInsertSpot=previsuNode.querySelector("._edgeTerm_selector_");	
+	let edgesSelectionInsertSpot=previsuNode.querySelector("._edges_selection_insertspot_");	
 	for (var termIdx=0;termIdx<sortedTermsNames.length;termIdx++) {
 		let termName=sortedTermsNames[termIdx];		
 		let termDescr = catalogDescr.terms[termName];
@@ -135,12 +135,23 @@ function _buildGexfGroupByForm(catalogDescr,sortedTermsNames) {
 		if (termDatatype!="LINK") { continue; }
 		termTranslation=mx_helpers_getTermName(termDescr, catalogDescr)
 		
-		let termChoice=document.createElement("option");
+		let termChoice=document.createElement("div");
 		edgesSelectionInsertSpot.appendChild(termChoice);
-		termChoice.value=termDescr.id;
-		termChoice.innerHTML=termTranslation;		
-		if (termIdx==0) { edgesSelectionInsertSpot.value=termDescr.id; }
+		let termCheck=document.createElement("input");
+		termChoice.appendChild(termCheck);
+		termCheck.termDescr=termDescr;
+		termCheck.classList.add("_graph_edge_field_");
+		termCheck.checked=true;
+		termCheck.setAttribute("type","checkbox");
+		
+		let termNameNode=document.createElement("span");
+		termChoice.appendChild(termNameNode);
+		termNameNode.innerHTML=termTranslation;
+		termNameNode.style="padding-left:1rem";
+		if (termTranslation!=termName) { termNameNode.innerHTML+= " ("+termName+")"; }
+		
 	}	
+	
 	
 	// footer
 	let previsuNodeFooter=document.getElementById('gexfgroupby_contents_previsu_download_footer').cloneNode(true);
@@ -150,15 +161,23 @@ function _buildGexfGroupByForm(catalogDescr,sortedTermsNames) {
 	downloadBtn.onclick=function(event) {
 		
 		let groupTermNode=previsuNode.querySelector("._groupTerm_selector_");
-		let edgeTermNode=previsuNode.querySelector("._edgeTerm_selector_");
+		let edgesTermIds=[];
 		let groupTermId=groupTermNode.value;					
-		let edgeTermId=edgeTermNode.value
+		
+		let edgesFields=previsuNode.querySelectorAll("._graph_edge_field_");
+		for (let edgeFieldIdx=0;edgeFieldIdx<edgesFields.length;edgeFieldIdx++) {
+			let curEdgeFieldCheckBox=edgesFields[edgeFieldIdx];
+			if (curEdgeFieldCheckBox.checked==true) {
+				edgesTermIds.push(curEdgeFieldCheckBox.termDescr.id);
+			}
+		}
+		
 				
 		let query = MxGuiHeader.getCurrentSearchQuery();
 		let selectedFiltersNames=MxGuiLeftBar.getSelectedFiltersNames();
 		let sortString = MxGuiHeader.getCurrentSearchSortString();
 		let reversedOrder = MxGuiHeader.getCurrentSearchReversedOrder();
-		ws_handlers_requestDownloadGraphGroupByFile(groupTermId,edgeTermId,query,selectedFiltersNames,sortString,reversedOrder);
+		ws_handlers_requestDownloadGraphGroupByFile(groupTermId,edgesTermIds,query,selectedFiltersNames,sortString,reversedOrder);
 		MxGuiHeader.hideInfoModal();
 	}
 	
@@ -261,8 +280,8 @@ MxGuiLeftBar.showDownloadGexfPrevisu=function() {
 		  	
 		  	<hr/>
 		  	<h5><s:text name="Items.downloadItems.gexf.link"/></h5>
-		  	<select class="_edgeTerm_selector_">	 		  	
-		  	</select> 		  			 		  		 
+		  	<div class="_edges_selection_insertspot_">
+		  	</div> 		  			 		  		 
 		  </div>
 		  <div id="gexf_contents_previsu_download_footer" style="display:none">
  		  		 <label class="_downloadBtn_ d-none d-sm-inline-block btn-big btn btn-info shadow-sm mx-left-button"  >

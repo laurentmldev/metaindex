@@ -321,7 +321,7 @@ function ws_handlers_requestDownloadGraphFile(selectedNodesDataTermIdsList,selec
 		 						"errorCallback":retrieveCsvError});	  
 }
 
-function ws_handlers_requestDownloadGraphGroupByFile(groupTermId,edgeTermId,query,selectedFiltersNames,sortByFieldName,reversedSortOrder) {
+function ws_handlers_requestDownloadGraphGroupByFile(groupTermId,selectedEdgesTermIdsList,query,selectedFiltersNames,sortByFieldName,reversedSortOrder) {
 	
 	 retrieveCsvSuccess=function(itemsAnswerMsg) {
 		footer_showAlert(SUCCESS, "<s:text name="Items.downloadItems.gexfFileReady" /> : <a target='_blank' href='"+itemsAnswerMsg.graphFileUrl+"' "
@@ -332,7 +332,7 @@ function ws_handlers_requestDownloadGraphGroupByFile(groupTermId,edgeTermId,quer
 	 retrieveCsvError=function(msg) { footer_showAlert(ERROR, msg); }
 	 MxApi.requestDownloadItemsGraphGroupBy({	
 		 						"groupingTermId":groupTermId,
-		 						"edgeTermId":edgeTermId,
+		 						"edgesTermIdsList":selectedEdgesTermIdsList,
 		 						"fromIdx":0,
 		 						"size":-1,
 		 						"query":query,

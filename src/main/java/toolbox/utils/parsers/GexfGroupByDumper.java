@@ -43,7 +43,6 @@ public class GexfGroupByDumper<T extends IFieldValueMapObject> extends GexfDumpe
 	
 	private static final Integer SIZE_ATT_ID = 1;
 	ICatalogTerm _groupTerm = null;;
-	ICatalogTerm _edgeTerm = null;
 	
 	List<Object> _groupLabels = new ArrayList<>();
 	List<Integer> _groupSize = new ArrayList<>();
@@ -51,17 +50,17 @@ public class GexfGroupByDumper<T extends IFieldValueMapObject> extends GexfDumpe
 	// cache nodes ids for which group has already been identified
 	Map<String,Integer> _targetId2groupIdx=new HashMap<>();
 	
-	// [srcGroupIdx][targetGroupIdx]=weight	
-	private Map<Integer,Map<Integer,Integer> > _groupEdges=new HashMap<>();
+	// [linkTerm][srcGroupIdx][targetGroupIdx]=weight	
+	private Map<ICatalogTerm, Map<Integer,Map<Integer,Integer> > >_groupEdges=new HashMap<>();
 		
-	// [targetNodeId][sourceGroupIdx]=weight
-	private Map<String,Map<Integer,Integer> >  _pendingEdges = new HashMap<>();
+	// [linkTerm][targetNodeId][sourceGroupIdx]=weight
+	private Map<ICatalogTerm, Map<String,Map<Integer,Integer> > > _pendingEdges = new HashMap<>();
 	
 	public GexfGroupByDumper(IUserProfileData u, 
 						 String name, 
 						 Long expectedNbActions,
 						 ICatalogTerm groupTerm,
-						 ICatalogTerm edgeTerm,
+						 List<ICatalogTerm> edgesTermsList,
 						 Date timestamp,
 						 String targetFileName) throws DataProcessException {
 		super(u,name,expectedNbActions,null,null,timestamp,targetFileName);
@@ -70,11 +69,8 @@ public class GexfGroupByDumper<T extends IFieldValueMapObject> extends GexfDumpe
 		nodesTermsList.add(groupTerm);
 		this.setNodesDataTermsList(nodesTermsList);
 		_groupTerm=groupTerm;
-				
-		List<ICatalogTerm> edgesTermsList=new ArrayList<>();
-		edgesTermsList.add(edgeTerm);
 		this.setEdgesTermsList(edgesTermsList);		
-		_edgeTerm=edgeTerm;
+		
 	}
 	
 	private Integer getGroupIdx(Object groupValue) {
@@ -100,51 +96,58 @@ public class GexfGroupByDumper<T extends IFieldValueMapObject> extends GexfDumpe
 		_groupSize.set(curItemGroupIdx,_groupSize.get(curItemGroupIdx)+1);		
 		_targetId2groupIdx.put(nodeId,curItemGroupIdx);
 		
-		// identify target node from 'edge term' in current node
+		// identify target node from 'edge terms' in current node
 		// if group of this target node is not known yet we keep it in pending edges list
-		Object edgeTargetIdO = item.getValue(_edgeTerm.getName());			
-		if (edgeTargetIdO!=null) 
-		{ 
-			String edgeTargetIds = edgeTargetIdO.toString();
-			for (String edgeTargetIdAndWeight : edgeTargetIds.split(",")) {
-				String[] edgeDesc=edgeTargetIdAndWeight.split(":");
-				String edgeTargetId=edgeDesc[0];
-				Integer edgeTargetWeight=1;
-				if (edgeDesc.length>1) { edgeTargetWeight=new Integer(edgeDesc[1]); }
-				
-				Object targetGroupIdxO=_targetId2groupIdx.get(edgeTargetId);
-				// if unknown target
-				if (targetGroupIdxO==null) {
-					if (_pendingEdges.get(edgeTargetId)==null) { _pendingEdges.put(edgeTargetId, new HashMap<Integer,Integer>()); }
-					Integer curPendingWeight = _pendingEdges.get(edgeTargetId).get(curItemGroupIdx);
-					if (curPendingWeight==null) { curPendingWeight=0; }
-					_pendingEdges.get(edgeTargetId).put(curItemGroupIdx,curPendingWeight+edgeTargetWeight);
-					//log.error("### adding link to "+edgeTargetId+":"+edgeTargetWeight+" as pending group "+curItemGroupIdx);
-				} else {
-					Integer targetGroupIdx=(Integer)targetGroupIdxO;
-					if (_groupEdges.get(curItemGroupIdx)==null) { _groupEdges.put(curItemGroupIdx, new HashMap<Integer,Integer>()); }
-					if (_groupEdges.get(curItemGroupIdx).get(targetGroupIdx)==null) { _groupEdges.get(curItemGroupIdx).put(targetGroupIdx,0); }
-					Integer curWeight=_groupEdges.get(curItemGroupIdx).get(targetGroupIdx);			
-					_groupEdges.get(curItemGroupIdx).put(targetGroupIdx,curWeight+edgeTargetWeight);
-					//log.error("### adding link to "+edgeTargetId+":"+edgeTargetWeight+" as group "+curItemGroupIdx);
+		for (ICatalogTerm edgeTerm : this.getEdgesTermsList()) {
+			if (!_groupEdges.containsKey(edgeTerm)) { _groupEdges.put(edgeTerm,new HashMap<>()); }
+			if (!_pendingEdges.containsKey(edgeTerm)) { _pendingEdges.put(edgeTerm,new HashMap<>()); }
+			
+			Object edgeTargetIdObj = item.getValue(edgeTerm.getName());			
+			if (edgeTargetIdObj!=null) 
+			{ 
+				String edgeTargetIds = edgeTargetIdObj.toString();
+				for (String edgeTargetIdAndWeight : edgeTargetIds.split(",")) {
+					String[] edgeDesc=edgeTargetIdAndWeight.split(":");
+					String edgeTargetId=edgeDesc[0];
+					Integer edgeTargetWeight=1;
+					if (edgeDesc.length>1) { edgeTargetWeight=new Integer(edgeDesc[1]); }
+					
+					Object targetGroupIdxO=_targetId2groupIdx.get(edgeTargetId);
+					// if unknown target
+					if (targetGroupIdxO==null) {
+						if (_pendingEdges.get(edgeTerm).get(edgeTargetId)==null) { _pendingEdges.get(edgeTerm).put(edgeTargetId, new HashMap<Integer,Integer>()); }
+						Integer curPendingWeight = _pendingEdges.get(edgeTerm).get(edgeTargetId).get(curItemGroupIdx);
+						if (curPendingWeight==null) { curPendingWeight=0; }
+						_pendingEdges.get(edgeTerm).get(edgeTargetId).put(curItemGroupIdx,curPendingWeight+edgeTargetWeight);
+						//log.error("### adding link to "+edgeTargetId+":"+edgeTargetWeight+" as pending group "+curItemGroupIdx);
+					} else {
+						Integer targetGroupIdx=(Integer)targetGroupIdxO;
+						if (_groupEdges.get(edgeTerm).get(curItemGroupIdx)==null) { _groupEdges.get(edgeTerm).put(curItemGroupIdx, new HashMap<Integer,Integer>()); }
+						if (_groupEdges.get(edgeTerm).get(curItemGroupIdx).get(targetGroupIdx)==null) { _groupEdges.get(edgeTerm).get(curItemGroupIdx).put(targetGroupIdx,0); }
+						Integer curWeight=_groupEdges.get(edgeTerm).get(curItemGroupIdx).get(targetGroupIdx);			
+						_groupEdges.get(edgeTerm).get(curItemGroupIdx).put(targetGroupIdx,curWeight+edgeTargetWeight);
+						//log.error("### adding link to "+edgeTargetId+":"+edgeTargetWeight+" as group "+curItemGroupIdx);
+					}
 				}
 			}
-		}
-		// check for pending edges pointing to this node and if found, 
-		// assign them to corresponding target group in edges list
-		// adding cumulated weights 
-		if (_pendingEdges.get(nodeId)!=null) {
-			for (Integer curSrcGroupIdx : _pendingEdges.get(nodeId).keySet()) {
-				Integer curPendingWeight =  _pendingEdges.get(nodeId).get(curSrcGroupIdx);
-				Integer groupWeight=0;
-				if (_groupEdges.get(curSrcGroupIdx)==null) { _groupEdges.put(curSrcGroupIdx, new HashMap<>()); }
-				// if current source->dest has already a weight, we cumulate it
-				if (_groupEdges.get(curSrcGroupIdx).get(curItemGroupIdx)!=null) {
-					groupWeight=new Integer(_groupEdges.get(curSrcGroupIdx).get(curItemGroupIdx));
-				} 					
-				_groupEdges.get(curSrcGroupIdx).put(curItemGroupIdx,curPendingWeight+groupWeight);
+			
+			// check for pending edges pointing to this node and if found, 
+			// assign them to corresponding target group in edges list
+			// adding cumulated weights 
+			if (_pendingEdges.get(edgeTerm).get(nodeId)!=null) {
+				for (Integer curSrcGroupIdx : _pendingEdges.get(edgeTerm).get(nodeId).keySet()) {
+					Integer curPendingWeight =  _pendingEdges.get(edgeTerm).get(nodeId).get(curSrcGroupIdx);
+					Integer groupWeight=0;
+					if (_groupEdges.get(edgeTerm).get(curSrcGroupIdx)==null) { _groupEdges.get(edgeTerm).put(curSrcGroupIdx, new HashMap<>()); }
+					// if current source->dest has already a weight, we cumulate it
+					if (_groupEdges.get(edgeTerm).get(curSrcGroupIdx).get(curItemGroupIdx)!=null) {
+						groupWeight=new Integer(_groupEdges.get(edgeTerm).get(curSrcGroupIdx).get(curItemGroupIdx));
+					} 					
+					_groupEdges.get(edgeTerm).get(curSrcGroupIdx).put(curItemGroupIdx,curPendingWeight+groupWeight);
+				}
+				_pendingEdges.get(edgeTerm).remove(nodeId);
 			}
-			_pendingEdges.remove(nodeId);
+		
 		}
 		
 	}
@@ -199,20 +202,39 @@ public class GexfGroupByDumper<T extends IFieldValueMapObject> extends GexfDumpe
 			}
 			
 			// write all detected edges between thoses group nodes
-			for (Integer curSrcGroupIdx : _groupEdges.keySet()) {
-				Map<Integer,Integer> targetGroupWeights=_groupEdges.get(curSrcGroupIdx);
-				for (Integer curTargetGroupIdx : targetGroupWeights.keySet()) {
-					Integer weight=targetGroupWeights.get(curTargetGroupIdx);
-					_xmlStreamWriterEdges.writeCharacters("\n			");
-					_xmlStreamWriterEdges.writeStartElement("edge");
-					_xmlStreamWriterEdges.writeAttribute("id", curSrcGroupIdx+"_"+curTargetGroupIdx);
-					_xmlStreamWriterEdges.writeAttribute("source",curSrcGroupIdx.toString());
-					_xmlStreamWriterEdges.writeAttribute("target",curTargetGroupIdx.toString());
-					_xmlStreamWriterEdges.writeAttribute("weight",weight.toString());
-					_xmlStreamWriterEdges.writeEndElement();
-					curTargetGroupIdx++;
+			for (ICatalogTerm edgeTerm :  _groupEdges.keySet()) {
+				Map<Integer,Map<Integer,Integer> > groupEdgesList =  _groupEdges.get(edgeTerm);
+				
+				for (Integer curSrcGroupIdx : groupEdgesList.keySet()) {
+					Map<Integer,Integer> targetGroupWeights=groupEdgesList.get(curSrcGroupIdx);
+					for (Integer curTargetGroupIdx : targetGroupWeights.keySet()) {
+						Integer weight=targetGroupWeights.get(curTargetGroupIdx);
+						_xmlStreamWriterEdges.writeCharacters("\n			");
+						_xmlStreamWriterEdges.writeStartElement("edge");
+						_xmlStreamWriterEdges.writeAttribute("id", curSrcGroupIdx+"_"+curTargetGroupIdx);
+						_xmlStreamWriterEdges.writeAttribute("source",curSrcGroupIdx.toString());
+						_xmlStreamWriterEdges.writeAttribute("target",curTargetGroupIdx.toString());
+						_xmlStreamWriterEdges.writeAttribute("weight",weight.toString());
+						
+						_xmlStreamWriterEdges.writeCharacters("\n				");
+						_xmlStreamWriterEdges.writeStartElement("attvalues");
+						
+						{
+							_xmlStreamWriterEdges.writeCharacters("\n					");
+							_xmlStreamWriterEdges.writeStartElement("attvalue");
+							_xmlStreamWriterEdges.writeAttribute("for",GexfDumper.EDGE_TYPE_ATTRIBUTE_ID.toString());
+							_xmlStreamWriterEdges.writeAttribute("value",edgeTerm.getName());	
+							_xmlStreamWriterEdges.writeEndElement();							
+						}
+						
+						_xmlStreamWriterEdges.writeCharacters("\n				");
+						_xmlStreamWriterEdges.writeEndElement();//attvalues
+						_xmlStreamWriterEdges.writeCharacters("\n			");
+						_xmlStreamWriterEdges.writeEndElement();
+						curTargetGroupIdx++;
+					}
+					curSrcGroupIdx++;
 				}
-				curSrcGroupIdx++;
 			}
 		    			
 		} catch (XMLStreamException e) {

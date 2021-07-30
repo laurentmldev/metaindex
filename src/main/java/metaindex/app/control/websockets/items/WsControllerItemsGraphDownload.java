@@ -206,13 +206,15 @@ public class WsControllerItemsGraphDownload extends AMxWSController {
 	    				"/queue/download_items_graphgroupby_response", answer);
 	    		return;
     		}
-    		ICatalogTerm edgeTerm = null;
+    		List<ICatalogTerm> edgeTermsList = new ArrayList<>();
     		for (ICatalogTerm t : curCatalog.getTerms().values()) {
-				if (t.getId().equals(requestMsg.getEdgeTermId())) {
-					edgeTerm=t;
-				}
+    			for (Integer termId : requestMsg.getEdgesTermIdsList()) {
+    				if (t.getId().equals(termId)) {
+    					edgeTermsList.add(t);
+    				}
+        		}				
     		}
-    		if (edgeTerm==null) {
+    		if (edgeTermsList.size()!=requestMsg.getEdgesTermIdsList().size()) {
     			answer.setIsSuccess(false);    	    	
 	    		answer.setRejectMessage(user.getText("Items.server.noMatchingTermForGroupEdges"));	    		
 	    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),
@@ -232,7 +234,7 @@ public class WsControllerItemsGraphDownload extends AMxWSController {
 		    			user.getText("Items.downloadItems.gexf.extracting"), 
 		    			 targetFileFsPath,
 		    			 groupingTerm,
-		    			 edgeTerm,
+		    			 edgeTermsList,
 		    			 new Long(requestMsg.getSize()),
 		    			 new Long(requestMsg.getFromIdx()),
 		    			 requestMsg.getQuery(),

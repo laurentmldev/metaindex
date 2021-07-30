@@ -2,7 +2,7 @@
 
 //
 // METATINDEX Javascript API 
-// requires SockJS, stomp
+// requires SockJS, stomp, pako
 //
 
 /*
@@ -23,7 +23,7 @@ function stripStr(str) { return str.replace(/^\s*/,"").replace(/\s*$/,""); }
 // shouldn't be too big otherwise risk of WS deconnexion because max. size limit reached.
 var MX_WS_FIELD_VALUE_MAX_CHARS = 5000;
 var MX_WS_UPLOAD_FILE_MAX_LINES = 500;
-var MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE = 100000000;
+var MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE = 100000;
 var MX_WS_UPLOAD_FILE_SEND_PERIOD_MS = 30;
 
 var MX_DOWNSTREAM_MSG="down";
@@ -963,7 +963,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		// }
 		this.requestDownloadItemsGraphGroupBy = function(dataObj) {
 			if (dataObj.groupingTermId==null) { dataObj.errorCallback("groupingTermId parameter requested, provided value is empty"); return;}
-			if (dataObj.edgeTermId==null) { dataObj.errorCallback("edgeTermId parameter requested, provided value is empty"); return; }
+			if (dataObj.edgesTermIdsList==null) { dataObj.errorCallback("edgesTermIdsList parameter requested, provided value is empty"); return; }
 			if (dataObj.fromIdx==null) { dataObj.fromIdx=0; }
 			if (dataObj.size==null) { dataObj.size=-1; }
 			if (dataObj.filtersNames==null) { dataObj.filtersNames=[]; }
@@ -2437,7 +2437,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		var parsedMsg = JSON.parse(uploadFilesContentsAnswerMsg.body);
 		let requestId=parsedMsg.requestId;
 		
-		//console.log("handling upload files contents answer "+requestId+" : "+parsedMsg);
+		console.log("handling upload files contents answer "+requestId+" : "+parsedMsg);
 		if (requestObj==null) { return; }
 		if (parsedMsg.isSuccess!=true) {
 			let errorMsg=parsedMsg.rejectMessage;

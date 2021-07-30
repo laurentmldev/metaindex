@@ -1,7 +1,26 @@
 
-importScripts('https://metaindex.fr:20000/webapp/public/commons/deps/pako.min.js');
 
-var MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE = 100000000;
+
+//
+// METATINDEX Javascript API 
+// Worker thread for CSV file packetizing when uploading contents to server
+//
+
+/*
+GNU GENERAL PUBLIC LICENSE
+Version 3, 29 June 2007
+
+Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+
+See full version of LICENSE in <https://fsf.org/>
+
+*/
+
+
+importScripts('../deps/pako.min.js');
+
+
+var MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE = 100000;
 var MX_WS_UPLOAD_MSG_SEP_MS = 50;
 var MX_WS_UPLOAD_NBPACKETS_BEFORE_BREATH= 100;
 
