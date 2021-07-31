@@ -150,13 +150,13 @@
 	            			<td style="width:45%">
 	            				<!-- center><div style="font-size:1.3rem;"><s:text name="welcome.exploreYourData" /></div></center-->
 	            				<ul>
-	            				<li class="mx-welcome-li" ><s:text name="welcome.features.teamWork" /></li>
 	            				<li class="mx-welcome-li" ><s:text name="welcome.features.injectdata" /></li>
-								<li class="mx-welcome-li" ><s:text name="welcome.feature.workOffline" /></li>
 								<li class="mx-welcome-li" ><s:text name="welcome.features.storeCorpus" /></li>
 								<li class="mx-welcome-li" ><s:text name="welcome.features.explore" /></li>
 								<li class="mx-welcome-li" ><s:text name="welcome.features.statistics" /></li>			
-								<li class="mx-welcome-li" ><s:text name="welcome.features.graphs" /></li>								
+								<li class="mx-welcome-li" ><s:text name="welcome.features.graphs" /></li>
+								<li class="mx-welcome-li" ><s:text name="welcome.features.teamWork" /></li>
+	            				<li class="mx-welcome-li" ><s:text name="welcome.feature.workOffline" /></li>																
 	            				</ul>
 	            			
 	            			</td>
@@ -188,6 +188,9 @@
            			style="margin-left:3rem;" />
            			
 		</a>	
+		</td>
+		<td style="text-align:center;min-width:10rem;">
+		<span ><s:text name="welcome.requiredConfig" /></span>
 		</td></tr></table>
 		</center>
 		</div>
