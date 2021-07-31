@@ -24,6 +24,7 @@ function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeF
 	
 	colTermNodeSelect.onchange=function() { checkBox.checked=true; onColsSelectionsChangeFunc(); }
 	let found=false;
+	let matchingChoiceNode=null;
 	let alertExcelDates=false;
 	
 	let choiceIgnoreNode=document.createElement("option");
@@ -35,7 +36,6 @@ function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeF
 	}
 	if (found==false) { choiceIgnoreNode.selected=true; }
 	colTermNodeSelect.appendChild(choiceIgnoreNode);
-
 	
 	for (termName in MxGuiHeader.getCurCatalogTermsList()) {
 		let choiceNode=document.createElement("option");
@@ -44,6 +44,7 @@ function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeF
 		if (termName==csvColName) { 
 			choiceNode.selected=true;
 			found=true;			
+			matchingChoiceNode=choiceNode;
 		}		
 		choiceNode.onclick=function(e) { clearNodeChildren(commentZone); }
 		colTermNodeSelect.appendChild(choiceNode);
@@ -61,6 +62,7 @@ function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeF
  	if (csvColName=="_id" || csvColName=="id") {
 		idChoiceNode.selected=true;
 		found=true;	
+		matchingChoiceNode=idChoiceNode;
 	}
 	
 	if (badTermName!=true && found==false) {
@@ -83,9 +85,10 @@ function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeF
 					else { choiceIgnoreNode.selected=true; }
 					onColsSelectionsChangeFunc();
 				}
+				matchingChoiceNode=choiceNode;
 			}
 			
-			if (datatypeStr=="DATE" && isExcelFile==true) { 
+			else if (datatypeStr=="DATE" && isExcelFile==true) { 
 				let basicFunc=choiceNode.onclick;
 				choiceNode.onclick=function() {
 					clearNodeChildren(commentZone);
@@ -100,7 +103,16 @@ function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeF
 		}
 	}
 	
-	if (found==true) { checkBox.checked=true; }
+	if (found==true) { 
+		checkBox.checked=true;
+		
+		checkBox.onclick=function() {
+			clearNodeChildren(commentZone);
+			if (checkBox.checked==true) { matchingChoiceNode.selected=true; }
+			else { choiceIgnoreNode.selected=true; }
+			onColsSelectionsChangeFunc();
+		}
+	}
 	
 	checkBox.getCsvColName=function() { return csvColName; }; 
 	checkBox.getTermName=function() { return colTermNodeSelect.value; }
