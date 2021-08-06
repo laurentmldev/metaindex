@@ -165,6 +165,14 @@ function _commons_perspective_build_section(catalogDesc,perspectiveData,tabIdx,s
 		 let listOfMissingTermsInCatalog="";
 		 if (editMode==MxGuiPerspective.MODE_CUSTOMIZE) { bodyNode.classList.add("mx-perspective-section-align-left"); } 
 		 else { bodyNode.classList.add("mx-perspective-section-align-"+sectionDefinition.align); }
+		 
+		 if (sectionDefinition.fields.length==0) {
+			 let emptySectionMsgNode=document.createElement("div");
+			 emptySectionMsgNode.innerHTML="<s:text name="Items.emptyContents"/>";
+			 emptySectionMsgNode.style="margin-top:2rem;margin-bottom:3rem;font-size:1.2rem;color:#aaa;";
+			 bodyNode.appendChild(emptySectionMsgNode);
+			 
+		 }
 		 for (var fieldIdx=0;fieldIdx<sectionDefinition.fields.length;fieldIdx++) {
 	 		let curFieldVisuDef=sectionDefinition.fields[fieldIdx];
 	 		if (curFieldVisuDef==null) { continue; }
