@@ -8,10 +8,7 @@ add javadoc to WS entry points
 
 more realistic/consistent "empty catalog contents" picture (Excel file screenshot)
 
-as an admin I want to know how many persons are currently logged in: REST API (+ API key)?
-
-
-when document contents is empty, show a msg with "you can add fields to this item by clicking on button up there"  
+as an admin I want to know how many persons are currently logged in: REST API (+ API key)?  
  
 changes on user info on DB are overriden when logging out
 
@@ -152,6 +149,8 @@ Done:
 
 
 v2.1.4
+
+when document contents is empty, show a msg with "you can add fields to this item by clicking on button up there"
 
 #136 clicking to a first catalog when first log-in after server startup, then another one then enter leads user to the first catalog
 
