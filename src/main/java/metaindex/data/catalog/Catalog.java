@@ -155,6 +155,9 @@ public class Catalog implements ICatalog {
 	*/
 	private void startServices() throws DataProcessException {
 		        	
+		// issue #136: /!\ Processing in startServices shall be thread safe, because called out of a semaphore
+		// lock in 'enter()' method.
+		
 		File catalogdataFs = new File(getLocalFsFilesPath());
 		if (!catalogdataFs.exists()) {
 			if (!catalogdataFs.mkdirs()) {
@@ -167,7 +170,7 @@ public class Catalog implements ICatalog {
 		
 		_dbAutoRefreshProcessing=new CatalogPeriodicDbReloader(this);
 		_dbAutoRefreshProcessing.start();		
-
+		
 		log.info("configuring Kibana Space for catalog "+this.getName()+"... ");
 		if (!(Globals.Get().getDatabasesMgr()
 				.getCatalogManagementDbInterface()
@@ -279,10 +282,6 @@ public class Catalog implements ICatalog {
 			
 			_loggedUsersLock.acquire();			
 			
-			if (_firstEnterConfig==true) {
-				_firstEnterConfig=false;
-				startServices();				
-			}
 						
 			if (!_loggedUsersIds.containsKey(p.getId()) ) {
 				_loggedUsersIds.put(p.getId(),p);
@@ -290,7 +289,21 @@ public class Catalog implements ICatalog {
 							+p.getId()+"' sessionId="+p.getHttpSessionId()
 							+". Total: "+_loggedUsersIds.size()+" users.");
 			}
+			
 			_loggedUsersLock.release();
+			
+			// /!\ Attention: issue #136: startServices takes some time to execute (because of Kibana space config)
+			// and so shall be called OUT of the _loggedUsersLock
+			// if not, if user click 'rapidly' on 2 catalogs, and 'enter catalog' rapidly on the second
+			// it might actually enter into the first one.
+			//
+			// Processing in startServices are thread safe.
+			//
+			if (_firstEnterConfig==true) {
+				_firstEnterConfig=false;
+				startServices();				
+			}			
+			
 			
 		} catch (Exception e) { _loggedUsersLock.release(); e.printStackTrace(); }
 		

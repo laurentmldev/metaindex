@@ -3,21 +3,18 @@
 
 v2.1.4:
 -------
-
-#136 clicking to a first catalog after server startup, then another one then enter leads user to the first catalog
 	
+add javadoc to WS entry points
+
 more realistic/consistent "empty catalog contents" picture (Excel file screenshot)
 
-as an admin I want to know how many persons are currently logged in: REST API ?
+as an admin I want to know how many persons are currently logged in: REST API (+ API key)?
 
-
-catalog acquire lock: automatically unlock after X hours ?
 
 when document contents is empty, show a msg with "you can add fields to this item by clicking on button up there"  
  
-as admin, need to know how many users are currently logged in
+changes on user info on DB are overriden when logging out
 
- 
 #118 bug: when renaming a perspective, it actually adds a new one, but keep previous one
 	editing perspective: the first perspective in the list is opened each time we add a field in a second perspective
 
@@ -27,7 +24,7 @@ as admin, need to know how many users are currently logged in
 
 offline page: add a try-again button
 	
-#105 only catalog admin shall be allowed to create a new field
+
 	
 in users panel, unable to change access rights on first display, need to refresh page and then it works (TBC)
 rename 'perspective' into 'layout' ?
@@ -52,6 +49,11 @@ Omeka interface for web-publishing features ?
 CSV upload:
 	- upload full file and then process it on server side, rather than sending it
 	  chunk by chunk from client side ...
+
+
+catalog acquire lock: automatically unlock after X hours ?
+
+#105 only catalog admin shall be allowed to create a new field ?
 
 #138 backup/restore contents of a given catalog (def+docs+data):
 		
@@ -151,6 +153,7 @@ Done:
 
 v2.1.4
 
+#136 clicking to a first catalog when first log-in after server startup, then another one then enter leads user to the first catalog
 
 #134 welcome page: 
 	- add link to sources in github

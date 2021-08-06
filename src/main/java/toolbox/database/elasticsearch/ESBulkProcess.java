@@ -303,50 +303,36 @@ public class ESBulkProcess extends AProcessingTask   {
 	public void stop() {
 		
 		try {
-			log.error("### Stop1");
 			_stoppingProcessingLock.acquire();
-			log.error("### Stop2");
 			if (this.isTerminated() && !this.isRunning()) {
-				log.error("### Stop3");
 				_stoppingProcessingLock.release();
 				return; 
 			}			
-			log.error("### Stop4");
 			Boolean success = _processor.awaitClose(30L, TimeUnit.SECONDS);
-			log.error("### Stop5");
 			_processor.close();
-			log.error("### Stop6");
 			ESWriteStmt.waitUntilEsIndexRefreshed(_catalog.getName(),_datasource);
-			log.error("### Stop7");
 			getActiveUser().getCurrentCatalog().loadStatsFromDb();
-			log.error("### Stop8");
 			if (!success) {
 				log.error("Unable to await end of ES bulk processor "+getName());
 				getActiveUser().sendGuiErrorMessage(getActiveUser().getText("Items.serverside.bulkprocess.failed", getName()));
 			} else {
-				log.error("### Stop9");
 				// notify active user that its processing finished
 				if (!this.isTerminated()) {
-					log.error("### Stop10");
 					getActiveUser().sendGuiErrorMessage(getActiveUser().getText("Items.serverside.bulkprocess.failedAfterNItems", 
 							getName(),
 							this.getProcessedNbData().toString(),
 							this.getTargetNbData().toString()));
 				} else {
-					log.error("### Stop11");
 					getActiveUser().sendGuiSuccessMessage(getActiveUser().getText("Items.serverside.bulkprocess.success", 
 							getName(),
 							this.getProcessedNbData().toString()));
 				}
 												
 			}
-			log.error("### Stop12");
 			// notify all users that some contents changed
 			getActiveUser().notifyCatalogContentsChanged(CATALOG_MODIF_TYPE.DOCS_LIST, this.getProcessedNbData());	
 			_interruptFlag=true;
-			log.error("### Stop13");
 			_stoppingProcessingLock.release();
-			log.error("### Stop14");
 			joinRunnerThread();
 
 		} catch (InterruptedException | DataProcessException e) {
@@ -356,14 +342,11 @@ public class ESBulkProcess extends AProcessingTask   {
 			
 		}
 		
-		log.error("### Stop15");
 		getActiveUser().sendGuiProgressMessage(
     			getId(),
     			getActiveUser().getText("Items.serverside.bulkprocess.progress", getName()),
     			AProcessingTask.pourcentage(getProcessedNbData(), getTargetNbData()), false /*processing ended*/);
-		log.error("### Stop16");
-		getActiveUser().removeProccessingTask(this.getId());
-		log.error("### Stop17");
+		getActiveUser().removeProccessingTask(this.getId());		
 	}
 	@Override
 	public void abort() {
