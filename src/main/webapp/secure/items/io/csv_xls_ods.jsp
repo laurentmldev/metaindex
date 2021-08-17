@@ -41,7 +41,7 @@ function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeF
 		let choiceNode=document.createElement("option");
 		choiceNode.value=termName;
 		choiceNode.innerHTML=mx_helpers_getTermName(MxGuiHeader.getCurCatalogDescr().terms[termName],MxGuiHeader.getCurCatalogDescr());
-		if (termName==csvColName) { 
+		if (termName==csvColName.toLowerCase()) { 
 			choiceNode.selected=true;
 			found=true;			
 			matchingChoiceNode=choiceNode;

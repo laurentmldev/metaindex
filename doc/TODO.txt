@@ -1,8 +1,30 @@
 
 
 
-v2.1.4:
+v2.2.0:
 -------
+
+#141 when uploading CSV with field in different case then existing one: error is raised (CSV has no columns)
+
+#143 changes on user info on DB are overriden when logging out
+
+#142 tools market place
+
+#144 MarketPlace: DTS API importer
+
+#145 MarketPlace: CSV data reconciliation
+
+#146 MarketPlace: CSV data generator
+
+cron sql DB backup?
+
+403 error when log in again after automatic logout
+
+
+
+help text for long or tiny text: can use __MX_ESCAPED_SEPARATOR__ to mark CSV separator	
+
+url (PAGE_URL) RO mode displayed in vertical
 	
 add javadoc to WS entry points
 
@@ -10,7 +32,7 @@ more realistic/consistent "empty catalog contents" picture (Excel file screensho
 
 as an admin I want to know how many persons are currently logged in: REST API (+ API key)?  
  
-changes on user info on DB are overriden when logging out
+
 
 #118 bug: when renaming a perspective, it actually adds a new one, but keep previous one
 	editing perspective: the first perspective in the list is opened each time we add a field in a second perspective
@@ -19,8 +41,6 @@ changes on user info on DB are overriden when logging out
 	--> added exception. pb to be confirmed
     
 
-offline page: add a try-again button
-	
 
 	
 in users panel, unable to change access rights on first display, need to refresh page and then it works (TBC)
@@ -31,11 +51,11 @@ rename 'perspective' into 'layout' ?
 
 rename download -> export ?
 
-v2.2.0:
+v2.3.0:
 -------
 
 
-DTS API
+
 teic/oxgarage integration
 TXM integration
 integrate https://openseadragon.github.io/ for big images viewer ?
@@ -95,7 +115,6 @@ session management:
 	- handle (or block) severals sessions in parallel
 
 
-
 check why payment by CB does not work in inline Paypal form
 
 
@@ -149,6 +168,12 @@ Done:
 
 
 v2.1.4
+
+offline page: add a try-again button
+	
+send monitoring info (CPU, memory space) by email (crontab)
+
+INTEGER shall be a long number, not short.
 
 when document contents is empty, show a msg with "you can add fields to this item by clicking on button up there"
 
