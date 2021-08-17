@@ -105,7 +105,7 @@ public abstract class ACsvParser<TTo> implements IFieldsListParser<String,TTo> {
 	}
 	
 	private Object parseNumberFieldContents(String csvContents) throws ParseException { 
-		csvContents=csvContents.replace(",","."); // handle bloody Excel text-export format
+		csvContents=csvContents.replace(",","."); // handle Excel text-export format
 		try { return Integer.parseUnsignedInt(csvContents); }
 		catch (Exception e1) { try { return Integer.parseInt(csvContents); }
 		catch (Exception e2) { try { return Double.parseDouble(csvContents); }

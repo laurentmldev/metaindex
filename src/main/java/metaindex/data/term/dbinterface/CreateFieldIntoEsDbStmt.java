@@ -160,7 +160,7 @@ class CreateFieldIntoEsDbStmt extends ESWriteStmt<ICatalogTerm>   {
 			  /* Disabled for now : 
 			   * seems the we need to re-index for adding a new field in the _source 'excludes' list.
 			   
-		        // long test shall be excluded from _source default result to avoid 
+		        // long text shall be excluded from _source default result to avoid 
 		        // to optimize response time with long data
 		        if (t.getDatatype()== ICatalogTerm.TERM_DATATYPE.LONG_TEXT) {
 		        	builder.startObject("_source"); {
