@@ -64,7 +64,7 @@ public interface ICatalogTerm extends IIdentifiable<Integer>{
 
 	public static RAW_DATATYPE getRawDatatype(TERM_DATATYPE datatype) {
 		if (datatype==TERM_DATATYPE.FLOAT) { return RAW_DATATYPE.Tfloat; }
-		if (datatype==TERM_DATATYPE.INTEGER) { return RAW_DATATYPE.Tshort; }
+		if (datatype==TERM_DATATYPE.INTEGER) { return RAW_DATATYPE.Tinteger; }
 		if (datatype==TERM_DATATYPE.DATE) { return RAW_DATATYPE.Tdate; }
 		if (datatype==TERM_DATATYPE.GEO_POINT) { return RAW_DATATYPE.Tgeo_point; }
 		if (datatype==TERM_DATATYPE.LINK) { return RAW_DATATYPE.Ttext; }

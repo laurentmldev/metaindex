@@ -4,7 +4,17 @@
 v2.2.0:
 -------
 
-#141 when uploading CSV with field in different case then existing one: error is raised (CSV has no columns)
+ 
+
+#64 type longtext pour étude du language / analyse de corpus
+	
+	when putting mapping _source excludes:
+		Suppressed: org.elasticsearch.client.ResponseException: method [PUT], host [http://localhost:9200], URI [/chaps/_mapping?master_timeout=30s&timeout=30s], status line [HTTP/1.1 400 Bad Request]
+		{"error":{"root_cause":[{"type":"illegal_argument_exception","reason":"Mapper for [_source] conflicts with existing mapping:\n[Cannot update excludes setting for [_source]]"}],"type":"illegal_argument_exception","reason":"Mapper for [_source] conflicts with existing mapping:\n[Cannot update excludes setting for [_source]]"},"status":400}
+
+	update SQL def for renaming datatype RICH_TEXT into LONG_TEXT 
+	--> ALTER TABLE `catalog_terms` CHANGE `datatype` `datatype` ENUM('TINY_TEXT','LONG_TEXT','DATE','INTEGER','FLOAT','PAGE_URL','IMAGE_URL','AUDIO_URL','VIDEO_URL','GEO_POINT','LINK') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;	
+	
 
 #143 changes on user info on DB are overriden when logging out
 
@@ -167,7 +177,11 @@ Done:
 -----
 
 
-v2.1.4
+v2.2.0
+
+#148 ElasticSearch type used for Integer fields is to small (short): shall be integer
+
+#141 when uploading CSV with field in different case then existing one: error is raised (CSV has no columns)
 
 offline page: add a try-again button
 	
@@ -186,15 +200,6 @@ when document contents is empty, show a msg with "you can add fields to this ite
 	
 #135 when uploading CSV: unchecking a matched field is not applied
 
-#64 type longtext pour étude du language / analyse de corpus
-	
-	when putting mapping _source excludes:
-		Suppressed: org.elasticsearch.client.ResponseException: method [PUT], host [http://localhost:9200], URI [/chaps/_mapping?master_timeout=30s&timeout=30s], status line [HTTP/1.1 400 Bad Request]
-		{"error":{"root_cause":[{"type":"illegal_argument_exception","reason":"Mapper for [_source] conflicts with existing mapping:\n[Cannot update excludes setting for [_source]]"}],"type":"illegal_argument_exception","reason":"Mapper for [_source] conflicts with existing mapping:\n[Cannot update excludes setting for [_source]]"},"status":400}
-
-	update SQL def for renaming datatype RICH_TEXT into LONG_TEXT 
-	--> ALTER TABLE `catalog_terms` CHANGE `datatype` `datatype` ENUM('TINY_TEXT','LONG_TEXT','DATE','INTEGER','FLOAT','PAGE_URL','IMAGE_URL','AUDIO_URL','VIDEO_URL','GEO_POINT','LINK') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;	
-	
 
 #132 support big files (100K+) CSV upload with minimal impacting perfo for other users. 
 
