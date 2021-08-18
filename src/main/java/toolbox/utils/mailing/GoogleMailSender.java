@@ -66,7 +66,6 @@ public class GoogleMailSender implements IEmailSender {
     public void sendHtml(final String username, final String password, String recipientEmail, 
     							String ccEmail, String cciEmail, String title, String htmlMessage) throws AddressException, MessagingException {
         
-    	Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
         final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
 
         // Get a Properties object
