@@ -39,14 +39,14 @@ import org.apache.sshd.server.SshServer;
 import org.apache.sshd.server.auth.password.PasswordAuthenticator;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 
-import org.apache.sshd.server.scp.ScpCommandFactory;
+import org.apache.sshd.scp.server.ScpCommandFactory;
 import org.apache.sshd.server.session.ServerSession;
 import org.apache.sshd.server.subsystem.SubsystemFactory;
-import org.apache.sshd.server.subsystem.sftp.AbstractSftpEventListenerAdapter;
-import org.apache.sshd.server.subsystem.sftp.FileHandle;
-import org.apache.sshd.server.subsystem.sftp.Handle;
-import org.apache.sshd.server.subsystem.sftp.SftpEventListener;
-import org.apache.sshd.server.subsystem.sftp.SftpSubsystemFactory;
+import org.apache.sshd.sftp.server.AbstractSftpEventListenerAdapter;
+import org.apache.sshd.sftp.server.FileHandle;
+import org.apache.sshd.sftp.server.Handle;
+import org.apache.sshd.sftp.server.SftpEventListener;
+import org.apache.sshd.sftp.server.SftpSubsystemFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -201,9 +201,9 @@ public class SftpCatalogsDrive implements ICatalogsDrive {
 		  keyPairProvider.setAlgorithm("RSA");		  
 		  _server.setKeyPairProvider(keyPairProvider);
 		  
-		  PropertyResolverUtils.updateProperty(_server,
-				  	ServerAuthenticationManager.WELCOME_BANNER,
-				  	"Welcome to MetaindeX Drive\n");
+		  org.apache.sshd.core.CoreModuleProperties.WELCOME_BANNER.set(
+				  _server,
+				  "Welcome to MetaindeX Drive\n");
 		  
 		  _server.setPasswordAuthenticator(new PasswordAuthenticator() {
 
@@ -256,9 +256,10 @@ public class SftpCatalogsDrive implements ICatalogsDrive {
 	    	    * Waiting for a better solution, we try to mimic it using "closing" method instead, where the
 	    	    * parent folder is closed after files have been fully written.
 	    	    * We use this as a trigger to perform file names normalization.
+	    	 * @throws IOException 
 	    	    */
 	    	   @Override
-	    	    public void closing(ServerSession session, String remoteHandle, Handle localHandle) {
+	    	    public void closing(ServerSession session, String remoteHandle, Handle localHandle) throws IOException {
 	    	       
 	    		   super.closing(session,remoteHandle,localHandle);
 	    		   File closingFile = localHandle.getFile().toFile(); 

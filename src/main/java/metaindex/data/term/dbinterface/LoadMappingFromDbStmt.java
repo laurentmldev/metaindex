@@ -23,7 +23,7 @@ import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.indices.GetMappingsRequest;
 import org.elasticsearch.client.indices.GetMappingsResponse;
-import org.elasticsearch.cluster.metadata.MappingMetaData;
+import org.elasticsearch.cluster.metadata.MappingMetadata;
 
 import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.ICatalog;
@@ -75,14 +75,14 @@ public class LoadMappingFromDbStmt extends ESPopulateStmt<ICatalog>   {
 					this.getDataConnector().getHighLevelClient().indices().getMapping(
 							_request, RequestOptions.DEFAULT);
 
-			Map<String, MappingMetaData> allMappings = getMappingResponse.mappings();
+			Map<String, MappingMetadata> allMappings = getMappingResponse.mappings();
 			for (ICatalog c : _catalogs) { 
 				
 				Map<String,RAW_DATATYPE> catalogMapping = new HashMap<>();
 				// store complementary info for more complex mappings like 'join' fields
 				Map<String,Map<String,Object>> catalogMappingProperties = new HashMap<>();
 				
-				MappingMetaData indexMapping = allMappings.get(c.getName());
+				MappingMetadata indexMapping = allMappings.get(c.getName());
 				if (indexMapping==null) {
 					log.error("No such index '"+c.getName()+"' in retrieved contents from ElasticSearch.");
 					continue;
