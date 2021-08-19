@@ -25,7 +25,7 @@ import metaindex.app.periodic.statistics.publicpages.WelcomePageMxStat;
 public class BeanWelcome extends AMetaindexBean {  
   
 	private static final long serialVersionUID = -2366950152373009921L;
-	private Log log = LogFactory.getLog(BeanProfile.class);
+	private Log log = LogFactory.getLog(BeanWelcome.class);
 
 	
 	@Override

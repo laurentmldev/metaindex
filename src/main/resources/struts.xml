@@ -4,7 +4,7 @@
 "http://struts.apache.org/dtds/struts-2.1.dtd">  
 <struts>  
 	<constant name="struts.devMode" value="true" />
-	<constant name="struts.action.excludePattern" value="/wsmx.*,/public/commons/.*,/logoutprocess,/loginprocess,/userdata/catalogs/.*,/secure/mxtmp/.*" /> 
+	<constant name="struts.action.excludePattern" value="/wsmx.*,/public/commons/.*,/public/marketplace/.*,/logoutprocess,/loginprocess,/userdata/catalogs/.*,/secure/mxtmp/.*" /> 
  	<constant name="struts.multipart.maxSize" value="2000000" />
       
 	<package name="metaindex" extends="struts-default">  
@@ -27,6 +27,10 @@
 		<!-- Welcome page -->
 		<action name="welcome" class="metaindex.app.beans.BeanWelcome">
 			<result name="BeanProcess_SUCCESS" >/public/welcome.jsp</result>			
+		</action>
+		
+		<action name="marketplace" class="metaindex.app.beans.BeanMarketPlace">
+			<result name="BeanProcess_SUCCESS" >/public/marketplace.jsp</result>			
 		</action>
 		
 		<!-- Sign-up (create new account) -->

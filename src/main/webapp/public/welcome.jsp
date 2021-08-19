@@ -40,7 +40,7 @@
 	  setTimeout(carousel, 10000); 
 	}
 
-	function onload() {
+	function onload_actions() {
 		if ("<s:property value="currentUserProfile.name" />".length!=0) {
 			document.getElementById("language_buttons").style.display='none';	
 		}
@@ -50,7 +50,7 @@
 	 
 </head>
 
-<body class="mx-public-form" onload="onload();" >
+<body class="mx-public-form" onload="onload_actions();" >
 
 <c:if test="${mxDevMode == true}" >
   	<nav class="navbar navbar-expand topbar static-top"

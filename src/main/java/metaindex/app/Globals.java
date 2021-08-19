@@ -213,7 +213,13 @@ public class Globals {
 		return getUserdataFsPath()+"/users";
 	}
 	public String getWebappsTmpFsPath() {
-		String path=getWebappsFsPath()+"/"+Globals.GetMxProperty("mx.appname")+"/secure/mxtmp/";		
+		String path=getWebappsFsPath()+"/metaindex/secure/mxtmp/";		
+		File directory = new File(path);
+        if (! directory.exists()){ directory.mkdir(); }        
+        return path;
+    }
+	public String getMarketplaceFsPath() {
+		String path=getWebappsFsPath()+"/metaindex/public/marketplace/";		
 		File directory = new File(path);
         if (! directory.exists()){ directory.mkdir(); }        
         return path;

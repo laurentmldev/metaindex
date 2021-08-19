@@ -1,6 +1,6 @@
 package metaindex.app.control.websockets.items;
 
-import java.io.IOException;
+
 
 /*
 GNU GENERAL PUBLIC LICENSE
@@ -15,11 +15,11 @@ See full version of LICENSE in <https://fsf.org/>
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.json.JSONArray;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
@@ -39,17 +39,15 @@ import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
 import metaindex.data.term.ICatalogTerm.TERM_DATATYPE;
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.database.IDbItem;
-import toolbox.database.elasticsearch.ESBulkProcess;
 import toolbox.database.elasticsearch.ESDataProcessException;
 import toolbox.database.sql.SQLDataProcessException;
 import toolbox.exceptions.DataProcessException;
-import toolbox.utils.AProcessingTask;
 import toolbox.utils.BasicPair;
 import toolbox.utils.IPair;
 import toolbox.utils.IProcessingTask;
 import toolbox.utils.parsers.ACsvParser;
 import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
-import toolbox.utils.parsers.IListParser.ParseException;
+
 
 @Controller
 public class WsControllerItemsCsvFileUpload extends AMxWSController {

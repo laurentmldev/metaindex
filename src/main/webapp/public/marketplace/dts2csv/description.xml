@@ -1,0 +1,18 @@
+<marketplace_tool name="dts2csv" version="1.0.0">
+	<description>
+	Python tool to extract Collections, Resources and TEI data from DTS API and generate CSV files.&lt;br/&gt;
+	Those CSV files can be then easily imported into MetaindeX for further analysis.&lt;br/&gt;
+	Example from command line:
+	&lt;pre&gt;
+		$ python dts2csv.py mydtsconfig.py
+	&lt;/pre&gt;
+	</description>
+
+	<dependencies>&lt;ul&gt;
+				  &lt;li&gt; &lt;a href="https://www.anaconda.com/products/individual" target="_blank" &gt;Python Anaconda3&lt;/a&gt; &lt;/li&gt;
+				  &lt;li&gt; &lt;a href="https://sourceforge.net/projects/saxon/files/Saxon-HE/" target="_blank" &gt;Saxon-HE&lt;/a&gt; (optional)&lt;/li&gt;
+				  &lt;li&gt; &lt;a href="https://github.com/TEIC/Stylesheets" target="_blank" &gt;TEI-XSL&lt;/a&gt; (optional)&lt;/li&gt;
+				  &lt;/ul&gt;
+				  </dependencies>
+</marketplace_tool>
+	
