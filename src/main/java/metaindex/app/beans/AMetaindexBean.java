@@ -55,6 +55,7 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 	private static final long serialVersionUID = 1084021485104376111L;
 	private Log log = LogFactory.getLog(AMetaindexBean.class);
 	private IUserProfileData _userProfileData=null;
+	private String _latestSessionLanguage="EN";
 
 	public boolean isUserLogged() { return this.getCurrentUserProfile().getName().length()>0; }
     
@@ -81,9 +82,7 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 			if (request.getParameter("language")!=null) { 
 				setSessionLanguage(request.getParameter("language"),request,ActionContext.getContext()); 
 			}
-						
-	  		
-  				  				  		
+					  		
   			// if LOGGED-IN user : try to get user profile by name if already logged in
   			if (request.getUserPrincipal()!=null) {
   				String userName=request.getUserPrincipal().getName();
@@ -175,6 +174,8 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
   		if (ctx != null) { 
   			ctx.setLocale( new Locale(languageShort));   			
   		}
+  		
+  		_latestSessionLanguage=languageShort;
   	}
   	
   	protected String getSessionLanguage(HttpServletRequest request) {
@@ -185,6 +186,15 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
   		
   	}
   	
+  	public String getCurrentLanguage() {
+  		
+  		if (_userProfileData!=null && _userProfileData.isLoggedIn()) {
+  			return _userProfileData.getGuiLanguageShortname();
+  		}
+  		
+  		return _latestSessionLanguage.toUpperCase();
+  	}
+  	  	
 	public IUserProfileData getCurrentUserProfile() {
 		if (_userProfileData!=null && !_userProfileData.isLoggedIn()
 				&& ServletActionContext.getRequest()!=null 

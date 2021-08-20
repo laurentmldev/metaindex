@@ -29,8 +29,8 @@
 			<result name="BeanProcess_SUCCESS" >/public/welcome.jsp</result>			
 		</action>
 		
-		<action name="marketplace" class="metaindex.app.beans.BeanMarketPlace">
-			<result name="BeanProcess_SUCCESS" >/public/marketplace.jsp</result>			
+		<action name="toolbox" class="metaindex.app.beans.BeanToolbox">
+			<result name="BeanProcess_SUCCESS" >/public/toolbox.jsp</result>			
 		</action>
 		
 		<!-- Sign-up (create new account) -->

@@ -15,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import metaindex.app.Globals;
@@ -24,7 +25,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,15 +38,15 @@ import javax.xml.parsers.ParserConfigurationException;
  * Bean for welcome page
  * @author Laurent ML
  */
-public class BeanMarketPlace extends AMetaindexBean {  
+public class BeanToolbox extends AMetaindexBean {  
   
 	private static final long serialVersionUID = 1L;
-	private Log log = LogFactory.getLog(BeanMarketPlace.class);
+	private Log log = LogFactory.getLog(BeanToolbox.class);
 	private static final String DESC_FILE_NAME="description.xml";
 	public class ToolDesc {
 		private String name;
 		private String version;
-		private String description;
+		private Map<String,String> description = new HashMap<>();
 		private String dependencies;
 		
 		private List<String> filesUrl=new ArrayList<>();
@@ -54,10 +57,10 @@ public class BeanMarketPlace extends AMetaindexBean {
 		}
 		public String getName() { return unescapeHtml(name); }
 		public void setName(String name) { this.name = name; }
-		public String getDescription() {
-			return unescapeHtml(description);
+		public Map<String,String> getDescription() {
+			return description;
 		}
-		public void setDescription(String description) {
+		public void setDescription(Map<String,String> description) {
 			this.description = description;
 		}
 		public String getDependencies() {
@@ -137,8 +140,14 @@ public class BeanMarketPlace extends AMetaindexBean {
 					ToolDesc curToolDesc = new ToolDesc();
 					curToolDesc.setName(root.getAttributes().getNamedItem("name").getTextContent());
 					curToolDesc.setVersion(root.getAttributes().getNamedItem("version").getTextContent());
-					
-					curToolDesc.setDescription(root.getElementsByTagName("description").item(0).getTextContent());
+					curToolDesc.setDescription(new HashMap<String,String>());
+					NodeList descriptions = root.getElementsByTagName("description");
+					for (int i=0; i<descriptions.getLength();i++) {
+						Node curNode = descriptions.item(i);
+						String language = curNode.getAttributes().getNamedItem("language").getTextContent();
+						String text = curNode.getTextContent();
+						curToolDesc.getDescription().put(language,text);
+					}					
 					curToolDesc.setDependencies(root.getElementsByTagName("dependencies").item(0).getTextContent());
 					
 					_buildFilesList(path,curToolDesc,path.toString());

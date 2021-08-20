@@ -77,16 +77,30 @@
 	 			
 	 	
 	 	
-	 	<div style="position:fixed;margin-left:85%;"><table>
-		 	<tr><td><a href="contactform?origin=welcome"  
+	 	<div style="position:fixed;margin-left:75%;">
+	 	<table>
+		 	<tr>
+		 		<td style="margin-top:1rem;">			 	 	
+		 	<a href="toolbox"  
+		 	    class="mx-welcome-navbar-btn nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale " >
+		 		<s:text name="Toolbox.title" /></a>
+		 	</td>
+		 	
+			
+		 		<td><a href="contactform?origin=welcome"  
 		 		class="nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale mx-welcome-navbar-btn " >
 		 		<s:text name="contactform.title" /></a>	 
 		 		</td></tr>
-		 	<tr><td style="margin-top:5rem;">			 	 	
-		 	<a href="loginform"  
-		 	    class="mx-welcome-navbar-btn nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale " >
-		 		<s:text name="signin.signin" /></a>
-		 	</td></tr>
+		 	<tr>
+		 	<td/>
+		 	 	<td style="margin-top:1rem;">			 	 	
+			 	<a href="loginform"  
+			 	    class="mx-welcome-navbar-btn nav-item no-arrow btn btn-sm btn-info mx_welcome_btn scale " >
+			 		<s:text name="signin.signin" /></a>
+			 	</td> 
+		 	</tr>
+		 	
+		 	
 	 	</table></div>
 	 			
 	 </nav>
