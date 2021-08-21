@@ -18,7 +18,7 @@ v2.2.0:
 
 #143 changes on user info on DB are overriden when logging out
 
-#142 tools market place
+#142 toolbox
 
 #144 MarketPlace: DTS API importer
 

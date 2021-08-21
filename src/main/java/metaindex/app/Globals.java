@@ -218,8 +218,8 @@ public class Globals {
         if (! directory.exists()){ directory.mkdir(); }        
         return path;
     }
-	public String getMarketplaceFsPath() {
-		String path=getWebappsFsPath()+"/metaindex/public/marketplace/";		
+	public String getToolboxFsPath() {
+		String path=getWebappsFsPath()+"/metaindex/public/toolbox/";		
 		File directory = new File(path);
         if (! directory.exists()){ directory.mkdir(); }        
         return path;

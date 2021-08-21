@@ -64,7 +64,8 @@
             	</div>
 				<div class="app-title" style="font-size:4vw;padding:0;margin:0;width:100%;text-align:center;">
 			 		<span class="scale-color-white">M</span><span class="app-title2 scale-color-white" style="color:white;">etainde</span><span class="scale-color-white">X 
-			 		<s:text name="Toolbox.title" /></span>           		            			
+			 		</span>  
+			 		        <s:text name="Toolbox.title" />  		            			
             	</div>	
             	<a href="#" class="btn btn-primary btn-user btn-block scale" 
 	        		style="max-width:10%;height:3rem;background:#999;border:none;padding:0;padding:0;padding-top:0.8rem;" 
@@ -76,7 +77,7 @@
 	 		
   <div class="container" style="max-width:95vw;margin-top:1rem;"  >
   	<center>
-
+		<h5 style="margin:1rem;margin-top:1.5rem;"><s:text name="Toolbox.overview"/></h5>
 		 <table class="table table-striped">						    
 		    <tbody>
 		     <tr style="text-align:center">

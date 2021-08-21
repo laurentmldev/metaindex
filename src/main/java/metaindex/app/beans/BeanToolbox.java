@@ -124,7 +124,7 @@ public class BeanToolbox extends AMetaindexBean {
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		
-		String toolsFolder= Globals.Get().getMarketplaceFsPath();
+		String toolsFolder= Globals.Get().getToolboxFsPath();
 		Path toolsFolderObj = new File(toolsFolder).toPath();
 		Files.list(toolsFolderObj)
 	        .forEach(path -> {
