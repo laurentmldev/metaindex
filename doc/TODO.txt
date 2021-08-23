@@ -20,11 +20,11 @@ v2.2.0:
 
 #142 toolbox
 
-#144 MarketPlace: DTS API importer
+#144 Toolbox: DTS API importer
 
-#145 MarketPlace: CSV data reconciliation
+#145 Toolbox: CSV data reconciliation
 
-#146 MarketPlace: CSV data generator
+#146 Toolbox: CSV data generator
 
 cron sql DB backup?
 

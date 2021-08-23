@@ -1,0 +1,25 @@
+<marketplace_tool name="csv-reconcile" version="1.0">
+	<description language="EN">
+	Python script to reconcile data between two given CSV files.&lt;br/&gt;
+	&lt;br/&gt;
+	Example from command line:
+	&lt;pre&gt;
+		$ python csv-reconcile.py samples/csv-reconcile-confsample.py
+	&lt;/pre&gt;
+	</description>
+
+	<description language="FR">
+	Script Python pour réconcilier les données entre deux fichiers CSV.&lt;br/&gt;
+	&lt;br/&gt;
+	Exemple de ligne de commande:
+	&lt;pre&gt;
+		$ python csv-reconcile.py samples/csv-reconcile-confsample.py
+	&lt;/pre&gt;
+	</description>
+	
+	<dependencies>&lt;ul&gt;
+				  &lt;li&gt; &lt;a href="https://www.anaconda.com/products/individual" target="_blank" &gt;Python Anaconda3&lt;/a&gt; &lt;/li&gt;
+				  &lt;/ul&gt;
+				  </dependencies>
+</marketplace_tool>
+	

@@ -90,7 +90,7 @@
 		      </tr>
 		    <c:forEach items="${toolsDesc}" var="toolDesc">
 		      <tr>
-		        <td style="font-weight:bold">${toolDesc.name}</td>
+		        <td style="font-weight:bold;font-size:1.3rem;">${toolDesc.name}</td>		        
 		        <td>${toolDesc.version}</td>
 		        <td>${toolDesc.description[currentLanguage]}</td>
 		        <td>
