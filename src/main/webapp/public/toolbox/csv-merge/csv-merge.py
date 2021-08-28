@@ -33,10 +33,11 @@ class RawFormatter(HelpFormatter):
         return "\n".join([textwrap.fill(line, width) for line in textwrap.indent(textwrap.dedent(text), indent).splitlines()])
 
 
-DESC_TXT='''Merge contents of a CSV file following logic defined in given config file.'''
+DESC_TXT='''Merge contents of a CSV file, both horizontally (merge data from several columns) and vertically (merge data from several rows). Merging logic is defined in given config file.'''
 
 ###############################
 
+# apply required logic to merge data from a row of input CSV file
 def mergeRowData(nameStr,targetData,colsValues,mergeColsDef,mergedSourceLineNb):
 	
 	if nameStr not in targetData:
@@ -89,20 +90,25 @@ if __name__ == "__main__":
 	# Define and parse arguments.
 	parser = argparse.ArgumentParser(description=DESC_TXT,formatter_class=RawFormatter)
 	parser.add_argument("scenario", help="python file containing processing scenario")
-	parser.add_argument("inputCsvFile", help="CSV File containing data to merge")
+	parser.add_argument("inputCsvFile", help="CSV File containing data to merge. First line shall contain columns names")
 	parser.add_argument("targetFileName", help="Target file for new merged data")
 	parser.add_argument("--treshold_auto", default=1,help="score treshold ([0,1]) required for automatic acceptation of reconciliation result (default is 1)")
 	parser.add_argument("--treshold_confirm", default=2, help="score treshold ([0,treshold_auto[) required for confirmation before acceptation of reconciliation result")
 	args = parser.parse_args()
 
+	# ensure scenario file exists
 	if not os.path.isfile(args.scenario):
 		print("ERROR: scenario file not reachable : "+args.scenario)
 		sys.exit(1)
 
+	# load scenario
 	exec(open(args.scenario).read())
 
-	matchColName=scenario_MatchColName
-	generatedIdPrefix=scenario_IdPrefix
+	# get data from scenario
+	matchColName=scenario['MatchColName']
+	generatedIdPrefix=scenario['IdPrefix']
+
+	# load input CSV file
 	dataLines=open(args.inputCsvFile).read().splitlines()
 	
 	treshold_auto=float(args.treshold_auto)
@@ -110,10 +116,10 @@ if __name__ == "__main__":
 	print("Treshold for automatic acceptation : "+str(treshold_auto))
 	print("Treshold for manual acceptation : "+str(treshold_confirm))
 
-	# extract index of required columns
+	# extract position of columns required for merge
 	fileColsNames=dataLines[0].split(";")	
 	colIdx=0
-	mergeColsDef=scenario_MergeColumns
+	mergeColsDef=scenario['MergeColumns']
 	nbDetectedMergeCols=0	
 	# detect source columns position
 	for fileColName in fileColsNames:
@@ -130,9 +136,9 @@ if __name__ == "__main__":
 			
 		colIdx=colIdx+1
 	
-	# check all columns could be found
+	# ensure that all columns could be found
 	if matchColIdx==None:
-		print("ERROR: unable to find matchColName column '"+args.matchColName+"' in first line of CSV file '"+args.inputCsvFile+"' : \n"+dataLines[0])
+		print("ERROR: unable to find matchColName column '"+matchColName+"' in first line of CSV file '"+args.inputCsvFile+"' : \n"+dataLines[0])
 		sys.exit(1)
 	nbUndetectedCols=0
 	for targetColName in mergeColsDef:
@@ -143,11 +149,12 @@ if __name__ == "__main__":
 	if nbUndetectedCols>0:
 		sys.exit(1)
 	
-	# name -> { <col>:<mergedOrAggrValues }
+	# resulting data as a map: name -> { <col>:<mergedOrAggrValues }
 	resultData={}
 	originalLineNb=0
-
 	matchedLineNumbers=[]
+
+	# for each line from input CSV file
 	for originalLine in dataLines :
 
 		# ignore first line which is the name of the columns
@@ -155,18 +162,19 @@ if __name__ == "__main__":
 			originalLineNb+=1
 			continue
 
-		# line already merged during a previous line processing
+		# skip line already merged during a previous line processing
 		if originalLineNb in matchedLineNumbers:
 			originalLineNb+=1
 			continue
 
 		originalColums=originalLine.split(";")
 		curOriginalString=originalColums[matchColIdx]
-		curNormalizedOriginalString=scenario_NormalizeMatchString(curOriginalString)
+		curNormalizedOriginalString=scenario['NormalizeMatchStringFunc'](curOriginalString)
 
 		print("l."+str(originalLineNb+1)+" '"+curOriginalString+"'")
 		testedLineNb=0
 
+		# for each line from input CSV file
 		for testedLine in dataLines :
 			# ignore first line which is the name of the columns
 			if testedLineNb==0:
@@ -175,7 +183,7 @@ if __name__ == "__main__":
 
 			testedColums=testedLine.split(";")
 			testedString=testedColums[matchColIdx]
-			normalizedtestString=scenario_NormalizeMatchString(testedString)
+			normalizedtestString=scenario['NormalizeMatchStringFunc'](testedString)
 		
 			score,matchstr = getMatchScore(normalizedtestString,curNormalizedOriginalString)
 			if score>=treshold_auto:
@@ -193,7 +201,8 @@ if __name__ == "__main__":
 
 		originalLineNb+=1
 
-	# dump automatic results
+
+	# generate resulting CSV file
 	fileout= open(args.targetFileName, 'w')
 	entryId=0
 
@@ -221,5 +230,4 @@ if __name__ == "__main__":
 
 	print("created file '"+args.targetFileName+"' with merged data")
 		
-
 	sys.exit(0)

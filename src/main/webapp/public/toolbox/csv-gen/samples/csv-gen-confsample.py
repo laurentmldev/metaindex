@@ -1,6 +1,17 @@
 
 #
 # Demo config file for csv-gen.py from MetaindeX Toolbox https://metaindex.fr/webapp/toolbox
+# Generated file is then used as sample input of csv-merge.py tool
+#
+# Author: Laurent ML - metaindex.fr 2021
+# If you find this tools useful somehow, please reference MetaindeX project when possible.
+# 
+# GNU GENERAL PUBLIC LICENSE
+# Version 3, 29 June 2007
+# 
+# Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+# 
+# See full version of LICENSE in <https://fsf.org/>
 #
 
 import sys
@@ -101,7 +112,7 @@ def fsummary(entryNb,totalNbEntries,fields):
     return curval
 
 ### some transcriptions: we choose randomly one of those texts as a transcription text for each archive
-# this 'transciption' field might be loaded as 'LONG_FIELD' type in MetaindeX. __CR__ is then interpreted as a new line ("Carriage Return").
+# this 'transciption' field might be loaded as 'LONG_FIELD' type in MetaindeX. __CR__ is then interpreted as a new line (CR="Carriage Return").
 transcription_list=[
     "Lorem ipsum dolor sit amet. Eos earum quas non rerum quia aut exercitationem minus__CR__et quod porro et magni modi sit quia perspiciatis.__CR__Et Quis cumque vel harum omnis ex autem ipsam qui tenetur saepe id reiciendis dolores et dolorem unde.__CR__Sit praesentium alias et ipsum blanditiis sed alias nemo vel odio. ",
     "Id modi architecto At dolore nemo qui sint possimus sit internos molestiae.__CR__Qui doloremque voluptatem et necessitatibus cupiditate ut doloremque labore rem corrupti incidunt et ducimus vero et velit modi quo officia quas.__CR____CR__Ad debitis quam est quidem earum vel iure animi cum aliquid molestias rem ullam impedit aut explicabo dolorum et natus excepturi.__CR____CR__Qui tempore reprehenderit vel soluta illo et labore magnam vel atque doloribus in eveniet delectus",
@@ -118,6 +129,22 @@ transcription_list=[
 def ftranscription(entryNb,totalNbEntries,fields):
     idx=random.randint(0,len(transcription_list)-1)
     curval=transcription_list[idx]
+    return curval
+
+transcription_author_firstname_list=[
+    "John","","Marcel","Leonardo","Paul","martin","Michel","Jenny","Lucie","Myriam","Donald","Joe"
+]
+def ftranscription_author_firstname(entryNb,totalNbEntries,fields):
+    idx=random.randint(0,len(transcription_author_firstname_list)-1)
+    curval=transcription_author_firstname_list[idx]
+    return curval
+
+transcription_author_lastname_list=[
+    "Doe","Dupont","Pagnol","Proust","Di Caprio","hochon","Martin","Trump","Biden"
+]
+def ftranscription_author_lastname(entryNb,totalNbEntries,fields):
+    idx=random.randint(0,len(transcription_author_lastname_list)-1)
+    curval=transcription_author_lastname_list[idx]
     return curval
 
 ### archive type
@@ -206,6 +233,29 @@ def fdate(entryNb,totalNbEntries,fields):
 
     return curDate
 
+# extract year from assigned date
+def fyear(entryNb,totalNbEntries,fields):
+    date=fields['date']
+    dateTbl=date.split('/')
+    if len(dateTbl)==1:
+        return date
+    else:
+        return dateTbl[2]
+
+    # makes documents from 'Abbaye's quite older than the rest
+    if fields["curation_location"].startswith("Abbaye"):
+        year=year-random.randint(30,60)
+
+    # some dates might be fully defined while some others might have only the year available
+    if random.randint(1,10)>3:
+        day='{:02d}'.format(random.randint(1,29))
+        month='{:02d}'.format(random.randint(1,12))
+        curDate=day+"/"+month+"/"+str(year)
+    else:
+        curDate=str(year)
+
+    return curDate
+
 # this 'fields' variable is expected by csv-gen.py script to list all columns of our csv file, 
 # and corresponding function to retrieve values for each entry
 fields= { "_id":fid ,
@@ -215,8 +265,11 @@ fields= { "_id":fid ,
           "curation_location":fcuration_location,
           "local_id":flocal_id,
           "date":fdate,
+          "year":fyear,
           "links":flinks,
           "summary":fsummary,
-          "transcription":ftranscription
+          "transcription":ftranscription,
+          "transcription_author_firstname":ftranscription_author_firstname,
+          "transcription_author_lastname":ftranscription_author_lastname,
           }
     

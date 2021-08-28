@@ -619,5 +619,9 @@ height:40px;
 	list-style-type:'\2726';
 }
 
+.mx_script {
+	font-size:0.8rem;
+	margin-left:1rem;
+}
 <s:include value="mx-chat.css" />
 

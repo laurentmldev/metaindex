@@ -1,18 +1,19 @@
 
-/*
 
-Author: Laurent ML - metaindex.fr 2021
-If you find this tools useful somehow, please reference MetaindeX project when possible.
-
-
-GNU GENERAL PUBLIC LICENSE
-Version 3, 29 June 2007
-
-Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
-
-See full version of LICENSE in <https://fsf.org/>
-
-*/
+#
+# Download contents as CSV from a DTS access point
+#
+# Author: Laurent ML - metaindex.fr 2021
+# If you find this tools useful somehow, please reference MetaindeX project when possible.
+#
+#
+# GNU GENERAL PUBLIC LICENSE
+# Version 3, 29 June 2007
+#
+# Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+#
+# See full version of LICENSE in <https://fsf.org/>
+#
 
 import sys
 import argparse

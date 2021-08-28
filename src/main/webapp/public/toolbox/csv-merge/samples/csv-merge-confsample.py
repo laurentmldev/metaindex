@@ -1,119 +1,102 @@
 
-/*
 
-Author: Laurent ML - metaindex.fr 2021
-If you find this tools useful somehow, please reference MetaindeX project when possible.
-
-
-GNU GENERAL PUBLIC LICENSE
-Version 3, 29 June 2007
-
-Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
-
-See full version of LICENSE in <https://fsf.org/>
-
-*/
+#
+# Demo config file for csv-merge.py from MetaindeX Toolbox https://metaindex.fr/webapp/toolbox
+# Sample input file can be generated with sample config of csv-gen.py tool.
+#
+# In this example, we demonstrate how both vertival and horizontal merging can be performed.
+#
+# Author: Laurent ML - metaindex.fr 2021
+# If you find this tools useful somehow, please reference MetaindeX project when possible.
+# 
+# GNU GENERAL PUBLIC LICENSE
+# Version 3, 29 June 2007
+# 
+# Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+# 
+# See full version of LICENSE in <https://fsf.org/>
+#
 
 import os
 
-scenario_MatchColName="prenom_nom"
-scenario_IdPrefix="person_"
+# this map is expected by csv-merge.py tool
+scenario={'MatchColName':None, 'IdPrefix':None, 'NormalizeMatchStringFunc':None,  'MergeColumns':None}
 
+
+
+# CSV column to be use to identify rows to be merged (vertical merge)
+scenario['MatchColName']="curation_location"
+
+# prefix to be used to generate Ids in merged CSV
+scenario['IdPrefix']="location_"
+
+
+### prepare string from match column to be detected in 
+def normalizeTextStr(text):
+	return text
+scenario['NormalizeMatchStringFunc']=normalizeTextStr
+	
+	
 ###### Finalize Algos ######
 
-def capitalize(targetColName,targetRowColumns):
-	text=targetRowColumns[targetColName]
-	result=""
-	for word in text.split(" "):
-		if len(result)>0:
-			result+=" "
-		result+=word.capitalize()
-	targetRowColumns[targetColName]=result.strip()
+def removeDupsFromList(targetColName,targetRowColumns):
+	namesStr=targetRowColumns[targetColName]
+	namesList=namesStr.split(",")
 
-def replaceParticuleText(nom):
-	nom=nom.lower()
-	if "(de)" in nom:
-		return "de "+nom.replace(" (de)","")
-	if "(d')" in nom:
-		return "d'"+nom.replace(" (d')","")
-	if "(du)" in nom:
-		return "du "+nom.replace(" (du)","")
-	if "(de la)" in nom:
-		return "de la "+nom.replace(" (de la)","")
-	return nom
+	uniqueNamesList=[]
+	for name in namesList:
+		if name.lower() not in uniqueNamesList:
+			uniqueNamesList+=[name.lower().strip()]
 
-def replaceParticule(targetColName,targetRowColumns):
-	nom=targetRowColumns[targetColName]		
-	targetRowColumns[targetColName]=replaceParticuleText(nom)
+	uniqueNamesStr=""
+	for name in uniqueNamesList:
+		if len(uniqueNamesStr)>0:
+			uniqueNamesStr+=","
+		curCapName=""
+		for word in name.split(" "):
+			if len(curCapName)>0:
+				curCapName+=" "
+			curCapName+=word.capitalize()
+		uniqueNamesStr+=curCapName
 
-
-def finalize_genre(targetColName,targetRowColumns):
-	value=targetRowColumns[targetColName]	
-	if len(value)==0:
-		targetRowColumns[targetColName]="homme"
-	targetRowColumns[targetColName]=value
-
-def const_type(targetColName,targetRowColumns):
-	targetRowColumns[targetColName]="personne"
-
-def finalize_clean_special_chars(targetColName,targetRowColumns):
-	text=targetRowColumns[targetColName]
-	targetRowColumns[targetColName]=text.replace("\"","").replace(";",",")
-
-signatures_path_prefix="/Users/laurentml/dev/data/chapeliers/data/signatures/"
-def signature_file(targetColName,targetRowColumns):
-	nom=targetRowColumns["nom"]
-	prenom=targetRowColumns["prenom"]
-	annee_debut=targetRowColumns["annee_debut"]
-
-	filename=prenom+"_"+nom+"_"+annee_debut+".png"
-	filename=filename.lower().replace("é","e")\
-							 .replace("è","e")\
-							 .replace("ê","e")\
-							 .replace("ô","o")\
-							 .replace(" ","_")
-	if os.path.isfile(signatures_path_prefix+filename):
-		print("#### FILE found ####")
-		targetRowColumns[targetColName]=filename
+	targetRowColumns[targetColName]=uniqueNamesStr
 		
 
 ######### AGGREGATION ALGORITHMS ###########
 
-# options : firstMatchingRowOnly:bool, separator:string
+# options : none
 concatLineNb={}
-def aggr_concat(lineNb,targetName,targetColName,targetRowColumns,sourceColName,sourceColValue,options):
+def aggr_firstvalonly(lineNb,targetName,targetColName,targetRowColumns,sourceColName,sourceColValue,options):
 			
 		curColValue=targetRowColumns[targetColName]
 		
-		if targetName not in concatLineNb:
-			concatLineNb[targetName]={}	
-		if targetColName not in concatLineNb[targetName]:
-			concatLineNb[targetName][targetColName]=lineNb
-		if "firstMatchingRowOnly" in options and options["firstMatchingRowOnly"]==True and lineNb!=concatLineNb[targetName][targetColName]:
-			targetRowColumns[targetColName]=curColValue
-
 		if curColValue==None or len(curColValue)==0:
 			targetRowColumns[targetColName]=sourceColValue
-		elif sourceColValue==None or len(sourceColValue)==0:
-			targetRowColumns[targetColName]=curColValue
-		else:
-			sep=","
-			if "separator" in options:
-				sep=options["separator"]
-			targetRowColumns[targetColName]=curColValue+sep+sourceColValue
+		
+
 
 # options : none
-def aggr_colname(lineNb,targetName,targetColName,targetRowColumns,sourceColName,sourceColValue,options):
-		
+prevFullnameLineNb=None
+def aggr_concatfullname(lineNb,targetName,targetColName,targetRowColumns,sourceColName,sourceColValue,options):
+		global prevFullnameLineNb
 		curColValue=targetRowColumns[targetColName]
 		
-		if (sourceColValue==None or len(sourceColValue)>0) and sourceColName not in curColValue:
+		if sourceColName=="transcription_author_firstname":
 			if len(curColValue)>0:
-				targetRowColumns[targetColName]=curColValue+","+sourceColName
+				curColValue+=","
+			prevFullnameLineNb=lineNb
+		elif sourceColName=="transcription_author_lastname":
+			if prevFullnameLineNb!=lineNb:
+				curColValue+=","
 			else:
-				targetRowColumns[targetColName]=sourceColName
-		else:
-			targetRowColumns[targetColName]=curColValue
+				curColValue+=" "
+		
+		curColValue+=sourceColValue
+		if len(sourceColValue)==0:
+			curColValue+="?"
+
+		targetRowColumns[targetColName]=curColValue
+			
 
 # options : type:int|float
 def aggr_min(lineNb,targetName,targetColName,targetRowColumns,sourceColName,sourceColValue,options):
@@ -145,40 +128,27 @@ def aggr_max(lineNb,targetName,targetColName,targetRowColumns,sourceColName,sour
 			else:
 				targetRowColumns[targetColName]=str(max(float(curColValue),float(sourceColValue)))			
 
+# options : none
+count={}
+def aggr_count(lineNb,targetName,targetColName,targetRowColumns,sourceColName,sourceColValue,options):
+
+		curColValue=targetRowColumns[targetColName]
+		
+		if targetName not in count:
+			count[targetName]=0
+		
+		count[targetName]=count[targetName]+1
+
+		targetRowColumns[targetColName]=str(count[targetName])
 
 ####################
 
-### prepare string from match column to be detected in 
-def scenario_NormalizeMatchString(text):
-	return replaceParticuleText(text)
 
 ####################
-
-scenario_MergeColumns={
-	"type" : { "aggrFuncs":[aggr_concat], "aggrOptions":{"firstMatchingRowOnly":True}, "finalizeFuncs":[const_type], "sourceCols":[{ "sourceColName":"nom" }] }, 
-	"nom" : { "aggrFuncs":[aggr_concat], "aggrOptions":{"firstMatchingRowOnly":True}, "finalizeFuncs":[replaceParticule,capitalize], "sourceCols": [ { "sourceColName":"nom" } ] },
-	"prenom" : { "aggrFuncs":[aggr_concat], "aggrOptions":{"firstMatchingRowOnly":True}, "finalizeFuncs":[capitalize], "sourceCols": [ { "sourceColName":"prenom" } ] },
-	"nom_complet" : { "aggrFuncs":[aggr_concat], "aggrOptions":{"firstMatchingRowOnly":True,"separator":" "}, "finalizeFuncs":[capitalize], "sourceCols": [ { "sourceColName":"prenom" } ,{ "sourceColName":"nom" } ] },
-	"archive_id" : { "aggrFuncs":[aggr_concat], "sourceCols": [ { "sourceColName":"id" } ] },	
-	"category" : { 	"aggrFuncs":[aggr_colname],
-					"sourceCols": [
-						{ "sourceColName":"maitre" },
-						{ "sourceColName":"marchand" },
-						{ "sourceColName":"jure" },
-						{ "sourceColName":"compagnon" },
-						{ "sourceColName":"apprenti" },
-						{ "sourceColName":"bourgeois_de_paris" }
-					]
-	},
-	"genre" : { "aggrFuncs":[aggr_colname], "finalizeFuncs":[finalize_genre], "sourceCols": [ { "sourceColName":"femme" } ] },	
-	"annee_debut" : { "aggrFuncs":[aggr_min], "aggrOptions":{"type":"int"}, "sourceCols": [ { "sourceColName":"annee" } ] },
-	"annee_fin" : { "aggrFuncs":[aggr_max], "aggrOptions":{"type":"int"}, "sourceCols": [ { "sourceColName":"annee" } ] },	
-	"adresse" : { "aggrFuncs":[aggr_concat],  "sourceCols": [ { "sourceColName":"adresse" } ] },
-	"rue" : { "aggrFuncs":[aggr_concat],"finalizeFuncs":[capitalize],  "sourceCols": [ { "sourceColName":"rue" } ] },
-	"enseigne" : { "aggrFuncs":[aggr_concat], "finalizeFuncs":[capitalize], "sourceCols": [ { "sourceColName":"enseigne" } ] },
-	"faubourg" : { "aggrFuncs":[aggr_concat], "finalizeFuncs":[capitalize], "sourceCols": [ { "sourceColName":"faubourg" } ] },
-	"paroisse" : { "aggrFuncs":[aggr_concat], "finalizeFuncs":[capitalize], "sourceCols": [ { "sourceColName":"paroisse" } ] },
-	"remarques_de_famille" : { "aggrFuncs":[aggr_concat], "finalizeFuncs":[finalize_clean_special_chars], "sourceCols": [ { "sourceColName":"remarques_de_famille" } ] },
-	"signatures" : { "aggrFuncs":[aggr_concat],"finalizeFuncs":[signature_file],   "sourceCols": [ { "sourceColName":"signatures" } ] },
+scenario['MergeColumns']={
+	"curation_location" : { "aggrFuncs":[aggr_firstvalonly], "aggrOptions":{}, "finalizeFuncs":[], "sourceCols":[{ "sourceColName":"curation_location" }] }, 
+	"year_min" : { "aggrFuncs":[aggr_min], "aggrOptions":{}, "finalizeFuncs":[], "sourceCols": [ { "sourceColName":"year" } ] },
+	"year_max" : { "aggrFuncs":[aggr_max], "aggrOptions":{}, "finalizeFuncs":[], "sourceCols": [ { "sourceColName":"year" } ] },
+	"nbArchives": { "aggrFuncs":[aggr_count], "aggrOptions":{}, "finalizeFuncs":[], "sourceCols": [ { "sourceColName":"transcription" } ] },
+	"transcription_author" : { "aggrFuncs":[aggr_concatfullname], "aggrOptions":{}, "finalizeFuncs":[removeDupsFromList], "sourceCols": [ { "sourceColName":"transcription_author_firstname" },{ "sourceColName":"transcription_author_lastname" } ] },
 }
-
