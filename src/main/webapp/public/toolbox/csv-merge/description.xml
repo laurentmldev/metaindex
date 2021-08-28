@@ -9,7 +9,7 @@ $ python csv-merge.py samples/csv-merge-confsample.py samples/sample-input.csv s
 	</description>
 
 	<description language="FR">
-	Script Python pour combiner les données d'un fichier CSV, à la fois horizontalement (colonnes d'un même ligne) et vertivalement (sur plusieurs lignes).&lt;br/&gt;
+	Script Python pour combiner les données d'un fichier CSV, à la fois horizontalement (colonnes d'une même ligne) et verticalement (sur plusieurs lignes).&lt;br/&gt;
 	&lt;br/&gt;
 	Exemple de ligne de commande:
 	&lt;pre class='mx_script' &gt;
