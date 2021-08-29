@@ -1,19 +1,26 @@
 <marketplace_tool name="csv-reconcile" version="1.0">
 	<description language="EN">
-	Python script to reconcile data between two given CSV files.&lt;br/&gt;
+	Reconcile data between two given CSV files. &lt;br/&gt;
+	&lt;br/&gt;
+Detect matching text between first (tested) and second (reference) CSV files.
+If matching score is good enough, corresponding ID from reference file is used as reconciled value, and added as a new column in tested CSV file.&lt;br/&gt;
 	&lt;br/&gt;
 	Example from command line:
 	&lt;pre class='mx_script' &gt;
-$ python csv-reconcile.py samples/csv-reconcile-confsample.py
+$ python csv-reconcile.py --treshold_auto 0.8  samples/tested.csv approx_curation_location samples/reference.csv id curation_location
 	&lt;/pre&gt;
 	</description>
 
 	<description language="FR">
 	Script Python pour réconcilier les données entre deux fichiers CSV.&lt;br/&gt;
 	&lt;br/&gt;
+	Détecte les textes correspondant entre le premier (testé) et le second (référence) fichiers CSV (pour les colonnes indiquées).
+	Si la corespondance est satisfaisante, l'ID dans le fichier de référence est utilisé comme valeur réconciliée, et ajouté
+	dans une nouvelle colonne du fichier testé.
+	&lt;br/&gt;
 	Exemple de ligne de commande:
 	&lt;pre class='mx_script' &gt;
-$ python csv-reconcile.py samples/csv-reconcile-confsample.py
+$ python csv-reconcile.py --treshold_auto 0.8  samples/tested.csv approx_curation_location samples/reference.csv id curation_location
 	&lt;/pre&gt;
 	</description>
 	

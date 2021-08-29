@@ -27,6 +27,8 @@ import time
 import textwrap
 from argparse import ArgumentParser, HelpFormatter
 
+VERSION="1.0"
+
 # convention for MetaindeX to read multi-line contents from CSV
 MX_CSV_CR_MARKER="__CR__"
 MX_ESCAPED_SEPARATOR="__MX_ESCAPED_SEPARATOR__"
@@ -152,8 +154,7 @@ DESC_TXT='''Extract data from DTS API and generate CSV files.
 If Saxon and proper Tei-Xsl files are provided, conversion from TEI files to Text and HTML is automated.
 When conversion from TEI to text is done, basic text statistics are computed and added to generated CSV files.
     
-Main input is a python config file defining expected info. Try '-sampleconf' option to display a functional sample file.
-
+Main input is a python config file defining expected info. Try '-sampleconf' option to display a sample.
 '''
 
 TEI_DOWNLOAD_NBTRIES=3
@@ -579,9 +580,10 @@ def dumpResourcesCsv(targetFileName,objsList,attrsList):
 if __name__ == "__main__":
 
     # Define and parse arguments.
-    parser = argparse.ArgumentParser(description=DESC_TXT,formatter_class=RawFormatter)
+    parser = argparse.ArgumentParser(prog="MetaindeX Toolbox - "+__file__,description=DESC_TXT,formatter_class=RawFormatter)
     parser.add_argument("configfile",nargs='?',default="",help="python file containing configuration data (see full example in description text up there).")
     parser.add_argument("-sampleconf", action="store_true", help="display a sample config file.")
+    parser.add_argument("--version", action="version", version="%(prog)s v"+VERSION)
     args = parser.parse_args()
 
     if args.sampleconf==True:

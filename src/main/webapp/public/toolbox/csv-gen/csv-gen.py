@@ -22,6 +22,7 @@ import os.path
 import textwrap
 from argparse import ArgumentParser, HelpFormatter
 
+VERSION="1.1"
 
 ### from https://stackoverflow.com/questions/3853722/how-to-insert-newlines-on-argparse-help-text
 class RawFormatter(HelpFormatter):
@@ -41,11 +42,11 @@ returning expected values.
 if __name__ == "__main__":
     
     # Define and parse arguments.
-    parser = argparse.ArgumentParser(description=DESC_TXT,formatter_class=RawFormatter)
+    parser = argparse.ArgumentParser(prog="MetaindeX Toolbox - "+__file__,description=DESC_TXT,formatter_class=RawFormatter)
     parser.add_argument("scenario", help="python file containing generation scenario")
     parser.add_argument("nbEntries", help="number of entries to generate (nb lines in the CSV file)")	
     parser.add_argument("targetFile", help="name of target file. If exists, append its contents")    
-	
+	parser.add_argument("--version", action="version", version="%(prog)s v"+VERSION)
     args = parser.parse_args()
 
     if not os.path.isfile(args.scenario):

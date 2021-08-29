@@ -27,6 +27,8 @@ import codecs
 import textwrap
 from argparse import ArgumentParser, HelpFormatter
 
+VERSION="1.1"
+
 ### from https://stackoverflow.com/questions/3853722/how-to-insert-newlines-on-argparse-help-text
 class RawFormatter(HelpFormatter):
     def _fill_text(self, text, width, indent):
@@ -88,12 +90,13 @@ colsToAggrIndices=[]
 if __name__ == "__main__":
     
 	# Define and parse arguments.
-	parser = argparse.ArgumentParser(description=DESC_TXT,formatter_class=RawFormatter)
+	parser = argparse.ArgumentParser(prog="MetaindeX Toolbox - "+__file__, description=DESC_TXT,formatter_class=RawFormatter)
 	parser.add_argument("scenario", help="python file containing processing scenario")
 	parser.add_argument("inputCsvFile", help="CSV File containing data to merge. First line shall contain columns names")
 	parser.add_argument("targetFileName", help="Target file for new merged data")
 	parser.add_argument("--treshold_auto", default=1,help="score treshold ([0,1]) required for automatic acceptation of reconciliation result (default is 1)")
 	parser.add_argument("--treshold_confirm", default=2, help="score treshold ([0,treshold_auto[) required for confirmation before acceptation of reconciliation result")
+	parser.add_argument("--version", action="version", version="%(prog)s v"+VERSION)
 	args = parser.parse_args()
 
 	# ensure scenario file exists

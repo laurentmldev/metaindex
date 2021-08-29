@@ -26,13 +26,20 @@ import codecs
 import textwrap
 from argparse import ArgumentParser, HelpFormatter
 
+VERSION="1.0"
+
 ### from https://stackoverflow.com/questions/3853722/how-to-insert-newlines-on-argparse-help-text
 class RawFormatter(HelpFormatter):
     def _fill_text(self, text, width, indent):
         return "\n".join([textwrap.fill(line, width) for line in textwrap.indent(textwrap.dedent(text), indent).splitlines()])
 
 
-DESC_TXT='''Reconcile data between two given CSV files.'''
+DESC_TXT='''Reconcile data between two given CSV files. 
+
+Detect matching text between first (tested) and second (reference) CSV files.
+If matching score is good enough, corresponding ID from reference file is used as reconciled value, and added as a new column in first CSV file.
+
+'''
 
 
 def getMatchScore(searchedStr, withinStr):
@@ -60,22 +67,23 @@ refIds=[]
 if __name__ == "__main__":
     
 	# Define and parse arguments.
-	parser = argparse.ArgumentParser(description=DESC_TXT,formatter_class=RawFormatter)
+	parser = argparse.ArgumentParser(prog="MetaindeX Toolbox - "+__file__,description=DESC_TXT,formatter_class=RawFormatter)
 	parser.add_argument("csvDataFile", help="CSV File containing data to reconcile")
-	parser.add_argument("messyColNames", help="Column names from which to extract Ids, separated by ','")
+	parser.add_argument("reconcileColNames", help="column names (from csvDataFile, separated by ',') for which reconciliation shall be performed")
 	parser.add_argument("csvRefFile", help="CSV File containing reference data for reconciliation")
-	parser.add_argument("idColName", help="Column name containing reconciliation ID")
-	parser.add_argument("matchColName", help="Column name containing text to be searched")
+	parser.add_argument("idColName", help="Column name containing reference IDs")
+	parser.add_argument("matchColName", help="Column name containing text to be matched with contents from reconcileColNames")
 	parser.add_argument("--treshold_auto", default=1,help="score treshold ([0,1]) required for automatic acceptation of reconciliation result (default is 1)")
 	parser.add_argument("--treshold_confirm", default=2, help="score treshold ([0,treshold_auto[) required for confirmation before acceptation of reconciliation result")
 	parser.add_argument("--verbose", default=False,help="show detailed processing steps")
+	parser.add_argument("--version", action="version", version="%(prog)s v"+VERSION)
 	args = parser.parse_args()
 
 	rowId=0
 
 	dataLines=open(args.csvDataFile).read().splitlines()
 	refLines=open(args.csvRefFile).read().splitlines()
-	messyColNames=args.messyColNames.split(',')
+	reconcileColNames=args.reconcileColNames.split(',')
 
 	treshold_auto=float(args.treshold_auto)
 	treshold_confirm=float(args.treshold_confirm)
@@ -85,7 +93,7 @@ if __name__ == "__main__":
 	cols=dataLines[0].split(';')
 	colIdx=0
 	for colName in cols:
-		for messyColName in messyColNames:
+		for messyColName in reconcileColNames:
 			if colName==messyColName:
 				processColsIdx+=[colIdx]
 				print("Processed column : "+colName+" at col. "+str(colIdx))
@@ -102,8 +110,8 @@ if __name__ == "__main__":
 			print("Ref-Match column : "+colName+" at col. "+str(colIdx))
 		colIdx=colIdx+1
 
-	if len(processColsIdx)!=len(messyColNames) :
-		print("ERROR: "+str(len(messyColNames)-len(processColsIdx))+" columns missing from '"+args.messyColNames+"' in first line of CSV file '"+args.csvDataFile+"' : \n"+dataLines[0])
+	if len(processColsIdx)!=len(reconcileColNames) :
+		print("ERROR: "+str(len(reconcileColNames)-len(processColsIdx))+" columns missing from '"+args.reconcileColNames+"' in first line of CSV file '"+args.csvDataFile+"' : \n"+dataLines[0])
 		sys.exit(1)
 	if refIdColIdx==None:
 		print("ERROR: unable to find idColName column '"+args.idColName+"' in first line of CSV file '"+args.csvRefFile+"' : \n"+refLines[0])

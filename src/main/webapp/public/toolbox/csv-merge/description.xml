@@ -1,4 +1,4 @@
-<marketplace_tool name="csv-merge" version="1.0">
+<marketplace_tool name="csv-merge" version="1.1">
 	<description language="EN">
 	Merge contents of a CSV file, both horizontally (merge data from several columns) and vertically (merge data from several rows).&lt;br/&gt;
 	&lt;br/&gt;
