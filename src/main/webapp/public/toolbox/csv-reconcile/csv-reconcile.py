@@ -67,7 +67,7 @@ refIds=[]
 if __name__ == "__main__":
     
 	# Define and parse arguments.
-	parser = argparse.ArgumentParser(prog="MetaindeX Toolbox - "+__file__,description=DESC_TXT,formatter_class=RawFormatter)
+	parser = argparse.ArgumentParser(prog="MetaindeX Toolbox - "+__file__+" (from http://metaindex.fr)",description=DESC_TXT,formatter_class=RawFormatter)
 	parser.add_argument("csvDataFile", help="CSV File containing data to reconcile")
 	parser.add_argument("reconcileColNames", help="column names (from csvDataFile, separated by ',') for which reconciliation shall be performed")
 	parser.add_argument("csvRefFile", help="CSV File containing reference data for reconciliation")

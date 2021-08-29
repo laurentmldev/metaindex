@@ -90,7 +90,7 @@ colsToAggrIndices=[]
 if __name__ == "__main__":
     
 	# Define and parse arguments.
-	parser = argparse.ArgumentParser(prog="MetaindeX Toolbox - "+__file__, description=DESC_TXT,formatter_class=RawFormatter)
+	parser = argparse.ArgumentParser(prog="MetaindeX Toolbox - "+__file__+" (from http://metaindex.fr)", description=DESC_TXT,formatter_class=RawFormatter)
 	parser.add_argument("scenario", help="python file containing processing scenario")
 	parser.add_argument("inputCsvFile", help="CSV File containing data to merge. First line shall contain columns names")
 	parser.add_argument("targetFileName", help="Target file for new merged data")

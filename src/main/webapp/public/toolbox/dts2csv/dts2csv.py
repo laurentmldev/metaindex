@@ -580,7 +580,7 @@ def dumpResourcesCsv(targetFileName,objsList,attrsList):
 if __name__ == "__main__":
 
     # Define and parse arguments.
-    parser = argparse.ArgumentParser(prog="MetaindeX Toolbox - "+__file__,description=DESC_TXT,formatter_class=RawFormatter)
+    parser = argparse.ArgumentParser(prog="MetaindeX Toolbox - "+__file__+" (from http://metaindex.fr)",description=DESC_TXT,formatter_class=RawFormatter)
     parser.add_argument("configfile",nargs='?',default="",help="python file containing configuration data (see full example in description text up there).")
     parser.add_argument("-sampleconf", action="store_true", help="display a sample config file.")
     parser.add_argument("--version", action="version", version="%(prog)s v"+VERSION)
