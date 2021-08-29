@@ -4,7 +4,12 @@
 	Those CSV files can be then easily imported into MetaindeX for further analysis.&lt;br/&gt;&lt;br/&gt;
 	Example from command line:
 	&lt;pre class='mx_script' &gt;
-$ python dts2csv.py samples/dts2csv-config-perseids.py
+$ python dts2csv.py samples/dts2csv-config-thesesENC.py
+	&lt;/pre&gt;
+
+	To display a sample input config file:
+	&lt;pre class='mx_script' &gt;
+$ python dts2csv.py -sampleconf
 	&lt;/pre&gt;
 	</description>
 
@@ -15,6 +20,12 @@ $ python dts2csv.py samples/dts2csv-config-perseids.py
 	&lt;pre class='mx_script' &gt;
 $ python dts2csv.py samples/dts2csv-config-perseids.py
 	&lt;/pre&gt;
+
+	Pour afficher un exemple de fichier de configuration:
+	&lt;pre class='mx_script' &gt;
+$ python dts2csv.py -sampleconf
+	&lt;/pre&gt;
+
 	</description>
 	
 	<dependencies>&lt;ul&gt;

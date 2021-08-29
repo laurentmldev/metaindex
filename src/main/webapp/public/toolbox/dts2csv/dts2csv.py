@@ -43,78 +43,82 @@ class RawFormatter(HelpFormatter):
     def _fill_text(self, text, width, indent):
         return "\n".join([textwrap.fill(line, width) for line in textwrap.indent(textwrap.dedent(text), indent).splitlines()])
 
-DESC_TXT='''Extract data from DTS API and generate CSV files. 
-If Saxon and proper Tei-Xsl files are provided, conversion from TEI files to Text and HTML is automated.
-When conversion from TEI to text is done, basic text statistics are computed and added to generated CSV files.
-    
-Main input is a python file with following config info (given example is based on perseids data sample):
+SAMPLE_CONFIG='''
 
-# ----- start of Python config file example -----
+#
+# Demo config file for dts2csv.py from MetaindeX Toolbox https://metaindex.fr/webapp/toolbox
+#
+# In this example, we retrieve data related to theses of Ecole des Chartes from year 2012 via DTS API.
+#
+# Author: Laurent ML - metaindex.fr 2021
+# If you find this tools useful somehow, please reference MetaindeX project when possible.
+# 
+# GNU GENERAL PUBLIC LICENSE
+# Version 3, 29 June 2007
+# 
+# Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+# 
+# See full version of LICENSE in <https://fsf.org/>
+#
 
-# ----- DTS API config -----
-# API URLs configuration.
-# Such info is usually available when accessing the DTS API entrypoint of the server.
-apiEntrypoint="https://dts.perseids.org/"
-COLLECTIONS_URL=apiEntrypoint+"collections"
-DOCUMENTS_URL=apiEntrypoint+"documents"
-NAVIGATION_URL=apiEntrypoint+"navigation"
+from os.path import expanduser
+home = expanduser("~")
 
-# Where to start from, generally set to 'default' to start from root
-subsetId="farsi"
-ROOT_COLLECTION_ID="urn:perseids:"+subsetId+"Lit"
-
-# how deep (integer) to go into collections tree.
-# set to None for no max depth
-MAX_DEPTH=None
-
-# ----- TEI download config -----
-# set True to download TEI files, otherwise only get info from DTS API
-RETRIEVE_FILES=True 
-
-# set True to convert TEI to text files (needs Saxon and Tei-Xsl, see deps below)
-TRANSFORM_TEI_TO_TXT=True 
-
-# set True to convert TEI to html files (needs Saxon and Tei-Xsl, see deps below)
-TRANSFORM_TEI_TO_HTML=True 
-
-# inject plain text contents into (resources) CSV file
-# Set True to put TEI plain-text contents into generated CSV files, so that it can be loaded for example into MetaindeX
-# needs TRANSFORM_TEI_TO_TXT=True
-INLINE_TXT_IN_CSV=True 
-
-# dependencies for TEI conversion (only needed if TEI transform to text or html is required)
-## Path to SAXON XSLT engine
-SAXON_JAR_PATH="/path/to/saxon-he-10.5.jar" 
+# path to dependencies. We suppose here we work under Linux style path separator
+# only needed if TRANSFORM_TEI_TO_TXT or TRANSFORM_TEI_TO_HTML are set to True
+SAXON_JAR_PATH=home+"/dev/tei/install/SaxonHE10-5J/saxon-he-10.5.jar"
 
 ## Path to TEI-XSL Stylesheets
+## only needed if TRANSFORM_TEI_TO_TXT or TRANSFORM_TEI_TO_HTML are set to True
 ## shall contain at least following files:
 ## <TEI_XSL_STYLESHEETS_PATH>'''+TEI_TO_HTML5_XSL+'''
 ## <TEI_XSL_STYLESHEETS_PATH>'''+TEI_TO_TXT_XSL+'''
-TEI_XSL_STYLESHEETS_PATH="/path/to/tei-xsl"
+TEI_XSL_STYLESHEETS_PATH=home+"/dev/tei/install/tei-xsl"
 
-# ----- CSV conversion config -----
-# some common dataset id to help identifying entries in CSV contents
-DATASET_ID="perseids"
+# API URLs
+rootUrl="https://dev.chartes.psl.eu/api/nautilus/dts/"
+COLLECTIONS_URL=rootUrl+"collections"
+DOCUMENTS_URL=rootUrl+"document"
+NAVIGATION_URL=rootUrl+"navigation"
+DATASET_ID="thesesENC"
+
+# where to start from
+ROOT_COLLECTION_ID="urn:cts:frenchLit:pos2012"
 
 # where to store generated files
-TARGET_PATH="/path/to/results/dts/perseids/"+subsetId
+TARGET_PATH=home+"/tmp/dts/theseENC/2012"
 
-# OPTIONAL FUNCTION
-# called every time we try to download a TEI file
+# set to None for no max depth
+MAX_DEPTH=None
+
+# set True to download TEI files
+RETRIEVE_FILES=True
+
+# Transorm TEI into Text and HTML requires SAXON and TEI-XSL
+TRANSFORM_TEI_TO_TXT=True
+TRANSFORM_TEI_TO_HTML=True
+
+# if true, put TEI plain text contents into (resources) CSV file
+# This option needs TRANSFORM_TEI_TO_TXT=True
+INLINE_TXT_IN_CSV=True
+
+# -------------------------------------------
+
+# This function is called every time we try to download a TEI file
 # if this function returns False we will skip the file
 # it it returns True we will actually download it.
 #
 # if this function is missing, it is assumed to be always True
 def config_filterResource(resourceCsvData,resourceJsonData):
     return True # retrieve all TEI files
-    #return resourceCsvData["language"]=="en" # retrieve on TEI files marked as english language
+    #return resourceCsvData["language"]=="en" # retrieve only TEI files marked as english language
 
-# OPTIONAL FUNCTION
-# CSV ids might have some unicity or syntaxic constraints which
-# can be handled here. Default behaviour is to remove 'urn' text and replace ':' by '.'
+# CSV ids might have some unicity or syntaxic constraints which can be handled here,
 # to be compatible with Lucene query syntax (used by MetaindeX)
-#def config_idDts2idCsv(dtsId,dtsJsonData):
-#    return dtsId.replace('urn:','').replace(':','.').replace('urn.','')
+def config_idDts2idCsv(dtsId,dtsJsonData):
+    return dtsId.replace('urn:alpheios','').replace(':','.').replace('urn.','')
+
+# -------------------------------------------
 
 # local function to normalize a given string for CSV contents, avoiding
 # syntaxic conflics regarding newlines and CSV separator
@@ -123,31 +127,34 @@ def config_filterResource(resourceCsvData,resourceJsonData):
 def normalizeText(text):
     return text.replace("\\n","'''+MX_CSV_CR_MARKER+'''").replace("  "," ").replace(";","'''+MX_ESCAPED_SEPARATOR+'''")
 
-# Same basic fields are automatically extracted: 'id','type','url', 'urn', 'members' and 'parent'. 
-# Others fields shall be listed hereunder <dts-path> : <csv-id>
-#
-# dts-path is a basic version of xpath, using '/' for children, and 'xxx[i]' for arrays.
-# For example 'dts:extensions/cts:description[0]/@value' is a valid expression.
-#
-# allowed options for CSV conversion are:
-#  - 'csvName' (string): name of corresponding CSV column
-#  - 'mandatory' (bool): if True, raise an error if field not found in DTS json data, if False, ignore it silently. Default is False.
-#  - 'transform' (func): a callback function to be invoked when storing DTS json as CSV contents. Default is 'keep string as is'
+# -------------------------------------------
+
+# at least 'url', 'urn', '@id', 'members' (and 'parent'), and '@type' are generated by default, others shall be listed hereunder
+# <dts-id> : <csv-id>
 ATTRS_LIST={
-    "Collection" :{ "totalItems" : {"csvName":"nbChildren", "mandatory":True}, 
-                    "title" : {"csvName":"title", "mandatory":True, "transform":normalizeText},                            
+     "Collection" :{ "totalItems" : {"csvName":"nbChildren", "mandatory":True}, 
+                    "title" : {"csvName":"title", "mandatory":True, "transform":normalizeText},
+                    "dts:extensions/ns2:creator[0]/@value" : {"csvName":"author", "mandatory":False},
+                    "dts:extensions/ns2:date" : {"csvName":"date", "mandatory":False},
                 },
     
     
     "Resource":{ 
-                "title" : {"csvName":"title", "mandatory":True, "transform":normalizeText},
-                "description" : {"csvName":"description", "mandatory":True, "transform":normalizeText},
-                "dts:dublincore/dc:language" : {"csvName":"language", "mandatory":True},
+                "dts:extensions/ns2:language" : {"csvName":"language", "mandatory":True},
+                
+                
             }
-}
-# ----- end of Python config file example -----
-    '''
+ }
 
+
+'''
+DESC_TXT='''Extract data from DTS API and generate CSV files. 
+If Saxon and proper Tei-Xsl files are provided, conversion from TEI files to Text and HTML is automated.
+When conversion from TEI to text is done, basic text statistics are computed and added to generated CSV files.
+    
+Main input is a python config file defining expected info. Try '-sampleconf' option to display a functional sample file.
+
+'''
 
 TEI_DOWNLOAD_NBTRIES=3
 
@@ -573,12 +580,20 @@ if __name__ == "__main__":
 
     # Define and parse arguments.
     parser = argparse.ArgumentParser(description=DESC_TXT,formatter_class=RawFormatter)
-    parser.add_argument("configfile", help="python file containing configuration data (see full example in description text up there).")
-
+    parser.add_argument("configfile",nargs='?',default="",help="python file containing configuration data (see full example in description text up there).")
+    parser.add_argument("-sampleconf", action="store_true", help="display a sample config file.")
     args = parser.parse_args()
 
+    if args.sampleconf==True:
+        print(SAMPLE_CONFIG)
+        sys.exit(0)
+
+    if len(args.configfile)==0:
+        print("ERROR: missing input argument: configfile")
+        sys.exit(1)
+
     if not os.path.isfile(args.configfile):
-        print("ERROR: config file not reachable : "+args.configfile)
+        print("ERROR: given config file not reachable : '"+args.configfile+"'")
         sys.exit(1)
     exec(open(args.configfile).read())
 

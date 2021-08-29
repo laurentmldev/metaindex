@@ -17,8 +17,6 @@
 # See full version of LICENSE in <https://fsf.org/>
 #
 
-import os
-
 # this map is expected by csv-merge.py tool
 scenario={'MatchColName':None, 'IdPrefix':None, 'NormalizeMatchStringFunc':None,  'MergeColumns':None}
 
