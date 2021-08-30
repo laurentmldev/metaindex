@@ -78,21 +78,23 @@
   <div class="container" style="max-width:95vw;margin-top:1rem;"  >
   	<center>
 		<h5 style="margin:1rem;margin-top:1.5rem;"><s:text name="Toolbox.overview"/></h5>
+		| <c:forEach items="${toolsDesc}" var="toolDesc">
+			<a href="#${toolDesc.name}">${toolDesc.name}</a> |
+		</c:forEach>
+		<div style="margin-top:1rem;max-height: 55vh;overflow: auto;">
 		 <table class="table table-striped">						    
 		    <tbody>
 		     <tr style="text-align:center">
 		        <th  style="font-style:italic"><s:text name="Toolbox.toolName" /></td>
-		        <th  style="font-style:italic"><s:text name="Toolbox.toolVersion" /></td>
-		        <th  style="font-style:italic"><s:text name="Toolbox.toolDesc" /></td>
+		        <th  style="font-style:italic;max-width:40vw;"><s:text name="Toolbox.toolDesc" /></td>
 		        <th  style="font-style:italic"><s:text name="Toolbox.toolFiles" /></td>
 		        <th  style="font-style:italic"><s:text name="Toolbox.toolDeps" /></td>
 		        						        
 		      </tr>
 		    <c:forEach items="${toolsDesc}" var="toolDesc">
-		      <tr>
-		        <td style="font-weight:bold;font-size:1.3rem;">${toolDesc.name}</td>		        
-		        <td>${toolDesc.version}</td>
-		        <td>${toolDesc.description[currentLanguage]}</td>
+		      <tr id="${toolDesc.name}">
+		        <td style="text-align:center"><span class="mx-tool-title">${toolDesc.name}</span> <span style="font-size:0.8rem" >v${toolDesc.version}</span></td>		        		        
+		        <td style="max-width:40vw;">${toolDesc.description[currentLanguage]}</td>
 		        <td>
 			        <ul>
 			        	<c:forEach items="${toolDesc.filesUrl}" var="fileUrl" varStatus="loop">
@@ -107,7 +109,7 @@
 		    
 		      </tbody>
 		      </table>
-		
+		</div>
 	</center>
 </div>
         <center>

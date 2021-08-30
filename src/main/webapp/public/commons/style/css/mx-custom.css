@@ -619,9 +619,23 @@ height:40px;
 	list-style-type:'\2726';
 }
 
-.mx_script {
+.mx-script {
 	font-size:0.8rem;
 	margin-left:1rem;
+	background:#333;
+	color:#ddd;
+	padding:0.3rem;
+	
+	
+}
+.mx-script:before {
+	content:'$ ';	
+}
+
+.mx-tool-title {
+	font-weight:bold;
+	font-size:1.2rem;
+	color:#697;
 }
 <s:include value="mx-chat.css" />
 

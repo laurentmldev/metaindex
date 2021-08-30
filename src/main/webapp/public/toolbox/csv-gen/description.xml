@@ -3,18 +3,14 @@
 	Python script to create test CSV file controlling statistical occurences of generated contents.&lt;br/&gt;
 	&lt;br/&gt;
 	Example from command line:
-	&lt;pre class='mx_script' &gt;
-$ python csv-gen.py samples/csv-gen-confsample.py 200 samples/result.csv
-	&lt;/pre&gt;
+	&lt;pre class='mx-script' &gt;python csv-gen.py samples/csv-gen-confsample.py 200 samples/result.csv&lt;/pre&gt;
 	</description>
 
 	<description language="FR">
 	Script Python pour créer des fichiers CSV en controllant la répartition statistique des données générées.&lt;br/&gt;
 	&lt;br/&gt;
 	Exemple de ligne de commande:
-	&lt;pre class='mx_script' &gt;
-$ python csv-gen.py samples/csv-gen-confsample.py 200 samples/result.csv
-	&lt;/pre&gt;
+	&lt;pre class='mx-script' &gt;python csv-gen.py samples/csv-gen-confsample.py 200 samples/result.csv&lt;/pre&gt;
 	</description>
 	
 	<dependencies>&lt;ul&gt;

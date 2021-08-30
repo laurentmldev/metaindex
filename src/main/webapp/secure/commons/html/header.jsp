@@ -100,27 +100,27 @@
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
               	<a class="dropdown-item" href="#" onclick="document.getElementById(MX_HEADER_PROFILE_POPUP_ID).toggleShowHide();">
-                  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                  <i class="fas fa-user fa-lg fa-fw mr-2 text-gray-400"></i>
                   <s:text name="Profile.preferences"></s:text>
                 </a>
                 <a class="dropdown-item" href="#" onclick="document.getElementById(MX_HEADER_PLANS_POPUP_ID).toggleShowHide();">
-                  <i class="fas fa-euro-sign fa-sm fa-fw mr-2 text-gray-400"></i>
+                  <i class="fas fa-euro-sign fa-lg fa-fw mr-2 text-gray-400"></i>
                   <s:text name="Profile.plans"></s:text>
                 </a>
                 <a id="contactUs" class="dropdown-item" href="contactform?email=<s:property value="currentUserProfile.name"/>&origin=" >
-                  <i class="fas fa-envelope fa-sm fa-fw mr-2 text-gray-400"></i>
+                  <i class="fas fa-envelope fa-lg fa-fw mr-2 text-gray-400"></i>
                   	<s:text name="contactform.title"></s:text>
                 </a>
                 <a id="tutorials" class="dropdown-item" href="Tutorials?origin=Catalogs" >
-                  <i class="fas fa-award fa-sm fa-fw mr-2 text-gray-400"></i>
+                  <i class="fas fa-award fa-lg fa-fw mr-2 text-gray-400"></i>
                   	<s:text name="tutorials.title"></s:text>
                 </a>
                 <a id="toolbox" class="dropdown-item" href="toolbox?origin=Catalogs" >
-                  <i class="fas fa-award fa-sm fa-fw mr-2 text-gray-400"></i>
+                  <i class="fas fa-tools fa-lg fa-fw mr-2 text-gray-400"></i>
                   	<s:text name="Toolbox.title"></s:text>
                 </a>
                 <a class="dropdown-item" data-toggle="modal" data-target="#logoutModal">
-                  <i class="fas fa-running fa-sm fa-fw mr-2 text-gray-400"></i>
+                  <i class="fas fa-running fa-lg fa-fw mr-2 text-gray-400"></i>
                   <s:text name="Profile.logout"></s:text>
                 </a>                
               </div>
