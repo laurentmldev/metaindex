@@ -19,11 +19,8 @@ v2.2.0:
 #143 changes on user info on DB are overriden when logging out
 
 #142 toolbox
-
 #144 Toolbox: DTS API importer
-
 #145 Toolbox: CSV data reconciliation
-
 #146 Toolbox: CSV data generator
 
 cron sql DB backup?
