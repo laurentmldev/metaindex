@@ -1,6 +1,6 @@
 <marketplace_tool name="dts2csv" version="1.0">
 	<description language="EN">
-	Python script to extract Collections, Resources and TEI data from DTS API and generate CSV files.&lt;br/&gt;
+	Python script to extract Collections, Resources and TEI data from &lt;a href="https://distributed-text-services.github.io/specifications/" target="_blank" &gt;DTS API&lt;/a&gt; and generate CSV files.&lt;br/&gt;
 	Those CSV files can be then easily imported into MetaindeX for further analysis.&lt;br/&gt;&lt;br/&gt;
 	Example from command line:
 	&lt;pre class='mx-script' &gt;python dts2csv.py samples/dts2csv-config-thesesENC.py&lt;/pre&gt;
@@ -20,8 +20,7 @@
 
 	</description>
 	
-	<dependencies>&lt;ul&gt;
-				  &lt;li&gt; &lt;a href="https://distributed-text-services.github.io/specifications/" target="_blank" &gt;DTS API specification&lt;/a&gt;&lt;/li&gt;
+	<dependencies>&lt;ul&gt;				  
 				  &lt;li&gt; &lt;a href="https://www.anaconda.com/products/individual" target="_blank" &gt;Python Anaconda3&lt;/a&gt; &lt;/li&gt;
 				  &lt;li&gt; &lt;a href="https://sourceforge.net/projects/saxon/files/Saxon-HE/" target="_blank" &gt;Saxon-HE&lt;/a&gt; (optional)&lt;/li&gt;
 				  &lt;li&gt; &lt;a href="https://github.com/TEIC/Stylesheets" target="_blank" &gt;TEI-XSL&lt;/a&gt; (optional)&lt;/li&gt;
