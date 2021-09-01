@@ -78,7 +78,7 @@ public class WsControllerCatalog extends AMxWSController {
     		List<ICatalog> catalogs = Globals.Get().getCatalogsMgr().getCatalogsList();
     		List<WsMsgCatalogDetails_answer> answeredList = new ArrayList<WsMsgCatalogDetails_answer>();
     		
-    		if (!this.userHasReadAccess(user)) { 
+    		if (!this.userHasReadRole(user)) { 
     			sendListToUser(user.getName(),"/queue/catalogs",answeredList, /* Base64 compression */ true);     
     			return;
         	}
@@ -139,7 +139,7 @@ public class WsControllerCatalog extends AMxWSController {
 			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_users", answer);
 			return;
 		}
-		if (!this.userHasWriteAccess(activeUser)) { 
+		if (!this.userHasWriteRole(activeUser)) { 
 			answer.setRejectMessage(activeUser.getText("globals.noAccessRights"));
 			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_users", answer);
 			return;
@@ -212,7 +212,7 @@ public class WsControllerCatalog extends AMxWSController {
 			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_user_access", answer);
 			return;
 		}
-		if (!this.userHasWriteAccess(activeUser)) { 
+		if (!this.userHasWriteRole(activeUser)) { 
 			answer.setRejectMessage(activeUser.getText("globals.noAccessRights"));
 			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/catalog_user_access", answer);
 			return;
@@ -271,7 +271,7 @@ public class WsControllerCatalog extends AMxWSController {
     	IUserProfileData user = getUserProfile(headerAccessor);	    	
     	WsMsgCreateCatalog_answer answer = new WsMsgCreateCatalog_answer(requestMsg);
     	
-    	if (!this.userHasWriteAccess(user)) { 
+    	if (!this.userHasWriteRole(user)) { 
     		answer.setRejectMessage(user.getText("globals.noAccessRights"));
 			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
 			return;         		

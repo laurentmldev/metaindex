@@ -15,9 +15,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.mail.MessagingException;
 import javax.sql.DataSource;
@@ -46,6 +48,7 @@ import metaindex.app.periodic.monitoring.UsersQuotasChecker;
 import metaindex.app.periodic.statistics.MxStatisticsManager;
 import metaindex.data.catalog.CatalogsManager;
 import metaindex.data.catalog.ICatalogsManager;
+import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.IUsersManager;
 import metaindex.data.userprofile.UsersManager;
 import toolbox.database.elasticsearch.ElasticSearchConnector;
@@ -54,6 +57,7 @@ import toolbox.database.kibana.KibanaConnector.KIBANA_HTTP_METHOD;
 import toolbox.database.sql.SQLDataConnector;
 import toolbox.exceptions.DataAccessException;
 import toolbox.exceptions.DataProcessException;
+import toolbox.utils.IProcessingTask;
 import toolbox.utils.mailing.DummyMailSender;
 import toolbox.utils.mailing.GoogleMailSender;
 import toolbox.utils.mailing.IEmailSender;
@@ -83,6 +87,15 @@ public class Globals {
 	private static MxTmpFolderMonitor _mxTmpFolderCleaner= new MxTmpFolderMonitor();
 	private static UsersQuotasChecker _mxUsersQuotaChecker= new UsersQuotasChecker();
 	private static String _contextPath="";
+	
+
+	// keep track of currently active logged-in users
+	// useful for dmin monitoring
+	private static List<IUserProfileData> _loggedInUsers=new CopyOnWriteArrayList<>();	
+	public List<IUserProfileData> getActiveUsersList() { return _loggedInUsers; }
+	
+	private static List<IProcessingTask> _activeProcessingTasks=new CopyOnWriteArrayList<>();	
+	public List<IProcessingTask> getActiveProcessingTasks() { return _activeProcessingTasks; }
 	
 	/**
 	 * Prop value from config files.

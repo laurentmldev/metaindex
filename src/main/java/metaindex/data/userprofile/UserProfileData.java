@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Semaphore;
 
 import javax.servlet.http.HttpSession;
@@ -120,6 +121,7 @@ public class UserProfileData implements IUserProfileData
 	private Date _planEndDate;
 	private Integer _planNbQuotaWarnings=0;
 	
+	 
 
 	public UserProfileData() {
 		// auto refresh shall be active even if user is not logged in
@@ -203,8 +205,8 @@ public class UserProfileData implements IUserProfileData
 			throw new DataProcessException("Unable to perform user login : "+e.getMessage(),e);
 		}
 		
-		
-		
+		if (!Globals.Get().getActiveUsersList().contains(this)) { Globals.Get().getActiveUsersList().add(this); }
+ 		
 	}
 	
 	@Override
@@ -222,6 +224,8 @@ public class UserProfileData implements IUserProfileData
 			this.releaseLock();
 			throw new DataProcessException("Unable to perform user logout : "+e.getMessage(),e);
 		}
+		
+		if (Globals.Get().getActiveUsersList().contains(this)) { Globals.Get().getActiveUsersList().remove(this); }
 	}
 	
 	@Override
@@ -422,17 +426,20 @@ public class UserProfileData implements IUserProfileData
 	}
 	@Override
 	public void addProcessingTask(IProcessingTask processingTask) {
+		// keep tracks of currently running processing tasks for admin monitoring
+		Globals.Get().getActiveProcessingTasks().add(processingTask);
 		_runningProcessingTasks.put(processingTask.getId(), processingTask);			
 	}	
 	@Override
 	public void removeProccessingTask(Integer processingTaskId) {
-		_runningProcessingTasks.remove(processingTaskId);
+		// keep tracks of currently running processing tasks for admin monitoring
+		Globals.Get().getActiveProcessingTasks().remove(_runningProcessingTasks.get(processingTaskId));
+		_runningProcessingTasks.remove(processingTaskId);		
 	}
 	@Override
 	public void notifyChange(IProcessingTask processingTask) {
-		//WSControllersAccessor.getWSController().sendProgressingTaskProgress(processingTask);
 		if (processingTask.isTerminated()) {
-			_runningProcessingTasks.remove(processingTask.getId());								
+			removeProccessingTask(processingTask.getId());								
 		}
 	}
 

@@ -16,28 +16,17 @@ v2.2.0:
 	--> ALTER TABLE `catalog_terms` CHANGE `datatype` `datatype` ENUM('TINY_TEXT','LONG_TEXT','DATE','INTEGER','FLOAT','PAGE_URL','IMAGE_URL','AUDIO_URL','VIDEO_URL','GEO_POINT','LINK') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;	
 	
 
-#143 changes on user info on DB are overriden when logging out
-
 #142 toolbox
 #144 Toolbox: DTS API importer
 #145 Toolbox: CSV data reconciliation
 #146 Toolbox: CSV data generator
-
-cron sql DB backup?
-
-403 error when log in again after automatic logout
-
-
-
-help text for long or tiny text: can use __MX_ESCAPED_SEPARATOR__ to mark CSV separator	
-
-url (PAGE_URL) RO mode displayed in vertical
+	
 	
 add javadoc to WS entry points
 
 more realistic/consistent "empty catalog contents" picture (Excel file screenshot)
 
-as an admin I want to know how many persons are currently logged in: REST API (+ API key)?  
+#149 as an admin I want to know how many persons are currently logged in: REST API (+ API key)?  
  
 
 
@@ -49,19 +38,21 @@ as an admin I want to know how many persons are currently logged in: REST API (+
     
 
 
-	
 in users panel, unable to change access rights on first display, need to refresh page and then it works (TBC)
 rename 'perspective' into 'layout' ?
 
 #83 once user has been blocked, unable to log in again
 #76 https://metaindex.fr:8443/ is error page 
 
-rename download -> export ?
 
 v2.3.0:
 -------
 
+cron sql DB backup?
 
+#143 changes on user info on DB are overriden when logging out
+
+"403 error" when log in again after automatic logout
 
 teic/oxgarage integration
 TXM integration
@@ -175,6 +166,10 @@ Done:
 
 
 v2.2.0
+
+url (PAGE_URL) RO mode displayed in vertical
+
+help text for long or tiny text: can use __MX_ESCAPED_SEPARATOR__ to mark CSV separator
 
 #148 ElasticSearch type used for Integer fields is to small (short): shall be integer
 

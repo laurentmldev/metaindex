@@ -18,7 +18,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import toolbox.patterns.observer.*;
-import toolbox.utils.filetools.FileBinOutstream;
 import metaindex.data.userprofile.IUserProfileData;
 
 public abstract class AProcessingTask implements IProcessingTask {

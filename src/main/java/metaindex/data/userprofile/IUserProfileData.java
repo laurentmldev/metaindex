@@ -62,6 +62,10 @@ public interface IUserProfileData extends ICatalogUser,IPlanUser,IObserver<IProc
     public IGuiLanguage getGuiLanguage();
     public Collection<IGuiLanguage> getGuiLanguages();
     public void setGuiLanguageId(Integer guilanguageid);
+    /**
+     * Get text corresponding to given textId, in correct language
+     * depending on user preference.
+     */
     public String getText(String textid, String... params);
     
     public Integer getGuiThemeId();

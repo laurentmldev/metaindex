@@ -116,8 +116,10 @@
     }
     function leftbar_setTitle(str,onClickFunction) {
     	var leftbarTitleNode = document.getElementById("leftbar.title");
+    	var leftBarTitleContainer=document.getElementById("leftbar.title-container");
+        
+    	if (str==null) { leftBarTitleContainer.style.display='none'; return; }
         leftbarTitleNode.innerHTML=capWords(str);     
-        var leftBarTitleContainer=document.getElementById("leftbar.title-container");
         leftBarTitleContainer.onclick=function(event) {
         	event.stopPropagation();
         	if (onClickFunction!=null) { onClickFunction() };

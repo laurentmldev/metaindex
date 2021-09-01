@@ -176,7 +176,7 @@ public class AMxWSController {
 	}
 	
 	
-	protected Boolean userHasReadAccess(IUserProfileData user) {
+	protected Boolean userHasReadRole(IUserProfileData user) {
 		return 	Globals.Get().getApplicationStatus()==APPLICATION_STATUS.RUNNING && 
 				user.isEnabled() &&
 				(
@@ -185,13 +185,13 @@ public class AMxWSController {
 				||	user.getRole()==USER_ROLE.ROLE_ADMIN);
 	}
 	
-	protected Boolean userHasWriteAccess(IUserProfileData user) {
+	protected Boolean userHasWriteRole(IUserProfileData user) {
 		return 	Globals.Get().getApplicationStatus()==APPLICATION_STATUS.RUNNING && 
 				user.isEnabled() &&
 				(user.getRole()==USER_ROLE.ROLE_USER
 				||	user.getRole()==USER_ROLE.ROLE_ADMIN);
 	}
-	protected Boolean userHasAdminAccess(IUserProfileData user) {
+	protected Boolean userHasAdminRole(IUserProfileData user) {
 		return 	Globals.Get().getApplicationStatus()==APPLICATION_STATUS.RUNNING && 
 				user.getRole()==USER_ROLE.ROLE_ADMIN;
 	}

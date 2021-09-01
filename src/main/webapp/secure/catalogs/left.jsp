@@ -5,6 +5,11 @@
 
  <li id="leftbar_catalog_create" class="nav-item" style="display:none">
  
+ <a id="admin-op" style="display:none" class="nav-link collapsed" href="#" onclick="document.getElementById(MX_APP_ADMIN_POPUP_ID).toggleShowHide();updateAdminInfo();" >
+          <i class="fas fa-fw fa-search"></i>
+          <span><s:text name="Admin.title"></s:text></span>
+        </a>
+        
  <a class="nav-link collapsed" href="#" onclick="document.getElementById(MX_CATALOGS_SEARCH_POPUP_ID).toggleShowHide();updateCatalogsSearchList();" >
           <i class="fas fa-fw fa-search"></i>
           <span><s:text name="Catalogs.searchCatalog"></s:text></span>
@@ -59,14 +64,16 @@
  </c:if>
  </li>
 
-
 <div id="catalogs_popups_container" ></div>
 <s:include value="catalogs_search_popup.jsp" />
+
+<div id="admin_popups_container" ></div>
+<s:include value="admin_popup.jsp" />
 
 <script>
 
 // Title
-MxGuiLeftBar.setTitle("<s:text name="Catalogs.title" />");
+MxGuiLeftBar.setTitle(null);
 
 
 // Operations
@@ -100,8 +107,14 @@ MxGuiLeftBar.updateNbCatalogsCreated=function(curNb,maxNb) {
 
 
 var MX_CATALOGS_SEARCH_POPUP_ID="catalogs_search_popup";
-
 buildCatalogsSearchPopup(document.getElementById("catalogs_popups_container"));
+
+var MX_APP_ADMIN_POPUP_ID="admin_popup";
+if (mx_helpers_isAdmin()) {
+	document.getElementById("admin-op").style.display='block';
+	buildAdminInfoPopup(document.getElementById("admin_popups_container"));
+}
+
 
 </script>
 

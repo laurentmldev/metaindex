@@ -289,7 +289,9 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			// server session status
 			myself._stompClient.subscribe('/user/queue/session_status',myself._handleServerSessionStatus);
 			
-			
+			// admin
+			myself._stompClient.subscribe('/user/queue/admin_monitoring_info',myself._handleAdminMonitoringInfo);
+
 			// register user
 			myself._sendRegisterRequest();
 			
@@ -451,6 +453,20 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		}
 				
 	}
+//------- Admin monitoring info --------	
+
+this.requestAdminMonitoringInfoCallback=null;
+
+this.requestAdminMonitoringInfo = function(callbackFunc) {
+	myself.requestAdminMonitoringInfoCallback=callbackFunc;
+	myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/admin_get_monitoring_info", {}, JSON.stringify({}));
+}
+this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
+	
+	var parsedMsg = JSON.parse(mxServerAdminMonitoringInfoMsg.body);
+		
+	if (myself.requestAdminMonitoringInfoCallback!=null) { myself.requestAdminMonitoringInfoCallback(parsedMsg); }
+}
 
 //------- Server Session Status notif --------	
 	this.subscribeToServerSessionStatusEvent=function(callback_func,debug) {
@@ -469,10 +485,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		}
 		if (myself._callback_ServerSessionStatusEvent!=null) {
 			myself._callback_ServerSessionStatusEvent(parsedMsg.sessionStatus);
-		}
-		
-		
-				
+		}	
 	}
 //------- Register User --------	
 	this._sendRegisterRequest = function() {
