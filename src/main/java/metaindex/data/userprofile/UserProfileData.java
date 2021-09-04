@@ -428,7 +428,7 @@ public class UserProfileData implements IUserProfileData
 	public void addProcessingTask(IProcessingTask processingTask) {
 		// keep tracks of currently running processing tasks for admin monitoring
 		Globals.Get().getActiveProcessingTasks().add(processingTask);
-		_runningProcessingTasks.put(processingTask.getId(), processingTask);			
+		_runningProcessingTasks.put(processingTask.getId(), processingTask);		
 	}	
 	@Override
 	public void removeProccessingTask(Integer processingTaskId) {

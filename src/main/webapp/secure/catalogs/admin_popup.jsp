@@ -22,12 +22,15 @@ function buildAdminInfoPopup(parentNode) {
 	refreshButton.classList.add("btn");
 	refreshButton.classList.add("btn-big");
 	refreshButton.classList.add("btn-info");
+	refreshButton.style["margin"]="1rem";
 	refreshButton.innerHTML="Refresh";
 	refreshButton.onclick=updateAdminInfo;
 	bodynode.append(refreshButton);
 	
 	let adminInfosTable = document.createElement("table");
-	adminInfosTable.id="adminInfoTable";
+	let adminInfosTableBody = document.createElement("tbody");
+	adminInfosTable.append(adminInfosTableBody)
+	adminInfosTableBody.id="adminInfoTable";
 	adminInfosTable.classList.add("table");
 	adminInfosTable.classList.add("table-striped");
 	bodynode.append(adminInfosTable)
@@ -58,20 +61,40 @@ function updateAdminInfo() {
 		adminInfosTable.append(infoRow)
 				
 		let infoTitle=document.createElement("td");
+		infoTitle.classList.add("mx-admintbl-field-title");
+		infoTitle.style["font-weight"]="bold";
 		infoTitle.innerHTML="<s:text name="Admin.nbActiveUsers" />";
 		infoRow.append(infoTitle);				
 		let infoValue=document.createElement("td");
-		infoValue.innerHTML=receivedInfo.nbActiveUsers;
-		infoRow.append(infoValue);
+		infoValue.classList.add("mx-admintbl-field-value");
+		infoValue.innerHTML=receivedInfo.activeUsersIdList.length;
+		infoRow.append(infoValue);		
+		infoValue.onclick=function() { console.log(receivedInfo.activeUsersIdList); }
 		
 		// nb active processing tasks
 		infoRow=document.createElement("tr");
 		adminInfosTable.append(infoRow)
 		infoTitle=document.createElement("td");
-		infoTitle.innerHTML="<s:text name="Admin.nbActiveProcessingTasks" />";
+		infoTitle.classList.add("mx-admintbl-field-title");
+		infoTitle.innerHTML="<s:text name="Admin.nbActiveProcessingTasks" />";		
 		infoRow.append(infoTitle);				
 		infoValue=document.createElement("td");
-		infoValue.innerHTML=receivedInfo.nbRunningProcessingTasks;
+		infoValue.classList.add("mx-admintbl-field-value");
+		infoValue.innerHTML=receivedInfo.runningTasksNameList.length;
+		infoRow.append(infoValue);
+		infoValue.onclick=function() { console.log(receivedInfo.runningTasksNameList); }
+		
+		// nb threads
+		infoRow=document.createElement("tr");
+		adminInfosTable.append(infoRow)
+		infoTitle=document.createElement("td");
+		infoTitle.classList.add("mx-admintbl-field-title");
+		infoTitle.style["font-weight"]="bold";
+		infoTitle.innerHTML="<s:text name="Admin.nbThreads" />";
+		infoRow.append(infoTitle);				
+		infoValue=document.createElement("td");		
+		infoValue.classList.add("mx-admintbl-field-value");
+		infoValue.innerHTML=receivedInfo.nbThreads;
 		infoRow.append(infoValue);
 		
 		footer_showAlert(INFO,"Admin Info Refreshed",null,400);

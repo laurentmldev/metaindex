@@ -4,23 +4,6 @@
 v2.2.0:
 -------
 
- 
-
-#64 type longtext pour étude du language / analyse de corpus
-	
-	when putting mapping _source excludes:
-		Suppressed: org.elasticsearch.client.ResponseException: method [PUT], host [http://localhost:9200], URI [/chaps/_mapping?master_timeout=30s&timeout=30s], status line [HTTP/1.1 400 Bad Request]
-		{"error":{"root_cause":[{"type":"illegal_argument_exception","reason":"Mapper for [_source] conflicts with existing mapping:\n[Cannot update excludes setting for [_source]]"}],"type":"illegal_argument_exception","reason":"Mapper for [_source] conflicts with existing mapping:\n[Cannot update excludes setting for [_source]]"},"status":400}
-
-	update SQL def for renaming datatype RICH_TEXT into LONG_TEXT 
-	--> ALTER TABLE `catalog_terms` CHANGE `datatype` `datatype` ENUM('TINY_TEXT','LONG_TEXT','DATE','INTEGER','FLOAT','PAGE_URL','IMAGE_URL','AUDIO_URL','VIDEO_URL','GEO_POINT','LINK') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;	
-	
-
-#142 toolbox
-#144 Toolbox: DTS API importer
-#145 Toolbox: CSV data reconciliation
-#146 Toolbox: CSV data generator
-	
 	
 add javadoc to WS entry points
 
@@ -166,6 +149,25 @@ Done:
 
 
 v2.2.0
+
+
+ 
+#142 toolbox
+#144 Toolbox: DTS API importer
+#145 Toolbox: CSV data reconciliation
+#146 Toolbox: CSV data generator
+	
+
+#64 type longtext pour étude du language / analyse de corpus
+	
+	when putting mapping _source excludes:
+		Suppressed: org.elasticsearch.client.ResponseException: method [PUT], host [http://localhost:9200], URI [/chaps/_mapping?master_timeout=30s&timeout=30s], status line [HTTP/1.1 400 Bad Request]
+		{"error":{"root_cause":[{"type":"illegal_argument_exception","reason":"Mapper for [_source] conflicts with existing mapping:\n[Cannot update excludes setting for [_source]]"}],"type":"illegal_argument_exception","reason":"Mapper for [_source] conflicts with existing mapping:\n[Cannot update excludes setting for [_source]]"},"status":400}
+
+	update SQL def for renaming datatype RICH_TEXT into LONG_TEXT 
+	--> ALTER TABLE `catalog_terms` CHANGE `datatype` `datatype` ENUM('TINY_TEXT','LONG_TEXT','DATE','INTEGER','FLOAT','PAGE_URL','IMAGE_URL','AUDIO_URL','VIDEO_URL','GEO_POINT','LINK') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;	
+	
+
 
 url (PAGE_URL) RO mode displayed in vertical
 

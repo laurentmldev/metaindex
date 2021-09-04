@@ -105,8 +105,7 @@ public class WsControllerItemsCsvDownload extends AMxWSController {
 		    			 preFilters,
 		    			 sortByFieldName,
 		    			 now);
-    		// set-up the download and start the processing task
-	    	user.addProcessingTask(procTask);
+
     		procTask.start();
     		// wait for end of processing
     		procTask.stop();

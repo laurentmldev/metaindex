@@ -637,5 +637,24 @@ height:40px;
 	font-size:1.2rem;
 	color:#697;
 }
+
+.mx-admintbl-field-title {
+	font-weight:bold;
+	color: #697;
+}
+.mx-admintbl-field-value:hover {
+	cursor:pointer;
+}
+
+
+/* override some params from sb-admin-2.css */
+.btn-info,.btn-success,.btn-warning,.btn-danger {
+	color:#fff !important;
+	border-color:#fff;
+}
+.btn-info:hover,.btn-success:hover,.btn-warning:hover,.btn-danger:hover {	
+	border-color:#555 !important;
+}
+/* ----- */
 <s:include value="mx-chat.css" />
 

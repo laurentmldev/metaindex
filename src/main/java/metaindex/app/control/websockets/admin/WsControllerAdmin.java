@@ -1,5 +1,11 @@
 package metaindex.app.control.websockets.admin;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
+import java.util.ArrayList;
+import java.util.List;
+
 /*
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -24,6 +30,7 @@ import metaindex.app.control.websockets.admin.messages.WsMsgGetMonitoringInfo_an
 import metaindex.app.control.websockets.admin.messages.WsMsgGetMonitoringInfo_request;
 import metaindex.app.control.websockets.commons.AMxWSController;
 import metaindex.data.userprofile.IUserProfileData;
+import toolbox.utils.IProcessingTask;
 
 
 @Controller
@@ -44,7 +51,7 @@ public class WsControllerAdmin extends AMxWSController {
 
     	IUserProfileData user = getUserProfile(headerAccessor);	
     	WsMsgGetMonitoringInfo_answer answer = new WsMsgGetMonitoringInfo_answer(requestMsg);
-	
+    	ThreadMXBean threadMxBean = ManagementFactory.getThreadMXBean();
 		
 		if (!this.userHasAdminRole(user)) { 
 			
@@ -52,9 +59,21 @@ public class WsControllerAdmin extends AMxWSController {
 			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/admin_monitoring_info", answer);
 			return;
     	}
-    	answer.setNbActiveUsers(Globals.Get().getActiveUsersList().size());
-    	answer.setNbRunningProcessingTasks(Globals.Get().getActiveProcessingTasks().size());
-    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/admin_monitoring_info", answer);
+		for (IUserProfileData u : Globals.Get().getActiveUsersList()) {
+			answer.getActiveUsersIdList().add(u.getId());
+		}
+		for (IProcessingTask t : Globals.Get().getActiveProcessingTasks()) {
+			answer.getRunningTasksNameList().add(t.getName()
+				+" [taskId="+t.getId()
+				+" taskObj="+t
+				+" targetNbData="+t.getTargetNbData()
+				+" receivedNbData="+t.getReceivedNbData()
+				+" processedNbData="+t.getProcessedNbData()
+				+" userId="+t.getActiveUser().getId()+"]");
+		}
+		answer.setNbThreads(threadMxBean.getThreadCount());
+    	
+		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/admin_monitoring_info", answer);
 		return;
     		
 	    

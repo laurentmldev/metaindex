@@ -6,7 +6,7 @@
  <li id="leftbar_catalog_create" class="nav-item" style="display:none">
  
  <a id="admin-op" style="display:none" class="nav-link collapsed" href="#" onclick="document.getElementById(MX_APP_ADMIN_POPUP_ID).toggleShowHide();updateAdminInfo();" >
-          <i class="fas fa-fw fa-search"></i>
+          <i class="fas fa-shield-alt fa-jedi"></i>
           <span><s:text name="Admin.title"></s:text></span>
         </a>
         
