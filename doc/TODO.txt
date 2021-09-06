@@ -4,7 +4,13 @@
 v2.2.0:
 -------
 
-	
+
+on logout by session expired, unable to login again (blank page):
+	[https-jsse-nio-20000-exec-10] WARN org.springframework.web.servlet.PageNotFound - No mapping for POST /webapp/Error401
+	[https-jsse-nio-20000-exec-10] WARN org.springframework.web.servlet.PageNotFound - No mapping for POST /webapp/ErrorAuth
+	[https-jsse-nio-20000-exec-4] WARN org.springframework.web.servlet.PageNotFound - No mapping for POST /webapp/Error401
+	[https-jsse-nio-20000-exec-4] WARN org.springframework.web.servlet.PageNotFound - No mapping for POST /webapp/ErrorAuth
+
 add javadoc to WS entry points
 
 more realistic/consistent "empty catalog contents" picture (Excel file screenshot)

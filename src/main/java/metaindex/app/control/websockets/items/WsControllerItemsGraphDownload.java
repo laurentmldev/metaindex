@@ -125,7 +125,6 @@ public class WsControllerItemsGraphDownload extends AMxWSController {
 		    			 sortByFieldName,
 		    			 now);
     		// set-up the download and start the processing task
-	    	user.addProcessingTask(procTask);
     		procTask.start();
     		// wait for end of processing
     		procTask.stop();

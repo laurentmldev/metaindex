@@ -47,7 +47,7 @@
 
 
  <!-- Topbar -->
- 
+ <!--  tmp lml demo -->
  <c:if test="${mxDevMode == true}" >
   	<nav class="navbar navbar-expand topbar static-top"
   			style="background:orange;height:2rem;color:white;font-weight:bold;">
