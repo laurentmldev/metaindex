@@ -23,7 +23,7 @@ function buildAdminInfoPopup(parentNode) {
 	refreshButton.classList.add("btn-big");
 	refreshButton.classList.add("btn-info");
 	refreshButton.style["margin"]="1rem";
-	refreshButton.innerHTML="Refresh";
+	refreshButton.innerHTML="<s:text name="Admin.refresh" />";
 	refreshButton.onclick=updateAdminInfo;
 	bodynode.append(refreshButton);
 	

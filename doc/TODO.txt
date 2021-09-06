@@ -1,9 +1,9 @@
 
 
 
-v2.2.0:
--------
 
+v2.3.0:
+-------
 
 on logout by session expired, unable to login again (blank page):
 	[https-jsse-nio-20000-exec-10] WARN org.springframework.web.servlet.PageNotFound - No mapping for POST /webapp/Error401
@@ -14,8 +14,6 @@ on logout by session expired, unable to login again (blank page):
 add javadoc to WS entry points
 
 more realistic/consistent "empty catalog contents" picture (Excel file screenshot)
-
-#149 as an admin I want to know how many persons are currently logged in: REST API (+ API key)?  
  
 
 
@@ -34,8 +32,6 @@ rename 'perspective' into 'layout' ?
 #76 https://metaindex.fr:8443/ is error page 
 
 
-v2.3.0:
--------
 
 cron sql DB backup?
 
@@ -156,6 +152,8 @@ Done:
 
 v2.2.0
 
+
+#149 as an admin I want to know how many persons are currently logged in: REST API (+ API key)?  
 
  
 #142 toolbox
