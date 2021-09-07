@@ -10,7 +10,7 @@
 	</description>
 
 	<description language="FR">
-	Script Python pour extraire des Collections, Resources et fichiers TEI d'une API et en générer des fichiers CSV.&lt;br/&gt;
+	Script Python pour extraire des Collections, Resources et fichiers TEI d'une &lt;a href="https://distributed-text-services.github.io/specifications/" target="_blank" &gt;API DTS&lt;/a&gt; et en générer des fichiers CSV.&lt;br/&gt;
 	Ces fichiers CSV peuvent alors facilement être importés dans MetaindeX pour exploitations.&lt;br/&gt;&lt;br/&gt;
 	Exemple de ligne de commande:
 	&lt;pre class='mx-script' &gt;python dts2csv.py samples/dts2csv-config-perseids.py&lt;/pre&gt;
