@@ -152,9 +152,8 @@ Backlog:
 Done:
 -----
 
-v2.2.1:
-
-fixed access restricted on toolbox in prod env 
+v2.2.2: fixed toolbox download path in prod env
+v2.2.1: fixed access restricted on toolbox in prod env 
 
 v2.2.0:
 
