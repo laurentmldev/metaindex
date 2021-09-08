@@ -96,7 +96,7 @@ public class BeanToolbox extends AMetaindexBean {
 		List<Path> subFolders = new ArrayList<>();
 		Files.list(rootPath)
 	        .forEach(toolFilePath -> {
-	        	String fileUrl=toolFilePath.toString().replace(Globals.Get().getWebappsFsPath()+"metaindex",
+	        	String fileUrl=toolFilePath.toString().replace(Globals.Get().getWebappsFsPath()+Globals.Get().getWebappFsDocBase(),
 	        													Globals.Get().getWebAppBaseUrl());
 	        	String fileName=toolFilePath.toString().replace(basePathStr+"/", "");
 	        	
