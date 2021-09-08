@@ -154,8 +154,7 @@ public class BeanToolbox extends AMetaindexBean {
 					
 					
 					toolsDesc.add(curToolDesc);
-				} catch (ParserConfigurationException | SAXException | IOException e) {
-					// TODO Auto-generated catch block
+				} catch (Throwable e) {
 					e.printStackTrace();
 				}
 	            

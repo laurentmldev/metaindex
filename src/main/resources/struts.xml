@@ -29,6 +29,7 @@
 			<result name="BeanProcess_SUCCESS" >/public/welcome.jsp</result>			
 		</action>
 		
+		
 		<action name="toolbox" class="metaindex.app.beans.BeanToolbox">
 			<result name="BeanProcess_SUCCESS" >/public/toolbox.jsp</result>			
 		</action>

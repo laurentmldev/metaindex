@@ -5,6 +5,8 @@
 v2.3.0:
 -------
 
+mxtmp folder shall be under /webapp not under /metaindex
+
 on logout by session expired, unable to login again (blank page):
 	[https-jsse-nio-20000-exec-10] WARN org.springframework.web.servlet.PageNotFound - No mapping for POST /webapp/Error401
 	[https-jsse-nio-20000-exec-10] WARN org.springframework.web.servlet.PageNotFound - No mapping for POST /webapp/ErrorAuth

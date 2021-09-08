@@ -15,7 +15,7 @@ See full version of LICENSE in <https://fsf.org/>
 */
 
 
-select '######## MIGRATING METAINDEX SQL DB from v2.1.3 to v2.1.4 ########' as '';
+select '######## MIGRATING METAINDEX SQL DB from v2.1.3 to v2.2.0 ########' as '';
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";

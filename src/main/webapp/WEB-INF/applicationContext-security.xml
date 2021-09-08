@@ -11,9 +11,11 @@ using classpath local versions for spring XSD, otherwise it does not work offlin
 									 >
 
 <http>	
-	<intercept-url pattern="/**" requires-channel="https" />	
+
+	<intercept-url pattern="/**" requires-channel="https" />
 	<intercept-url pattern="/welcome" access="permitAll" />
 	<intercept-url pattern="/Tutorials" access="permitAll" />
+	<intercept-url pattern="/toolbox" access="permitAll" />
 	<intercept-url pattern="/loginform" access="permitAll" />
 	<intercept-url pattern="/loginprocess" access="permitAll" />
 	<intercept-url pattern="/logoutprocess" access="permitAll" />
