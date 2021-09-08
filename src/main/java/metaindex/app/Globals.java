@@ -225,14 +225,15 @@ public class Globals {
 	public String getUserdataFsPathUsers() { 
 		return getUserdataFsPath()+"/users";
 	}
+	
 	public String getWebappsTmpFsPath() {
-		String path=getWebappsFsPath()+"/webapp/secure/mxtmp/";		
+		String path=getWebappsFsPath()+"/metaindex/secure/mxtmp/";		
 		File directory = new File(path);
         if (! directory.exists()){ directory.mkdir(); }        
         return path;
     }
 	public String getToolboxFsPath() {
-		String path=getWebappsFsPath()+"/webapp/public/toolbox/";		
+		String path=getWebappsFsPath()+"/metaindex/public/toolbox/";		
 		File directory = new File(path);
         if (! directory.exists()){ directory.mkdir(); }        
         return path;
