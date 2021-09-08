@@ -1,6 +1,7 @@
 
 
-
+v2.2.2:
+-------
 
 v2.3.0:
 -------
@@ -151,8 +152,11 @@ Backlog:
 Done:
 -----
 
+v2.2.1:
 
-v2.2.0
+fixed access restricted on toolbox in prod env 
+
+v2.2.0:
 
 
 #149 as an admin I want to know how many persons are currently logged in: REST API (+ API key)?  
