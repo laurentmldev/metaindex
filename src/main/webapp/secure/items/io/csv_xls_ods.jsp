@@ -310,7 +310,7 @@ function _showChooseCalcSheet(sheetNames,fileName,choiceCallback) {
 		choiceCallback(chosenSheetName,fileName);
 		
 	}
-	let popupChoice = MxGuiPopups.newDropdownInputPopup(choices,"Choose Sheet from your file",handleChoosenSheetName);	
+	let popupChoice = MxGuiPopups.newDropdownInputPopup(choices,"<s:text name="items.uploadItems.chooseSheet" />",handleChoosenSheetName);	
 	popupChoice.id="chooseCalcPopup";
 	MxGuiHeader.addPopup(popupChoice);
 	popupChoice.show();	

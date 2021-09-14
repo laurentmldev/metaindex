@@ -303,6 +303,8 @@ function _commons_perspective_build_section(catalogDesc,perspectiveData,tabIdx,s
 				<div class="p-2 mx-btn-transparent-danger mx-square-button-xs d-sm-inline-block btn btn-sm shadow-sm"
 							title="<s:text name='Catalogs.perspectives.section.remove_question' />"	 
 							data-toggle="confirmation"
+							btnOkLabel="<s:text name="global.yes" />"
+		 	  				btnCancelLabel="<s:text name="global.no" />"
 					  		onConfirm="_deleteSectionFuncsById[findAncestorNode(this,'_customizable_section_root_').id]();" 
 					  		onCancel=""		  				
 				 			onclick="" >

@@ -86,7 +86,7 @@ public class WsControllerCatalog extends AMxWSController {
     		Iterator<ICatalog> it = catalogs.iterator();
     		while (it.hasNext()) {
 	    		ICatalog curCatalog = it.next();
-	    		// request catalogId=0 == retrieve all catalogs not accessible to the user
+	    		// request catalogId=0 == retrieve all catalogs already accessible to the user
 	    		if (requestMsg.getCatalogId().equals(0) 
 	    				|| requestMsg.getCatalogId().equals(curCatalog.getId())) {
 	    			if (user.getUserCatalogAccessRights(curCatalog.getId())!=USER_CATALOG_ACCESSRIGHTS.NONE)
@@ -101,6 +101,7 @@ public class WsControllerCatalog extends AMxWSController {
 	    			}
 	    		}
 	    		// request catalogId=-1 == retrieve all catalogs not accessible to the user
+	    		// this is used to build list of catalogs to require access to
 	    		else if (requestMsg.getCatalogId().equals(-1)) {
 	    			if (user.getUserCatalogAccessRights(curCatalog.getId())==USER_CATALOG_ACCESSRIGHTS.NONE)
 	    			{ 

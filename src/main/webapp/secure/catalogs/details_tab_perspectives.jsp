@@ -51,6 +51,8 @@
 			<div class="p-2 mx-btn-transparent-danger mx-square-button-xs d-sm-inline-block btn btn-sm shadow-sm _remove_button_"
 						title="<s:text name='Catalogs.perspectives.remove_question' />"	 	
 						data-toggle="confirmation"
+						btnOkLabel="<s:text name="global.yes" />"
+		 	  			btnCancelLabel="<s:text name="global.no" />"
 				  		onConfirm="MxGuiPerspective.deletePerspective(findAncestorNode(this,'_customizable_perspective_root_').id)" 
 				  		onCancel=""	  				
 			 			 >

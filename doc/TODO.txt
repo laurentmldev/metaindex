@@ -1,10 +1,57 @@
 
 
-v2.2.2:
+v2.2.5:
+-------
+CPU usage on server increases ... ???
+
+#150  Uploading data with complex fields names leads to failed WS communication #150 	
+    - need to make server more robust to such anomaly
+    - prevent user to make such mistake
+    - generate a simple field name and add corresponding vocabulary entry?
+	
+
+in preference menu, lockers shall not be displayed (not used at all)
+
+
+v3.0.0:
 -------
 
-v2.3.0:
--------
+3D scene exporter:
+	-user stories:		
+		- place elements over a 2D map (earth, europe, america, asia, africa, antartica, france)
+			customize map
+		- chronological rendering
+			customize min/max date on the legend arrow
+		- 3D earth
+			customize map
+		- 3D library: position of books/items into library/museum
+		- 3D archeology: position of items on scene
+	- import WebGL scene as base
+	- export index contents to add items in the scene:
+		. mapping fields combination -> ID of item to clone in the scene
+			- left: choose some combination of fields values
+			- right: scene graph with items rendered when selected
+		. mapping field -> 3D coordinates, based on
+			- x,y,z field / z only + automatic x,y / lat,long / id->coordinates mapping list (cities names for ex) / scene object name
+			- x/y/z adaptation coef 
+		. links
+			- choose links to be rendered
+			- way to render links
+			- build link path without going inside scene objects ("constant altitude" mode) 
+		. animated scene:
+			- mapping field -> scene time
+		. customize scene:
+			- change a texture
+			- change color?
+		. highlight Lucene search result within the scene
+	- save final scene / conf file into index drive
+
+3D mapping conf file:
+	- path to WebGL scene
+	- items 3D mapping
+		
+			 
+	
 
 mxtmp folder shall be under /webapp not under /metaindex
 
@@ -16,8 +63,6 @@ on logout by session expired, unable to login again (blank page):
 
 add javadoc to WS entry points
 
-more realistic/consistent "empty catalog contents" picture (Excel file screenshot)
- 
 
 
 #118 bug: when renaming a perspective, it actually adds a new one, but keep previous one
@@ -151,6 +196,9 @@ Backlog:
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+v2.2.5:
+XLS import : "Choose Sheet from your file" : faire la traduction en français
+
 v2.2.3 and 2.2.4: fixing download paths in prod env
 v2.2.2: fixed toolbox download path in prod env
 v2.2.1: fixed access restricted on toolbox in prod env 

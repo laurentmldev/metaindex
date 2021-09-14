@@ -268,6 +268,9 @@ function details_reconfirm_delete_catalog(catId) {
 		 		<button type="button" class="_button_delete_ btn btn-default btn-sm alert alert-danger" 	  		
 		 	  		data-toggle="confirmation"
 		 	  		delete_dbid=""
+		 	  		title="<s:text name="global.areYouSure" />"
+		 	  		btnOkLabel="<s:text name="global.yes" />"
+		 	  		btnCancelLabel="<s:text name="global.no" />"
 		 			onConfirm="details_reconfirm_delete_catalog(this.delete_dbid);" onCancel=""
 		 			style="margin-left:1em;">
 		 			<i class="fa fa-times" aria-hidden="true"></i> <s:text name="Catalogs.delete" />

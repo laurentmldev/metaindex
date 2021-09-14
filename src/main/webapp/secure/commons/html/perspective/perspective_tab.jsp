@@ -246,6 +246,8 @@ var _curTabIndex=0;
 			<span class="p-2 mx-btn-transparent-danger mx-square-button-xs d-sm-inline-block btn btn-sm shadow-sm"	 
 		  				title="<s:text name='Catalogs.perspectives.tab.remove_question' />"		
 		  				data-toggle="confirmation"
+		  				btnOkLabel="<s:text name="global.yes" />"
+		 	  			btnCancelLabel="<s:text name="global.no" />"
 				  		onConfirm="_deleteTabFuncsById[findAncestorNode(this,'_customizable_tab_root_').id]();" 
 				  		onCancel="" >
 			 			<i class="fas fa-times fa-sm text-grey-50"></i>

@@ -152,7 +152,7 @@
 		// comments
 		let comments = newTermNode.querySelector("._term_comments_");
 		if (termDesc.datatype=="LINK") {
-			comments.innerHTML="enums. list shall be a search request (ex: 'type:person')";
+			comments.innerHTML="<s:text name="Catalogs.fields.enumeration.comment" />";
 		}
 					
 		termsInsertspot.appendChild(newTermNode);

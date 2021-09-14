@@ -16,7 +16,7 @@
         	  style="margin-top:20vh;margin-left:40vw;max-width:30%;" >
      </div>
 	<table><tr>
-		<td><h1 id="MxGui.details.title.text" class="h3 mb-0 text-gray-800"></h1></td>  
+		<td><h1 id="MxGui.details.title.text" class="h3 mb-0" style="color:#bbb"></h1></td>  
 		<td id="MxGui.details.count" class="text-center" style="padding-left:1rem;display:none">
 			<span id="MxGui.details.count.matchNumber" >0</span> 
 			/ 

@@ -1,0 +1,9 @@
+<mx3d baseScene="myscene.webgl">
+    <items>
+        <mappedItem>
+            <Item fieldName="type" fieldValue="person"></Item>
+            <coordinates>
+            </coordinates>
+        </mappedItem>
+    </items>
+</mx3d>

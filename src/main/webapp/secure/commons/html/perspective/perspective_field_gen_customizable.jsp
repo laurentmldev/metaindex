@@ -147,6 +147,8 @@
 		  	<div style="display:none" class="_remove_button_ p-2 mx-btn-transparent-danger mx-square-button-xs d-sm-inline-block btn btn-sm shadow-sm"	 
 		  				title="<s:text name='Catalogs.perspectives.field.remove_question' />"
 		  				data-toggle="confirmation"
+		  				btnOkLabel="<s:text name="global.yes" />"
+		 	  			btnCancelLabel="<s:text name="global.no" />"
 				  		onConfirm="_deleteFieldFuncsById[findAncestorNode(this,'_customizable_field_root_').id]();" 
 				  		onCancel=""								  				
 			 			onclick="" >

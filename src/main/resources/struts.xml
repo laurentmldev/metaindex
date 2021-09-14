@@ -24,6 +24,12 @@
    
 </global-exception-mappings>
 
+
+		<action name="3dview" class="metaindex.app.beans.BeanProfile">
+			<result name="BeanProcess_SUCCESS" >/public/3dview.jsp</result>			
+		</action>
+		
+		
 		<!-- Welcome page -->
 		<action name="welcome" class="metaindex.app.beans.BeanWelcome">
 			<result name="BeanProcess_SUCCESS" >/public/welcome.jsp</result>			

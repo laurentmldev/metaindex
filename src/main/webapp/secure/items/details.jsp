@@ -405,6 +405,9 @@
 	                <button type="button" class="_button_delete_ btn btn-default btn-sm alert alert-danger" 	  		
 			 	  		data-toggle="confirmation"
 			 	  		delete_dbid=""
+			 	  		title="<s:text name="global.areYouSure" />"
+			 	  		btnOkLabel="<s:text name="global.yes" />"
+		 	  			btnCancelLabel="<s:text name="global.no" />"
 			 			onConfirm="ws_handlers_deleteItem(this.delete_dbid);" onCancel=""
 			 			style="margin-left:1em;font-size:0.7rem;"> 
 			 			<i class="fa fa-times" aria-hidden="true"></i> <s:text name="Items.delete" />
@@ -446,6 +449,9 @@
  <button id="details.deleteAll.button" type="button" class="btn btn-default btn-sm alert alert-danger" 	  
  		style="display:none;margin-left:1rem;margin-right:1rem;"		
   		data-toggle="confirmation"
+  		title="<s:text name="global.areYouSure" />"
+  		btnOkLabel="<s:text name="global.yes" />"
+		btnCancelLabel="<s:text name="global.no" />"
   		onConfirm="details_reconfirm_deleteAllItems();" 
   		onCancel="" ><i class="fa fa-times" aria-hidden="true"></i> 
 		<s:text name="Items.deleteAll" />
