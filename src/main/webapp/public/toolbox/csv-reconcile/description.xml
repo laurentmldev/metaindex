@@ -13,7 +13,7 @@ If matching score is good enough, corresponding ID from reference file is used a
 	Script Python pour réconcilier les données entre deux fichiers CSV.&lt;br/&gt;
 	&lt;br/&gt;
 	Détecte les textes correspondant entre le premier (testé) et le second (référence) fichiers CSV (pour les colonnes indiquées).
-	Si la corespondance est satisfaisante, l'ID dans le fichier de référence est utilisé comme valeur réconciliée, et ajouté
+	Si la correspondance est satisfaisante, l'ID dans le fichier de référence est utilisé comme valeur réconciliée, et ajouté
 	dans une nouvelle colonne du fichier testé.
 	&lt;br/&gt;&lt;br/&gt;
 	Exemple de ligne de commande:
