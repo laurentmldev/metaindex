@@ -4,7 +4,10 @@ v2.2.5:
 -------
 CPU usage on server increases ... ???
 
-#150  Uploading data with complex fields names leads to failed WS communication #150 	
+[https-jsse-nio-20000-exec-2] WARN org.springframework.web.servlet.PageNotFound - No mapping for POST /webapp/Error401
+[https-jsse-nio-20000-exec-2] WARN org.springframework.web.servlet.PageNotFound - No mapping for POST /webapp/ErrorAuth
+
+#150  Uploading data with complex fields names seems to lead to failed WS communication #150 	
     - need to make server more robust to such anomaly
     - prevent user to make such mistake
     - generate a simple field name and add corresponding vocabulary entry?
@@ -12,6 +15,11 @@ CPU usage on server increases ... ???
 
 in preference menu, lockers shall not be displayed (not used at all)
 
+count how much toolbox page is reached
+
+remove log msg "### adding proc task 1001"
+
+	
 
 v3.0.0:
 -------

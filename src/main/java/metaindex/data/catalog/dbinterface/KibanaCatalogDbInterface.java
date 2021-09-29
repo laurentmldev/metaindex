@@ -195,14 +195,7 @@ public class KibanaCatalogDbInterface
 	public Boolean createOrUpdateCatalogStatisticsUser(IUserProfileData activeUser) throws DataProcessException {
 		
 		List<String> rolesList = new ArrayList<String>();
-		
-		if (activeUser.getRole()==USER_ROLE.ROLE_OBSERVER) { rolesList.add("kibana_dashboard_only_user"); }
-		// TODO issue #23
-		// kibana_user gives rights to configure the 'Kibana' app including deleting all spaces
-		// but is necessary for proper use of Kibana for now
-		// (see elasticsearch issue https://github.com/elastic/kibana/issues/51759)
-		else { rolesList.add("kibana_user"); }
-
+				
 		for (Integer catId : activeUser.getUserCatalogsIds()) {
 			ICatalog c = Globals.Get().getCatalogsMgr().getCatalog(catId);
 			if (c==null) {
