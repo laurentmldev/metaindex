@@ -1,5 +1,7 @@
 package toolbox.utils;
 
+import toolbox.exceptions.DataProcessException;
+
 /*
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -20,8 +22,8 @@ import metaindex.data.userprofile.IUserProfileData;
 public interface IProcessingTask extends IObservable<IObserver<IProcessingTask> >, IIdentifiable<Integer>, IRunnable {
 
 	
-	public void start();
-	public void stop();
+	public void start() throws DataProcessException;
+	public void stop() throws DataProcessException;
 	public void abort();
 	Boolean isTerminated();	
 	

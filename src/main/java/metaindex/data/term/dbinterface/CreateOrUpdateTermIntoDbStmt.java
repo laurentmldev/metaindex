@@ -73,7 +73,8 @@ class CreateOrUpdateTermIntoDbStmt extends SQLWriteStmt<ICatalogTerm>   {
 			stmt.setBoolean(8, dataObject.getIsMultiEnum());
 			
 			stmt.addBatch();
-		} catch (SQLException e) { throw new DataProcessException(e); }		
+		} catch (SQLException e) { throw new DataProcessException(e); }	
+		
 	}
 						
 };

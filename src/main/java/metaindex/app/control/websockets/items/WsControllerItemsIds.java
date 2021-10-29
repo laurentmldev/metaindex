@@ -46,7 +46,7 @@ import toolbox.utils.StrTools;
 @Controller
 public class WsControllerItemsIds extends AMxWSController {
 	
-	private Log log = LogFactory.getLog(WsControllerItemsCsvFileUpload.class);
+	private Log log = LogFactory.getLog(WsControllerItemsIds.class);
 	
 	 
 	@Autowired

@@ -22,8 +22,7 @@ function stripStr(str) { return str.replace(/^\s*/,"").replace(/\s*$/,""); }
 
 // shouldn't be too big otherwise risk of WS deconnexion because max. size limit reached.
 var MX_WS_FIELD_VALUE_MAX_CHARS = 5000;
-var MX_WS_UPLOAD_FILE_MAX_LINES = 500;
-var MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE = 100000;
+var MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE = 500;
 var MX_WS_UPLOAD_FILE_SEND_PERIOD_MS = 30;
 
 var MX_DOWNSTREAM_MSG="down";
@@ -262,13 +261,15 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			myself._stompClient.subscribe('/user/queue/items',myself._handleCatalogItemsMsg);
 			myself._stompClient.subscribe('/user/queue/get_catalog_items_allids_response',myself._handleCatalogItemsIdsMsg);
 			myself._stompClient.subscribe('/user/queue/selected_item',myself._handleCatalogSelectedItemMsg);
-			myself._stompClient.subscribe('/user/queue/upload_items_csv_response',myself._handleUploadItemsFromCsvAnswer);
 			myself._stompClient.subscribe('/user/queue/download_items_csv_response',myself._handleDownloadItemsCsvAnswer);
 			myself._stompClient.subscribe('/user/queue/download_items_graph_response',myself._handleDownloadItemsGraphAnswer);
 			myself._stompClient.subscribe('/user/queue/download_items_graphgroupby_response',myself._handleDownloadItemsGraphGroupByAnswer);
 			myself._stompClient.subscribe('/user/queue/created_item',myself._handleCreatedItemResponseMsg);
+			
+			// data upload (CSV or raw data, same code on JS side, only the way of processing it changes on server side)
+			myself._stompClient.subscribe('/user/queue/upload_items_response',myself._handleUploadFilesAnswer);
 			myself._stompClient.subscribe('/user/queue/upload_userdata_files_response',myself._handleUploadFilesAnswer);
-			myself._stompClient.subscribe('/user/queue/upload_userdata_file_contents_progress',myself._handleUploadFilesContentsAnswer);
+			myself._stompClient.subscribe('/user/queue/upload_userdata_file_contents_progress',myself._handleUploadFilesProgressMsg);
 			
 			
 			// fields
@@ -760,149 +761,6 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 	    
 	}
 	
-	
-	//------- Upload Items from CSV file --------	
-	
-	// store handles to files being uploaded
-	// pb: not robust of performing several CSV upload at a time ...
-	var mx_csv_files_to_be_uploaded=[];
-	var mx_csv_files_upload_finish_callback=[];
-
-	
-	this.subscribeToCsvUpload=function(callback_func,debug) {
-		debug=debug||false;
-		myself._callback_UploadCsv_debug=debug;
-		myself._callback_UploadCsv=callback_func;
-	}
-		
-	this.requestUploadItemsFromCsv = function(csvRows,chosenFieldsMapping,finishCallback) {
-	 	
-		let jsonData = {};
-		jsonData.clientFileId=mx_csv_files_to_be_uploaded.length;		
-		let nbItemsToBeCreated=0;
-		
-		// instantiate a new FileReader object to count total amount of items 
-		// to be created
-   
-    	let curLineNb=0;
-    	
-    	// count total nb entries
-    	while (curLineNb<csvRows.length) {
-    		if (	   csvRows[curLineNb].length>0 
-    				&& csvRows[curLineNb][0]!='#' 
-    				&& !csvRows[curLineNb].match(/^\s*$/)
-    				&& !csvRows[curLineNb].match(/^\s*#/)
-    				&& curLineNb!=0 // ignore first line (header)
-    				) {
-    			nbItemsToBeCreated++;
-    		}
-    			
-    		curLineNb++;	    		
-    	}
-    	jsonData.totalNbEntries=nbItemsToBeCreated;
-    	jsonData.chosenFieldsMapping=chosenFieldsMapping;	    	
-    	
-    	// parse fields names and types
-    	let fieldsDefStr=csvRows[0];
-    	fieldsDefStr=stripStr(fieldsDefStr.replace("#",""));	    	
-
-    	let separator=";"
-    	let fieldsDefsArray=fieldsDefStr.split(separator);
-    	if (fieldsDefsArray.length==1) {
-    		separator=",";
-    		fieldsDefsArray=fieldsDefStr.split(separator);	    		
-    	}
-    	if (fieldsDefsArray.length==1) {
-    		separator="\t";
-    		fieldsDefsArray=fieldsDefStr.split(separator);	    		
-    	}
-
-    	jsonData.separator=separator;
-    	
-    	jsonData.csvColsList=[];	    	
-    	for (curFieldIdx in fieldsDefsArray) {
-    		let curField=fieldsDefsArray[curFieldIdx];	  
-    		jsonData.csvColsList.push(stripStr(curField));
-    	}
-    	//console.log('### Sending file upload request : '+JSON.stringify(jsonData));
-    	myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
-    	myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/upload_items_csv_request", {},JSON.stringify(jsonData));		
- 		
-    	jsonData.csvRows=csvRows;
-    	mx_csv_files_to_be_uploaded[jsonData.clientFileId]=jsonData;
-    	mx_csv_files_upload_finish_callback[jsonData.clientFileId]=finishCallback;	    		
-	}
-	
-	this._handleUploadItemsFromCsvAnswer=function(msg) {
-		
-    	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
-		var parsedMsg = JSON.parse(msg.body);
-		
-		if (myself._callback_UploadCsv_debug==true) {
-			console.log("[MxApi] Received answer to request for 'Upload Items from CSV' accepted : "+parsedMsg.isSuccess);
-			
-		}
-
-		if (parsedMsg.isSuccess==false) {
-			footer_showAlert(ERROR, parsedMsg.rejectMessage);
-			return;
-		}
-		
-		let fileIndex=parsedMsg.clientFileId;
-	    //console.log("file index = "+fileIndex);
-	    let csvRows=mx_csv_files_to_be_uploaded[fileIndex].csvRows;
-	    let finishCallback=mx_csv_files_upload_finish_callback[fileIndex];
-	    //console.log("fileHandle="+fileHandle);
-	    //dumpStructure(mx_csv_files_to_be_uploaded);
-	    let serverProcessingTaskId=parsedMsg.processingTaskId;
-	    //console.log("starting file upload, proc task id = "+serverProcessingTaskId)
-	    
-	    if (csvRows==null) { return; }
-	    //console.log("received file upload answer : file = "+fileHandle.value);
-	    
-    
-    	let curLineNb=0;
-    	let curLinesWsBuffer=[];
-    	
-    	if (myself._callback_UploadCsv!=null) {
-			myself._callback_UploadCsv(parsedMsg); 
-		}
-    	
-    	let totalNbValidLines=mx_csv_files_to_be_uploaded[fileIndex].totalNbEntries;
-    	let nbLinesSent=0;
-    	let msgNb=0;
-    	
-    	var myWorker = new Worker('public/commons/js/metaindex_csvupload.wrk.js');
-    	myWorker.onmessage=function(e) {
-    		if (e.data.cmd=="SEND") {
-    			myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
-    			myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/upload_filter_file_contents", {},
-    					JSON.stringify(e.data.jsonData));	
-    		}
-    		else if (e.data.cmd=="END") {
-    			if (finishCallback!=null) { finishCallback(); }
-    			//console.log("### all data sent!");
-    		}
-    		
-    	}
-    	
-    	myWorker.postMessage({cmd:"START",params:{
-    									"uri":myself._url+myself.MX_WS_ENDPOINT,
-						    			"serverProcessingTaskId":serverProcessingTaskId,						    			
-						    			"csvRows":csvRows,
-						    			"totalNbValidLines":totalNbValidLines,
-						    			//"finishCallback":finishCallback,
-						    			"fileMaxLinesForUpload":MX_WS_UPLOAD_FILE_MAX_LINES,
-						    			//"callback_NetworkEvent":myself._callback_NetworkEvent,
-						    			//"stompClient":myself._stompClient,
-						    			"mxWsPrefix":myself.MX_WS_APP_PREFIX
-						    			
-    										}
-    	});
-    	
-	}
-	
-
 //------- Download Graph (GEXF) file --------
 				
 		this.requestGraghDownloadsCallbacks=[];
@@ -2324,24 +2182,25 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 			}
 				
 			
-//------- Upload Files --------
+//------- Upload Raw and CSV Files --------
 			
 	// contains error/success callback functions of each field update request
 	this.requestUploadFilesCallbacks=[];
-			
-	// dataObj {
-	//	 catalogId
-	//   filesDescriptions { 
-	//   successCallback (func)
-	//   errorCallback (func)(msg)
-	// }
-	this.requestUploadFiles= function(dataObj) {
-		
+
+	
+	// store handles to files being uploaded
+	// pb: not robust of performing several CSV upload at a time ...
+	var mx_csv_files_to_be_uploaded=[];
+	var mx_csv_files_upload_finish_callback=[];
+
+
+	this._getBasicFilesUploadJsonData=function(dataObj) {
+
 		var curRequestId=myself.requestUploadFilesCallbacks.length;
 		myself.requestUploadFilesCallbacks.push(dataObj);
 		
 		let fileDescriptions=[];
-		
+		 
 		// send request to prepare upload, server will check
 		// quotas are ok
 		for (let pos=0;pos<dataObj.filesToUpload.length;pos++) {	
@@ -2350,34 +2209,74 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 			fileObj.id=fileDescriptions.length;
 			fileDescriptions.push(fileDesc);	
 		}
-				
+		
+		let jsonMsgObj={ 	
+				"requestId" : curRequestId,
+				"catalogId" : dataObj.catalogId,			
+				"fileDescriptions" : fileDescriptions								
+				};
+		
+		return jsonMsgObj;
+		
+	}
+	// dataObj {
+	//	 catalogId
+	//   filesToUpload (array of file objects) 
+	//   successCallback (func)
+	//   errorCallback (func)(msg)
+	// }
+	this.requestUploadFiles= function(dataObj) {
+		
+		let jsonData = myself._getBasicFilesUploadJsonData(dataObj);
 		
 		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
-		var jsonStr = JSON.stringify({ 	"requestId" : curRequestId,
-										"catalogId" : dataObj.catalogId,			
-										"fileDescriptions" : fileDescriptions											
-										});
-		
-		
+		var jsonStr = JSON.stringify(jsonData);
+				
 		//console.log("requesting files upload "+curRequestId);
 		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/upload_userdata_files", {}, jsonStr);
 		
 	}
 	
-	
+			
+	this.buildNewTermValue(termName,dataType) {
+		return "__new__"+dataType+"__"+termName;
+	}
+	// dataObj {
+	//	 catalogId
+	//   filesToUpload (array of file objects) 
+	//   totalNbEntries
+	//   fieldsMapping (see buildNewTermValue function up there for creating automatically new term)
+	//   successCallback (func)
+	//   errorCallback (func)(msg)
+	// }
+	this.requestUploadItemsFromCsv = function(dataObj) {
+	 	
+		let jsonData = myself._getBasicFilesUploadJsonData(dataObj);
+    	jsonData['totalNbEntries']=dataObj['totalNbEntries'];
+    	jsonData['fieldsMapping']=dataObj['fieldsMapping'];
+    	jsonData['separator']=dataObj['separator'];
+    	
+    	myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
+		var jsonStr = JSON.stringify(jsonData);
+				
+		//console.log("requesting items upload "+curRequestId);
+		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/upload_items_request", {}, jsonStr);
+			    		
+	}
 		
-	// each field update request is given with a callback to be executed
-	// in case of success or failure.
+	// received confirmation from server that upload was authorized
 	this._handleUploadFilesAnswer= function(uploadFilesAnswerMsg) {
 		
     	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 		var parsedMsg = JSON.parse(uploadFilesAnswerMsg.body);
 		let requestId=parsedMsg.requestId;
 		
-		//console.log("handling upload files answer "+requestId+" : "+parsedMsg);
 		let requestObj=myself.requestUploadFilesCallbacks[requestId];
 		requestObj.processingTaskId=parsedMsg.processingTaskId;
-		//console.log(requestObj);
+
+		//console.log("### handling upload files answer "+requestId+" : "+parsedMsg);
+		//console.log(requestObj)
+		
 		if (requestObj==null) { return; }
 		if (parsedMsg.isSuccess!=true) {
 			let errorMsg=parsedMsg.rejectMessage;
@@ -2389,7 +2288,7 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 		}		
 		
 		// if OK start uploading contents of user-files, they will be stored
-		// in catalog drive.
+		// in catalog drive or processed to import contents as items in DB.
 		// upload each file one by one
 	    for (let pos=0;pos<requestObj.filesToUpload.length;pos++) {	 
 	    	let fileObj=requestObj.filesToUpload[pos];
@@ -2417,15 +2316,16 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 					}
 						
 				    jsonData={ clientFileId : fileObj.id, processingTaskId:requestObj.processingTaskId, rawContents: sendingBuffer, sequenceNumber:curSequenceNumber };
-			    	//console.log('### Sending file upload contents request : '+JSON.stringify(jsonData));
+			    	console.log('### Sending file upload contents request : '+JSON.stringify(jsonData));
 			    	//console.log("	### Sending file upload contents request  "+curSequenceNumber+" : -> ["+(curRawdataPos-1)+"]");
-				    myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
+
+			    	myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 			    	myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/upload_userdata_file_contents", {},JSON.stringify(jsonData));
 					
 					if (curRawdataPos<rawdata.length && requestObj.abort!=true) {
 						let timer = setInterval(function() {
 							clearInterval(timer);
-							//console.log("	### planning next send in 1s from seq="+(curSequenceNumber+1)+"["+curRawdataPos+"]");
+							//console.log("	### planning next send in 1s from seq="+(curSequenceNumber+1)+"["+curRawdataPos+"]");							
 							sendRawData(curRawdataPos,curSequenceNumber+1); 
 						}, MX_WS_UPLOAD_FILE_SEND_PERIOD_MS);
 					}
@@ -2444,13 +2344,13 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 		 
 	}
 
-	this._handleUploadFilesContentsAnswer= function(uploadFilesContentsAnswerMsg) {
+	this._handleUploadFilesProgressMsg= function(uploadFilesContentsAnswerMsg) {
 		
     	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 		var parsedMsg = JSON.parse(uploadFilesContentsAnswerMsg.body);
 		let requestId=parsedMsg.requestId;
 		
-		console.log("handling upload files contents answer "+requestId+" : "+parsedMsg);
+		//console.log("handling upload files contents answer "+requestId+" : "+parsedMsg);
 		if (requestObj==null) { return; }
 		if (parsedMsg.isSuccess!=true) {
 			let errorMsg=parsedMsg.rejectMessage;
@@ -2461,10 +2361,19 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 			// will stop running upload process
 			requestObj.abort=true;
 			return;
-		}		
+		} else if (requestObj.successCallback!=null) { requestObj.successCallback(); }
 		
 	}
 	
+
+	
+	this.subscribeToCsvUpload=function(callback_func,debug) {
+		debug=debug||false;
+		myself._callback_UploadCsv_debug=debug;
+		myself._callback_UploadCsv=callback_func;
+	}
+
+
 
 //------- Request Plan Update --------	
 		

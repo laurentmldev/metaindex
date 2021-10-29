@@ -18,40 +18,37 @@ import java.io.IOException;
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import toolbox.database.IDbItemsProcessor;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.AProcessingTask;
 import toolbox.utils.ILockable;
+import toolbox.utils.IPair;
+import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
 
 /**
  * Dump received contents into target (bin) file, preserving order depending on given sequence number
  * @author laurentml
  *
  */
-public class FileBinOutstream implements ILockable {
+public class FileBinOutstream extends AFileOutstream {
 	
 	private Log log = LogFactory.getLog(FileBinOutstream.class);
 	
-	private String _filePath="";
-	private Long _fileTargetBytesSize=0L;
-
-	private Map<Integer,byte[] > _bufferedContentsBySequenceNumber = new HashMap<>();
-	private Integer _lastDumpedSequenceNumber=0;
+	private String _filePath="";	
 	private BufferedOutputStream _outstream = null;
-	private Semaphore _dumperLock = new Semaphore(1,true);
-	private Long _nbBytesDumped=0L;
-	private AProcessingTask _processingTask=null;
 	private String _tmpFilePath;
 	private Form _normalizeForm = null;
-	private Boolean _stopDone = false;
+	
 		
-	public FileBinOutstream(String filePath,Long fileBytesSize, AProcessingTask proc, Form normalizeForm) throws DataProcessException {
-		
+	public FileBinOutstream(String filePath,Long fileBytesSize, AProcessingTask parentProcessingTask, Form normalizeForm) throws DataProcessException {
+		super(fileBytesSize,parentProcessingTask);
 		_normalizeForm=normalizeForm;
 		
 		String normalizedFilePath=filePath;
@@ -60,130 +57,76 @@ public class FileBinOutstream implements ILockable {
 		}
 		 
 		setFilePath(normalizedFilePath);
-		setTmpFilePath(normalizedFilePath+".tmp"+proc.getId());
-		setFileTargetBytesSize(fileBytesSize);
+		setTmpFilePath(normalizedFilePath+".tmp"+parentProcessingTask.getId());
 
 		try {
 			_outstream=new BufferedOutputStream(new FileOutputStream(getTmpFilePath()));
-			_processingTask=proc;
 		} catch (IOException ex) {
 			throw new DataProcessException("unable to open outstream to file "
 								+getTmpFilePath()+" : "+ex.getMessage());
 		}
 	}
 	
-
-	@Override
-	public void acquireLock() throws InterruptedException { _dumperLock.acquire(); }
-
-	@Override
-	public void releaseLock() { _dumperLock.release(); }
-	
-	public void write(Integer sequenceNumber, byte[] contents) throws DataProcessException {
-		
-		try {
-			_dumperLock.acquire();
-			_processingTask.addReceivedNbData(new Long(contents.length));
-			
-			if (sequenceNumber.equals(_lastDumpedSequenceNumber+1)) {
-				_outstream.write(contents);
-				_lastDumpedSequenceNumber++;	
-				_nbBytesDumped+=new Long(contents.length);				
-				_processingTask.addProcessedNbData(new Long(contents.length));
-				//log.error("### processed data : "+_processingTask.getProcessedNbData()+" (+ "+contents.length+")");
-				
-				// check if some next data has been received before and then buffered
-				Integer nextSequenceNumber=_lastDumpedSequenceNumber+1;
-				if (_bufferedContentsBySequenceNumber.containsKey(nextSequenceNumber)) {
-					byte[] nextContents=_bufferedContentsBySequenceNumber.get(nextSequenceNumber);					
-					_bufferedContentsBySequenceNumber.remove(nextSequenceNumber);
-					_dumperLock.release();
-					write(nextSequenceNumber,nextContents);					
-				} else {
-					_dumperLock.release();
-				}
-				
-			} else {				
-				_bufferedContentsBySequenceNumber.put(sequenceNumber,contents);
-				_dumperLock.release();
-			}	
-			
-			if (_nbBytesDumped.equals(this.getFileTargetBytesSize())) { 
-				_dumperLock.acquire();
-				if (_stopDone==false) {stop(); }
-				_dumperLock.release();
-			}
-			
-		}
-		catch (IOException|InterruptedException ex) {
-			try {_outstream.close();}
-			catch(Throwable t) {
-				log.error("While handling exception, unable to close outstream for file "
-						+getTmpFilePath()+" : "+t.getMessage());
-			}
-			_dumperLock.release();			
-			throw new DataProcessException("unable to write into outstream for file "
-											+getTmpFilePath()+" : "+ex.getMessage());
-		}
-			
+	protected void handleReceivedContentsSequence(byte[] contents,Integer lastDumpedSequenceNumber) throws IOException {
+		_outstream.write(contents);
 	}
-	public void stop() throws DataProcessException {
+	
+	public void abort() throws DataProcessException {
+		File tmpTargetFile = new File(getTmpFilePath());
+		if (tmpTargetFile.exists()) {
+			if (!tmpTargetFile.delete()) {
+				log.error("unable to delete local userdata content : "+tmpTargetFile);
+			}
+		}	
+	}
+	
+	protected void handleStop() throws DataProcessException {
+		File tmpTargetFile = new File(getTmpFilePath());
 		
-		if (_stopDone==true) { return; }
-		//log.error("### written "+_nbBytesDumped+" bytes, buffer contains "+_bufferedContentsBySequenceNumber.size()+" unprocessed data");
-		try {
-			_stopDone=true;
-			_outstream.flush();
-			_outstream.close();
-			
-		} catch (IOException e) {	
-			_dumperLock.release();
-			File userdataFile = new File(getTmpFilePath());
-			if (userdataFile.exists()) {
-				if (!userdataFile.delete()) {
-					log.error("unable to delete local userdata content : "+userdataFile);
+		try { _outstream.flush(); }
+		catch (IOException e) {
+			if (tmpTargetFile.exists()) {
+				if (!tmpTargetFile.delete()) {
+					log.error("unable to delete local userdata content : "+tmpTargetFile);
 				}
 			}
-			throw new DataProcessException("Unable to close outstream to file "+getFilePath());
+			throw new DataProcessException("Unable to write final contents into target file, sorry");
+			
 		}
 		
 		// when written last bytes, finalize generated file
-		if (!_nbBytesDumped.equals(getFileTargetBytesSize())) {
-			File userdataFile = new File(getTmpFilePath());
-			if (userdataFile.exists()) {
-				if (!userdataFile.delete()) {
-					log.error("unable to delete local userdata content : "+userdataFile);
+		if (!getNbBytesDumped().equals(getFileTargetBytesSize())) {
+			
+			if (tmpTargetFile.exists()) {
+				if (!tmpTargetFile.delete()) {
+					log.error("unable to delete local userdata content : "+tmpTargetFile);
 				}
 			}		
-			_dumperLock.release();
+			
 			throw new DataProcessException("Closed outstream to file "+getFilePath()+" while all contents were not received yet");	
 		}
-		
-		// rename file to definitive name
-		File tmpUserdataFile = new File(getTmpFilePath());
-		File userdataFile = new File(getFilePath());
-		if (userdataFile.exists()) {
-			if (!userdataFile.delete()) {
-				log.error("unable to delete local userdata content : "+userdataFile);
-			}
-		}	
-		tmpUserdataFile.renameTo(userdataFile);
+		else {
+			File finalizedTargetFile = new File(getFilePath());
+			boolean success = tmpTargetFile.renameTo(finalizedTargetFile);
+			if (!success) {
+				if (!tmpTargetFile.delete()) {
+					log.error("unable to delete local userdata content : "+tmpTargetFile);
+				}
+				throw new DataProcessException("unable to finalize file "
+						+getFilePath()+", sorry operation aborted");
+				
+			}			
+		}
 	}
 
 	public String getFilePath() {
 		return _filePath;
 	}
 
+	public String getName() { return getFilePath(); }
+	
 	public void setFilePath(String filePath) {
 		this._filePath = filePath;
-	}
-
-	public Long getFileTargetBytesSize() {
-		return _fileTargetBytesSize;
-	}
-
-	public void setFileTargetBytesSize(Long fileTargetBytesSize) {
-		this._fileTargetBytesSize = fileTargetBytesSize;
 	}
 
 	public String getTmpFilePath() {
@@ -193,6 +136,7 @@ public class FileBinOutstream implements ILockable {
 	public void setTmpFilePath(String tmpFilePath) {
 		this._tmpFilePath = tmpFilePath;
 	}
+
 
 	
 	}

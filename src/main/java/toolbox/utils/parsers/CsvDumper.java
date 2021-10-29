@@ -16,8 +16,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -80,7 +78,7 @@ public class CsvDumper<T extends IFieldValueMapObject> extends AStreamHandler<T>
 				String valStr=val.toString();
 				
 				// when value is multi-line, replace carriage return by a special string 
-				valStr=valStr.replace("\n",ACsvParser.MX_CR_ESCAPE_STR);
+				valStr=valStr.replace("\n",CsvDbItemsParser.MX_CR_ESCAPE_STR);
 				
 				if (valStr.contains(this.getSeparator())) { 
 					if (valStr.contains(this.getStrMarker())) {

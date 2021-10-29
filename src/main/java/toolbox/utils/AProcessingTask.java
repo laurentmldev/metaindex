@@ -17,6 +17,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import toolbox.exceptions.DataProcessException;
 import toolbox.patterns.observer.*;
 import metaindex.data.userprofile.IUserProfileData;
 
@@ -138,7 +139,7 @@ public abstract class AProcessingTask implements IProcessingTask {
 	public Boolean isTerminated() { return this.getProcessedNbData().equals(this.getTargetNbData()); }	
 	
 	@Override
-	public void start() { _runnerThread.start(); }
+	public void start() throws DataProcessException { _runnerThread.start(); }
 	
 	public void joinRunnerThread() throws InterruptedException {
 		// avoid deadlock if a thread tries to join itself

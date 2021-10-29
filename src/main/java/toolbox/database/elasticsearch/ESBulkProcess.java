@@ -33,11 +33,12 @@ import metaindex.data.catalog.ICatalog;
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.database.IDbItem;
+import toolbox.database.IDbItemsProcessor;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.AProcessingTask;
-import toolbox.utils.parsers.ACsvParser;
+import toolbox.utils.parsers.CsvDbItemsParser;
 
-public class ESBulkProcess extends AProcessingTask   {
+public class ESBulkProcess extends AProcessingTask implements IDbItemsProcessor  {
 
 	private Log log = LogFactory.getLog(ESBulkProcess.class);
 	
@@ -116,12 +117,6 @@ public class ESBulkProcess extends AProcessingTask   {
 	private BulkProcessor _processor;
 	private IUserProfileData _activeUser;
 	
-	// optional parser to be used to decode user string when relevant
-	private ACsvParser<IDbItem> _parser=null;	
-	public ACsvParser<IDbItem> getParser() { return _parser; }
-	public void setParser(ACsvParser<IDbItem> parser) { this._parser = parser; }
-	//----
-	
 	public IUserProfileData getActiveUser() { return _activeUser; }
 	
 	public ESBulkProcess(IUserProfileData u, 
@@ -157,8 +152,9 @@ public class ESBulkProcess extends AProcessingTask   {
 		//        .constantBackoff(TimeValue.timeValueSeconds(1L), 3));
 	}
 	
-	
+	@Override
 	public void lock() throws InterruptedException { _postingDataLock.acquire(); }
+	@Override
 	public void unlock() { _postingDataLock.release(); }
 	
 	@Override
@@ -184,6 +180,7 @@ public class ESBulkProcess extends AProcessingTask   {
 		}
 	}
 	
+	@Override
 	public void postDataToIndexOrUpdate(List<IDbItem> d) throws DataProcessException {
 		//log.error("### posting "+d.size()+" items");
 		if (!isRunning()) {
@@ -210,6 +207,7 @@ public class ESBulkProcess extends AProcessingTask   {
 		
 	}
 	
+	@Override
 	/** Create given new document */
 	public void postDataToIndex(List<IDbItem> d) throws DataProcessException {
 		if (!isRunning()) {
@@ -227,6 +225,7 @@ public class ESBulkProcess extends AProcessingTask   {
 						
 	}
 	
+	@Override
 	/** Update document or create it with requested id if it does not exist */
 	public void postDataToUpdate(List<IDbItem> d) throws DataProcessException {
 		if (!isRunning()) {
@@ -253,6 +252,7 @@ public class ESBulkProcess extends AProcessingTask   {
 		this.addReceivedNbData(new Long(d.size()));
 				
 	}
+	@Override
 	public void postDataToDelete(List<IDbItem> d) throws DataProcessException {
 		if (!isRunning()) {
 			throw new DataProcessException("Processing not ready, unable to post data to delete");

@@ -232,7 +232,7 @@ public class ExcelParser implements FileParser {
             Object value = null;
 
             if (cell != null) {
-                switch (cell.getCellTypeEnum()) {
+                switch (cell.getCellType()) {
                     case STRING:
                         value = formatter.formatCellValue(cell);
                         break;
@@ -243,6 +243,9 @@ public class ExcelParser implements FileParser {
                             value = cell.getNumericCellValue();
                         }
                         break;
+                    default:
+                    	return null;
+
                 }
                 // avoid indexing null or empty string, fails to index rows
                 // when Tdate fields are empty and can lead to mappings being

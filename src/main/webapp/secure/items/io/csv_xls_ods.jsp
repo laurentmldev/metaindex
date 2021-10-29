@@ -69,7 +69,7 @@ function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeF
 		for (datatypeIdx in mx_helpers_FIELDS_DATATYPES) {
 			let datatypeStr=mx_helpers_FIELDS_DATATYPES[datatypeIdx];
 			let choiceNode=document.createElement("option");
-			choiceNode.value="__new__"+datatypeStr;
+			choiceNode.value=ws_handlers_itemsUploadBuildNewTermRequest(csvColName,datatypeStr);
 			choiceNode.innerHTML="<s:text name="Items.uploadItems.newField" />: "+datatypeStr;
 			colTermNodeSelect.appendChild(choiceNode);
 			choiceNode.onclick=function() {
@@ -262,7 +262,7 @@ function _showCsvPrevisu(CSVrows,fileNameTxt,isExcelFile,fileHandle) {
 	let uploadBtn=previsuNodeFooter.querySelector('._uploadBtn_');
 	uploadBtn.onclick=function() {
 		footer_showAlert(INFO,"<s:text name="global.pleasewait"/>",null,5000);		
-		ws_handlers_requestUploadCsvFile(CSVrows,selectedCsvColsDef); 
+		ws_handlers_requestUploadCsvFile(CSVrows,selectedCsvColsDef,fileHandle); 
 		ws_handlers_refreshItemsGui();
 		MxGuiHeader.hideInfoModal();		
 	}

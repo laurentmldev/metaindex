@@ -76,14 +76,18 @@ public class SftpCatalogsDrive implements ICatalogsDrive {
 				return; 
 			}
 			_isStarted=true;	
+			// not clear for now why/if we need this tempo
+			// server instance is sometimes null when running this code
+			// while it should be running since we executed init() method.
+			Thread.sleep(1000);
 			if (_server==null) {
 				log.error("SFTP server not instanciated (yet), unable to start it.");
 			}
 			_server.start();
 			log.info("Catalogs drive accessible at SFTP port '"+getPort()+"'");
 			_serverLock.release();
-		} catch (InterruptedException | IOException e) {
-			//_server=null;
+		} catch (InterruptedException | IOException| NullPointerException e) {
+			e.printStackTrace();
 			_serverLock.release();
 		}
 		

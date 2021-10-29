@@ -180,8 +180,6 @@ function mx_helpers_getItemDetailsById(itemId, receivedItemContentsCallback) {
 
 // matches Metaindex DB table 'catalog_terms', enum of field 'datatype'
 // used to generate dropdown box in Field type
-//var mx_helpers_FIELDS_DATATYPES = [	"TINY_TEXT","LONG_TEXT","DATE","INTEGER","FLOAT","PAGE_URL","IMAGE_URL","AUDIO_URL","VIDEO_URL","GEO_POINT",
-//									,"LINK"];
 var mx_helpers_FIELDS_DATATYPES = [	"TINY_TEXT","LONG_TEXT","DATE","INTEGER","FLOAT","PAGE_URL","IMAGE_URL","LINK","GEO_POINT"];
 //var mx_helpers_FIELDS_DATATYPES_text = ["TINY_TEXT","LONG_TEXT","PAGE_URL","IMAGE_URL","AUDIO_URL","VIDEO_URL","LINK"];
 var mx_helpers_FIELDS_DATATYPES_text = ["TINY_TEXT","PAGE_URL","IMAGE_URL","LINK"];

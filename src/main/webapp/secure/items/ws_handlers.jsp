@@ -271,12 +271,54 @@ function ws_handlers_requestUpdateFilter(filterName,queryString) {
 	MxApi.requestUpdateFilter(filterName,queryString);
 }
 
-function ws_handlers_requestUploadCsvFile(csvRows,selectedCsvColsDef) {	
-	let finishCallback=function(e) {
+function ws_handlers_requestUploadCsvFile(csvRows,selectedCsvColsDef,fileHandle) {	
+	let successCallback=function(e) {
 		//console.log("requesting catalog update");		
 		MxApi.requestGetCatalogs({'catalogId':<s:property value="currentCatalog.id"/>, 'successCallback':handleMxWsCatalogs});
 	}
-	MxApi.requestUploadItemsFromCsv(csvRows,selectedCsvColsDef,finishCallback);    
+
+	// count total nb entries
+	let nbItemsToBeCreated=0;
+	let curLineNb=0;
+	while (curLineNb<csvRows.length) {
+    		if (	   csvRows[curLineNb].length>0 
+    				&& csvRows[curLineNb][0]!='#' 
+    				&& !csvRows[curLineNb].match(/^\s*$/)
+    				&& !csvRows[curLineNb].match(/^\s*#/)
+    				&& curLineNb!=0 // ignore first line (header)
+    				) {
+    			nbItemsToBeCreated++;
+    		}
+			curLineNb++;
+    	}
+
+	let fieldsDefStr=csvRows[0];
+	fieldsDefStr=stripStr(fieldsDefStr.replace("#",""));	    	
+	
+	let separator=";"
+	let fieldsDefsArray=fieldsDefStr.split(separator);
+	if (fieldsDefsArray.length==1) {
+		separator=",";
+		fieldsDefsArray=fieldsDefStr.split(separator);	    		
+	}
+	if (fieldsDefsArray.length==1) {
+		separator="\t";
+		fieldsDefsArray=fieldsDefStr.split(separator);	    		
+	}
+	
+	
+	let dataObj={
+		'catalogId':<s:property value="currentCatalog.id"/>,
+		'filesToUpload':fileHandle.files,
+		'totalNbEntries':nbItemsToBeCreated,
+		'fieldsMapping':selectedCsvColsDef,
+		'successCallback':successCallback,
+	}
+	MxApi.requestUploadItemsFromCsv(dataObj);    
+}
+
+function ws_handlers_itemsUploadBuildNewTermRequest(termName,datatypeStr) {
+	return MxApi.buildNewTermValue(termName,datatypeStr);
 }
 
 function ws_handlers_requestDownloadCsvFile(selectedTermsList,query,selectedFiltersNames,sortByFieldName,reversedSortOrder) {

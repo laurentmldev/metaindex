@@ -25,9 +25,10 @@ import toolbox.exceptions.DataProcessException;
 import toolbox.utils.AProcessingTask;
 import toolbox.utils.filetools.FileBinOutstream;
 import toolbox.utils.filetools.FileDescriptor;
+import toolbox.utils.filetools.IFileOutstream;
 
 
-public class HandleFileUploadProcess extends AProcessingTask   {
+public class HandleFileUploadProcess extends AProcessingTask implements IHandleFileUploadProcess  {
 
 
 	
@@ -37,12 +38,22 @@ public class HandleFileUploadProcess extends AProcessingTask   {
 	private Integer _curFileId=null;
 	private List<String> _filesNames=new ArrayList<>();
 	private String _uploadPath="";
-	private Map<Integer,FileBinOutstream> _fileOutstreams = new HashMap<>();
+	private Map<Integer,IFileOutstream> _fileOutstreams = new HashMap<>();
 	private Map<Integer,FileDescriptor> _fileDescriptors = new HashMap<>();
 	
 	private Semaphore _processorLock = new Semaphore(1,true);
 	private Map<Integer, Map<Integer, byte[]> > _pendingFileData = new HashMap<>();
 	
+	@Override
+	public IFileOutstream getNewOutStream(String path, 
+			 Long byteSize, 
+			 AProcessingTask parentProcessingTask,
+			 java.text.Normalizer.Form fileNameNormalizationForm) throws DataProcessException {
+		
+		return new FileBinOutstream(path,byteSize,parentProcessingTask,fileNameNormalizationForm);
+				
+		
+	}
 	
 	public HandleFileUploadProcess(IUserProfileData u, 
 						 String taskName, 
@@ -51,27 +62,26 @@ public class HandleFileUploadProcess extends AProcessingTask   {
 		super(u,taskName);
 		setUploadPath(uploadPath);
 		this.addObserver(u);		
+					
 		
 		Long totalBytesSize=0L;
 		for (FileDescriptor desc : filesToDumpDescr) {
 			_filesNames.add(desc.getName());
-			FileBinOutstream outstream=new FileBinOutstream(
-												getFullFsPath(desc.getName()),
-												desc.getByteSize(),
-												this,
-												Globals.LOCAL_USERDATA_NORMALIZATION_FORM);
+			IFileOutstream outstream=getNewOutStream(getFullFsPath(desc.getName()),
+					desc.getByteSize(),
+					this,
+					Globals.LOCAL_USERDATA_NORMALIZATION_FORM);
 			_fileOutstreams.put(desc.getId(),outstream);
 			_fileDescriptors.put(desc.getId(),desc);
 			totalBytesSize+=desc.getByteSize();
 		}		
-		this.setTargetNbData(totalBytesSize);		
-		
+		this.setTargetNbData(totalBytesSize);
 	}
 		
-	private String getFullFsPath(String fileName) {
-		
+	private String getFullFsPath(String fileName) {		
 		return _uploadPath+"/"+fileName;
 	}
+	
 	@Override
 	public void sendErrorMessageToUser(String msg, List<String> details) {
 		getActiveUser().sendGuiErrorMessage(msg, details);		
@@ -81,6 +91,7 @@ public class HandleFileUploadProcess extends AProcessingTask   {
 		getActiveUser().sendGuiErrorMessage(msg);		
 	}
 
+	@Override
 	public void postFileData(Integer fileId,Integer sequenceNumber, byte[] rawData) throws DataProcessException, InterruptedException {
 		
 		if (!_fileOutstreams.containsKey(fileId)) {
@@ -108,6 +119,7 @@ public class HandleFileUploadProcess extends AProcessingTask   {
     			curFileName,
     			AProcessingTask.pourcentage(getProcessedNbData(), getTargetNbData()));
 	}
+	
 	
 	@Override
 	public void run()  { 
@@ -144,8 +156,12 @@ public class HandleFileUploadProcess extends AProcessingTask   {
 				_processorLock.release();
 			} 
 		}
-
-		stop();
+		
+		try { stop(); } 
+		catch (DataProcessException e) { 
+			e.printStackTrace(); 
+			abort();
+		}
 
 	}
 
@@ -156,13 +172,13 @@ public class HandleFileUploadProcess extends AProcessingTask   {
 	/**
 	 * Blocking, wait for currently posted data is finished to be processed
 	 */
-	public void stop() {
+	public void stop() throws DataProcessException {
 		
 		String failedFilesStr = "";
 		
 		for (Integer fileId : _fileDescriptors.keySet()) {
 			FileDescriptor fileDesc = _fileDescriptors.get(fileId);
-			FileBinOutstream fileDump = _fileOutstreams.get(fileId);
+			IFileOutstream fileDump = _fileOutstreams.get(fileId);
 			try {
 				fileDump.acquireLock();
 				fileDump.stop(); 

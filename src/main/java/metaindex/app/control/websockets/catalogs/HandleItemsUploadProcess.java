@@ -1,0 +1,82 @@
+package metaindex.app.control.websockets.catalogs;
+
+
+/*
+GNU GENERAL PUBLIC LICENSE
+Version 3, 29 June 2007
+
+Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+
+See full version of LICENSE in <https://fsf.org/>
+
+*/
+
+
+import metaindex.data.userprofile.IUserProfileData;
+import toolbox.database.IDbItemsProcessor;
+import toolbox.exceptions.DataProcessException;
+import toolbox.utils.AProcessingTask;
+import toolbox.utils.IPair;
+import toolbox.utils.filetools.ADbOutstream;
+import toolbox.utils.filetools.FileDescriptor;
+import toolbox.utils.filetools.IFileOutstream;
+import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
+import metaindex.app.control.websockets.catalogs.SpreadsheetDbOutstream.CALC_TYPE;
+
+
+import java.util.List;
+import java.util.Map;
+
+
+/**
+ * 
+ * Parse and store received CSV data into ES database
+ * @author laurentml
+ *
+ */
+public class HandleItemsUploadProcess extends HandleFileUploadProcess   {
+
+	private ADbOutstream _dbItemsOutstream;
+	
+	@Override
+	public IFileOutstream getNewOutStream(String path, 
+			 Long byteSize, 
+			 AProcessingTask parentProcessingTask,
+			 java.text.Normalizer.Form fileNameNormalizationForm) throws DataProcessException {
+		
+		if (path.endsWith(".csv")) {
+			_dbItemsOutstream=new CsvDbOutstream(path,byteSize,parentProcessingTask);
+		} else if (path.endsWith(".ods") || path.endsWith(".xls") || path.endsWith(".xlsx")) {
+			_dbItemsOutstream=new SpreadsheetDbOutstream(CALC_TYPE.XLS,byteSize,parentProcessingTask,0);
+		} else {
+			throw new DataProcessException("Unknown file format to import items ("+path+"). Allowed extensions are csv|xls|xlsx|odt");
+		}
+		return _dbItemsOutstream;		
+	}
+	
+	public HandleItemsUploadProcess(IUserProfileData u,String taskName,
+						List<FileDescriptor> filesToProcess) throws DataProcessException {		
+		super(u,taskName,"items-db-uploader",filesToProcess);		
+	}
+	
+	public void init(IDbItemsProcessor dbItemsBulkProcess,
+			List<IPair<String,PARSING_FIELD_TYPE>> parsingTypes,
+			Map<String,String> fieldsMapping) throws DataProcessException {
+		
+		_dbItemsOutstream.init(dbItemsBulkProcess,parsingTypes,fieldsMapping);
+	}
+	
+	@Override
+	public void start() throws DataProcessException {
+		_dbItemsOutstream.start();
+		super.start();
+	}
+	
+	@Override
+	public void stop() throws DataProcessException{
+		super.stop();
+		_dbItemsOutstream.stop();
+	}
+
+
+};
