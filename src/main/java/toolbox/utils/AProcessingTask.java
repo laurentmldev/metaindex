@@ -53,6 +53,7 @@ public abstract class AProcessingTask implements IProcessingTask {
 	private RunnerThread _runnerThread; 
 	private Integer _processingTaskId=0;
 	private IUserProfileData _activeUser = null;
+	private Boolean _shallSendUserProgressMsgs=true; 
 	
 	private List<IObserver<IProcessingTask> > _observers = new ArrayList<IObserver<IProcessingTask> >();
 	
@@ -148,4 +149,12 @@ public abstract class AProcessingTask implements IProcessingTask {
 	
 	@Override
 	public Boolean isRunning() { return _runnerThread.isAlive(); }
+
+	public Boolean shallSendUserProgressMsgs() {
+		return _shallSendUserProgressMsgs;
+	}
+
+	public void setShallSendUserProgressMsgs(Boolean _sendUserProgressNotifs) {
+		this._shallSendUserProgressMsgs = _sendUserProgressNotifs;
+	}
 }

@@ -14,7 +14,9 @@ See full version of LICENSE in <https://fsf.org/>
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,12 +39,11 @@ import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
 import metaindex.data.term.ICatalogTerm.TERM_DATATYPE;
 import metaindex.data.userprofile.IUserProfileData;
+import toolbox.database.IDbItem;
 import toolbox.database.IDbItemsProcessor;
 import toolbox.database.elasticsearch.ESDataProcessException;
 import toolbox.database.sql.SQLDataProcessException;
 import toolbox.exceptions.DataProcessException;
-import toolbox.utils.BasicPair;
-import toolbox.utils.IPair;
 import toolbox.utils.IProcessingTask;
 import toolbox.utils.filetools.FileDescriptor;
 import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
@@ -56,9 +57,9 @@ import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
  *
  */
 @Controller
-public class WsControllerCatalogUserDataFileUpload extends AMxWSController {
+public class WsControllerCatalogFileUpload extends AMxWSController {
 	
-	private Log log = LogFactory.getLog(WsControllerCatalogUserDataFileUpload.class);
+	private Log log = LogFactory.getLog(WsControllerCatalogFileUpload.class);
 	
 	private static final Long MAX_UPLOAD_SIZE_MBYTES=50L; // 50Mo max, otherwise go via SFTP
 	// limit size of CSV files to upload at once, in order to mitigate
@@ -66,7 +67,7 @@ public class WsControllerCatalogUserDataFileUpload extends AMxWSController {
 	private static final Integer MAX_CSV_UPLOAD_NB_ELEMENTS = 250000;
 	
 	@Autowired
-	public WsControllerCatalogUserDataFileUpload(SimpMessageSendingOperations messageSender) {
+	public WsControllerCatalogFileUpload(SimpMessageSendingOperations messageSender) {
 		super(messageSender);		
 	}		
 	
@@ -176,7 +177,9 @@ public class WsControllerCatalogUserDataFileUpload extends AMxWSController {
 						user.getText("Items.serverside.createFromCsvTask",
 									requestMsg.getTotalNbEntries().toString()),
 						requestMsg.getFileDescriptions());
-    		
+    		// progress messages will be already sent by the "data injection into db" process
+    		// so we shall not send progress messages by the "parse input" process
+    		procTask.setShallSendUserProgressMsgs(false);
     		WsMsgUserDataFileUpload_answer answer = new WsMsgUserDataFileUpload_answer(
     				procTask.getId(),
     				requestMsg.getRequestId());
@@ -198,8 +201,8 @@ public class WsControllerCatalogUserDataFileUpload extends AMxWSController {
 				return;
 	    	}
 	    	
-    		List<IPair<String,PARSING_FIELD_TYPE>> fieldsParsingType = new ArrayList<IPair<String,PARSING_FIELD_TYPE>>();    		    		
-    		List<String> fieldsNotFound=new ArrayList<String>();
+    		Map<String,PARSING_FIELD_TYPE> fieldsParsingType = new HashMap<>();    		    		
+    		List<String> fieldsNotFound=new ArrayList<>();
     		    	
     		// display CSV preparation only if some terms have to be created
 			// otherwise it's very fast, and no use to have a progress bar
@@ -209,7 +212,7 @@ public class WsControllerCatalogUserDataFileUpload extends AMxWSController {
     		List<ICatalogTerm> termsToCreate = new ArrayList<ICatalogTerm>();
     		String newTermsList="";
     		// go through required mapping, and check that terms exist or create them
-    		for (String userFileColName : requestMsg.getFieldsMapping().values()) {
+    		for (String userFileColName : requestMsg.getFieldsMapping().keySet()) {
     			
     			ICatalogTerm term=null;
     			String termName=requestMsg.getFieldsMapping().get(userFileColName);
@@ -256,12 +259,18 @@ public class WsControllerCatalogUserDataFileUpload extends AMxWSController {
     			// else check term already exists
     			else {
 	    			
-	    			term =  user.getCurrentCatalog().getTerms().get(termName);
-	    			// if field not found, send back an error message
-	    			if (term==null) { 
-	    					fieldsNotFound.add(termName); 
-	    					continue;  
-	    			}
+    				if  (termName.equals(IDbItem.DB_ID_FIELD_NAME)) {
+						term = ICatalogTerm.BuildCatalogTerm(TERM_DATATYPE.TINY_TEXT);
+	    		    	term.setCatalogId(user.getCurrentCatalog().getId());
+	    		    	term.setName(termName);   
+					} else {
+		    			term =  user.getCurrentCatalog().getTerms().get(termName);
+		    			// if field not found, send back an error message
+		    			if (term==null) {
+    						fieldsNotFound.add(termName); 
+	    					continue;		    			
+		    			}
+					}
     			}
     			
     			RAW_DATATYPE dbType = term.getRawDatatype();    			
@@ -271,7 +280,7 @@ public class WsControllerCatalogUserDataFileUpload extends AMxWSController {
     					|| dbType==RAW_DATATYPE.Tshort) {
     				parsingType=PARSING_FIELD_TYPE.NUMBER;
     			}
-    			fieldsParsingType.add(new BasicPair<String,PARSING_FIELD_TYPE>(termName,parsingType));
+    			fieldsParsingType.put(termName,parsingType);
     			    			
     		}
     		

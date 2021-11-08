@@ -11,8 +11,6 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
@@ -22,27 +20,29 @@ import org.apache.commons.logging.LogFactory;
 
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.AProcessingTask;
+import toolbox.utils.parsers.IListParser.ParseException;
 
 /**
  * Parse received contents as CSV data and store it into ES DB
  * @author laurentml
  *
  */
-public abstract class AFileOutstream implements IFileOutstream {
+public abstract class ABytesWriter implements IBytesWriter {
 	
 	
-	private Log log = LogFactory.getLog(AFileOutstream.class);
+	private Log log = LogFactory.getLog(ABytesWriter.class);
 	
-	private Long _fileTargetBytesSize=0L;
+	private Long _targetBytesSize=0L;
 	private Map<Integer,byte[] > _bufferedContentsBySequenceNumber = new HashMap<>();	
 	private Integer _lastDumpedSequenceNumber=0;
 	private Semaphore _dumperLock = new Semaphore(1,true);
 	private Long _nbBytesDumped=0L;
 	private AProcessingTask _parentProcessingTask=null;
 	private Boolean _stopDone = false;
+	private Integer _currentByteOffset=0;
 	
-	public AFileOutstream(Long fileBytesSize, AProcessingTask parentProcessingTask) {
-		_fileTargetBytesSize=fileBytesSize;
+	public ABytesWriter(Long targetBytesSize, AProcessingTask parentProcessingTask) {
+		_targetBytesSize=targetBytesSize;
 		_parentProcessingTask=parentProcessingTask;		
 	}
 
@@ -52,8 +52,10 @@ public abstract class AFileOutstream implements IFileOutstream {
 	@Override
 	public void releaseLock() { _dumperLock.release(); }
 	
-	/** Receive byte contents in proper order */
-	protected abstract void handleReceivedContentsSequence(byte[] contents,Integer lastDumpedSequenceNumber) throws IOException;
+	/** Receive byte contents in proper order 
+	 * @throws ParseException */
+	protected abstract void handleReceivedContentsSequence(byte[] contents,Integer lastDumpedSequenceNumber) 
+			throws DataProcessException;
 	
 	protected abstract void handleStop() throws DataProcessException;
 	
@@ -67,7 +69,7 @@ public abstract class AFileOutstream implements IFileOutstream {
 			
 			if (sequenceNumber.equals(_lastDumpedSequenceNumber+1)) {
 				handleReceivedContentsSequence(contents,_lastDumpedSequenceNumber);
-				
+				_currentByteOffset+=contents.length;
 				_lastDumpedSequenceNumber++;	
 				_nbBytesDumped+=contentsLength;				
 				_parentProcessingTask.addProcessedNbData(contentsLength);
@@ -89,18 +91,21 @@ public abstract class AFileOutstream implements IFileOutstream {
 				_dumperLock.release();
 			}	
 			
-			if (_nbBytesDumped.equals(this.getFileTargetBytesSize())) { 
+			if (_nbBytesDumped.equals(this.getTargetBytesSize())) { 
 				_dumperLock.acquire();
 				if (_stopDone==false) {stop(); }
 				_dumperLock.release();
 			}
 			
 		}
-		catch (IOException|InterruptedException ex) {
-			
+		catch (InterruptedException ex) {			
 			_dumperLock.release();			
 			throw new DataProcessException("unable to write into outstream '"+getName()+"'"
 											+" : "+ex.getMessage());
+		}
+		catch (DataProcessException ex) {			
+			_dumperLock.release();			
+			throw ex;
 		}
 			
 	}	
@@ -129,21 +134,31 @@ public abstract class AFileOutstream implements IFileOutstream {
 	}
 
 	@Override
-	public Long getFileTargetBytesSize() {
-		return _fileTargetBytesSize;
+	public Long getTargetBytesSize() {
+		return _targetBytesSize;
 	}
 	
 	@Override
-	public void setFileTargetBytesSize(Long fileTargetBytesSize) {
-		this._fileTargetBytesSize = fileTargetBytesSize;
+	public void setTargetBytesSize(Long fileTargetBytesSize) {
+		this._targetBytesSize = fileTargetBytesSize;
 	}
 
-	public Long getNbBytesDumped() {
+	@Override
+	public Long getNbBytesWritten() {
 		return _nbBytesDumped;
 	}
 
-	public void setNbBytesDumped(Long _nbBytesDumped) {
+	@Override	
+	public void setNbBytesWritten(Long _nbBytesDumped) {
 		this._nbBytesDumped = _nbBytesDumped;
+	}
+
+	public Integer getCurrentByteOffset() {
+		return _currentByteOffset;
+	}
+
+	public void setCurrentByteOffset(Integer _currentByteOffset) {
+		this._currentByteOffset = _currentByteOffset;
 	}
 
 	

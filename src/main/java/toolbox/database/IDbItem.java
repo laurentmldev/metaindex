@@ -24,6 +24,8 @@ import toolbox.utils.IIdentifiable;
  */
 public interface IDbItem extends IIdentifiable<String>,IFieldValueMapObject {
 
+	public static final String DB_ID_FIELD_NAME="_id";
+	
 	public Date getLastModifTimestamp();
 	public Integer getLastModifUserId();
 	public String getThumbnailUrl();

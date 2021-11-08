@@ -14,12 +14,12 @@ See full version of LICENSE in <https://fsf.org/>
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.AProcessingTask;
 import toolbox.utils.IProcessingTask;
-import toolbox.utils.filetools.IFileOutstream;
+import toolbox.utils.filetools.IBytesWriter;
 
 
 public interface IHandleFileUploadProcess extends IProcessingTask   {
 
-	public IFileOutstream getNewOutStream(String path, 
+	public IBytesWriter getNewOutStream(String path, 
 			 Long byteSize, 
 			 AProcessingTask parentProcessingTask,
 			 java.text.Normalizer.Form fileNameNormalizationForm) throws DataProcessException;

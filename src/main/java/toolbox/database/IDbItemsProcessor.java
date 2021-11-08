@@ -15,8 +15,9 @@ import java.util.List;
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.IProcessingTask;
+import toolbox.utils.IStreamHandler;
 
-public interface IDbItemsProcessor extends IProcessingTask   {
+public interface IDbItemsProcessor extends IProcessingTask,IStreamHandler<IDbItem>   {
 	
 	public IUserProfileData getActiveUser();
 	
@@ -25,7 +26,7 @@ public interface IDbItemsProcessor extends IProcessingTask   {
 	
 	/** decide depending on contents if each item shall be created or updated
 	 * (typically depending if an 'id' field is listed and already present in DB */
-	public void postDataToIndexOrUpdate(List<IDbItem> d) throws DataProcessException;
+	public void handle(List<IDbItem> d) throws DataProcessException;
 	
 	/** Create given new document */
 	public void postDataToIndex(List<IDbItem> d) throws DataProcessException;

@@ -271,48 +271,19 @@ function ws_handlers_requestUpdateFilter(filterName,queryString) {
 	MxApi.requestUpdateFilter(filterName,queryString);
 }
 
-function ws_handlers_requestUploadCsvFile(csvRows,selectedCsvColsDef,fileHandle) {	
+function ws_handlers_requestUploadCsvFile(nbEntries,fieldsMapping,fileHandle) {	
 	let successCallback=function(e) {
 		//console.log("requesting catalog update");		
 		MxApi.requestGetCatalogs({'catalogId':<s:property value="currentCatalog.id"/>, 'successCallback':handleMxWsCatalogs});
 	}
-
-	// count total nb entries
-	let nbItemsToBeCreated=0;
-	let curLineNb=0;
-	while (curLineNb<csvRows.length) {
-    		if (	   csvRows[curLineNb].length>0 
-    				&& csvRows[curLineNb][0]!='#' 
-    				&& !csvRows[curLineNb].match(/^\s*$/)
-    				&& !csvRows[curLineNb].match(/^\s*#/)
-    				&& curLineNb!=0 // ignore first line (header)
-    				) {
-    			nbItemsToBeCreated++;
-    		}
-			curLineNb++;
-    	}
-
-	let fieldsDefStr=csvRows[0];
-	fieldsDefStr=stripStr(fieldsDefStr.replace("#",""));	    	
-	
-	let separator=";"
-	let fieldsDefsArray=fieldsDefStr.split(separator);
-	if (fieldsDefsArray.length==1) {
-		separator=",";
-		fieldsDefsArray=fieldsDefStr.split(separator);	    		
-	}
-	if (fieldsDefsArray.length==1) {
-		separator="\t";
-		fieldsDefsArray=fieldsDefStr.split(separator);	    		
-	}
-	
-	
+	let errorCallback=function(msg) { footer_showAlert(ERROR, msg); }
 	let dataObj={
 		'catalogId':<s:property value="currentCatalog.id"/>,
 		'filesToUpload':fileHandle.files,
-		'totalNbEntries':nbItemsToBeCreated,
-		'fieldsMapping':selectedCsvColsDef,
+		'totalNbEntries':nbEntries,
+		'fieldsMapping':fieldsMapping,
 		'successCallback':successCallback,
+		'errorCallback':errorCallback,
 	}
 	MxApi.requestUploadItemsFromCsv(dataObj);    
 }

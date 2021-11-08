@@ -58,13 +58,17 @@ public abstract class AStreamHandler<T> extends AProcessingTask implements IStre
 	}
 	
 	@Override
-	public void handle(List<T> o) throws InterruptedException {
-		_postingDataLock.acquire();
-		_bufferizedDataToHandle.addAll(o);
-		addReceivedNbData(new Long(o.size()));
-		//log.error("### added "+o.size()+" data to dump -> "+_bufferizedDataToHandle.size()+" in processing queue ");
-		_postingDataLock.release();
-		Thread.sleep(10);
+	public void handle(List<T> o) throws DataProcessException {
+		try {
+			_postingDataLock.acquire();
+			_bufferizedDataToHandle.addAll(o);
+			addReceivedNbData(new Long(o.size()));
+			//log.error("### added "+o.size()+" data to dump -> "+_bufferizedDataToHandle.size()+" in processing queue ");
+			_postingDataLock.release();
+			Thread.sleep(10);
+		 } catch (InterruptedException e) {
+			throw new DataProcessException("unable to handle given elements: "+e.getMessage(),e); 
+		 }
 	}
 	
 	public void lock() throws InterruptedException { _postingDataLock.acquire(); }

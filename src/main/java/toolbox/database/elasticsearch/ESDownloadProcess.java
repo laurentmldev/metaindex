@@ -94,7 +94,7 @@ public class ESDownloadProcess extends AProcessingTask   {
 			_streamHandler.start();
 
 			class StreamForwarder implements IStreamHandler<DbSearchResult> {
-				@Override public void handle(List<DbSearchResult> loadedDocsResults) throws InterruptedException {
+				@Override public void handle(List<DbSearchResult> loadedDocsResults) throws DataProcessException {
 					if (loadedDocsResults.size()>1) {
 						log.warn("only one dbresult expected for thus usecase, got "+loadedDocsResults.size());						
 					}

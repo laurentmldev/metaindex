@@ -15,10 +15,13 @@ import java.util.Map;
 
 import toolbox.database.IDbItem;
 import toolbox.utils.IPair;
+import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 
 import metaindex.data.catalog.UserItemContents;
@@ -66,10 +69,26 @@ public class SpreadsheetDbItemsParser extends ADbItemsParser<Row> {
 				
 		Map<String, Object> result= new HashMap<String,Object>();
 		int colidx=0;		
-		for (IPair<String,PARSING_FIELD_TYPE> coldef : getCsvColsTypes()) {
+		
+		
+		for (String colName : getColsNames()) {
 			colidx++;
+			String curColContents="";
 			Cell curCellContents=spreadsheetRow.getCell(colidx-1);
-			String curColContents=curCellContents.getStringCellValue();
+			if (curCellContents!=null) {
+				switch(curCellContents.getCellType()) {
+		            case BLANK:                
+		            case STRING:
+		                curColContents=curCellContents.getStringCellValue();
+		                break;
+		            case NUMERIC:
+		            	curColContents=new Double(curCellContents.getNumericCellValue()).toString();
+		            	break;
+		            default:
+		                throw new ParseException("Unhandled Spreadsheet datatype '"+curCellContents.getCellType()+"' ");
+		        }
+			}
+			
 			
 			// ignore empty fields. When used fields need some mandatory data,
 			// this avoid useless error to be raised.
@@ -84,10 +103,9 @@ public class SpreadsheetDbItemsParser extends ADbItemsParser<Row> {
 			// restore new lines
 			curColContents=curColContents.replaceAll(MX_CR_ESCAPE_STR, "\n");
 			
-			String csvFieldName = coldef.getFirst();			
-			PARSING_FIELD_TYPE fieldType = coldef.getSecond();
-
-			extractItemStrData(result,csvFieldName,curColContents,fieldType);
+			String dbFieldName = this.getFieldsMapping().get(colName);			
+			PARSING_FIELD_TYPE fieldType = this.getFieldsParsingTypes().get(dbFieldName);
+			extractItemStrData(result,dbFieldName,curColContents,fieldType);
 
 		}
 		

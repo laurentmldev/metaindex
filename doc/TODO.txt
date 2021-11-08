@@ -3,6 +3,8 @@
 v2.2.5:
 -------
 
+update dts2csv.py
+
 Kibana fails when using hebrew alphabet
 
 cannot edit PAGE_URL (or INT ...) if empty (nothing happens when clicking on it)

@@ -25,7 +25,7 @@ import toolbox.exceptions.DataProcessException;
 import toolbox.utils.AProcessingTask;
 import toolbox.utils.filetools.FileBinOutstream;
 import toolbox.utils.filetools.FileDescriptor;
-import toolbox.utils.filetools.IFileOutstream;
+import toolbox.utils.filetools.IBytesWriter;
 
 
 public class HandleFileUploadProcess extends AProcessingTask implements IHandleFileUploadProcess  {
@@ -38,14 +38,14 @@ public class HandleFileUploadProcess extends AProcessingTask implements IHandleF
 	private Integer _curFileId=null;
 	private List<String> _filesNames=new ArrayList<>();
 	private String _uploadPath="";
-	private Map<Integer,IFileOutstream> _fileOutstreams = new HashMap<>();
+	private Map<Integer,IBytesWriter> _fileOutstreams = new HashMap<>();
 	private Map<Integer,FileDescriptor> _fileDescriptors = new HashMap<>();
 	
 	private Semaphore _processorLock = new Semaphore(1,true);
 	private Map<Integer, Map<Integer, byte[]> > _pendingFileData = new HashMap<>();
 	
 	@Override
-	public IFileOutstream getNewOutStream(String path, 
+	public IBytesWriter getNewOutStream(String path, 
 			 Long byteSize, 
 			 AProcessingTask parentProcessingTask,
 			 java.text.Normalizer.Form fileNameNormalizationForm) throws DataProcessException {
@@ -67,7 +67,7 @@ public class HandleFileUploadProcess extends AProcessingTask implements IHandleF
 		Long totalBytesSize=0L;
 		for (FileDescriptor desc : filesToDumpDescr) {
 			_filesNames.add(desc.getName());
-			IFileOutstream outstream=getNewOutStream(getFullFsPath(desc.getName()),
+			IBytesWriter outstream=getNewOutStream(getFullFsPath(desc.getName()),
 					desc.getByteSize(),
 					this,
 					Globals.LOCAL_USERDATA_NORMALIZATION_FORM);
@@ -114,21 +114,25 @@ public class HandleFileUploadProcess extends AProcessingTask implements IHandleF
 	public void addProcessedNbData(Long nbDataProcessed) {
 		super.addProcessedNbData(nbDataProcessed);
 		String curFileName=_filesNames.get(this.getCurFileId());
-		getActiveUser().sendGuiProgressMessage(
+		
+		if (shallSendUserProgressMsgs()) {
+			getActiveUser().sendGuiProgressMessage(
     			getId(),
     			curFileName,
     			AProcessingTask.pourcentage(getProcessedNbData(), getTargetNbData()));
+		}
 	}
 	
 	
 	@Override
 	public void run()  { 
 		
-		getActiveUser().sendGuiProgressMessage(
+		if (shallSendUserProgressMsgs()) {
+			getActiveUser().sendGuiProgressMessage(
     			getId(),
     			getActiveUser().getText("Items.serverside.bulkprocess.progress", getName()),
     			AProcessingTask.pourcentage(getProcessedNbData(),getTargetNbData()));
-		
+		}
 		List<Integer> seqNbsToRemove = new ArrayList<>();
 		
 		while (!this.isAllDataProcessed() && !_interruptFlag) {
@@ -151,8 +155,14 @@ public class HandleFileUploadProcess extends AProcessingTask implements IHandleF
 				// wait for having received all data to be processed 
 				Thread.sleep(500);		
 				
-			} catch (DataProcessException|InterruptedException e) { 
-				e.printStackTrace(); 
+			} catch (DataProcessException e) { 
+				sendErrorMessageToUser("unable to process received contents for data upload: "+e.getMessage(), e.getErrorDetails());
+				e.printStackTrace();
+				abort();
+				_processorLock.release();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				abort();
 				_processorLock.release();
 			} 
 		}
@@ -178,7 +188,7 @@ public class HandleFileUploadProcess extends AProcessingTask implements IHandleF
 		
 		for (Integer fileId : _fileDescriptors.keySet()) {
 			FileDescriptor fileDesc = _fileDescriptors.get(fileId);
-			IFileOutstream fileDump = _fileOutstreams.get(fileId);
+			IBytesWriter fileDump = _fileOutstreams.get(fileId);
 			try {
 				fileDump.acquireLock();
 				fileDump.stop(); 
@@ -194,27 +204,28 @@ public class HandleFileUploadProcess extends AProcessingTask implements IHandleF
 			getActiveUser().sendGuiErrorMessage(getActiveUser().getText("Items.serverside.fileupload.failed",
 													failedFilesStr));
 		}
-		
-		getActiveUser().sendGuiProgressMessage(
+		if (shallSendUserProgressMsgs()) {
+			getActiveUser().sendGuiProgressMessage(
     			getId(),
     			getActiveUser().getText("Items.serverside.bulkprocess.progress", getName()),
     			AProcessingTask.pourcentage(getProcessedNbData(), getTargetNbData()), false /*processing ended*/);
-		
+		}
 		getActiveUser().removeProccessingTask(this.getId());
 	}
 	@Override
 	public void abort() {
 		try {
+			_interruptFlag=true;
 			getActiveUser().getCurrentCatalog().loadStatsFromDb();
 		} catch (DataProcessException e) {
 			e.printStackTrace();			
 		}
-		
-		getActiveUser().sendGuiProgressMessage(
+		if (shallSendUserProgressMsgs()) {
+			getActiveUser().sendGuiProgressMessage(
     			getId(),
     			getActiveUser().getText("Items.serverside.bulkprocess.progress", getName()),
     			AProcessingTask.pourcentage(getProcessedNbData(), getTargetNbData()), false /*processing ended*/);
-		
+		}
 		getActiveUser().removeProccessingTask(this.getId());
 	}
 

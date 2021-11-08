@@ -30,7 +30,9 @@ import toolbox.database.IDbItemsProcessor;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.AProcessingTask;
 import toolbox.utils.IPair;
-import toolbox.utils.filetools.ADbOutstream;
+import toolbox.utils.IStreamProducer;
+import toolbox.utils.filetools.ABytesWriter;
+import toolbox.utils.filetools.IBytesToDbWriter;
 import toolbox.utils.parsers.CsvDbItemsParser;
 import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
 import toolbox.utils.parsers.IListParser.ParseException;
@@ -41,9 +43,9 @@ import toolbox.utils.parsers.IListParser.ParseException;
  * @author laurentml
  *
  */
-public class CsvDbOutstream extends ADbOutstream {
+public class CsvBytesToDbWriter extends ABytesWriter implements IBytesToDbWriter {
 	
-	private Log log = LogFactory.getLog(CsvDbOutstream.class);
+	private Log log = LogFactory.getLog(CsvBytesToDbWriter.class);
 	
 	private CsvDbItemsParser _csvParser;
 	private IDbItemsProcessor _itemsBulkProcessor;
@@ -51,19 +53,19 @@ public class CsvDbOutstream extends ADbOutstream {
 	private String _unfinishedLineFromPreviousChunk="";
 	private final String DEFAULT_CSV_SEP=";";
 	
-	public CsvDbOutstream(String filePath,Long fileBytesSize, AProcessingTask parentProcessingTask) throws DataProcessException {
+	public CsvBytesToDbWriter(String filePath,Long fileBytesSize, AProcessingTask parentProcessingTask) throws DataProcessException {
 		super(fileBytesSize,parentProcessingTask);
 		
 	}
 
 	@Override
 	public void init(IDbItemsProcessor itemsBulkProcess,
-					 List<IPair<String,PARSING_FIELD_TYPE>> parsingTypes,
+					 Map<String,PARSING_FIELD_TYPE> parsingTypes,
 					 Map<String,String> fieldsMapping) throws DataProcessException {
 		_itemsBulkProcessor = itemsBulkProcess;
 		_csvParser = new CsvDbItemsParser();
-		_csvParser.setCsvColsTypes(parsingTypes);
-		_csvParser.setChosenFieldsMapping(fieldsMapping);
+		_csvParser.setFieldsParsingTypes(parsingTypes);
+		_csvParser.setFieldsMapping(fieldsMapping);
 		_csvParser.setCsvSeparator(DEFAULT_CSV_SEP);
 		
 	}
@@ -84,7 +86,7 @@ public class CsvDbOutstream extends ADbOutstream {
 	
 	@Override
 	protected void handleReceivedContentsSequence(byte[] contents, Integer lastDumpedSequenceNumber)
-			throws IOException {
+			throws DataProcessException {
 		
 		
 		ByteArrayInputStream stream = new ByteArrayInputStream(contents);		
@@ -94,37 +96,46 @@ public class CsvDbOutstream extends ADbOutstream {
 		String line;
 		Integer nbParsedLines=0;
 		List<String> csvRows=new ArrayList<>();
-		while ((line=reader.readLine())!=null) {
-			// autodetect separator from very first (header) line
-			if (_totalNbLines==0) { 								
-				if (line.split(",",-1).length>line.split(DEFAULT_CSV_SEP,-1).length) {
-					_csvParser.setCsvSeparator(",");
+		try {
+			while ((line=reader.readLine())!=null) {
+				// autodetect separator and columns names from very first (header) line
+				if (_totalNbLines==0) { 				
+					String colsNames[]=line.split(DEFAULT_CSV_SEP,-1);
+					if (line.split(",",-1).length>colsNames.length) {
+						colsNames=line.split(",",-1);
+						_csvParser.setCsvSeparator(",");
+					}
+					else if (line.split("\t",-1).length>colsNames.length) {
+						colsNames=line.split("\t",-1);
+						_csvParser.setCsvSeparator("\t");
+					}
+					colsNames[0]=colsNames[0].replace("#","");
+					_csvParser.setColsNames(colsNames);
+					_totalNbLines++;
+					continue;
 				}
+				if (nbParsedLines==0) {
+					line=_unfinishedLineFromPreviousChunk+line;
+					_unfinishedLineFromPreviousChunk="";
+				}
+				csvRows.add(line);
+				nbParsedLines++;	
+				_totalNbLines++;
 			}
-			if (nbParsedLines==0) {
-				line=_unfinishedLineFromPreviousChunk+line;
-				_unfinishedLineFromPreviousChunk="";
+			// if last line does not finish with a new line, it might be a single line truncated
+			// in that case we wait for new chunk to complete it
+			if (!_endWithNewLine(contents) && lastDumpedSequenceNumber!=-1) {
+				_unfinishedLineFromPreviousChunk=csvRows.get(csvRows.size()-1);
+				csvRows.remove(csvRows.size()-1);
 			}
-			csvRows.add(line);
-			nbParsedLines++;	
-			_totalNbLines++;
+		} 
+		catch (IOException e) {
+			throw new ParseException("Unable to split CSV line into columns: '"+e.getMessage()+"' at l."+_totalNbLines,e);
 		}
-		// if last line does not finish with a new line, it might be a single line truncated
-		// in that case we wait for new chunk to complete it
-		if (!_endWithNewLine(contents) && lastDumpedSequenceNumber!=-1) {
-			_unfinishedLineFromPreviousChunk=csvRows.get(csvRows.size()-1);
-			csvRows.remove(csvRows.size()-1);
-		}
-		
 		List<IDbItem> parsedItemsToIndex=new ArrayList<>();
-		try { parsedItemsToIndex = _csvParser.parseAll(csvRows);} 
-		catch (ParseException e) {
-			throw new IOException("Unable to parse given CSV contents: '"+e.getMessage()+"' from "+line,e);			
-		}
-		try { _itemsBulkProcessor.postDataToIndexOrUpdate(parsedItemsToIndex); } 
-		catch (DataProcessException e) {
-			throw new IOException("Unable to post CSV contents into database: '"+e.getMessage()+"' from "+line,e);
-		}
+		parsedItemsToIndex = _csvParser.parseAll(csvRows); 
+		
+		_itemsBulkProcessor.handle(parsedItemsToIndex); 		
 	}
 
 	@Override
@@ -132,14 +143,8 @@ public class CsvDbOutstream extends ADbOutstream {
 		if (_unfinishedLineFromPreviousChunk.length()>0) {
 			String lastLine=_unfinishedLineFromPreviousChunk;
 			_unfinishedLineFromPreviousChunk="";
-			try {
-				// use -1 as sequence number to indicate that its the very last one
-				handleReceivedContentsSequence(lastLine.getBytes(),-1);
-			} catch (IOException e) {
-				throw new DataProcessException("Unable to parse last line of CSV contents: "+e.getMessage(),e);
-			}
-			
-			
+			// use -1 as sequence number to indicate that its the very last one
+			handleReceivedContentsSequence(lastLine.getBytes(),-1);		
 		}
 	}
 

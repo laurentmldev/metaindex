@@ -44,7 +44,6 @@ public class CsvDbItemsParser extends ADbItemsParser<String> {
 	private String _csvSeparator=";";
 	private String _commentsMarker="#";
 	private char _stringIdentifier='"';
-	
 
 	@Override
 	protected IDbItem buildObjectFromFieldsMap(Map<String, Object> fieldsMap) {
@@ -55,7 +54,6 @@ public class CsvDbItemsParser extends ADbItemsParser<String> {
 	
 	public String getCsvSeparator() { return _csvSeparator; }
 	public void setCsvSeparator(String sep) { _csvSeparator=sep; }
-	
 	
 	@Override
 	public IDbItem parse(String str) throws ParseException {
@@ -89,13 +87,13 @@ public class CsvDbItemsParser extends ADbItemsParser<String> {
 		}
 		
 		String cols[] = csvLine.split(getCsvSeparator(),-1);
-		if (cols.length!=getCsvColsTypes().size()) { 
-			throw new ParseException("expected "+getCsvColsTypes().size()+" columns, found "+cols.length+" : "+csvLine); 
+		if (cols.length!=getColsNames().length) { 
+			throw new ParseException("expected "+getFieldsParsingTypes().size()+" columns, found "+cols.length+" : "+csvLine); 
 		}
 		
 		Map<String, Object> result= new HashMap<String,Object>();
 		int colidx=0;		
-		for (IPair<String,PARSING_FIELD_TYPE> coldef : getCsvColsTypes()) {
+		for (String csvColName : getColsNames()) {
 			colidx++;
 			String curColContents=cols[colidx-1];
 			
@@ -116,10 +114,9 @@ public class CsvDbItemsParser extends ADbItemsParser<String> {
 			curColContents=curColContents.replaceAll(MX_GT_ESCAPE_STR, ">");
 			curColContents=curColContents.replaceAll(MX_LT_ESCAPE_STR, "<");
 			
-			String csvFieldName = coldef.getFirst();			
-			PARSING_FIELD_TYPE fieldType = coldef.getSecond();
-
-			extractItemStrData(result,csvFieldName,curColContents,fieldType);
+			String dbFieldName = this.getFieldsMapping().get(csvColName);			
+			PARSING_FIELD_TYPE fieldType = this.getFieldsParsingTypes().get(dbFieldName);
+			extractItemStrData(result,dbFieldName,curColContents,fieldType);
 
 		}
 		

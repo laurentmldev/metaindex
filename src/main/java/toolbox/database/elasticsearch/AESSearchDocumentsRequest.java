@@ -65,7 +65,7 @@ public abstract class AESSearchDocumentsRequest<TData> extends ESReadStreamStmt<
 			SearchResponse searchResponse = this.getDataConnector().getHighLevelClient().search(_request,RequestOptions.DEFAULT);
 			d.handle(mapSearchResponse(searchResponse));	
 			
-		} catch (IOException | InterruptedException e) {
+		} catch (IOException e) {
 			throw new DataProcessException(e);
 		}
 	}

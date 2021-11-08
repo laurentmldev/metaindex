@@ -20,13 +20,12 @@ public class WsMsgCsvFileUpload_request extends WsMsgUserDataFileUpload_request 
 	public static final String CSV_MAPPING_NEWTERM_PREFIX="__new__";
 	private Map<String,String> _fieldsMapping= new HashMap<>();
 	private Integer _totalNbEntries = 0;
-	private String _separator=";";
 	
-	
-	public String getSeparator() { return _separator; }
-	public void setSeparator(String sep) { _separator = sep; }
-	
-
+	/** 
+	 * Mapping between a column name in input file and a field name in database 
+	 * Special value __new__<type>__<fieldname> might be use to precise that
+	 * a new database field shall be created, with given data type.
+	 */ 
 	public Map<String,String> getFieldsMapping() {
 		return _fieldsMapping;
 	}

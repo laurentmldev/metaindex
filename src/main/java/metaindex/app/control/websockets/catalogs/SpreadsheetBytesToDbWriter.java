@@ -1,6 +1,9 @@
 package metaindex.app.control.websockets.catalogs;
 
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+
 /*
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -16,12 +19,14 @@ import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -32,7 +37,9 @@ import toolbox.database.IDbItemsProcessor;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.AProcessingTask;
 import toolbox.utils.IPair;
-import toolbox.utils.filetools.ADbOutstream;
+import toolbox.utils.IStreamProducer;
+import toolbox.utils.filetools.ABytesWriter;
+import toolbox.utils.filetools.IBytesToDbWriter;
 import toolbox.utils.parsers.IListParser.ParseException;
 import toolbox.utils.parsers.SpreadsheetDbItemsParser;
 import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
@@ -43,10 +50,10 @@ import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
  * @author laurentml
  *
  */
-public class SpreadsheetDbOutstream extends ADbOutstream {
+public class SpreadsheetBytesToDbWriter  extends ABytesWriter  implements IBytesToDbWriter,IStreamProducer<IDbItem> {
 	
 	public enum CALC_TYPE {UNKNOWN,XLS,XLSX,OOXML};
-	private Log log = LogFactory.getLog(SpreadsheetDbOutstream.class);
+	private Log log = LogFactory.getLog(SpreadsheetBytesToDbWriter.class);
 	
 	private static final Integer NBENTRIES_TO_POST_TRESHOLD=500;
 	
@@ -56,10 +63,11 @@ public class SpreadsheetDbOutstream extends ADbOutstream {
 	private SpreadsheetDbItemsParser _itemsParser;	
 	private IDbItemsProcessor _itemsBulkProcessor;
 	
-	private PipedInputStream _in;
-	private PipedOutputStream _out;
+	private ByteArrayOutputStream _out;
 	
-	public SpreadsheetDbOutstream(CALC_TYPE calcType, Long fileBytesSize, AProcessingTask parentProcessingTask,Integer sheetNumber) 
+	private Workbook _workbook;
+	
+	public SpreadsheetBytesToDbWriter(CALC_TYPE calcType, Long fileBytesSize, AProcessingTask parentProcessingTask,Integer sheetNumber) 
 			throws DataProcessException {		
 		super(fileBytesSize,parentProcessingTask);
 		_calcType=calcType;
@@ -67,21 +75,94 @@ public class SpreadsheetDbOutstream extends ADbOutstream {
 		
 	}
 
+	
+	private void readSpreadSheet(byte[] dataBytes) throws DataProcessException {
+		
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(dataBytes);
+
+		try {			
+			switch (_calcType) {
+				case XLS:
+					_workbook = new HSSFWorkbook(inputStream);
+					break;
+				case XLSX:
+					_workbook = new XSSFWorkbook(inputStream);
+					break;
+				default:
+					throw new DataProcessException("Unsupported calc. format: "+_calcType.toString());
+			}
+		} catch (IOException e) {
+			throw new DataProcessException("Unable to open _workbook from received spreadsheet bytes: "+e.getMessage(),e);
+		}
+
+		List<IDbItem> entries = new ArrayList<>();
+		
+		Sheet sheet = _workbook.getSheetAt(_sheetNumber);
+		Integer rowNb=0;
+		try {
+			// parse rows into IDbItems to be injected into DB
+			// flush them every n entries
+			for (Row row : sheet) {				
+				rowNb++;
+				
+				// extracting cols names from first row 
+				if (rowNb==1) {					
+					Iterator<Cell> cellIt = row.cellIterator();
+					String[] colsNames=new String[row.getLastCellNum()];	
+					Integer colIdx=0;
+					while (cellIt.hasNext()) {
+						Cell curCell = cellIt.next();
+						colsNames[colIdx]=curCell.getStringCellValue();
+						colIdx++;
+					}
+					_itemsParser.setColsNames(colsNames);
+					continue;
+				}
+				
+				IDbItem newEntry;
+				newEntry = _itemsParser.parse(row);				
+				entries.add(newEntry);		
+				if (entries.size()==NBENTRIES_TO_POST_TRESHOLD) {
+					_itemsBulkProcessor.handle(entries);
+					entries=new ArrayList<>();
+				}
+			}
+			
+			// flush remaining items
+			if (entries.size()>0) {
+				_itemsBulkProcessor.handle(entries);
+			}
+			
+			// closing _workbook
+			_workbook.close();
+			_out.close();
+
+			
+		} catch (ParseException e) {
+			try { 
+				_workbook.close();
+				_out.close();
+			}
+			catch (IOException e2) {
+				throw new DataProcessException("Unable to close _workbook: "+e.getMessage(),e);
+			}
+			throw new DataProcessException("Unable to post spreadsheet contents into database: "+e.getMessage(),e);
+		} catch (IOException e) {
+			throw new DataProcessException("Unable to close _workbook: "+e.getMessage(),e);
+		}
+	}
+	
 	@Override
 	public void init(IDbItemsProcessor itemsBulkProcess,
-					 List<IPair<String,PARSING_FIELD_TYPE>> parsingTypes,
+					 Map<String,PARSING_FIELD_TYPE> parsingTypes,
 					 Map<String,String> fieldsMapping) throws DataProcessException {
 		_itemsBulkProcessor = itemsBulkProcess;
 		_itemsParser = new SpreadsheetDbItemsParser();
-		_itemsParser.setCsvColsTypes(parsingTypes);
-		_itemsParser.setChosenFieldsMapping(fieldsMapping);
+		_itemsParser.setFieldsParsingTypes(parsingTypes);
+		_itemsParser.setFieldsMapping(fieldsMapping);
 		
-		try {
-			_in = new PipedInputStream(_out);
-			_out = new PipedOutputStream();
-		} catch (IOException e) {
-			throw new DataProcessException("Unable to redirect Spreadsheet bytes stream to Excel parser: "+e.getMessage(),e);
-		}		
+		_out = new ByteArrayOutputStream();
+				
 	}
 	@Override
 	public void start() throws DataProcessException {
@@ -91,77 +172,22 @@ public class SpreadsheetDbOutstream extends ADbOutstream {
 
 	@Override
 	protected void handleStop() throws DataProcessException {
-		
-		Workbook workbook;
 		try {
-			switch (_calcType) {
-				case XLS:
-					workbook = new HSSFWorkbook(_in);
-					break;
-				case XLSX:
-					workbook = new XSSFWorkbook(_in);
-					break;
-				default:
-					throw new DataProcessException("Unsupported calc. format: "+_calcType.toString());
-			}
-		} catch (IOException e) {
-			throw new DataProcessException("Unable to open workbook from received spreadsheet bytes: "+e.getMessage(),e);
-		}
-		
-		List<IDbItem> entries = new ArrayList<>();
-		
-		Sheet sheet = workbook.getSheetAt(_sheetNumber);
-		Integer rowNb=0;
-		try {
-			// parse rows into IDbItems to be injected into DB
-			// flush them every n entries
-			for (Row row : sheet) {				
-				rowNb++;
-				// skip first row containing names
-				// mapping between spreadsheet names and DB contents
-				// has been provided already, so no need to parse this row
-				if (rowNb==1) { continue; }
-				IDbItem newEntry;
-				newEntry = _itemsParser.parse(row);				
-				entries.add(newEntry);		
-				if (entries.size()==NBENTRIES_TO_POST_TRESHOLD) {
-					_itemsBulkProcessor.postDataToIndexOrUpdate(entries);
-					entries=new ArrayList<>();
-				}
-			}
-			
-			// flush remaining items
-			if (entries.size()>0) {
-				_itemsBulkProcessor.postDataToIndexOrUpdate(entries);
-			}
-			
-			// closing workbook
-			workbook.close();
+			readSpreadSheet(_out.toByteArray()); 
 			_out.close();
-			_in.close();
+			_workbook.close();
 			
-		} catch (ParseException e) {
-			try { 
-				workbook.close();
-				_out.close();
-				_in.close();
-			}
-			catch (IOException e2) {
-				throw new DataProcessException("Unable to close workbook: "+e.getMessage(),e);
-			}
-			throw new DataProcessException("Unable to post spreadsheet contents into database: "+e.getMessage(),e);
 		} catch (IOException e) {
 			throw new DataProcessException("Unable to close workbook: "+e.getMessage(),e);
 		}
 		
-		
+	
 	}
 
 	@Override
 	public void abort() throws DataProcessException {		
 		try { 
 			_out.close();
-			_in.close();
 		}
 		catch (IOException e) {
 			throw new DataProcessException("Unable to close workbook: "+e.getMessage(),e);
@@ -176,9 +202,8 @@ public class SpreadsheetDbOutstream extends ADbOutstream {
 
 	@Override
 	protected void handleReceivedContentsSequence(byte[] contents, Integer lastDumpedSequenceNumber)
-			throws IOException {
-		
-		_out.write(contents);		
+			throws DataProcessException {
+		_out.write(contents,0,contents.length);		
 	}
 
 	

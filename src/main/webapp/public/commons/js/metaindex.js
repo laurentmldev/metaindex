@@ -2237,8 +2237,8 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 		
 	}
 	
-			
-	this.buildNewTermValue(termName,dataType) {
+	// build "special string" saying server that a new field shall be created while uploading CSV or spreadsheet
+	this.buildNewTermValue=function(termName,dataType) {
 		return "__new__"+dataType+"__"+termName;
 	}
 	// dataObj {
@@ -2254,7 +2254,6 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 		let jsonData = myself._getBasicFilesUploadJsonData(dataObj);
     	jsonData['totalNbEntries']=dataObj['totalNbEntries'];
     	jsonData['fieldsMapping']=dataObj['fieldsMapping'];
-    	jsonData['separator']=dataObj['separator'];
     	
     	myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 		var jsonStr = JSON.stringify(jsonData);
@@ -2292,7 +2291,7 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 		// upload each file one by one
 	    for (let pos=0;pos<requestObj.filesToUpload.length;pos++) {	 
 	    	let fileObj=requestObj.filesToUpload[pos];
-	    	//console.log("starting uploading file '"+fileObj.name+"'");
+	    	//console.log("starting uploading file '"+fileObj.name+"' ("+requestObj.filesToUpload.length+" bytes)");
 		    let reader = new FileReader();
 		    reader.onloadend = function (evt) 
 		    { 
@@ -2316,7 +2315,7 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 					}
 						
 				    jsonData={ clientFileId : fileObj.id, processingTaskId:requestObj.processingTaskId, rawContents: sendingBuffer, sequenceNumber:curSequenceNumber };
-			    	console.log('### Sending file upload contents request : '+JSON.stringify(jsonData));
+			    	//console.log('### Sending file upload contents request : '+JSON.stringify(jsonData));
 			    	//console.log("	### Sending file upload contents request  "+curSequenceNumber+" : -> ["+(curRawdataPos-1)+"]");
 
 			    	myself._callback_NetworkEvent(MX_UPSTREAM_MSG);

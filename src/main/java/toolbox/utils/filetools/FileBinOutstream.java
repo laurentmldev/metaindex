@@ -37,7 +37,7 @@ import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
  * @author laurentml
  *
  */
-public class FileBinOutstream extends AFileOutstream {
+public class FileBinOutstream extends ABytesWriter {
 	
 	private Log log = LogFactory.getLog(FileBinOutstream.class);
 	
@@ -67,8 +67,12 @@ public class FileBinOutstream extends AFileOutstream {
 		}
 	}
 	
-	protected void handleReceivedContentsSequence(byte[] contents,Integer lastDumpedSequenceNumber) throws IOException {
-		_outstream.write(contents);
+	protected void handleReceivedContentsSequence(byte[] contents,Integer lastDumpedSequenceNumber) throws DataProcessException {
+		try {
+			_outstream.write(contents);
+		} catch (IOException e) {
+			throw new DataProcessException("Unable to handle sent data sequence for file "+this.getName()+": "+e.getMessage(),e);
+		}
 	}
 	
 	public void abort() throws DataProcessException {
@@ -95,7 +99,7 @@ public class FileBinOutstream extends AFileOutstream {
 		}
 		
 		// when written last bytes, finalize generated file
-		if (!getNbBytesDumped().equals(getFileTargetBytesSize())) {
+		if (!getNbBytesWritten().equals(getTargetBytesSize())) {
 			
 			if (tmpTargetFile.exists()) {
 				if (!tmpTargetFile.delete()) {

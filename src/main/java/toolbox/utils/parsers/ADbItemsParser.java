@@ -40,29 +40,38 @@ public abstract class ADbItemsParser<TFrom> implements IFieldsListParser<TFrom,I
 	public static final String MX_CLEAR_CELL_STR="&empty&";
 	
 	private Integer _nbLinesParsed=0;
-	private List<IPair<String,PARSING_FIELD_TYPE> > _csvColumnsTypes = new ArrayList<>();
-	private Map<String,String> _chosenFieldsMapping = new HashMap<>();
+	// parsing type by db field name (only for fields chosen expected to be actually parsed)
+	private Map<String,PARSING_FIELD_TYPE> _fieldsParsingTypes = new HashMap<>();
+	// db field name by csvColName (only for fields chosen expected to be actually parsed)
+	private Map<String,String> _fieldsMapping = new HashMap<>();
+	// exhaustive list of columns where chosen fields shall be extracted from
+	private String _csvColsNames[];
 	
 	/// To be overridden by specialization
 	protected abstract IDbItem buildObjectFromFieldsMap(Map<String, Object> fieldsMap);
 	
 	@Override
-	public List<IPair<String,PARSING_FIELD_TYPE> > getCsvColsTypes() { return _csvColumnsTypes; }
+	public String[] getColsNames() { return _csvColsNames; }
+	@Override
+	public void setColsNames(String[] csvColsNames) { _csvColsNames=csvColsNames; }
 	
 	@Override
-	public void setCsvColsTypes(List<IPair<String,PARSING_FIELD_TYPE> > csvColsTypesDescr) {
-		_csvColumnsTypes=csvColsTypesDescr;
+	public Map<String,PARSING_FIELD_TYPE> getFieldsParsingTypes() { return _fieldsParsingTypes; }
+	
+	@Override
+	public void setFieldsParsingTypes(Map<String,PARSING_FIELD_TYPE> fieldsTypesDescr) {
+		_fieldsParsingTypes=fieldsTypesDescr;
 	}
 	
 
 	@Override
-	public Map<String, String> getChosenFieldsMapping() {
-		return _chosenFieldsMapping;
+	public Map<String, String> getFieldsMapping() {
+		return _fieldsMapping;
 	}
 
 	@Override
-	public void setChosenFieldsMapping(Map<String, String> fieldsNamesDescr) {
-		_chosenFieldsMapping=fieldsNamesDescr;		
+	public void setFieldsMapping(Map<String, String> fieldsNamesDescr) {
+		_fieldsMapping=fieldsNamesDescr;		
 	}
 	
 	protected abstract Boolean shallBeParsed(TFrom entry);
@@ -87,7 +96,7 @@ public abstract class ADbItemsParser<TFrom> implements IFieldsListParser<TFrom,I
 		}
 		
 		if (parseErrors.size()>0) { 
-			throw new ParseException(parseErrors); 
+			throw new ParseException(parseErrors.size()+" parse errors in received contents",parseErrors); 
 		}
 		return result;
 	
@@ -122,6 +131,7 @@ public abstract class ADbItemsParser<TFrom> implements IFieldsListParser<TFrom,I
 	
 	/**
 	 * Extract a single line from input contents file and populate a corresponding map with only fields requested by user
+	 * @param fieldName the name of the field (in database)
 	 */
 	protected abstract Map<String, Object> toMap(TFrom csvLine) throws ParseException;
 	
@@ -130,11 +140,11 @@ public abstract class ADbItemsParser<TFrom> implements IFieldsListParser<TFrom,I
 										String fieldStrValue, 
 										PARSING_FIELD_TYPE fieldType) 
 		throws ParseException {
-		if (this.getChosenFieldsMapping().size()>0 && !this.getChosenFieldsMapping().containsKey(fieldName)) {
+		if (this.getFieldsMapping().size()>0 && !this.getFieldsMapping().containsKey(fieldName)) {
 			return;
 		}
 		String mappedFieldName=fieldName;
-		if (this.getChosenFieldsMapping().size()>0) { mappedFieldName=this.getChosenFieldsMapping().get(fieldName); }
+		if (this.getFieldsMapping().size()>0) { mappedFieldName=this.getFieldsMapping().get(fieldName); }
 		
 		try {
 			switch (fieldType) {

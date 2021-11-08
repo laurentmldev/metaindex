@@ -181,7 +181,7 @@ public class ESBulkProcess extends AProcessingTask implements IDbItemsProcessor 
 	}
 	
 	@Override
-	public void postDataToIndexOrUpdate(List<IDbItem> d) throws DataProcessException {
+	public void handle(List<IDbItem> d) throws DataProcessException {
 		//log.error("### posting "+d.size()+" items");
 		if (!isRunning()) {
 			throw new DataProcessException("Processing not ready, unable to post data before");

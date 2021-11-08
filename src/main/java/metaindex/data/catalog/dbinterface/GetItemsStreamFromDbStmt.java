@@ -153,7 +153,7 @@ class GetItemsStreamFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 			resultList.add(result);
 			hitsStreamHandler.handle(resultList);
 			
-		} catch (DataProcessException | InterruptedException e) {
+		} catch (DataProcessException e) {
 			log.error(e.getMessage());
 			e.printStackTrace();
 		}

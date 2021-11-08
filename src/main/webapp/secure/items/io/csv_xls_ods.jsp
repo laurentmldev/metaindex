@@ -127,7 +127,7 @@ function _buildCsvColumnsTable(CSVrows,nbEntriesNode,csvColsTable,onColsSelectio
    	let curLineNb=0;
    	let nbEntries=0;
    	
-   	// count total nb entries
+   	// count total of actual nb entries
    	while (curLineNb<CSVrows.length) {
    		if (	   CSVrows[curLineNb].length>0 
    				&& CSVrows[curLineNb][0]!='#' 
@@ -200,7 +200,8 @@ function _buildCsvColumnsTable(CSVrows,nbEntriesNode,csvColsTable,onColsSelectio
 		csvColsTable.appendChild(newRow);
    		
    	}    	
-   
+
+   return nbEntries;
 }
 
 //showCsvPrevisu : get list and type/name of selected CSV fields for upload
@@ -229,7 +230,7 @@ function _showCsvPrevisu(CSVrows,fileNameTxt,isExcelFile,fileHandle) {
 	
 	let fileName=previsuNode.querySelector("._filename_");
 	fileName.innerHTML=fileNameTxt;
-	let nbEntries=previsuNode.querySelector("._nbEntries_");
+	let nbEntriesNode=previsuNode.querySelector("._nbEntries_");
 	let csvColsTable=previsuNode.querySelector("._csv_columns_tbl_");
 	
 	let labelWarningIdChangeDocuments = previsuNodeFooter.querySelector("._warning_update_id_");
@@ -254,7 +255,7 @@ function _showCsvPrevisu(CSVrows,fileNameTxt,isExcelFile,fileHandle) {
 
 	}
 	
-	_buildCsvColumnsTable(CSVrows,nbEntries,csvColsTable,onColsSelectionsChangeFunc,isExcelFile)
+	let nbEntries=_buildCsvColumnsTable(CSVrows,nbEntriesNode,csvColsTable,onColsSelectionsChangeFunc,isExcelFile)
 	onColsSelectionsChangeFunc();
 	
 	// footer
@@ -262,7 +263,7 @@ function _showCsvPrevisu(CSVrows,fileNameTxt,isExcelFile,fileHandle) {
 	let uploadBtn=previsuNodeFooter.querySelector('._uploadBtn_');
 	uploadBtn.onclick=function() {
 		footer_showAlert(INFO,"<s:text name="global.pleasewait"/>",null,5000);		
-		ws_handlers_requestUploadCsvFile(CSVrows,selectedCsvColsDef,fileHandle); 
+		ws_handlers_requestUploadCsvFile(nbEntries,selectedCsvColsDef,fileHandle); 
 		ws_handlers_refreshItemsGui();
 		MxGuiHeader.hideInfoModal();		
 	}

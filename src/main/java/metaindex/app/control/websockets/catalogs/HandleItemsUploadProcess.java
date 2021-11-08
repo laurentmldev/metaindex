@@ -17,11 +17,11 @@ import toolbox.database.IDbItemsProcessor;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.AProcessingTask;
 import toolbox.utils.IPair;
-import toolbox.utils.filetools.ADbOutstream;
+import toolbox.utils.filetools.IBytesToDbWriter;
 import toolbox.utils.filetools.FileDescriptor;
-import toolbox.utils.filetools.IFileOutstream;
+import toolbox.utils.filetools.IBytesWriter;
 import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
-import metaindex.app.control.websockets.catalogs.SpreadsheetDbOutstream.CALC_TYPE;
+import metaindex.app.control.websockets.catalogs.SpreadsheetBytesToDbWriter.CALC_TYPE;
 
 
 import java.util.List;
@@ -36,18 +36,20 @@ import java.util.Map;
  */
 public class HandleItemsUploadProcess extends HandleFileUploadProcess   {
 
-	private ADbOutstream _dbItemsOutstream;
+	private IBytesToDbWriter _dbItemsOutstream;
 	
 	@Override
-	public IFileOutstream getNewOutStream(String path, 
+	public IBytesWriter getNewOutStream(String path, 
 			 Long byteSize, 
 			 AProcessingTask parentProcessingTask,
 			 java.text.Normalizer.Form fileNameNormalizationForm) throws DataProcessException {
 		
 		if (path.endsWith(".csv")) {
-			_dbItemsOutstream=new CsvDbOutstream(path,byteSize,parentProcessingTask);
-		} else if (path.endsWith(".ods") || path.endsWith(".xls") || path.endsWith(".xlsx")) {
-			_dbItemsOutstream=new SpreadsheetDbOutstream(CALC_TYPE.XLS,byteSize,parentProcessingTask,0);
+			_dbItemsOutstream=new CsvBytesToDbWriter(path,byteSize,parentProcessingTask);
+		} else if (path.endsWith(".xls")) {
+			_dbItemsOutstream=new SpreadsheetBytesToDbWriter(CALC_TYPE.XLS,byteSize,parentProcessingTask,0);
+		} else if (path.endsWith(".ods") || path.endsWith(".xlsx") ) {
+			_dbItemsOutstream=new SpreadsheetBytesToDbWriter(CALC_TYPE.XLSX,byteSize,parentProcessingTask,0);
 		} else {
 			throw new DataProcessException("Unknown file format to import items ("+path+"). Allowed extensions are csv|xls|xlsx|odt");
 		}
@@ -60,7 +62,7 @@ public class HandleItemsUploadProcess extends HandleFileUploadProcess   {
 	}
 	
 	public void init(IDbItemsProcessor dbItemsBulkProcess,
-			List<IPair<String,PARSING_FIELD_TYPE>> parsingTypes,
+			Map<String,PARSING_FIELD_TYPE> parsingTypes,
 			Map<String,String> fieldsMapping) throws DataProcessException {
 		
 		_dbItemsOutstream.init(dbItemsBulkProcess,parsingTypes,fieldsMapping);

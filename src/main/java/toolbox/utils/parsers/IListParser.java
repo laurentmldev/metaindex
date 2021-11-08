@@ -13,16 +13,16 @@ See full version of LICENSE in <https://fsf.org/>
 import java.util.ArrayList;
 import java.util.List;
 
+import toolbox.exceptions.DataProcessException;
+
 public interface IListParser<TFrom,TTo> {
 	
-	public class ParseException extends Exception {
-		List<String> _parseErrors = new ArrayList<String>();
-		ParseException(String msg) { super(msg); }
-		ParseException(List<String> parseErrors) { 
-			super();
-			_parseErrors=parseErrors;
-		}
-		public List<String> getParseErrors() { return  _parseErrors; }
+	public class ParseException extends DataProcessException {
+		public ParseException(Exception e) { super(e); }
+		public ParseException(String msg) { super(msg); }
+		public ParseException(String msg, Exception e) { super(msg, e); }
+		public ParseException(String msg,List<String> errorDetails) { super(msg, errorDetails); }
+		
 	};
 	
 	

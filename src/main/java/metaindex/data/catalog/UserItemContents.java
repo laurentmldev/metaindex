@@ -24,7 +24,8 @@ public class UserItemContents implements IDbItem {
 	private Date _lastModifTimestamp=new Date(0);
 	private Integer _lastModifUserId;
 	public Map<String,Object> _fields = new HashMap<String,Object>();
-
+	
+	
 	@Override
 	public String getName() {
 		return _name;
@@ -32,15 +33,15 @@ public class UserItemContents implements IDbItem {
 
 	@Override
 	public String getId() {
-		if (_fields.get("_id")==null) { return ""; }
-		return (String) _fields.get("_id");
+		if (_fields.get(DB_ID_FIELD_NAME)==null) { return ""; }
+		return (String) _fields.get(DB_ID_FIELD_NAME);
 	}
 	/// if 'id' is empty, then remove the '_id' param from the fields list
 	public void setId(String id) {
 		// '_id' is the key entry-key in ElasticSearch and shall be removed from the map if left empty
 		// so that ES create one
-		if (id.equals("")) { _fields.remove("_id"); }
-		else { _fields.put("_id", id); }
+		if (id.equals("")) { _fields.remove(DB_ID_FIELD_NAME); }
+		else { _fields.put(DB_ID_FIELD_NAME, id); }
 	}
 	
 	@Override
@@ -72,8 +73,8 @@ public class UserItemContents implements IDbItem {
 		
 		// '_id' is the entry-key in ElasticSearch and shall be removed from the map if left empty
 		// so that ES create one
-		if (_fields.containsKey("_id") && _fields.get("_id").equals("")) {
-			_fields.remove("_id");
+		if (_fields.containsKey(DB_ID_FIELD_NAME) && _fields.get(DB_ID_FIELD_NAME).equals("")) {
+			_fields.remove(DB_ID_FIELD_NAME);
 		}
 	}
 

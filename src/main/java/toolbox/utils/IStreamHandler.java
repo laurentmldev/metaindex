@@ -16,6 +16,6 @@ import toolbox.exceptions.DataProcessException;
 
 public interface IStreamHandler<TData> {
 	
-	public void handle(List<TData> d) throws InterruptedException;	
+	public void handle(List<TData> d) throws DataProcessException;	
 
 }

@@ -14,20 +14,24 @@ import java.util.List;
 import java.util.Map;
 
 import toolbox.utils.IPair;
+import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
 
 
 public interface IFieldsListParser<TFrom,TTo> extends IListParser<TFrom,TTo> {
 	
 	public enum PARSING_FIELD_TYPE { NUMBER, TEXT };
 
-	// get the data type to give to each CSV column
-	public List<IPair<String,PARSING_FIELD_TYPE> > getCsvColsTypes();
-	public void setCsvColsTypes(List<IPair<String,PARSING_FIELD_TYPE> > fieldsDescr);
+	// parsing type by db field name (only for fields chosen expected to be actually parsed)
+	public Map<String,PARSING_FIELD_TYPE> getFieldsParsingTypes();
+	public void setFieldsParsingTypes(Map<String,PARSING_FIELD_TYPE> fieldsDescr);
 	
-	// get the list of CSV columns to actually keep and final name to associate with
-	// if empty, retrieve all columns, keeping original CSV names  
-	public Map<String,String> getChosenFieldsMapping();
-	public void setChosenFieldsMapping(Map<String,String> fieldsDescr);
+	// db field name by csvColName (only for fields chosen to be actually parsed)
+	public Map<String,String> getFieldsMapping();
+	public void setFieldsMapping(Map<String,String> fieldsDescr);
+	
+	// exhaustive list of columns where chosen fields shall be extracted from
+	public String[] getColsNames();
+	public void setColsNames(String[] cosNames);
 	
 	
 }

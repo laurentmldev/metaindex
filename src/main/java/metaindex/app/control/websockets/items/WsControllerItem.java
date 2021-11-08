@@ -648,7 +648,7 @@ public class WsControllerItem extends AMxWSController {
 	    	procTask.start();
 	    	List<IDbItem> itemsList = new ArrayList<>();
 	    	itemsList.add(itemToCreate);
-	    	procTask.postDataToIndexOrUpdate(itemsList);
+	    	procTask.handle(itemsList);
 	    	
 	    	Globals.GetStatsMgr().handleStatItem(new CreateItemMxStat(user,c,itemToCreate.getName()));
 	    	
