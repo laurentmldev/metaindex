@@ -136,31 +136,27 @@ public abstract class ADbItemsParser<TFrom> implements IFieldsListParser<TFrom,I
 	protected abstract Map<String, Object> toMap(TFrom csvLine) throws ParseException;
 	
 	protected void extractItemStrData(	Map<String, Object> parsedData,
-										String fieldName,
+										String dbFieldName,
 										String fieldStrValue, 
 										PARSING_FIELD_TYPE fieldType) 
-		throws ParseException {
-		if (this.getFieldsMapping().size()>0 && !this.getFieldsMapping().containsKey(fieldName)) {
-			return;
-		}
-		String mappedFieldName=fieldName;
-		if (this.getFieldsMapping().size()>0) { mappedFieldName=this.getFieldsMapping().get(fieldName); }
+													throws ParseException {
 		
 		try {
 			switch (fieldType) {
 				case TEXT:
-					parsedData.put(mappedFieldName, parseStrField(fieldStrValue));
+				case DATE: // date is parsed as a string (typically dd/mm/yyyy)
+					parsedData.put(dbFieldName, parseStrField(fieldStrValue));
 					break;
 				case NUMBER:
-					parsedData.put(mappedFieldName, parseNumberFieldContents(fieldStrValue));
+					parsedData.put(dbFieldName, parseNumberFieldContents(fieldStrValue));
 					break;
 				default:
 					throw new ParseException("Unhandled field type "
-							+fieldType.toString()+" fieldName="+fieldName+"/"+mappedFieldName+" value='"+fieldStrValue+"'");						
+							+fieldType.toString()+" fieldName="+dbFieldName+"/"+dbFieldName+" value='"+fieldStrValue+"'");						
 			}
 		} catch (ParseException e) {
 			throw new ParseException("Contents not compatible with type '"+fieldType.toString()
-						+"' of field '"+mappedFieldName+"' (input field '"+fieldName
+						+"' of field '"+dbFieldName+"' (input field '"+dbFieldName
 						+"') : "	+e.getMessage()+" : "+fieldStrValue);
 		}
 		

@@ -201,7 +201,7 @@ public class WsControllerCatalogFileUpload extends AMxWSController {
 				return;
 	    	}
 	    	
-    		Map<String,PARSING_FIELD_TYPE> fieldsParsingType = new HashMap<>();    		    		
+    		Map<String,PARSING_FIELD_TYPE> fieldsParsingType = new HashMap<>();    	
     		List<String> fieldsNotFound=new ArrayList<>();
     		    	
     		// display CSV preparation only if some terms have to be created
@@ -219,20 +219,20 @@ public class WsControllerCatalogFileUpload extends AMxWSController {
     			if (termName.startsWith(WsMsgCsvFileUpload_request.CSV_MAPPING_NEWTERM_PREFIX)) {
     				
     				curTermToCreateIndex++;
-    				String newTermName = "";
+    				String newTermName = termName.replace(
+							WsMsgCsvFileUpload_request.CSV_MAPPING_NEWTERM_PREFIX,"");
     				TERM_DATATYPE newTermType=TERM_DATATYPE.UNKNOWN;
     				for (TERM_DATATYPE t : TERM_DATATYPE.values()) {
-    					newTermName = termName.replace(
-    							WsMsgCsvFileUpload_request.CSV_MAPPING_NEWTERM_PREFIX+"__","");
-    					
     					if (newTermName.replace(t.toString(),"").length()<newTermName.length()) {
     						newTermType=t;
-    					}
-    					newTermName = newTermName.replace(t.toString(),"").toLowerCase();
+    						newTermName = newTermName.replace(t.toString()+"__","").toLowerCase();
+    						break;
+    					}    					
     				}
     				term = c.getTerms().get(newTermName);
+    				// if term name already exists while user asked to create it as a new one, we return an error msgr
     				if (term!=null) {   
-    					String msgStr = user.getText("Items.serverside.uploadItems.emptyCsvColsList");
+    					String msgStr = user.getText("Items.serverside.uploadItems.newFieldAlreadyExists",newTermName);
     					answer.setIsSuccess(false);
     					answer.setRejectMessage(msgStr);
     					
@@ -279,6 +279,8 @@ public class WsControllerCatalogFileUpload extends AMxWSController {
     					|| dbType==RAW_DATATYPE.Tinteger
     					|| dbType==RAW_DATATYPE.Tshort) {
     				parsingType=PARSING_FIELD_TYPE.NUMBER;
+    			} else if (dbType==RAW_DATATYPE.Tdate) {
+    				parsingType=PARSING_FIELD_TYPE.DATE;
     			}
     			fieldsParsingType.put(termName,parsingType);
     			    			

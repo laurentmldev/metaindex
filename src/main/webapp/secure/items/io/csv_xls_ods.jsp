@@ -255,7 +255,10 @@ function _showCsvPrevisu(CSVrows,fileNameTxt,isExcelFile,fileHandle) {
 
 	}
 	
-	let nbEntries=_buildCsvColumnsTable(CSVrows,nbEntriesNode,csvColsTable,onColsSelectionsChangeFunc,isExcelFile)
+	let nbEntries=_buildCsvColumnsTable(CSVrows,nbEntriesNode,csvColsTable,onColsSelectionsChangeFunc,isExcelFile);
+	// ignore first row for excel files. For CSV, it shall be commented out (start with a '#') 
+	// so it is already ignored in the count
+	if (isExcelFile==true) { nbEntries--; }
 	onColsSelectionsChangeFunc();
 	
 	// footer

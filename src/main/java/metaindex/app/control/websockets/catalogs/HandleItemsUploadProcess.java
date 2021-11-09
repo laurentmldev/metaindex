@@ -48,10 +48,13 @@ public class HandleItemsUploadProcess extends HandleFileUploadProcess   {
 			_dbItemsOutstream=new CsvBytesToDbWriter(path,byteSize,parentProcessingTask);
 		} else if (path.endsWith(".xls")) {
 			_dbItemsOutstream=new SpreadsheetBytesToDbWriter(CALC_TYPE.XLS,byteSize,parentProcessingTask,0);
-		} else if (path.endsWith(".ods") || path.endsWith(".xlsx") ) {
+		} else if (path.endsWith(".xlsx") ) {
 			_dbItemsOutstream=new SpreadsheetBytesToDbWriter(CALC_TYPE.XLSX,byteSize,parentProcessingTask,0);
+		} else if (path.endsWith(".ods")) {
+			_dbItemsOutstream=new SpreadsheetBytesToDbWriter(CALC_TYPE.ODF,byteSize,parentProcessingTask,0);
+			throw new DataProcessException("Unsupported file format");
 		} else {
-			throw new DataProcessException("Unknown file format to import items ("+path+"). Allowed extensions are csv|xls|xlsx|odt");
+			throw new DataProcessException("Unknown file format to import items ("+path+"). Allowed extensions are csv|xls|xlsx|ods");
 		}
 		return _dbItemsOutstream;		
 	}

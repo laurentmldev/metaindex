@@ -1,5 +1,8 @@
 package toolbox.utils.parsers;
 
+import java.time.LocalDate;
+import java.time.Month;
+
 /*
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -58,6 +61,11 @@ public class SpreadsheetDbItemsParser extends ADbItemsParser<Row> {
 		return true;
 	}
 	
+	final static public LocalDate EXCEL_EPOCH_REF = LocalDate.of(1899,Month.DECEMBER,30);
+	private LocalDate excelDate2javaDate(Integer excelDate) {
+		return EXCEL_EPOCH_REF.plusDays(excelDate);
+	}
+	
 	/**
 	 * Extract a single line from csv file and populate a corresponding map with only fields requested by user
 	 */
@@ -73,16 +81,18 @@ public class SpreadsheetDbItemsParser extends ADbItemsParser<Row> {
 		
 		for (String colName : getColsNames()) {
 			colidx++;
-			String curColContents="";
+			String curColStrContents="";
+			Double curColNbContents=0.0;
 			Cell curCellContents=spreadsheetRow.getCell(colidx-1);
 			if (curCellContents!=null) {
 				switch(curCellContents.getCellType()) {
 		            case BLANK:                
 		            case STRING:
-		                curColContents=curCellContents.getStringCellValue();
+		                curColStrContents=curCellContents.getStringCellValue();
 		                break;
 		            case NUMERIC:
-		            	curColContents=new Double(curCellContents.getNumericCellValue()).toString();
+		            	curColNbContents=new Double(curCellContents.getNumericCellValue());
+		            	curColStrContents=curColNbContents.toString();
 		            	break;
 		            default:
 		                throw new ParseException("Unhandled Spreadsheet datatype '"+curCellContents.getCellType()+"' ");
@@ -93,19 +103,27 @@ public class SpreadsheetDbItemsParser extends ADbItemsParser<Row> {
 			// ignore empty fields. When used fields need some mandatory data,
 			// this avoid useless error to be raised.
 			// Example : when type is elasticsearch geo-point : it cannot have empty value 
-			if (curColContents.length()==0) { continue; }
+			if (curColStrContents.length()==0) { continue; }
 			
 			// clear existing cell contents if forced by user
-			if (curColContents.equals(MX_CLEAR_CELL_STR)) {
-				curColContents="";
+			if (curColStrContents.equals(MX_CLEAR_CELL_STR)) {
+				curColStrContents="";
 			}
 			
 			// restore new lines
-			curColContents=curColContents.replaceAll(MX_CR_ESCAPE_STR, "\n");
+			curColStrContents=curColStrContents.replaceAll(MX_CR_ESCAPE_STR, "\n");
 			
-			String dbFieldName = this.getFieldsMapping().get(colName);			
-			PARSING_FIELD_TYPE fieldType = this.getFieldsParsingTypes().get(dbFieldName);
-			extractItemStrData(result,dbFieldName,curColContents,fieldType);
+			String dbFieldName = this.getFieldsMapping().get(colName);		
+			// colName is present in FieldsMapping if and only if
+			// user selected it as "to be imported" so if it is not present we ignore it
+			if (dbFieldName!=null) {
+				PARSING_FIELD_TYPE fieldType = this.getFieldsParsingTypes().get(dbFieldName);
+				
+				if (fieldType==PARSING_FIELD_TYPE.DATE) {
+					curColStrContents=excelDate2javaDate(curColNbContents.intValue()).toString();
+				}
+				extractItemStrData(result,dbFieldName,curColStrContents,fieldType);
+			}
 
 		}
 		

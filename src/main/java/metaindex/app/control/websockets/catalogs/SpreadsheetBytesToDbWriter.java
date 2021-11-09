@@ -52,7 +52,7 @@ import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
  */
 public class SpreadsheetBytesToDbWriter  extends ABytesWriter  implements IBytesToDbWriter,IStreamProducer<IDbItem> {
 	
-	public enum CALC_TYPE {UNKNOWN,XLS,XLSX,OOXML};
+	public enum CALC_TYPE {UNKNOWN,XLS,XLSX,ODF};
 	private Log log = LogFactory.getLog(SpreadsheetBytesToDbWriter.class);
 	
 	private static final Integer NBENTRIES_TO_POST_TRESHOLD=500;
@@ -176,6 +176,7 @@ public class SpreadsheetBytesToDbWriter  extends ABytesWriter  implements IBytes
 			readSpreadSheet(_out.toByteArray()); 
 			_out.close();
 			_workbook.close();
+			_itemsBulkProcessor.stop();
 			
 		} catch (IOException e) {
 			throw new DataProcessException("Unable to close workbook: "+e.getMessage(),e);

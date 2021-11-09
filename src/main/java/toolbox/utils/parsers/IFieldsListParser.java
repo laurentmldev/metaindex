@@ -10,16 +10,11 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
-import java.util.List;
 import java.util.Map;
-
-import toolbox.utils.IPair;
-import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
-
 
 public interface IFieldsListParser<TFrom,TTo> extends IListParser<TFrom,TTo> {
 	
-	public enum PARSING_FIELD_TYPE { NUMBER, TEXT };
+	public enum PARSING_FIELD_TYPE { NUMBER, TEXT, DATE };
 
 	// parsing type by db field name (only for fields chosen expected to be actually parsed)
 	public Map<String,PARSING_FIELD_TYPE> getFieldsParsingTypes();

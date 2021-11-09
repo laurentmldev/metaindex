@@ -114,9 +114,13 @@ public class CsvDbItemsParser extends ADbItemsParser<String> {
 			curColContents=curColContents.replaceAll(MX_GT_ESCAPE_STR, ">");
 			curColContents=curColContents.replaceAll(MX_LT_ESCAPE_STR, "<");
 			
-			String dbFieldName = this.getFieldsMapping().get(csvColName);			
-			PARSING_FIELD_TYPE fieldType = this.getFieldsParsingTypes().get(dbFieldName);
-			extractItemStrData(result,dbFieldName,curColContents,fieldType);
+			String dbFieldName = this.getFieldsMapping().get(csvColName);
+			// colName is present in FieldsMapping if and only if
+			// user selected it as "to be imported" so if it is not present we ignore it
+			if (dbFieldName!=null) {
+				PARSING_FIELD_TYPE fieldType = this.getFieldsParsingTypes().get(dbFieldName);
+				extractItemStrData(result,dbFieldName,curColContents,fieldType);
+			}
 
 		}
 		

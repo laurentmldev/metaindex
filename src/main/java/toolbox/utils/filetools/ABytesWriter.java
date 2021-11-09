@@ -55,7 +55,7 @@ public abstract class ABytesWriter implements IBytesWriter {
 	/** Receive byte contents in proper order 
 	 * @throws ParseException */
 	protected abstract void handleReceivedContentsSequence(byte[] contents,Integer lastDumpedSequenceNumber) 
-			throws DataProcessException;
+																					throws DataProcessException;
 	
 	protected abstract void handleStop() throws DataProcessException;
 	
