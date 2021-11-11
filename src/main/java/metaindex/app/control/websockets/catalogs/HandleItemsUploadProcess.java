@@ -38,13 +38,17 @@ public class HandleItemsUploadProcess extends HandleFileUploadProcess   {
 
 	private IBytesToDbWriter _dbItemsOutstream;
 	
+	public static Boolean isCsvFile(String fileName) {
+		return fileName.endsWith(".csv");
+	}
+	
 	@Override
 	public IBytesWriter getNewOutStream(String path, 
 			 Long byteSize, 
 			 AProcessingTask parentProcessingTask,
 			 java.text.Normalizer.Form fileNameNormalizationForm) throws DataProcessException {
 		
-		if (path.endsWith(".csv")) {
+		if (isCsvFile(path)) {
 			_dbItemsOutstream=new CsvBytesToDbWriter(path,byteSize,parentProcessingTask);
 		} else if (path.endsWith(".xls")) {
 			_dbItemsOutstream=new SpreadsheetBytesToDbWriter(CALC_TYPE.XLS,byteSize,parentProcessingTask,0);

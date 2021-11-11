@@ -131,7 +131,8 @@ public class WsControllerCatalogFileUpload extends AMxWSController {
 	    	// Instantiate a Processing task
 	    	IHandleFileUploadProcess procTask = new HandleFileUploadProcess(
 	    									user,
-	    									user.getText("Items.uploadItems.uploadingFiles"),
+	    									user.getText("Items.serverside.uploadFile.progress",
+	    											new Integer(requestMsg.getFileDescriptions().size()).toString()),
 	    									c.getLocalFsFilesPath(),
 	    									requestMsg.getFileDescriptions()); 
     				
@@ -174,12 +175,16 @@ public class WsControllerCatalogFileUpload extends AMxWSController {
 
     		HandleItemsUploadProcess procTask=new HandleItemsUploadProcess(
     					user,  
-						user.getText("Items.serverside.createFromCsvTask",
-									requestMsg.getTotalNbEntries().toString()),
+						user.getText("Items.serverside.uploadFile.progress",
+									new Integer(requestMsg.getFileDescriptions().size()).toString()),
 						requestMsg.getFileDescriptions());
     		// progress messages will be already sent by the "data injection into db" process
-    		// so we shall not send progress messages by the "parse input" process
-    		procTask.setShallSendUserProgressMsgs(false);
+    		// so we shall not send progress messages by the "CSV parse input" process
+    		// For Excel files, we first need to upload file so both progress info are expected
+    		if (HandleItemsUploadProcess.isCsvFile(requestMsg.getFileDescriptions().get(0).getName())) {
+    			procTask.setShallSendUserProgressMsgs(false);
+    		}
+    		
     		WsMsgUserDataFileUpload_answer answer = new WsMsgUserDataFileUpload_answer(
     				procTask.getId(),
     				requestMsg.getRequestId());
@@ -187,7 +192,7 @@ public class WsControllerCatalogFileUpload extends AMxWSController {
 	    	// limit size of CSV files to upload at once, in order to mitigate
 	    	// risks of server lock down
 	    	if (requestMsg.getTotalNbEntries()>MAX_CSV_UPLOAD_NB_ELEMENTS ) {
-	    		String msgStr = user.getText("Items.serverside.createFromCsvTask.tooManyEntries",
+	    		String msgStr = user.getText("Items.serverside.uploadItems.progress.tooManyEntries",
 	    				requestMsg.getTotalNbEntries().toString(),MAX_CSV_UPLOAD_NB_ELEMENTS.toString());
 	    		
 	    		answer.setIsSuccess(false);
@@ -368,14 +373,14 @@ public class WsControllerCatalogFileUpload extends AMxWSController {
     		
     		IDbItemsProcessor dbItemsProcessor = Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
 					.getNewItemsBulkProcessor(user, user.getCurrentCatalog(), 
-												user.getText("Items.serverside.createFromCsvTask",requestMsg.getTotalNbEntries().toString()),
+												user.getText("Items.serverside.uploadItems.progress",requestMsg.getTotalNbEntries().toString()),
 											requestMsg.getTotalNbEntries(),now);    
 	
     		procTask.init(dbItemsProcessor,fieldsParsingType,requestMsg.getFieldsMapping());
     		procTask.start();
     		
     		// send back successful answer
-    		// now we'll wait for CSV lines coming via upload_filter_file_contents message
+    		// now we'll wait for file contents on upload_userdata_file_contents msg handler
     		answer.setIsSuccess(true);
     		this.messageSender.convertAndSendToUser(
     				headerAccessor.getUser().getName(),

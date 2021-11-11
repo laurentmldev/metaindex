@@ -176,7 +176,6 @@ public class SpreadsheetBytesToDbWriter  extends ABytesWriter  implements IBytes
 			readSpreadSheet(_out.toByteArray()); 
 			_out.close();
 			_workbook.close();
-			_itemsBulkProcessor.stop();
 			
 		} catch (IOException e) {
 			throw new DataProcessException("Unable to close workbook: "+e.getMessage(),e);
