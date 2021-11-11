@@ -52,6 +52,7 @@ public class ESBulkProcess extends AProcessingTask implements IDbItemsProcessor 
 	private Boolean _interruptFlag=false;
 	
 	private Long _nbIndexedData = 0L;
+	private Long _prevIndexedDataProgress = 0L;
 	
 	private class MxESBulkListener implements BulkProcessor.Listener {
 		Integer _bulkItemIndex=0;
@@ -92,11 +93,12 @@ public class ESBulkProcess extends AProcessingTask implements IDbItemsProcessor 
 	    	_bulkProcessLock.release();
 	    	
 	    	//log.error("	### bulk response "+_process.getProcessedNbData()+"/"+_process.getTargetNbData());
-	    	if (_process.getProcessedNbData()%1000==0) {
+	    	if (_process.getProcessedNbData()-_process._prevIndexedDataProgress>1000) {
 	    		getActiveUser().sendGuiProgressMessage(
 	    			_process.getId(),
 	    			getActiveUser().getText("Items.serverside.bulkprocess.progress", _process.getName()),
 	    			AProcessingTask.pourcentage(_process.getProcessedNbData(), _process.getTargetNbData()));
+	    		_process._prevIndexedDataProgress=_process.getProcessedNbData();
 	    	}
 	    }
 

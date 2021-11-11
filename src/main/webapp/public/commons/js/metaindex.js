@@ -22,8 +22,8 @@ function stripStr(str) { return str.replace(/^\s*/,"").replace(/\s*$/,""); }
 
 // shouldn't be too big otherwise risk of WS deconnexion because max. size limit reached.
 var MX_WS_FIELD_VALUE_MAX_CHARS = 5000;
-var MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE = 500;
-var MX_WS_UPLOAD_FILE_SEND_PERIOD_MS = 30;
+var MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE = 50000;
+var MX_WS_UPLOAD_FILE_SEND_PERIOD_MS = 100;
 
 var MX_DOWNSTREAM_MSG="down";
 var MX_UPSTREAM_MSG="up";

@@ -120,7 +120,7 @@ public class CsvBytesToDbWriter extends ABytesWriter implements IBytesToDbWriter
 				}
 				csvRows.add(line);
 				nbParsedLines++;	
-				_totalNbLines++;
+				_totalNbLines++;				
 			}
 			// if last line does not finish with a new line, it might be a single line truncated
 			// in that case we wait for new chunk to complete it

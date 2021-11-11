@@ -410,6 +410,7 @@ public class WsControllerCatalogFileUpload extends AMxWSController {
     	WsMsgUserDataFileUploadContents_answer answer = new WsMsgUserDataFileUploadContents_answer(
 				requestMsg.getClientFileId(),requestMsg.getProcessingTaskId());
 		
+    	
 	    try {
 	    	
 	    	IUserProfileData user = getUserProfile(headerAccessor);
@@ -461,7 +462,7 @@ public class WsControllerCatalogFileUpload extends AMxWSController {
     		procTask.postFileData(	requestMsg.getClientFileId(),
     								requestMsg.getSequenceNumber() ,
     								requestMsg.getRawContents());
-    		    		
+    		  		
 	    }   
 	    catch (DataProcessException|InterruptedException e) 
 		{
