@@ -413,7 +413,7 @@ public class WsControllerCatalogFileUpload extends AMxWSController {
     	Integer taskId = requestMsg.getProcessingTaskId();
     	
     	WsMsgUserDataFileUploadContents_answer answer = new WsMsgUserDataFileUploadContents_answer(
-				requestMsg.getClientFileId(),requestMsg.getProcessingTaskId());
+				requestMsg.getClientFileId(),requestMsg.getClientRequestId(),requestMsg.getProcessingTaskId());
 		
     	
 	    try {

@@ -106,13 +106,16 @@ public class SpreadsheetDbItemsParser extends ADbItemsParser<Row> {
 			if (curColStrContents.length()==0) { continue; }
 			
 			// clear existing cell contents if forced by user
-			if (curColStrContents.equals(MX_CLEAR_CELL_STR)) {
-				curColStrContents="";
+			for (String clearCellMarker : MX_CLEAR_CELL_STR) {
+				if (curColStrContents.equals(clearCellMarker)) {
+					curColStrContents="";
+				}
 			}
 			
 			// restore new lines
-			curColStrContents=curColStrContents.replaceAll(MX_CR_ESCAPE_STR, "\n");
-			
+			for (String crMarker : MX_CR_ESCAPE_STR) {
+				curColStrContents=curColStrContents.replace(crMarker, "\n");
+			}
 			String dbFieldName = this.getFieldsMapping().get(colName);		
 			// colName is present in FieldsMapping if and only if
 			// user selected it as "to be imported" so if it is not present we ignore it

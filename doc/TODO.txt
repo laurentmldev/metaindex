@@ -3,6 +3,10 @@
 v2.2.5:
 -------
 
+waiting sign while search is processing
+
+__MX_ESCAPED_SEPARATOR__ not decoded
+
 update dts2csv.py
 
 Apache ODFToolkit

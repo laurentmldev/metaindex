@@ -15,6 +15,7 @@ public class WsMsgUserDataFileUploadContents_request {
 
 	private Integer processingTaskId = 0;
 	private Integer _clientFileId = 0;
+	private Integer _clientRequestId = 0;
 	private byte[] _rawContents; 
 	
 	// shall start from 1 
@@ -51,6 +52,14 @@ public class WsMsgUserDataFileUploadContents_request {
 
 	public void setSequenceNumber(Integer _sequenceNumber) {
 		this._sequenceNumber = _sequenceNumber;
+	}
+
+	public Integer getClientRequestId() {
+		return _clientRequestId;
+	}
+
+	public void setClientRequestId(Integer _clientRequestId) {
+		this._clientRequestId = _clientRequestId;
 	}
 
 	

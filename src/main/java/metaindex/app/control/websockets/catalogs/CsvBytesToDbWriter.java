@@ -133,8 +133,7 @@ public class CsvBytesToDbWriter extends ABytesWriter implements IBytesToDbWriter
 			throw new ParseException("Unable to split CSV line into columns: '"+e.getMessage()+"' at l."+_totalNbLines,e);
 		}
 		List<IDbItem> parsedItemsToIndex=new ArrayList<>();
-		parsedItemsToIndex = _csvParser.parseAll(csvRows); 
-		
+		parsedItemsToIndex = _csvParser.parseAll(csvRows); 		
 		_itemsBulkProcessor.handle(parsedItemsToIndex); 		
 	}
 

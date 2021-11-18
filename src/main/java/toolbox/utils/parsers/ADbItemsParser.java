@@ -36,8 +36,8 @@ public abstract class ADbItemsParser<TFrom> implements IFieldsListParser<TFrom,I
 	
 	private Log log = LogFactory.getLog(ADbItemsParser.class);
 	
-	public static final String MX_CR_ESCAPE_STR="&cr&";
-	public static final String MX_CLEAR_CELL_STR="&empty&";
+	public static final String[] MX_CR_ESCAPE_STR = { "&cr&","__CR__" };
+	public static final String[] MX_CLEAR_CELL_STR= { "&empty&","__empty__" };
 	
 	private Integer _nbLinesParsed=0;
 	// parsing type by db field name (only for fields chosen expected to be actually parsed)

@@ -22,7 +22,7 @@ function stripStr(str) { return str.replace(/^\s*/,"").replace(/\s*$/,""); }
 
 // shouldn't be too big otherwise risk of WS deconnexion because max. size limit reached.
 var MX_WS_FIELD_VALUE_MAX_CHARS = 5000;
-var MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE = 50000;
+var MX_WS_UPLOAD_FILE_MAX_RAW_SIZE_BYTE = 150000;
 var MX_WS_UPLOAD_FILE_SEND_PERIOD_MS = 100;
 
 var MX_DOWNSTREAM_MSG="down";
@@ -219,7 +219,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 		}
 		
 		var connectionCallback = function(frame) {		
-						 	
+	 	
 		 	// subscribe to Metaindex user messages streams	
 			myself._stompClient.subscribe('/user/queue/register_ack',myself._handleRegisterAckMsg);
 			
@@ -297,6 +297,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			myself._sendRegisterRequest();
 			
 		}
+
 		myself._stompClient.connect(header, connectionCallback);
 	}
 
@@ -2185,7 +2186,7 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 //------- Upload Raw and CSV Files --------
 			
 	// contains error/success callback functions of each field update request
-	this.requestUploadFilesCallbacks=[];
+	this.requestUploadFilesDataObjs=[];
 
 	
 	// store handles to files being uploaded
@@ -2196,8 +2197,8 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 
 	this._getBasicFilesUploadJsonData=function(dataObj) {
 
-		var curRequestId=myself.requestUploadFilesCallbacks.length;
-		myself.requestUploadFilesCallbacks.push(dataObj);
+		var curRequestId=myself.requestUploadFilesDataObjs.length;
+		myself.requestUploadFilesDataObjs.push(dataObj);
 		
 		let fileDescriptions=[];
 		 
@@ -2270,13 +2271,17 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 		var parsedMsg = JSON.parse(uploadFilesAnswerMsg.body);
 		let requestId=parsedMsg.requestId;
 		
-		let requestObj=myself.requestUploadFilesCallbacks[requestId];
+		let requestObj=myself.requestUploadFilesDataObjs[requestId];
+		if (requestObj==null) { return; }
+		
 		requestObj.processingTaskId=parsedMsg.processingTaskId;
+		requestObj.clientRequestId=requestId;
+		requestObj.abort=false;
 
 		//console.log("### handling upload files answer "+requestId+" : "+parsedMsg);
 		//console.log(requestObj)
 		
-		if (requestObj==null) { return; }
+		
 		if (parsedMsg.isSuccess!=true) {
 			let errorMsg=parsedMsg.rejectMessage;
 			// ensure error message is not empty
@@ -2295,16 +2300,11 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 		    let reader = new FileReader();
 		    reader.onloadend = function (evt) 
 		    { 
-		    	/*
-		    	if (evt.target.readyState == FileReader.DONE) {
-		            alert(String(reader.result[0]));
-		        }
-		        */
 		        let buffer = reader.result;
 				let rawdata = new Uint8Array(buffer);			
 				
 				let sendRawData = function(startRawdataPos,curSequenceNumber) {
-					//console.log("sendRawData("+curSequenceNumber+"):["+startRawdataPos+"]");
+					//console.log("sendRawData("+curSequenceNumber+"):["+startRawdataPos+"]");					
 					let sendingBuffer=[];
 					let curRawdataPos=startRawdataPos;
 					//strDataContents = compressBase64(view);
@@ -2321,7 +2321,9 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 			    	myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 			    	myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/upload_userdata_file_contents", {},JSON.stringify(jsonData));
 					
-					if (curRawdataPos<rawdata.length && requestObj.abort!=true) {
+					if (curRawdataPos<rawdata.length && requestObj.abort!=true)
+					{
+						//console.log(myself.requestUploadFilesDataObjs[requestId]);
 						let timer = setInterval(function() {
 							clearInterval(timer);
 							//console.log("	### planning next send in 1s from seq="+(curSequenceNumber+1)+"["+curRawdataPos+"]");							
@@ -2347,18 +2349,21 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 		
     	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 		var parsedMsg = JSON.parse(uploadFilesContentsAnswerMsg.body);
-		let requestId=parsedMsg.requestId;
+		let requestId=parsedMsg.clientRequestId;
+		let requestObj=myself.requestUploadFilesDataObjs[requestId];
 		
-		//console.log("handling upload files contents answer "+requestId+" : "+parsedMsg);
+		
+		//console.log("handling upload files contents answer "+requestId+" : "+requestObj);
+		//console.log(parsedMsg);
 		if (requestObj==null) { return; }
 		if (parsedMsg.isSuccess!=true) {
+			// will stop running upload process
+			requestObj.abort=true;
 			let errorMsg=parsedMsg.rejectMessage;
 			// ensure error message is not empty
 			// (otherwise can lead to some misbehaviour in user app (ex: x-editable) )
-			if (errorMsg==undefined) { errorMsg="uploading files contents refused by server, sorry." }
-			requestObj.errorCallback(errorMsg);
-			// will stop running upload process
-			requestObj.abort=true;
+			if (errorMsg==undefined || errorMsg=="") { return; }
+			requestObj.errorCallback(errorMsg);			
 			return;
 		} else if (requestObj.successCallback!=null) { requestObj.successCallback(); }
 		

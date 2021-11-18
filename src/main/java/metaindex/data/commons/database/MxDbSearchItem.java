@@ -121,7 +121,7 @@ public class MxDbSearchItem implements IDbItem {
 				Object curFieldVal = _data.get(fieldname);
 				// custom separator defined within quotes
 				if (fieldname.startsWith("\"") && fieldname.endsWith("\"")) {
-					separator = fieldname.replaceAll("\"", "");					
+					separator = fieldname.replace("\"", "");					
 				}
 				else if (curFieldVal!=null) {
 					// test if separator shall be added
@@ -140,7 +140,7 @@ public class MxDbSearchItem implements IDbItem {
 					// keep a space between contents containing coma-separated data,
 					// allowing easier display in GUI, because then it can be cut
 					// over several lines.
-					_nameVal+=curFieldVal.toString().replaceAll(",", ", ");
+					_nameVal+=curFieldVal.toString().replace(",", ", ");
 					separator=BASIC_TITLE_SEPARATOR;
 				}
 			}

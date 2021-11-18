@@ -36,10 +36,14 @@ public class CsvDbItemsParser extends ADbItemsParser<String> {
 	private Log log = LogFactory.getLog(CsvDbItemsParser.class);
 	
 	
-	private static final String MX_SEP_ESCAPE_STR="&sep&";	
-	private static final String MX_GT_ESCAPE_STR="&gt&";
-	private static final String MX_LT_ESCAPE_STR="&lt&";
-	private static final String MX_QUOTE_ESCAPE_STR="&quote&";
+	private static final String MX_SEP_ESCAPE_STR="__SEP__";	
+	private static final String MX_QUOTE_ESCAPE_STR="__QUOTE__";
+	/*
+	private static final String MX_ANTISLASH_ESCAPE_STR="__ANTISLASH__";		
+	private static final String MX_GT_ESCAPE_STR="__GT__";
+	private static final String MX_LT_ESCAPE_STR="__LT__";
+	private static final String MX_DOLLARS_ESCAPE_STR="__DOLLARS__";
+	*/
 	
 	private String _csvSeparator=";";
 	private String _commentsMarker="#";
@@ -77,13 +81,22 @@ public class CsvDbItemsParser extends ADbItemsParser<String> {
 		if (!shallBeParsed(csvLine)) { return null; }	
 		
 		// clean input line from separators within quotes
-		csvLine=csvLine.replaceAll("\\\\\"",MX_QUOTE_ESCAPE_STR);
+		csvLine=csvLine.replace("\\\"",MX_QUOTE_ESCAPE_STR);
+		/*
 		csvLine=csvLine.replaceAll("<",MX_LT_ESCAPE_STR);
 		csvLine=csvLine.replaceAll(">",MX_GT_ESCAPE_STR);
+		csvLine=csvLine.replaceAll("\\$",MX_DOLLARS_ESCAPE_STR);
+		csvLine=csvLine.replaceAll("\\\\",MX_ANTISLASH_ESCAPE_STR);	
+		*/
+		//String quotedCsvLine=java.util.regex.Matcher.quoteReplacement(csvLine);		
 		Matcher m = Pattern.compile(_stringIdentifier+"[^"+_stringIdentifier+"]+"+_stringIdentifier).matcher(csvLine);
+		// for each text section within quotes, replace separators by temporary marker
+		// prior to split columns
+
 		while(m.find()) {
-			String escaped_col = m.group().replace(this.getCsvSeparator(), MX_SEP_ESCAPE_STR);
-			csvLine=csvLine.replaceAll(Pattern.quote(m.group()),escaped_col);
+			String groupStr=m.group();
+			String escaped_col = groupStr.replace(this.getCsvSeparator(), MX_SEP_ESCAPE_STR);			
+			csvLine=csvLine.replace(groupStr,escaped_col);
 		}
 		
 		String cols[] = csvLine.split(getCsvSeparator(),-1);
@@ -95,6 +108,12 @@ public class CsvDbItemsParser extends ADbItemsParser<String> {
 		int colidx=0;		
 		for (String csvColName : getColsNames()) {
 			colidx++;
+			
+			String dbFieldName = this.getFieldsMapping().get(csvColName);
+			// colName is present in FieldsMapping if and only if
+			// user selected it as "to be imported" so if it is not present we ignore it
+			if (dbFieldName==null) { continue; }
+			
 			String curColContents=cols[colidx-1];
 			
 			// ignore empty fields. When used fields need some mandatory data,
@@ -103,25 +122,28 @@ public class CsvDbItemsParser extends ADbItemsParser<String> {
 			if (curColContents.length()==0) { continue; }
 			
 			// clear existing cell contents if forced by user
-			if (curColContents.equals(MX_CLEAR_CELL_STR)) {
-				curColContents="";
+			for (String clearCellMarker : MX_CLEAR_CELL_STR) {
+				if (curColContents.equals(clearCellMarker)) {
+					curColContents="";
+				}
 			}
-			
+						
 			// restore new lines
-			curColContents=curColContents.replaceAll(MX_SEP_ESCAPE_STR, this.getCsvSeparator());
-			curColContents=curColContents.replaceAll(MX_CR_ESCAPE_STR, "\n");
-			curColContents=curColContents.replaceAll(MX_QUOTE_ESCAPE_STR, "\"");
+			for (String crMarker : MX_CR_ESCAPE_STR) {
+				curColContents=curColContents.replace(crMarker, "\n");
+			}			
+			curColContents=curColContents.replace(MX_QUOTE_ESCAPE_STR, "\"");
+			curColContents=curColContents.replace(MX_SEP_ESCAPE_STR, this.getCsvSeparator());
+			/*
 			curColContents=curColContents.replaceAll(MX_GT_ESCAPE_STR, ">");
 			curColContents=curColContents.replaceAll(MX_LT_ESCAPE_STR, "<");
+			curColContents=curColContents.replaceAll(MX_DOLLARS_ESCAPE_STR, "\\$");
+			curColContents=curColContents.replaceAll(MX_ANTISLASH_ESCAPE_STR, "\\\\");
+			*/
 			
-			String dbFieldName = this.getFieldsMapping().get(csvColName);
-			// colName is present in FieldsMapping if and only if
-			// user selected it as "to be imported" so if it is not present we ignore it
-			if (dbFieldName!=null) {
-				PARSING_FIELD_TYPE fieldType = this.getFieldsParsingTypes().get(dbFieldName);
-				extractItemStrData(result,dbFieldName,curColContents,fieldType);
-			}
-
+			PARSING_FIELD_TYPE fieldType = this.getFieldsParsingTypes().get(dbFieldName);
+			extractItemStrData(result,dbFieldName,curColContents,fieldType);
+		
 		}
 		
 		return result;

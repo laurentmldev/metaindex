@@ -106,7 +106,7 @@ public class GoogleMailSender implements IEmailSender {
         Multipart multipart = new MimeMultipart( "alternative" );
 /*
         MimeBodyPart textPart = new MimeBodyPart();
-        String textMessage=htmlMessage.replaceAll("<br/>","\n");
+        String textMessage=htmlMessage.replace("<br/>","\n");
         textPart.setText(textMessage, "utf-8" );
 */
         MimeBodyPart htmlPart = new MimeBodyPart();

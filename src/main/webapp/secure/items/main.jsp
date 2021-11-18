@@ -134,8 +134,8 @@
   
   <script type="text/javascript">
   // called (if defined) from commons/html/head-onload.jsp
-  	function local_onload() {	  	
-		enableKibanaFrame();
+  	function local_onload() {
+  		enableKibanaFrame();
 		MxGuiDetails.showHistoNavArrows();
 		enableAutoFeedOnScrollDown();
   	}
