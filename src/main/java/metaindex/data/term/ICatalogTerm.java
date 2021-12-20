@@ -32,6 +32,7 @@ public interface ICatalogTerm extends IIdentifiable<Integer>{
 	// /!\ this list shall be coherent with : 
 	// - SQL field 'catalog_terms.datatype' enum definition.
 	// - webapp/secure/commons/js/mx_helpers.jsp
+	// - create_elastic_fields.sh tool script
 	public enum TERM_DATATYPE { UNKNOWN,
 								TINY_TEXT, 
 								LONG_TEXT, 
@@ -43,9 +44,7 @@ public interface ICatalogTerm extends IIdentifiable<Integer>{
 								AUDIO_URL, 
 								VIDEO_URL,
 								GEO_POINT,
-								LINK
-								// update also SQL table enum if this list is changed
-								// and webapp/secure/commons/js/mx_helpers.jsp, and webapp/secure/catalogs/details.jsp
+								LINK								
 							  }
 	
 	// if changing that, look for occurrences in javascript too,

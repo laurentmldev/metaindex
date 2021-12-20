@@ -22,7 +22,9 @@ public interface ICatalogsManager extends ILoadableFromDb {
 	ICatalog getCatalog(Integer catalogId);
 	ICatalog getCatalog(String catalogName);
 	List<ICatalog> getCatalogsList();
-	List<ICatalog> getOwnedCatalogsList(Integer ownerUserId);
+	List<ICatalog> getOwnedCatalogsList(Integer ownerUserId);	
 	void removeCatalog(Integer catalogId);
-	public void loadFromDb(String catalogName) throws DataProcessException;
+	void loadFromDb(String catalogName) throws DataProcessException;
+	/** (re)load catalogs data owned by given user */
+	void loadFromDb(Integer ownUserId) throws DataProcessException;
 }

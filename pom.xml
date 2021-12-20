@@ -250,6 +250,11 @@
 		<artifactId>poi-ooxml</artifactId>
 		<version>4.1.2</version>
 	</dependency>
+	<dependency>
+		<groupId>org.odftoolkit</groupId>
+		<artifactId>odfdom-java</artifactId>
+		<version>0.10.0</version>
+	</dependency>
   </dependencies>
     	<properties>
     		<!-- 

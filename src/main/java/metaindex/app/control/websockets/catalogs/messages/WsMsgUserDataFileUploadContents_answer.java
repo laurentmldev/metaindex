@@ -14,11 +14,13 @@ public class WsMsgUserDataFileUploadContents_answer implements IWsMsg_answer {
 	
 	private Integer _processingTaskId = 0;
 	private Integer _clientFileId = 0;
+	private Integer _clientRequestId = 0;
 	private Float _progressPourcentage=0.0F;
 	
-	public WsMsgUserDataFileUploadContents_answer(Integer clientFileId, Integer processingTaskId) {
+	public WsMsgUserDataFileUploadContents_answer(Integer clientFileId, Integer clientRequestId, Integer processingTaskId) {
 		setClientFileId(clientFileId);
 		setProcessingTaskId(processingTaskId);
+		setClientRequestId(clientRequestId);
 	}
 	
 	public Integer getClientFileId() {
@@ -39,6 +41,12 @@ public class WsMsgUserDataFileUploadContents_answer implements IWsMsg_answer {
 	}
 	public void setProcessingTaskId(Integer _processingTaskId) {
 		this._processingTaskId = _processingTaskId;
+	}
+	public Integer getClientRequestId() {
+		return _clientRequestId;
+	}
+	public void setClientRequestId(Integer _clientRequestId) {
+		this._clientRequestId = _clientRequestId;
 	}
 
 	

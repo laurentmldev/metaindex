@@ -51,7 +51,7 @@ public class BeanToolbox extends AMetaindexBean {
 		private List<String> filesName=new ArrayList<>();
 		
 		private String unescapeHtml(String txt) {
-			return txt.replaceAll("&lt;","<").replaceAll("&gt;",">");
+			return txt.replace("&lt;","<").replace("&gt;",">");
 		}
 		public String getName() { return unescapeHtml(name); }
 		public void setName(String name) { this.name = name; }

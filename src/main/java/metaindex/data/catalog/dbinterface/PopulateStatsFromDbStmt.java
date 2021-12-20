@@ -45,7 +45,7 @@ class PopulateStatsFromDbStmt extends ESPopulateStmt<ICatalog>   {
 		String reqStr = "/";
 		for (ICatalog c : _data) {
 			if (reqStr.length()>1) { reqStr+=","; }
-			reqStr+=c.getName().replaceAll(" ", "%20");
+			reqStr+=c.getName().replace(" ", "%20");
 		}
 		reqStr+="/_stats/docs";
 		

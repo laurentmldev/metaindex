@@ -93,7 +93,7 @@ public class ESBulkProcess extends AProcessingTask implements IDbItemsProcessor 
 	    	_bulkProcessLock.release();
 	    	
 	    	//log.error("	### bulk response "+_process.getProcessedNbData()+"/"+_process.getTargetNbData());
-	    	if (_process.getProcessedNbData()-_process._prevIndexedDataProgress>1000) {
+	    	if (_process.getProcessedNbData()-_process._prevIndexedDataProgress>Math.floor(_process.getTargetNbData()/50)) {
 	    		getActiveUser().sendGuiProgressMessage(
 	    			_process.getId(),
 	    			getActiveUser().getText("Items.serverside.bulkprocess.progress", _process.getName()),

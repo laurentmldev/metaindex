@@ -87,19 +87,7 @@ function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeF
 				}
 				matchingChoiceNode=choiceNode;
 			}
-			
-			else if (datatypeStr=="DATE" && isExcelFile==true) { 
-				let basicFunc=choiceNode.onclick;
-				choiceNode.onclick=function() {
-					clearNodeChildren(commentZone);
-					basicFunc();
-					//alert('Using Dates in Excel file alert');
-					let warningExcelDateNode=document.createElement("div");
-					warningExcelDateNode.innerHTML="<s:text name="Items.uploadItems.warningDatesWithExcel" />";					
-					commentZone.append(warningExcelDateNode);
-				}
-			}
-				
+							
 		}
 	}
 	
@@ -265,10 +253,11 @@ function _showCsvPrevisu(CSVrows,fileNameTxt,isExcelFile,fileHandle) {
 	previsuNodeFooter.style.display='block';
 	let uploadBtn=previsuNodeFooter.querySelector('._uploadBtn_');
 	uploadBtn.onclick=function() {
-		footer_showAlert(INFO,"<s:text name="global.pleasewait"/>",null,5000);		
-		ws_handlers_requestUploadCsvFile(nbEntries,selectedCsvColsDef,fileHandle); 
+		footer_showAlert(INFO,"<s:text name="global.pleasewait"/>",null,5000);			
+		ws_handlers_requestUploadCsvFile(nbEntries,selectedCsvColsDef,fileHandle, CSVrows /*only used for .ods files*/); 
 		ws_handlers_refreshItemsGui();
 		MxGuiHeader.hideInfoModal();		
+
 	}
 	let uploadDriveBtn=previsuNodeFooter.querySelector('._uploadDriveBtn_');
 	uploadDriveBtn.onclick=function() {
@@ -276,10 +265,13 @@ function _showCsvPrevisu(CSVrows,fileNameTxt,isExcelFile,fileHandle) {
 		
 		let onUploadSuccessCallback=function() {}
 		let onUploadFailureCallback=function(errorMsg) { footer_showAlert(ERROR, errorMsg); }
+		
+		// if file is .ods, then send CSV rows (no convincing .ods read lib (TBC)) 
 		ws_handlers_uploadFiles(MxGuiHeader.getCurCatalogDescr(),fileHandle.files,
 										onUploadSuccessCallback,onUploadFailureCallback);		
 		
-		MxGuiHeader.hideInfoModal();		
+		MxGuiHeader.hideInfoModal();
+		
 	}
 	
 	// show
@@ -372,7 +364,7 @@ MxGuiLeftBar.handleDataFileToUpload=function(fileHandle) {
 		return;
 	}
 	
-	// if only one file, if it is a csv of calc file, use to to upload documents
+	// if only one file, if it is a csv or calc file, use to to upload documents
 	// otherwise consider it as data files
 	let fileName = fileHandle.files[0].name;
 	var csvRegex= /(\.csv)$/;

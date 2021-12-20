@@ -373,7 +373,7 @@ public class WsControllerCatalog extends AMxWSController {
 			    	try {   
 			    		c.acquireLock();
 			    		CatalogVocabularySet vocClone=new CatalogVocabularySet(voc);
-			    		vocClone.setName(StrTools.Capitalize(c.getName().replaceAll("_", " ")));		    		
+			    		vocClone.setName(StrTools.Capitalize(c.getName().replace("_", " ")));		    		
 				    	Globals.Get().getDatabasesMgr().getCatalogVocDbInterface().getWriteIntoDbStmt(vocClone).execute();
 				    	c.releaseLock();
 			    	} catch (Exception e) 

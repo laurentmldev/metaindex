@@ -97,7 +97,15 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
   				_userProfileData.setHttpSession(session);
 				Globals.Get().getUsersMgr().registerUser(_userProfileData);
 				
-				// load all user data from DB
+				// (re)load all user data from DB
+				// this seems acceptable since user stays quite long on the same page,
+				// (several operations are done via websockets, from a single page)
+				//
+				// That might start to be quite heavy if somesay amount of users and catalogs
+				// increase significantly ...
+				//
+				// if removed, then an explicit loadFullUserData() might be helpful at login time at least,
+				// so that user can see the modifs once a backup restore has been performed in the background.
 				getCurrentUserProfile().loadFullUserData();
   				
 				

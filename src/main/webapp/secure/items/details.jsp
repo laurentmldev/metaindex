@@ -78,7 +78,8 @@
 	 }
 	 return basicPerspective;
  }
- function _doAddNewField(docId,fieldName) {
+ function _doAddNewField(docId,fieldName,fieldValue) {
+	 if (fieldValue==null) { fieldValue=""; }
 	 let successFunc=function() {
 			
 			footer_showAlert(SUCCESS, "<s:text name="Items.fieldAddPleaseWait" />",null,1500);
@@ -94,7 +95,7 @@
 		};
 		let errorFunc=function(msg) { footer_showAlert(ERROR, "<s:text name="Items.unableToAddField" /> : "+msg); };
 		MxApi.requestFieldValueUpdate({
-				"id":docId,"fieldName":fieldName,"fieldValue":"",
+				"id":docId,"fieldName":fieldName,"fieldValue":fieldValue,
 				"successCallback":successFunc,"errorCallback":errorFunc});
  }
  function _buildAddFieldList(insertspot,itemDesc) {
@@ -111,7 +112,7 @@
 			let onSuccessCallback=function(formNode,termName,termDatatype) {
 				let onSuccessCallback2=function(catalogDescr) { 
 					handleMxWsCatalogs(catalogDescr);
-					_doAddNewField(docId,termName);
+					_doAddNewField(docId,termName,mx_helpers_getDefaultValue(termDatatype));
 				}
 				footer_showAlert(SUCCESS, "<s:text name="Catalogs.field.termCreated" />");
 				MxApi.requestGetCatalogs({'catalogId':MxGuiDetails.getCurCatalogDescription().id, 
@@ -138,7 +139,7 @@
 			addFieldChoice.classList.add("mx-popup-choice-list");
 			addFieldChoice.innerHTML=mx_helpers_getTermName(termDesc, MxGuiDetails.getCurCatalogDescription());
 			addFieldChoice.onclick=function(event) {
-				_doAddNewField(docId,curFieldName);
+				_doAddNewField(docId,curFieldName,mx_helpers_getDefaultValue(termDesc.datatype));
 			}
 			insertspot.append(addFieldChoice);					
 		}

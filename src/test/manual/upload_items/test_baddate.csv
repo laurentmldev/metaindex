@@ -1,0 +1,4 @@
+#_id;name;birthdate;nbguitars;size;someurl;someimage;bro;enum_single;enum_multi;type;young_bros
+alpha;Roberto;Bad Date blabla;2;34;;;beta;blue;;type1;
+beta;Roberta;11/12/1913;2;34;;;;green;;type1;
+;Some Other Person;11/12/1996;6;39.4563;;;;green;;type2;

@@ -126,24 +126,24 @@ class UpdateFieldValueIntoDbStmt extends ESWriteStmt<IDbItem>   {
 		} catch (ElasticsearchException e) {
 			e.printStackTrace();
 			if (e.status() == RestStatus.NOT_FOUND) {
-				throw new DataProcessException("document "+_docId+" does not exist (anymore?) : "+e.getMessage(),e);
+				throw new DataProcessException("document '"+_docId+"' does not exist (anymore?) : "+e.getMessage(),e);
 		    }
 			else if (e.status() == RestStatus.CONFLICT) {
-				throw new DataProcessException("version conflict while updating document "+_docId+" : "+e.getMessage(),e);
+				throw new DataProcessException("version conflict while updating document '"+_docId+"' : "+e.getMessage(),e);
 		    } 
 			else if (e.status() == RestStatus.BAD_REQUEST) {
-				throw new DataProcessException("bad request while updating document "+_docId+" : "+e.getMessage(),e);
+				throw new DataProcessException("bad request while updating document '"+_docId+"' : "+e.getMessage(),e);
 			}
 			else if (e.status() == RestStatus.FORBIDDEN
 					|| e.status() == RestStatus.UNAUTHORIZED) {
-				throw new DataProcessException("access-rights refused while updating document "+_docId+" : "+e.getMessage(),e);
+				throw new DataProcessException("access-rights refused while updating document '"+_docId+"' : "+e.getMessage(),e);
 			}
 			
-			throw new DataProcessException("an error occured while updating document "+_docId+" : "+e.getMessage(), e);
+			throw new DataProcessException("an error occured while updating document '"+_docId+"' : "+e.getMessage(), e);
 			
 		}	catch (IOException e) {
 			e.printStackTrace();
-			throw new DataProcessException("I/O error while updating document "+_docId+" : "+e.getMessage(), e);
+			throw new DataProcessException("I/O error while updating document '"+_docId+"' : "+e.getMessage(), e);
 		}			
 	}					
 };

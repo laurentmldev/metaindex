@@ -78,7 +78,7 @@ public class CsvDumper<T extends IFieldValueMapObject> extends AStreamHandler<T>
 				String valStr=val.toString();
 				
 				// when value is multi-line, replace carriage return by a special string 
-				valStr=valStr.replace("\n",CsvDbItemsParser.MX_CR_ESCAPE_STR);
+				valStr=valStr.replace("\n",CsvDbItemsParser.MX_CR_ESCAPE_STR[0]);
 				
 				if (valStr.contains(this.getSeparator())) { 
 					if (valStr.contains(this.getStrMarker())) {

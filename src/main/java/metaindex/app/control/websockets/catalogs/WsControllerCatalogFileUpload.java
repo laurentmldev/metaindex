@@ -173,11 +173,34 @@ public class WsControllerCatalogFileUpload extends AMxWSController {
 	    	//log.error("### expecting "+requestMsg.getTotalNbEntries()+" lines");
     		
 
-    		HandleItemsUploadProcess procTask=new HandleItemsUploadProcess(
+    		HandleItemsUploadProcess procTask;
+    		
+    		try {
+    			procTask=new HandleItemsUploadProcess(    		
     					user,  
 						user.getText("Items.serverside.uploadFile.progress",
 									new Integer(requestMsg.getFileDescriptions().size()).toString()),
 						requestMsg.getFileDescriptions());
+    		} catch (DataProcessException e) 
+    		{
+    			WsMsgUserDataFileUpload_answer answer = new WsMsgUserDataFileUpload_answer(
+        				0,
+        				requestMsg.getRequestId());
+    			
+    			String msgStr = user.getText("Items.serverside.uploadItems.unsupportedFormat",
+	    				requestMsg.getFileDescriptions().get(0).getName());
+	    		
+	    		answer.setIsSuccess(false);
+	    		answer.setRejectMessage(msgStr);
+				
+				this.messageSender.convertAndSendToUser(
+	    				headerAccessor.getUser().getName(),
+	    				"/queue/upload_items_response", 
+	    				answer);
+				
+				return;
+    			
+    		}
     		// progress messages will be already sent by the "data injection into db" process
     		// so we shall not send progress messages by the "CSV parse input" process
     		// For Excel files, we first need to upload file so both progress info are expected
@@ -394,7 +417,7 @@ public class WsControllerCatalogFileUpload extends AMxWSController {
 			log.error("Unable to process upload_filter_file_request from '"+headerAccessor.getUser().getName()+"' : "+e);
 			e.printStackTrace();
 			
-		}   
+		}
     	
     	
     }
@@ -413,7 +436,7 @@ public class WsControllerCatalogFileUpload extends AMxWSController {
     	Integer taskId = requestMsg.getProcessingTaskId();
     	
     	WsMsgUserDataFileUploadContents_answer answer = new WsMsgUserDataFileUploadContents_answer(
-				requestMsg.getClientFileId(),requestMsg.getProcessingTaskId());
+				requestMsg.getClientFileId(),requestMsg.getClientRequestId(),requestMsg.getProcessingTaskId());
 		
     	
 	    try {

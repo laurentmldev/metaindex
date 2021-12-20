@@ -241,6 +241,14 @@ function mx_helpers_isDatatypeMultiEnumOk(datatype) {
 }
 
 
+function mx_helpers_getDefaultValue(dataType) {
+	if (dataType=="DATE") { return "1970-01-01"; }
+	if (dataType=="GEO_POINT") { return "0,0"; }
+	if (dataType=="INTEGER") { return "0"; }
+	if (dataType=="FLOAT") { return "0.0"; }
+	return "";	
+}
+
 function mx_helpers_getTermName(termDesc, catalogDesc) {
 	let termName=termDesc.name;
 	let langName=catalogDesc.vocabulary.guiLanguageShortName;

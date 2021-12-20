@@ -77,7 +77,7 @@ class CreateFieldIntoEsDbStmt extends ESWriteStmt<ICatalogTerm>   {
             // date
             else if (ICatalogTerm.getRawDatatype(t.getDatatype())==RAW_DATATYPE.Tdate) {
             	
-    			builder.field("ignore_malformed", "true");
+    			builder.field("ignore_malformed", "false");
     			builder.field("null_value", "1970/01/01");
     			
     			builder.field("format",  

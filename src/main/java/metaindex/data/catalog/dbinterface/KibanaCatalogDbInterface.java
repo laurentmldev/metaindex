@@ -164,6 +164,7 @@ public class KibanaCatalogDbInterface
 		featuresListStr.add("dashboard");
 		featuresListStr.add("discover");
 		featuresListStr.add("visualize");
+		featuresListStr.add("maps");
 		
 		Boolean rst1 = _kibanaConnector.createKibanaRole(Globals.GetMxProperty("mx.elk.user"),
 												Globals.GetMxProperty("mx.elk.passwd"),

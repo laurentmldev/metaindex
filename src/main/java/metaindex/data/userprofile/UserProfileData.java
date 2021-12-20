@@ -206,7 +206,7 @@ public class UserProfileData implements IUserProfileData
 		}
 		
 		if (!Globals.Get().getActiveUsersList().contains(this)) { Globals.Get().getActiveUsersList().add(this); }
- 		
+			 		
 	}
 	
 	@Override
@@ -626,7 +626,7 @@ public class UserProfileData implements IUserProfileData
 	}
 
 	// ----- helpers about user profile
-	public void loadFullUserData() throws DataProcessException {
+	public void loadFullUserData() throws DataProcessException {		
 		
 		// load user data from DB
 		Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface()
@@ -651,6 +651,9 @@ public class UserProfileData implements IUserProfileData
 		// update Kibana/ELK rights
 		Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface()
 				.createOrUpdateCatalogStatisticsUser(this);
+		
+		// refresh catalogs list (might have changed due to some snapshot restore/backup for example)
+		Globals.Get().getCatalogsMgr().loadFromDb(getId());
     	
 		// refresh and propagate data where needed
 		doPeriodicProcess();

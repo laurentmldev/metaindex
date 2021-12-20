@@ -3,37 +3,68 @@
 v2.2.5:
 -------
 
+reload catalogs list for a given user from database when logging in
+
+fields mapping elk: type text.keyword, check "ignore_above":"256" 
+
+#138 backup/restore contents of a given catalog (def+docs+data):		
+	backup/restore a given catalog /user / global from command line
+
+	- what: contents|config|files
+	- how: update|purge
+	
+	- files and contents
+		- update: simple upload
+		- purge: clear catalog + upload
+		
+	- config:
+		- if catalog does not exist in ELK, it shall be created
+		- if corresponding space does not exist in Kibana, it shall be created
+		- update: simple replace SQL + update Kibana space contents
+		- purge: delete catalog and Kibana space and recreate them
+	
+
+create account / go back --> still send an email !
+
+add a "waiting sign" icon while search is processing
+
 update dts2csv.py
 
-Apache ODFToolkit
+Data import:
+	Apache ODFToolkit
+	when importing Excel, remove warning about dates that shall have type 'text' in the Excel spreadsheet
+	__MX_ESCAPED_SEPARATOR__ not properly decoded
+	CSV: support ',' separated
+		+ remove use of MX_SEP_ESCAPE_STR
+		+ changes on special chars (&quote&, &cr&, &sep&)
+		
+	LONG_TEXT: loading full text not done (WS sending not occuring ?): still default empty screen msg displayed 'please wait while loading full contents ...' 
+	
+	loading dts perseids latinLit resources: locked WS com
+	[ERROR] 2021-10-07 21:32:06.930 [chargement de 677 &eacute;l&eacute;ments] Catalog - Aborting CSV upload operation due to server error
+	java.lang.IndexOutOfBoundsException: No group 2
+		at java.base/java.util.regex.Matcher.start(Matcher.java:483)
+		at java.base/java.util.regex.Matcher.appendExpandedReplacement(Matcher.java:1091)
+		at java.base/java.util.regex.Matcher.appendReplacement(Matcher.java:998)
+		at java.base/java.util.regex.Matcher.replaceAll(Matcher.java:1182)
+		at java.base/java.lang.String.replaceAll(String.java:2142)
+		at toolbox.utils.parsers.CsvDbItemsParser.toMap(ACsvParser.java:136)
+		at toolbox.utils.parsers.CsvDbItemsParser.parse(ACsvParser.java:119)
+		at toolbox.utils.parsers.CsvDbItemsParser.parseAll(ACsvParser.java:83)
+		at metaindex.app.control.websockets.items.WsESBulkProcess.uncompressAndPostPendingMessages(WsESBulkProcess.java:89)
+		at metaindex.app.control.websockets.items.WsESBulkProcess.run(WsESBulkProcess.java:121)
+		at toolbox.utils.AProcessingTask$RunnerThread.run(AProcessingTask.java:40)
 
-when importing Excel, remove warning about dates that shall have type 'text' in the Excel spreadsheet
+	#150  Uploading data with complex fields names seems to lead to failed WS communication #150 	
+	    - need to make server more robust to such anomaly
+	    - prevent user to make such mistake
+	    - generate a simple field name and add corresponding vocabulary entry?
 
 Kibana fails when using hebrew alphabet
 
 cannot edit PAGE_URL (or INT ...) if empty (nothing happens when clicking on it)
 	- when a long text is in the doc ?
 
-CSV: support ',' separated
-	+ remove use of MX_SEP_ESCAPE_STR
-	+ changes on special chars (&quote&, &cr&, &sep&)
-	
-LONG_TEXT: loading full text not done (WS sending not occuring ?): still default empty screen msg displayed 'please wait while loading full contents ...' 
-
-loading dts perseids latinLit resources: locked WS com
-[ERROR] 2021-10-07 21:32:06.930 [chargement de 677 &eacute;l&eacute;ments] Catalog - Aborting CSV upload operation due to server error
-java.lang.IndexOutOfBoundsException: No group 2
-	at java.base/java.util.regex.Matcher.start(Matcher.java:483)
-	at java.base/java.util.regex.Matcher.appendExpandedReplacement(Matcher.java:1091)
-	at java.base/java.util.regex.Matcher.appendReplacement(Matcher.java:998)
-	at java.base/java.util.regex.Matcher.replaceAll(Matcher.java:1182)
-	at java.base/java.lang.String.replaceAll(String.java:2142)
-	at toolbox.utils.parsers.CsvDbItemsParser.toMap(ACsvParser.java:136)
-	at toolbox.utils.parsers.CsvDbItemsParser.parse(ACsvParser.java:119)
-	at toolbox.utils.parsers.CsvDbItemsParser.parseAll(ACsvParser.java:83)
-	at metaindex.app.control.websockets.items.WsESBulkProcess.uncompressAndPostPendingMessages(WsESBulkProcess.java:89)
-	at metaindex.app.control.websockets.items.WsESBulkProcess.run(WsESBulkProcess.java:121)
-	at toolbox.utils.AProcessingTask$RunnerThread.run(AProcessingTask.java:40)
 
 
 check compliance of currently deployec mysql MX db version
@@ -44,13 +75,7 @@ CPU usage on server increases ... ???
 
 [https-jsse-nio-20000-exec-2] WARN org.springframework.web.servlet.PageNotFound - No mapping for POST /webapp/Error401
 [https-jsse-nio-20000-exec-2] WARN org.springframework.web.servlet.PageNotFound - No mapping for POST /webapp/ErrorAuth
-
-#150  Uploading data with complex fields names seems to lead to failed WS communication #150 	
-    - need to make server more robust to such anomaly
-    - prevent user to make such mistake
-    - generate a simple field name and add corresponding vocabulary entry?
 	
-
 in preference menu, lockers shall not be displayed (not used at all)
 
 count how much toolbox page is reached
@@ -149,11 +174,7 @@ catalog acquire lock: automatically unlock after X hours ?
 
 #105 only catalog admin shall be allowed to create a new field ?
 
-#138 backup/restore contents of a given catalog (def+docs+data):
-		
-	backup/restore a given catalog /user / global
-		- from command line
-		- from admin user
+
 
 #137 include ELK disk space for quota calculation?
 	GET /_cat/indices?v

@@ -214,6 +214,7 @@ function ws_handlers_requestItemLongFieldValue(itemId,fieldName,handleFullValueC
 // items search requested explicitly by user
 function ws_handlers_requestItemsSearch(query,selectedFiltersNames,sortByFieldName,reversedSortOrder) {
 	
+	
 	_fromIdx=0;			 
 	 MxApi.requestCatalogItems({"fromIdx":_fromIdx,
 		 						"size":_size,
@@ -277,6 +278,7 @@ function ws_handlers_requestUploadCsvFile(nbEntries,fieldsMapping,fileHandle) {
 		MxApi.requestGetCatalogs({'catalogId':<s:property value="currentCatalog.id"/>, 'successCallback':handleMxWsCatalogs});
 	}
 	let errorCallback=function(msg) { footer_showAlert(ERROR, msg); }
+	
 	let dataObj={
 		'catalogId':<s:property value="currentCatalog.id"/>,
 		'filesToUpload':fileHandle.files,

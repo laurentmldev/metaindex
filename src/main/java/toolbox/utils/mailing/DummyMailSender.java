@@ -34,7 +34,7 @@ public class DummyMailSender implements IEmailSender {
     			+"\n\tCc:"+ccEmail
     			+"\n\tCci:"+cciEmail
     			+"\n\tTitle:"+title
-    			+"\n\tBody"+htmlMessage.replaceAll("<br>", "\n").replaceAll("<br/>", "\n")
+    			+"\n\tBody"+htmlMessage.replace("<br>", "\n").replace("<br/>", "\n")
     			+"\n###########################"
 				);
         

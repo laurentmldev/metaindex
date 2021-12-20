@@ -93,6 +93,18 @@ public class CatalogsManager implements ICatalogsManager {
 			}
 		}
 	}
+
+	@Override 
+	public void loadFromDb(Integer ownUserId) throws DataProcessException {
+		List<ICatalog> loadedCatalogs = new ArrayList<>();						
+		Globals.Get().getDatabasesMgr().getCatalogDefDbInterface().getPopulateFromDefDbStmt(loadedCatalogs).execute();
+		for (ICatalog c : loadedCatalogs) { 
+			if (c.getOwnerId().equals(ownUserId)) { 
+				loadFromDb(c); 				
+			}
+		}
+	}
+	
 	@Override
 	public void loadFromDb() throws DataProcessException {
 		

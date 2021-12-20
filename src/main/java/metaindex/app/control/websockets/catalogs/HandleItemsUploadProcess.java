@@ -21,7 +21,7 @@ import toolbox.utils.filetools.IBytesToDbWriter;
 import toolbox.utils.filetools.FileDescriptor;
 import toolbox.utils.filetools.IBytesWriter;
 import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
-import metaindex.app.control.websockets.catalogs.SpreadsheetBytesToDbWriter.CALC_TYPE;
+import metaindex.app.control.websockets.catalogs.ExcelSpreadsheetBytesToDbWriter.CALC_TYPE;
 
 
 import java.util.List;
@@ -51,12 +51,11 @@ public class HandleItemsUploadProcess extends HandleFileUploadProcess   {
 		if (isCsvFile(path)) {
 			_dbItemsOutstream=new CsvBytesToDbWriter(path,byteSize,parentProcessingTask);
 		} else if (path.endsWith(".xls")) {
-			_dbItemsOutstream=new SpreadsheetBytesToDbWriter(CALC_TYPE.XLS,byteSize,parentProcessingTask,0);
+			_dbItemsOutstream=new ExcelSpreadsheetBytesToDbWriter(CALC_TYPE.XLS,byteSize,parentProcessingTask,0);
 		} else if (path.endsWith(".xlsx") ) {
-			_dbItemsOutstream=new SpreadsheetBytesToDbWriter(CALC_TYPE.XLSX,byteSize,parentProcessingTask,0);
+			_dbItemsOutstream=new ExcelSpreadsheetBytesToDbWriter(CALC_TYPE.XLSX,byteSize,parentProcessingTask,0);
 		} else if (path.endsWith(".ods")) {
-			_dbItemsOutstream=new SpreadsheetBytesToDbWriter(CALC_TYPE.ODF,byteSize,parentProcessingTask,0);
-			throw new DataProcessException("Unsupported file format");
+			_dbItemsOutstream=new OdfSpreadsheetBytesToDbWriter(CALC_TYPE.ODF,byteSize,parentProcessingTask,0);
 		} else {
 			throw new DataProcessException("Unknown file format to import items ("+path+"). Allowed extensions are csv|xls|xlsx|ods");
 		}
