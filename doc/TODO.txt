@@ -7,6 +7,8 @@ reload catalogs list for a given user from database when logging in
 
 fields mapping elk: type text.keyword, check "ignore_above":"256" 
 
+update dts2csv.py
+
 #138 backup/restore contents of a given catalog (def+docs+data):		
 	backup/restore a given catalog /user / global from command line
 
