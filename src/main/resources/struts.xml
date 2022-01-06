@@ -6,8 +6,29 @@
 	<constant name="struts.devMode" value="true" />
 	<constant name="struts.action.excludePattern" value="/wsmx.*,/public/commons/.*,/public/toolbox/.*,/public/marketplace/.*,/logoutprocess,/loginprocess,/userdata/catalogs/.*,/secure/mxtmp/.*" /> 
  	<constant name="struts.multipart.maxSize" value="2000000" />
-      
-	<package name="metaindex" extends="struts-default">  
+    
+    
+    <!--
+    <constant name="struts.action.extension" value="xhtml,,xml,json,action"/>
+    
+    <constant name="struts.mapper.class" value="org.apache.struts2.dispatcher.mapper.PrefixBasedActionMapper" />
+  	<constant name="struts.mapper.prefixMapping" value="/rest:rest,:struts"/>
+  	<constant name="struts.actionProxyFactory" value="prefix"/>
+  	
+  	<constant name="struts.convention.action.suffix" value="Controller"/>
+	<constant name="struts.convention.action.mapAllMatches" value="true"/>
+	<constant name="struts.convention.default.parent.package" value="rest-default"/>
+	<constant name="struts.convention.package.locators" value="rest"/>
+	
+	
+	-->	  	
+  	
+  	 <!--package name="metaindex-rest" extends="rest-default">
+        <global-allowed-methods>index,show,create,update,destroy,deleteConfirm,edit,editNew</global-allowed-methods>
+    </package-->
+    
+    <package name="metaindex" extends="struts-default">
+	  
 	
 	<global-results>
      <result name="BeanProcess_AUTHERROR">/public/commons/errors/ProcessErrorAuth.jsp</result>

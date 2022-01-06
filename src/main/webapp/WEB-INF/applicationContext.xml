@@ -17,7 +17,7 @@
   http://www.springframework.org/schema/mvc/spring-mvc.xsd
    ">
       
-    <!-- Annotation-based declaration of websockets -->  
+    <!-- Annotation-based declaration of websockets and REST API -->  
     <context:component-scan base-package="metaindex.app.control.websockets"/>
       
  	<mvc:resources mapping="/media/**" location="/media/" />

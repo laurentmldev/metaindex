@@ -3,7 +3,10 @@
 v2.2.5:
 -------
 
-reload catalogs list for a given user from database when logging in
+rest-api:
+	[ERROR] 2021-12-29 19:43:34.153 [main] DefaultClassFinder - Unable to read class [metaindex.app.control.rest.messages.Greeting]
+	java.lang.IncompatibleClassChangeError: class org.apache.struts2.convention.DefaultClassFinder$InfoBuildingVisitor has interface org.objectweb.asm.ClassVisitor as super class
+	asm-5.0.3.jar
 
 fields mapping elk: type text.keyword, check "ignore_above":"256" 
 
@@ -28,7 +31,7 @@ update dts2csv.py
 
 create account / go back --> still send an email !
 
-add a "waiting sign" icon while search is processing
+add a "waiting sign" icon while search is processing or while progress bar is at 0%
 
 update dts2csv.py
 
@@ -69,7 +72,7 @@ cannot edit PAGE_URL (or INT ...) if empty (nothing happens when clicking on it)
 
 
 
-check compliance of currently deployec mysql MX db version
+add a check compliance of currently deployed mysql MX db version?
 
 color to cards based on enum field values ?
  
@@ -267,6 +270,7 @@ Done:
 -----
 v2.2.5:
 XLS import : "Choose Sheet from your file" : faire la traduction en français
+reload catalogs list for a given user from database when logging in
 
 v2.2.3 and 2.2.4: fixing download paths in prod env
 v2.2.2: fixed toolbox download path in prod env

@@ -46,15 +46,27 @@
         </Console>
     </Appenders>
     <Loggers>        
-        <Logger name="org.springframework.context" level="info" additivity="false" >
+        <Logger name="org.springframework.context" level="info" additivity="true" >
+        <appender-ref ref="console" />
         	<appender-ref ref="metaindex-server-logger" /> 
         </Logger>
-        <Logger name="org.springframework.web" level="info" additivity="false">
+        <Logger name="org.springframework.web" level="info" additivity="true">
+        <appender-ref ref="console" />
         	<appender-ref ref="metaindex-server-logger" /> 
         </Logger>
-        <Logger name="org.springframework.messaging" level="info" additivity="false">
-        	<appender-ref ref="metaindex-server-logger" /> 
+        <Logger name="org.springframework.messaging" level="info" additivity="true">
+        	 <appender-ref ref="metaindex-server-logger" /> 
         </Logger>
+        <Logger name="org.springframework.web.servlet.DispatcherServlet" level="info" additivity="true">
+        <appender-ref ref="console" />
+        	<appender-ref ref="metaindex-server-logger" />
+        </Logger>
+        
+        <logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" level="info" >
+        <appender-ref ref="console" />
+        </logger> 
+
+
          
         <Logger name="metaindex.app.listeners.MetaindexContextListener" level="info" additivity="false" >
             <appender-ref ref="console" />

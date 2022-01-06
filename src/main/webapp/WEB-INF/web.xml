@@ -97,8 +97,9 @@
  	especially for integration of WebSockets with Spring security suite.
   -->
     <servlet>
-        <servlet-name>ws-spring-worker</servlet-name>
+        <servlet-name>spring-worker</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        
         <init-param>
             <param-name>contextConfigLocation</param-name>
             <param-value></param-value>
@@ -111,10 +112,25 @@
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>ws-spring-worker</servlet-name>
+        <servlet-name>spring-worker</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 
+
+		<!--servlet>
+            <servlet-name>rest</servlet-name>
+            <servlet-class>
+                org.springframework.web.servlet.DispatcherServlet
+            </servlet-class>
+            <load-on-startup>1</load-on-startup>
+        </servlet>
+
+        <servlet-mapping>
+            <servlet-name>rest</servlet-name>
+            <url-pattern>/greeting</url-pattern>
+        </servlet-mapping-->
+        
+    
     <session-config>
         <session-timeout>
             60
