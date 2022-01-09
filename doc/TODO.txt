@@ -3,6 +3,16 @@
 v2.2.5:
 -------
 
+Migration process:
+	- copy mxmysql_dump.sh from new version to 2.2.4 prod
+		docker cp mxwebapp/mxtools/mxmysql/mxmysql_dump.sh mxmysql:/opt/mxtools/mxmysql
+	- install elasticdump
+		sudo npm install -g elasticdump
+	- stop and restart (with docker-compose up) mxelsrc with dev port open
+		ports:
+       	- $ELASTICSEARCH_PORT1:$ELASTICSEARCH_PORT1
+		
+
 rest-api:
 	[ERROR] 2021-12-29 19:43:34.153 [main] DefaultClassFinder - Unable to read class [metaindex.app.control.rest.messages.Greeting]
 	java.lang.IncompatibleClassChangeError: class org.apache.struts2.convention.DefaultClassFinder$InfoBuildingVisitor has interface org.objectweb.asm.ClassVisitor as super class
