@@ -30,6 +30,8 @@ See full version of LICENSE in <https://fsf.org/>
 public class KibanaCatalogDbInterface  
 {
 	private Log log = LogFactory.getLog(KibanaCatalogDbInterface.class);
+	
+	public static String GetIndexPatternName(ICatalog c) { return "mxpattern_"+c.getName(); }
 	public static String GetRORoleName(ICatalog c) { return c.getName()+"_RO"; }
 	public static String GetWRoleName(ICatalog c) { return c.getName()+"_W"; }
 	
@@ -77,8 +79,17 @@ public class KibanaCatalogDbInterface
 		return _kibanaConnector.createKibanaIndexPattern(Globals.GetMxProperty("mx.elk.user"),
 											Globals.GetMxProperty("mx.elk.passwd"),
 											c.getName(),
-											c.getName(), c.getName(), 
+											GetIndexPatternName(c), c.getName(), 
 											c.getTimeFieldRawName());				
+	}
+
+
+	public Boolean setDefaultSpaceIndexPattern(IUserProfileData activeUser,ICatalog c) {
+	
+		return _kibanaConnector.setDefaultSpaceIndexPattern(Globals.GetMxProperty("mx.elk.user"),
+											Globals.GetMxProperty("mx.elk.passwd"),
+											c.getName(),
+											GetIndexPatternName(c));				
 	}
 
 	public Boolean updateStatisticsTimeField(IUserProfileData activeUser,ICatalog c) {
@@ -86,7 +97,7 @@ public class KibanaCatalogDbInterface
 		return _kibanaConnector.setKibanaIndexTimeField(Globals.GetMxProperty("mx.elk.user"),
 											Globals.GetMxProperty("mx.elk.passwd"),
 											c.getName(),
-											c.getName(),/* c.getName(),*/ 
+											GetIndexPatternName(c), 
 											c.getTimeFieldRawName());				
 	}
 	
@@ -138,7 +149,7 @@ public class KibanaCatalogDbInterface
 		Boolean rst = _kibanaConnector.deleteKibanaIndexPattern(Globals.GetMxProperty("mx.elk.user"),
 				Globals.GetMxProperty("mx.elk.passwd"),
 				c.getName(),
-				c.getName());		
+				GetIndexPatternName(c));		
 		
 		if (!rst) { return false; }
 		
@@ -150,7 +161,7 @@ public class KibanaCatalogDbInterface
 		Boolean rst = _kibanaConnector.deleteKibanaIndexPattern(Globals.GetMxProperty("mx.elk.user"),
 				Globals.GetMxProperty("mx.elk.passwd"),
 				c.getName(),
-				c.getName());		
+				GetIndexPatternName(c));		
 		
 		return rst;	
 	}

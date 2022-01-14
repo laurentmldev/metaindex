@@ -1,49 +1,10 @@
 
 
-v2.2.5:
+v2.3.0:
 -------
 
-Migration process:
-	- copy mxmysql_dump.sh from new version to 2.2.4 prod
-		docker cp mxwebapp/mxtools/mxmysql/mxmysql_dump.sh mxmysql:/opt/mxtools/mxmysql
-	- install elasticdump
-		sudo npm install -g elasticdump
-	- stop and restart (with docker-compose up) mxelsrc with dev port open
-		ports:
-       	- $ELASTICSEARCH_PORT1:$ELASTICSEARCH_PORT1
-		
-
-rest-api:
-	[ERROR] 2021-12-29 19:43:34.153 [main] DefaultClassFinder - Unable to read class [metaindex.app.control.rest.messages.Greeting]
-	java.lang.IncompatibleClassChangeError: class org.apache.struts2.convention.DefaultClassFinder$InfoBuildingVisitor has interface org.objectweb.asm.ClassVisitor as super class
-	asm-5.0.3.jar
-
-fields mapping elk: type text.keyword, check "ignore_above":"256" 
-
-update dts2csv.py
-
-#138 backup/restore contents of a given catalog (def+docs+data):		
-	backup/restore a given catalog /user / global from command line
-
-	- what: contents|config|files
-	- how: update|purge
-	
-	- files and contents
-		- update: simple upload
-		- purge: clear catalog + upload
-		
-	- config:
-		- if catalog does not exist in ELK, it shall be created
-		- if corresponding space does not exist in Kibana, it shall be created
-		- update: simple replace SQL + update Kibana space contents
-		- purge: delete catalog and Kibana space and recreate them
-	
-
-create account / go back --> still send an email !
 
 add a "waiting sign" icon while search is processing or while progress bar is at 0%
-
-update dts2csv.py
 
 Data import:
 	Apache ODFToolkit
@@ -77,9 +38,46 @@ Data import:
 
 Kibana fails when using hebrew alphabet
 
+
+[https-jsse-nio-20000-exec-2] WARN org.springframework.web.servlet.PageNotFound - No mapping for POST /webapp/Error401
+[https-jsse-nio-20000-exec-2] WARN org.springframework.web.servlet.PageNotFound - No mapping for POST /webapp/ErrorAuth
+	
+
+
+v2.3.1:
+-------
+
+create account / go back --> still send an email !
+	- could not reproduce ?
+
 cannot edit PAGE_URL (or INT ...) if empty (nothing happens when clicking on it)
 	- when a long text is in the doc ?
+	- could not reproduce
+	
+rest-api:
+	[ERROR] 2021-12-29 19:43:34.153 [main] DefaultClassFinder - Unable to read class [metaindex.app.control.rest.messages.Greeting]
+	java.lang.IncompatibleClassChangeError: class org.apache.struts2.convention.DefaultClassFinder$InfoBuildingVisitor has interface org.objectweb.asm.ClassVisitor as super class
+	asm-5.0.3.jar
 
+fields mapping elk: type text.keyword, check "ignore_above":"256" 
+
+
+#138 backup/restore contents of a given catalog (def+docs+data):		
+	backup/restore a given catalog /user / global from command line
+
+	- what: contents|config|files
+	- how: update|purge
+	
+	- files and contents
+		- update: simple upload
+		- purge: clear catalog + upload
+		
+	- config:
+		- if catalog does not exist in ELK, it shall be created
+		- if corresponding space does not exist in Kibana, it shall be created
+		- update: simple replace SQL + update Kibana space contents
+		- purge: delete catalog and Kibana space and recreate them
+	
 
 
 add a check compliance of currently deployed mysql MX db version?
@@ -87,15 +85,6 @@ add a check compliance of currently deployed mysql MX db version?
 color to cards based on enum field values ?
  
 CPU usage on server increases ... ???
-
-[https-jsse-nio-20000-exec-2] WARN org.springframework.web.servlet.PageNotFound - No mapping for POST /webapp/Error401
-[https-jsse-nio-20000-exec-2] WARN org.springframework.web.servlet.PageNotFound - No mapping for POST /webapp/ErrorAuth
-	
-in preference menu, lockers shall not be displayed (not used at all)
-
-count how much toolbox page is reached
-
-remove log msg "### adding proc task 1001"
 
 	
 
@@ -278,13 +267,23 @@ Backlog:
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
-v2.2.5:
-XLS import : "Choose Sheet from your file" : faire la traduction en français
-reload catalogs list for a given user from database when logging in
+v2.3.0:
+- upgraded ELK version
+- improved Kibana integration
+- prepared upcoming backup/restore feature 
+- improved/more robust processing of CSV/Excel files upload
+- XLS import : "Choose Sheet from your file" : faire la traduction en français
+- reload catalogs list for a given user from database when logging in
+- update dts2csv.py
+- count how much toolbox page is reached
+- in preference menu, lockers shall not be displayed (not used at all)
+
 
 v2.2.3 and 2.2.4: fixing download paths in prod env
 v2.2.2: fixed toolbox download path in prod env
 v2.2.1: fixed access restricted on toolbox in prod env 
+
+
 
 v2.2.0:
 

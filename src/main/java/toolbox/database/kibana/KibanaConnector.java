@@ -358,6 +358,30 @@ public class KibanaConnector implements IDataConnector {
 			return false;
 		}
 	}
+	
+
+	public Boolean setDefaultSpaceIndexPattern(String adminUser, String adminPwd, 
+			String spaceId,String indexPatternName) {
+		
+		JSONObject requestData = new JSONObject();
+		JSONObject changes = new JSONObject();
+		requestData.put("changes", changes);
+		changes.put("defaultIndex", indexPatternName);
+		
+		try {
+
+			JSONObject response = requestRestService(adminUser, adminPwd, 
+					KIBANA_HTTP_METHOD.POST,"/s/"+spaceId+"/api/kibana/settings", 
+					requestData);
+					
+			return response!=null;
+		} catch (DataProcessException  e) {
+			log.error("Error while performing Kibana operation (via REST API) for creating index-pattern '"+indexPatternName+"'");
+			return false;
+		}
+	}
+	
+	
 	public Boolean deleteKibanaIndexPattern(String adminUser, String adminPwd,
 			String spaceId,String indexPatternName) {
 	

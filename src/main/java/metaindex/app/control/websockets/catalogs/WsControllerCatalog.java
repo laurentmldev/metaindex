@@ -409,10 +409,19 @@ public class WsControllerCatalog extends AMxWSController {
     			return;
     		}
 	    	// create index-pattern for catalog's space
-	    	result =Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().createStatisticsIndexPattern(user, c);
+	    	result=Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().createStatisticsIndexPattern(user, c);
 	    	if (!result) {
 	    		log.error("Unable to create Kibana index for user "+user.getId()+" new catalog "+c.getName());
     			answer.setRejectMessage(user.getText("Catalogs.cannotCreate")+" (6)");
+    			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
+    			return;
+    		}
+	    	
+	    	// set default index (avoiding GUI error message in Kibana)
+	    	result=Globals.Get().getDatabasesMgr().getCatalogManagementDbInterface().setDefaultSpaceIndexPattern(user, c);
+	    	if (!result) {
+	    		log.error("Unable to set Kibana default index pattern for user "+user.getId()+" new catalog "+c.getName());
+    			answer.setRejectMessage(user.getText("Catalogs.cannotCreate")+" (7)");
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_catalog", answer);
     			return;
     		}
