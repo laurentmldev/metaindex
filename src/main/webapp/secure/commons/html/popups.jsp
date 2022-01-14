@@ -542,7 +542,7 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFile
 	
 	
 	let locker = newFormInput.querySelector("._locked_");
-	if (curFieldDescr.disabled=='true') { locker.style.display='none'; }
+	if (curFieldDescr.disabled=='true' || curFieldDescr.locker=='false') { locker.style.display='none'; }
 	else {
 		newFormInput.lock=function() {		
 			newFormInput.setAttribute("locked",true);
@@ -577,14 +577,19 @@ function _commons_popups_createFieldInput(curFieldDescr,resultFields, resultFile
  
  
 //fieldsList: [ 
-// { id:"xxx",type:"text",title:"xxx",defaultValue:"xxx", important:'false',disabled:'false' },
+// { id:"xxx",type:"text",title:"xxx",defaultValue:"xxx", important:'false',disabled:'false', locker='true' },
 // { id:"xxx",type:"longtext",title:"xxx",defaultValue:"xxx", important:'false',disabled:'false' },
 // { id:"xxx",type:"dropdown",defaultValue:"xxx", values:[{text:'xxx',value:'xxx'}], important:'true',disabled:'true' }]
 // { id:"xxx",type:"dropdown",defaultValue:"xxx", values:['val1','val2'], important:'true',disabled:'false' }]
 // { id:"xxx",type:"multiselect",values:['val1','val2'], important:'true' }]
-function _commons_popups_makeMultiInputsPopup(title,fieldsList,onValidCallback,keepPopupWhenPressOk) {
+
+//options: {
+//	clearAllFields: 'disabled|enabled'	
+// keepPopupWhenPressOk : 'true|false'
+//}
+function _commons_popups_makeMultiInputsPopup(title,fieldsList,onValidCallback,options) {
 	
-	 if (keepPopupWhenPressOk==null) { keepPopupWhenPressOk=false; }
+	 if (options.keepPopupWhenPressOk==null) { options.keepPopupWhenPressOk=false; }
 	 
 	 let newPopup = document.getElementById("_commons_popups_multi_input_template_").cloneNode(true);
 	 
@@ -598,7 +603,7 @@ function _commons_popups_makeMultiInputsPopup(title,fieldsList,onValidCallback,k
 	 				 curFormNode.onchange();
 	 			 }
 	  			this.querySelector('._button_ok_').click(); 
-	  			if (keepPopupWhenPressOk==false) { this.style.display='none'; }
+	  			if (options.keepPopupWhenPressOk==false) { this.style.display='none'; }
 	  		}
 	 }
 	 let resultFields={};
@@ -611,15 +616,21 @@ function _commons_popups_makeMultiInputsPopup(title,fieldsList,onValidCallback,k
 		 if (newPopup.style.display=='block') { newPopup.hide(); }
 		 else { newPopup.show(); }
 	 }
-	 newPopup.clearContents=function(forceAll) {
-		 if (forceAll==null) { forceAll=false; }
-		 let formNodes=newPopup.querySelectorAll("._form_input_");
-		 for (var i=0;i<formNodes.length;i++) {
-			 let curFormNode=formNodes[i];
-			 curFormNode.clearContents(forceAll); 			 
-		 }
-	 }
 	 
+	 if (options.clearAllFields=='disabled') {
+		 newPopup.querySelector("._button_clear_").style.display='none';
+	 } else {
+		 newPopup.clearContents=function(forceAll) {
+			 if (forceAll==null) { forceAll=false; }
+			 let formNodes=newPopup.querySelectorAll("._form_input_");
+			 for (var i=0;i<formNodes.length;i++) {
+				 let curFormNode=formNodes[i];
+				 curFormNode.clearContents(forceAll); 			 
+			 }
+		 }
+			 
+	 }
+	  
 	 // header
 	 let titleNode=newPopup.querySelector("._title_");
 	 if (typeof(title)=="object") { titleNode.append(title); }
