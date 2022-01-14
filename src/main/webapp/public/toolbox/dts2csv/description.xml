@@ -6,7 +6,9 @@
 	&lt;pre class='mx-script' &gt;python dts2csv.py samples/dts2csv-config-thesesENC.py&lt;/pre&gt;
 
 	To display a sample input config file:
-	&lt;pre class='mx-script' &gt;python dts2csv.py -sampleconf&lt;/pre&gt;
+	&lt;pre class='mx-script' &gt;python dts2csv.py -sampleconf&lt;/pre&gt;	
+	&lt;br/&gt;
+	This tool has been part of the winners of the DTS Hackathon 2021. Original code available on &lt;a href="https://github.com/AudricWannaz/DTS2CSV.git" target="_blank" &gt;Github&lt;/a&gt;.
 	</description>
 
 	<description language="FR">
@@ -17,6 +19,9 @@
 
 	Pour afficher un exemple de fichier de configuration:
 	&lt;pre class='mx-script' &gt;python dts2csv.py -sampleconf&lt;/pre&gt;
+	
+	&lt;br/&gt;
+	Cet outil a été l'un des gagnants du Hackathon DTS 2021. Le code original est disponible sous &lt;a href="https://github.com/AudricWannaz/DTS2CSV.git" target="_blank" &gt;Github&lt;/a&gt;.
 
 	</description>
 	

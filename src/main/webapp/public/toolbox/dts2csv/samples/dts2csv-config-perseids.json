@@ -1,0 +1,22 @@
+
+{
+    "SAXON_JAR_PATH":"HOME/dev/tei/install/SaxonHE10-5J/saxon-he-10.5.jar",
+    "TEI_XSL_STYLESHEETS_PATH":"HOME/dev/tei/install/tei-xsl",
+    "DTS_URL":"https://dts.perseids.org/",
+    "DTS_COLLECTIONS_ENTRYPOINT":"collections",
+    "DTS_DOCUMENTS_ENTRYPOINT":"documents",
+    "START_COLLECTION_ID":"urn:perseids:farsiLit",
+    "MAX_DEPTH":"1",
+    "RETRIEVE_FILES":"True",
+    "TRANSFORM_TEI_TO_TXT":"True",
+    "TRANSFORM_TEI_TO_HTML":"False",
+    "INLINE_TXT_IN_CSV":"True",
+    "COLLECTIONS": [
+        {"dts_id":"title"}
+    ],
+    "RESOURCES": [
+        {"dts_id":"dts:dublincore/dc:language","csv_name":"language"},
+        {"dts_id":"title"},
+        {"dts_id":"description"}
+    ]   
+}

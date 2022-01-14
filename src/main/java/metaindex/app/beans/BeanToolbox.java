@@ -18,6 +18,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import metaindex.app.Globals;
+import metaindex.app.periodic.statistics.publicpages.ToolsPageMxStat;
 
 import java.io.File;
 import java.io.IOException;
@@ -161,6 +162,7 @@ public class BeanToolbox extends AMetaindexBean {
 	}
 	@Override
   	public String execute() throws Exception {
+		Globals.GetStatsMgr().handleStatItem(new ToolsPageMxStat(this.getCurrentUserProfile()));
 		super.execute();
 		return "BeanProcess_SUCCESS";
 	}
