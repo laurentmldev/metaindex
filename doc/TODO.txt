@@ -3,8 +3,6 @@
 v2.3.0:
 -------
 
-comments in CSV file make a wrong number of expected lines, then progress bar is never closed
-
 
 
 add a red banner when user has app admin rights
@@ -51,6 +49,8 @@ Kibana fails when using hebrew alphabet
 
 v2.3.1:
 -------
+
+comments in CSV file make a wrong number of expected lines, then progress bar is never closed
 
 create account / go back --> still send an email !
 	- could not reproduce ?
