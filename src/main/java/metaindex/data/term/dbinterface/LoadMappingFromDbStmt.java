@@ -112,7 +112,8 @@ public class LoadMappingFromDbStmt extends ESPopulateStmt<ICatalog>   {
 						catalogMappingProperties.put(fieldName,fieldPropertiesMap);
 						
 					}
-					c.updateTermsMapping(catalogMapping,catalogMappingProperties);			
+					c.updateTermsMapping(catalogMapping,catalogMappingProperties);
+					
 				}
 			}
 			

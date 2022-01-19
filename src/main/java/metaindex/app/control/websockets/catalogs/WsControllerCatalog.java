@@ -12,7 +12,6 @@ See full version of LICENSE in <https://fsf.org/>
 
 import java.io.File;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -38,7 +37,6 @@ import metaindex.app.periodic.statistics.catalog.CreateCatalogMxStat;
 import metaindex.app.periodic.statistics.catalog.DeleteCatalogMxStat;
 import metaindex.app.periodic.statistics.catalog.SetCustoCatalogMxStat;
 import metaindex.app.periodic.statistics.catalog.UpdateLexicCatalogMxStat;
-import metaindex.app.periodic.statistics.publicpages.WelcomePageMxStat;
 import metaindex.app.periodic.statistics.user.ChatMsgMxStat;
 import metaindex.app.periodic.statistics.user.ErrorOccuredMxStat;
 import metaindex.data.catalog.Catalog;
@@ -51,9 +49,7 @@ import metaindex.data.term.ICatalogTerm;
 import metaindex.data.userprofile.ICatalogUser.USER_CATALOG_ACCESSRIGHTS;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
-import toolbox.exceptions.DataProcessException;
 import toolbox.utils.StrTools;
-import toolbox.utils.StreamHandler;
 
 @Controller
 public class WsControllerCatalog extends AMxWSController {

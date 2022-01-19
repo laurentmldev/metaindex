@@ -78,6 +78,14 @@ public class CatalogTerm implements ICatalogTerm {
 	}
 
 	@Override
+	public Boolean getTermNameCompliantStatus() {
+		// tmp lml
+		if (this.getName().equals("blabla") ) {
+			return false;
+		}
+		return ICatalogTerm.CheckTermNameSyntax(this.getName());
+	}
+	@Override
 	public TERM_DATATYPE getDatatype() {
 		return _datatype;
 	}

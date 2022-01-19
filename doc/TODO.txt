@@ -3,6 +3,11 @@
 v2.3.0:
 -------
 
+comments in CSV file make a wrong number of expected lines, then progress bar is never closed
+
+
+
+add a red banner when user has app admin rights
 
 add a "waiting sign" icon while search is processing or while progress bar is at 0%
 
@@ -277,6 +282,7 @@ v2.3.0:
 - update dts2csv.py
 - count how much toolbox page is reached
 - in preference menu, lockers shall not be displayed (not used at all)
+- when loading terms and missing in catalog but found from ELK, check syntax and show warning in GUI
 
 
 v2.2.3 and 2.2.4: fixing download paths in prod env

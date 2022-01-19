@@ -14,6 +14,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.IIdentifiable;
@@ -29,6 +31,15 @@ public interface ICatalogTerm extends IIdentifiable<Integer>{
 	// if changed, update also value in perspective°field_longtext.jsp and error text 'Items.longtext.tooLong'
 	public static final Integer MX_FIELD_LONGTEXT_MAX_NBCHARS = 990000;
 	
+	// at least 3 chars, letters or '_', no special char, no space, no accent
+	// for richer names, user shall use catalog's lexic.
+	// this is to ensure smoother integration with MX code, and
+	// also to enforce compatibility with tird party tools. 
+	public static final Pattern MX_TERMNAME_PATTERN= Pattern.compile("^[a-zA-Z0-9_]{3}[a-zA-Z0-9_]*$");
+	public static Boolean CheckTermNameSyntax(String termName) {
+		Matcher m = MX_TERMNAME_PATTERN.matcher(termName);
+		return m.find();		
+	}
 	// /!\ this list shall be coherent with : 
 	// - SQL field 'catalog_terms.datatype' enum definition.
 	// - webapp/secure/commons/js/mx_helpers.jsp
@@ -137,6 +148,10 @@ public interface ICatalogTerm extends IIdentifiable<Integer>{
 		return BuildCatalogTerm(getTermDatatype(type));
 	}
 	public Integer getCatalogId();
+	
+	// return false if term name is not compliant with restrictions from Mx
+	// see CheckTermNameSyntax(xxx) function up there.
+	public Boolean getTermNameCompliantStatus();
 	/**
 	 * Retrieve the name of the field containing the actual value.
 	 * Basically return the name of ElasticSearch field name.

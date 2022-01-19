@@ -74,6 +74,9 @@
 		let termNameNode=newTermNode.querySelector("._term_name_");
 		termNameNode.innerHTML=termName;
 		
+		if (termDesc.termNameCompliantStatus==false) {
+			footer_showAlert(WARNING, "'"+termName+"': <s:text name="Catalogs.field.termSyntaxCheckNotGood"/>");
+		}
 		// term type
 		let termTypeNode=newTermNode.querySelector("._term_type_");		
 		let fieldEnumNode=newTermNode.querySelector("._term_enum_");	

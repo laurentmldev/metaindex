@@ -34,7 +34,7 @@ import toolbox.utils.ILockable;
  *
  */
 public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCustomParams,IPeriodicProcess,ICatalogChat {
-
+	
 	/** get a string displaying Catalog current infos (for logs) */
 	public String getDetailsStr();
 	

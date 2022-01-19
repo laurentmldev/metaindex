@@ -99,7 +99,7 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 		// ignore terms for MX internal use (which start with "mx_")
 		for (ICatalogTerm catalogTerm : c.getTerms().values()) {
 			if (catalogTerm.getName().startsWith("mx_")) { continue; }
-			_terms.put(catalogTerm.getName(), catalogTerm);
+			_terms.put(catalogTerm.getName(), catalogTerm);		
 		}		
 		
 	}	

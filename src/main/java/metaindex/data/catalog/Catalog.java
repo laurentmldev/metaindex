@@ -462,7 +462,7 @@ public class Catalog implements ICatalog {
 		
 		try {
 			_termsLock.acquire();
-		
+			
 			for (String termName : m.keySet()) {
 				
 				RAW_DATATYPE rawtype = m.get(termName);
@@ -474,6 +474,11 @@ public class Catalog implements ICatalog {
 				}
 				// otherwise we create the term
 				else {
+					// check term name
+					if (!ICatalogTerm.CheckTermNameSyntax(termName)) {
+						log.warn("Catalog '"+this.getName()+"': term '"
+									+termName+"' (from ElasticSearch) does not respect syntax restrictions.");
+					}
 					term = ICatalogTerm.BuildCatalogTerm(rawtype);
 					term.setCatalogId(this.getId());
 					term.setName(termName);
@@ -484,6 +489,7 @@ public class Catalog implements ICatalog {
 				
 				_termsLock.release();
 			}	
+			
 		} catch (InterruptedException e) { _termsLock.release();  throw new DataProcessException(e.getMessage()); }
 		
 	}
