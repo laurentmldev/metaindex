@@ -117,10 +117,11 @@ function _buildCsvColumnsTable(CSVrows,nbEntriesNode,csvColsTable,onColsSelectio
    	
    	// count total of actual nb entries
    	while (curLineNb<CSVrows.length) {
-   		if (	   CSVrows[curLineNb].length>0 
+   		if (	   CSVrows[curLineNb].length>0
+   				&& curLineNb>0 // ignore anyway first line which is the header (and might not have a comment '#' marker')
    				&& CSVrows[curLineNb][0]!='#' 
    				&& !CSVrows[curLineNb].match(/^\s*$/)
-   				&& !CSVrows[curLineNb].match(/^\s*#/)) {
+   				&& !CSVrows[curLineNb].match(/^\s*#/)) {   			
    			nbEntries++;
    		}    			
    		curLineNb++;	    		   		

@@ -3,21 +3,19 @@
 v2.3.0:
 -------
 
-
-
-add a red banner when user has app admin rights
-
-add a "waiting sign" icon while search is processing or while progress bar is at 0%
-
-Data import:
-	Apache ODFToolkit
-	when importing Excel, remove warning about dates that shall have type 'text' in the Excel spreadsheet
-	__MX_ESCAPED_SEPARATOR__ not properly decoded
-	CSV: support ',' separated
-		+ remove use of MX_SEP_ESCAPE_STR
-		+ changes on special chars (&quote&, &cr&, &sep&)
+When importing with new fields: 
+	Warning: Following field(s) listed in section 'Section' do not exist in the catalog : name
 		
-	LONG_TEXT: loading full text not done (WS sending not occuring ?): still default empty screen msg displayed 'please wait while loading full contents ...' 
+Data import:
+	test new dts2csv
+		no use of check __MX_ESCAPED_SEPARATOR__ not properly decoded
+	
+	CSV: check support ',' separated
+		
+	LONG_TEXT: 
+		- loading full text not done (WS sending not occuring ?): still default empty screen msg displayed 'please wait while loading full contents ...'
+		- add a "waiting sign" icon while search is processing or while progress bar is at 0%
+		 
 	
 	loading dts perseids latinLit resources: locked WS com
 	[ERROR] 2021-10-07 21:32:06.930 [chargement de 677 &eacute;l&eacute;ments] Catalog - Aborting CSV upload operation due to server error
@@ -34,13 +32,7 @@ Data import:
 		at metaindex.app.control.websockets.items.WsESBulkProcess.run(WsESBulkProcess.java:121)
 		at toolbox.utils.AProcessingTask$RunnerThread.run(AProcessingTask.java:40)
 
-	#150  Uploading data with complex fields names seems to lead to failed WS communication #150 	
-	    - need to make server more robust to such anomaly
-	    - prevent user to make such mistake
-	    - generate a simple field name and add corresponding vocabulary entry?
-
-Kibana fails when using hebrew alphabet
-
+Kibana fails when using hebrew alphabet -> check with new Kibana version
 
 [https-jsse-nio-20000-exec-2] WARN org.springframework.web.servlet.PageNotFound - No mapping for POST /webapp/Error401
 [https-jsse-nio-20000-exec-2] WARN org.springframework.web.servlet.PageNotFound - No mapping for POST /webapp/ErrorAuth
@@ -276,13 +268,19 @@ v2.3.0:
 - upgraded ELK version
 - improved Kibana integration
 - prepared upcoming backup/restore feature 
-- improved/more robust processing of CSV/Excel files upload
+- data upload:
+	- improved/more robust processing of CSV/Excel files upload
+	- when importing Excel, remove warning about dates that shall have type 'text' in the Excel spreadsheet
+-  data download:
+	- escape quotes when needed
+	- replace __CR__ by &cr& as default line marker
 - XLS import : "Choose Sheet from your file" : faire la traduction en français
 - reload catalogs list for a given user from database when logging in
 - update dts2csv.py
 - count how much toolbox page is reached
 - in preference menu, lockers shall not be displayed (not used at all)
 - when loading terms and missing in catalog but found from ELK, check syntax and show warning in GUI
+- add a red banner when user has app admin rights
 
 
 v2.2.3 and 2.2.4: fixing download paths in prod env

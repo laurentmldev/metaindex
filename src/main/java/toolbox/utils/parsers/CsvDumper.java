@@ -82,7 +82,7 @@ public class CsvDumper<T extends IFieldValueMapObject> extends AStreamHandler<T>
 				
 				if (valStr.contains(this.getSeparator())) { 
 					if (valStr.contains(this.getStrMarker())) {
-						valStr.replace(this.getStrMarker(), "\\"+this.getStrMarker());
+						valStr=valStr.replace(this.getStrMarker(), "\\"+this.getStrMarker());
 					}
 					valStr=this.getStrMarker()+valStr+this.getStrMarker();  
 				}
