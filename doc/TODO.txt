@@ -3,8 +3,7 @@
 v2.3.0:
 -------
 
-When importing with new fields: 
-	Warning: Following field(s) listed in section 'Section' do not exist in the catalog : name
+
 		
 Data import:
 	test new dts2csv
@@ -281,7 +280,8 @@ v2.3.0:
 - in preference menu, lockers shall not be displayed (not used at all)
 - when loading terms and missing in catalog but found from ELK, check syntax and show warning in GUI
 - add a red banner when user has app admin rights
-
+- When importing with new fields: 
+	Warning: Following field(s) listed in section 'Section' do not exist in the catalog : name
 
 v2.2.3 and 2.2.4: fixing download paths in prod env
 v2.2.2: fixed toolbox download path in prod env

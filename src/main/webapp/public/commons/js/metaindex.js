@@ -2340,7 +2340,7 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 	    	reader.readAsArrayBuffer(fileObj);			
 		}
 	    
-		//requestObj.successCallback();
+		requestObj.successCallback();
 		 
 		 
 	}

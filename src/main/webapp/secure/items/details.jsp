@@ -110,7 +110,7 @@
 			event.preventDefault();
 			
 			let onSuccessCallback=function(formNode,termName,termDatatype) {
-				let onSuccessCallback2=function(catalogDescr) { 
+				let onSuccessCallback2=function(catalogDescr) {
 					handleMxWsCatalogs(catalogDescr);
 					_doAddNewField(docId,termName,mx_helpers_getDefaultValue(termDatatype));
 				}

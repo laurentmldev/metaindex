@@ -124,7 +124,6 @@
 		 console.log('ERROR: expected only one catalog from server, got '+msg.length);
 		 return;
 	 }
-	 
 	let curCatalogDescr=msg[0];
 	MxGuiDetails.handleCatalogDetails(curCatalogDescr);
 	MxGuiLeftBar.handleCatalogDetails(curCatalogDescr);
@@ -135,6 +134,7 @@
  function handleMxWsServerGuiMessage(msg) {
 	 //dumpStructure(msg);
 	 
+	 console.log("simple progress msg");
 	 if (msg.msgType=="PROGRESS") { 
 		 MxGuiLeftBar.setProgressBar(msg.processingId,msg.pourcentage,msg.text, msg.processingActive);
 	 }
@@ -274,7 +274,8 @@ function ws_handlers_requestUpdateFilter(filterName,queryString) {
 
 function ws_handlers_requestUploadCsvFile(nbEntries,fieldsMapping,fileHandle) {	
 	let successCallback=function(e) {
-		//console.log("requesting catalog update");		
+		// reloading catalog description to get potential new
+		// fields created from CSV
 		MxApi.requestGetCatalogs({'catalogId':<s:property value="currentCatalog.id"/>, 'successCallback':handleMxWsCatalogs});
 	}
 	let errorCallback=function(msg) { footer_showAlert(ERROR, msg); }
