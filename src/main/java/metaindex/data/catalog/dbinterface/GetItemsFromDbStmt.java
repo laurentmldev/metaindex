@@ -115,7 +115,7 @@ class GetItemsFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 			}			
 		}
 		_requestsBuilder=new ESDocumentsRequestBuilder(
-				c.getName(), fromIdx,size,query,prefilters,sort,ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP);
+				c.getName(), fromIdx,size,query,prefilters,sort,ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP,null);
 				
 	}
 

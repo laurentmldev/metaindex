@@ -42,6 +42,7 @@ public class ESDownloadProcess extends AProcessingTask   {
 	private Long _fromIndex=0L;
 	private String _query="";
 	private List<String> _preFilters=new ArrayList<>();
+	private List<String> _srcFieldsList=null;
 	private List< IPair<String,SORTING_ORDER> > _sortByFieldName=new ArrayList<>();
 	
 	private AStreamHandler<IDbItem> _streamHandler=null;
@@ -57,7 +58,8 @@ public class ESDownloadProcess extends AProcessingTask   {
 						 Long fromIndex,
 						 String query,
 						 List<String> preFilters,
-						 List< IPair<String,SORTING_ORDER> > sortingOrder) throws DataProcessException { 
+						 List< IPair<String,SORTING_ORDER> > sortingOrder,
+						 List<String> srcFieldsList/*list of fields to retrieve*/) throws DataProcessException { 
 		super(u,name);
 		_catalog=c;
 		this.setTargetName(targeFileName);
@@ -67,6 +69,7 @@ public class ESDownloadProcess extends AProcessingTask   {
 		this.setQuery(query);
 		this.setPreFilters(preFilters);
 		this.setSortByFieldName(sortingOrder);
+		this.setSrcFieldsList(srcFieldsList);
 		
 		// progress messages will be sent directly by the stream processing task
 		// rather by this by the DB-extract task
@@ -242,5 +245,15 @@ public class ESDownloadProcess extends AProcessingTask   {
 	}
 
 	public Boolean isDataGenerated() { return _dataGenerated; }
+
+
+	public List<String> getSrcFieldsList() {
+		return _srcFieldsList;
+	}
+
+
+	public void setSrcFieldsList(List<String> srcFieldsList) {
+		this._srcFieldsList = srcFieldsList;
+	}
 
 };

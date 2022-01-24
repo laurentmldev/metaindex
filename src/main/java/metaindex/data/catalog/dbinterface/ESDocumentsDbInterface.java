@@ -27,6 +27,7 @@ import toolbox.utils.parsers.GexfDumper;
 import toolbox.utils.parsers.GexfGroupByDumper;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -67,6 +68,17 @@ public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem>
 			Integer strFieldsMaxLength) 
 	throws DataProcessException {
 	return new GetItemsStreamFromDbStmt(c,fromIdx,size,query,filter,sort,strFieldsMaxLength,getDataConnector());
+	}
+	
+	public ESReadStreamStmt<DbSearchResult> getLoadDocsStreamFromDbStmt(ICatalog c, Long fromIdx, Long size,
+			String query,
+			List<String> filter, 
+			List< IPair<String,SORTING_ORDER> > sort,
+			Integer strFieldsMaxLength,
+			List<String> srcFieldsList) 
+	throws DataProcessException {
+	return new GetItemsStreamFromDbStmt(c,fromIdx,size,query,filter,sort,strFieldsMaxLength,srcFieldsList,
+			getDataConnector());
 	}
 	
 	// -- update document field value
@@ -123,7 +135,8 @@ public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem>
 
 		AStreamHandler<IDbItem> streamHandler=new IdsStreamHandler(u, name+":IdsGenerator", expectedNbActions, targetList);		
 		
-		return new ESDownloadProcess(u,name, "ids-list", streamHandler,-1L,c,0L,query,preFilters,sortingOrder);
+		return new ESDownloadProcess(u,name, "ids-list", streamHandler,-1L,c,0L,query,preFilters,sortingOrder,
+					new ArrayList<>()/*if empty list, retrieve only _id*/);
 	}
 		
 	// -- extract CSV from given search
@@ -149,7 +162,8 @@ public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem>
 				targetFileName);
 		
 		
-		return new ESDownloadProcess(u,name, targetFileName,streamHandler,maxNbItems,c,fromIndex,query,preFilters,sortingOrder);
+		return new ESDownloadProcess(u,name, targetFileName,streamHandler,maxNbItems,c,fromIndex,query,preFilters,sortingOrder,
+				null/*if null, retrieve all fields from docs sources*/);
 	}
 	
 	// -- extract GEXF from given search
@@ -177,7 +191,8 @@ public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem>
 				targetFileName);
 		
 		
-		return new ESDownloadProcess(u,name, targetFileName,streamHandler,maxNbItems,c,fromIndex,query,preFilters,sortingOrder);
+		return new ESDownloadProcess(u,name, targetFileName,streamHandler,maxNbItems,c,fromIndex,query,preFilters,sortingOrder,
+				null/*if null, retrieve all fields from docs sources*/);
 	}
 	
 
@@ -206,6 +221,7 @@ public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem>
 				targetFileName);
 		
 		
-		return new ESDownloadProcess(u,name, targetFileName,streamHandler,maxNbItems,c,fromIndex,query,preFilters,sortingOrder);
+		return new ESDownloadProcess(u,name, targetFileName,streamHandler,maxNbItems,c,fromIndex,query,preFilters,sortingOrder,
+				null/*if null, retrieve all fields from docs sources*/);
 	}
 }

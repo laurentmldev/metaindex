@@ -516,7 +516,7 @@ public class WsControllerItem extends AMxWSController {
     	}
     	
     	try {
-    		// 1- first retrieve list of ids matching given query and filters
+
     		List<String> preFilters = new ArrayList<String>();
     
     		for (String filterName : requestMsg.getFiltersNames()) {
@@ -527,41 +527,48 @@ public class WsControllerItem extends AMxWSController {
     			}
     			preFilters.add(f.getQuery());
     		}		
-    		Integer fromIdx=0;
-    		Integer size=MAX_ELASTIC_SEARCH_RESULT_SIZE;
-    		List<IDbItem> itemsToDelete=new ArrayList<IDbItem>();
-    		Integer lastResultsize=MAX_ELASTIC_SEARCH_RESULT_SIZE;
-    		while (lastResultsize==MAX_ELASTIC_SEARCH_RESULT_SIZE) {
-    			List<DbSearchResult> results = new ArrayList<>(); 
-    			Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
-							.getLoadDocsFromDbStmt(user.getCurrentCatalog(),
-									fromIdx, 
-									size,
-				    				requestMsg.getQuery(),
-				    				preFilters,
-				    				new ArrayList< IPair<String,SORTING_ORDER> >(),
-				    				ICatalogTerm.MX_FIELD_VALUE_MAX_LENGTH)
-							.execute(new StreamHandler<DbSearchResult>(results));
     		
-    			// only one query --> only one result
-    			assert(results.size()==1);
-    			DbSearchResult result = results.get(0);
-    			lastResultsize=result.getTotalHits().intValue();
-    			fromIdx+=lastResultsize;    			
-    			itemsToDelete.addAll(result.getItems());
     			
-    		}
+			
+			class StreamItemsDeleter implements IStreamHandler<DbSearchResult> {
+				
+				ESBulkProcess elkBulkProcTask=null;	
+				
+				@Override public void handle(List<DbSearchResult> loadedDocsResults) throws DataProcessException {
+					DbSearchResult loadedResult = loadedDocsResults.get(0);
+					
+					// seems to return null value when 0 hits
+		    		Long totalHits = loadedResult.getTotalHits();
+		    		if (totalHits==null) { 
+		    			log.warn("No Hits for given data extraction request");			    			
+		    		}
+
+					if (elkBulkProcTask==null) {
+						elkBulkProcTask = (ESBulkProcess) Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
+								.getNewItemsBulkProcessor(user, user.getCurrentCatalog(), 
+															user.getText("Items.serverside.delete",
+																			totalHits.toString()), 
+																			totalHits.intValue(),now);
+			    		user.addProcessingTask(elkBulkProcTask);			
+						elkBulkProcTask.start();	
+					}
+		    		elkBulkProcTask.postDataToDelete(loadedResult.getItems());
+					Globals.GetStatsMgr().handleStatItem(new DeleteItemsByQueryMxStat(user,c,loadedResult.getItems().size()));
+			}}
+			
+			Long fromIdx=0L;
+    		Long size=-1L;
     		
-    		// 2- delete items
-    		ESBulkProcess procTask = (ESBulkProcess) Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
-					.getNewItemsBulkProcessor(user, user.getCurrentCatalog(), 
-												user.getText("Items.serverside.delete",
-															 new Integer(itemsToDelete.size()).toString()), 
-															 itemsToDelete.size(),now);
-			user.addProcessingTask(procTask);			
-			procTask.start();			
-			procTask.postDataToDelete(itemsToDelete);
-			Globals.GetStatsMgr().handleStatItem(new DeleteItemsByQueryMxStat(user,c,itemsToDelete.size()));
+			Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
+						.getLoadDocsStreamFromDbStmt(user.getCurrentCatalog(),
+								fromIdx, 
+								size,
+			    				requestMsg.getQuery(),
+			    				preFilters,
+			    				new ArrayList< IPair<String,SORTING_ORDER> >(),
+			    				ICatalogTerm.MX_FIELD_VALUE_MAX_LENGTH,
+			    				new ArrayList<>()/*if empty list, retrieve only _id field*/)
+						.execute(new StreamItemsDeleter());
     		
     	} catch (DataProcessException e) 
     	{

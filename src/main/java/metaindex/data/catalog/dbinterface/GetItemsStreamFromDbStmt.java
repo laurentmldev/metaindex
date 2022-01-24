@@ -12,6 +12,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,24 +21,14 @@ import org.apache.commons.logging.LogFactory;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.search.ClearScrollRequest;
 import org.elasticsearch.action.search.ClearScrollResponse;
-import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.core.CountRequest;
 import org.elasticsearch.client.core.CountResponse;
 import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.Scroll;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchScrollRequest;
-import org.elasticsearch.search.sort.FieldSortBuilder;
-import org.elasticsearch.search.sort.SortOrder;
-import org.json.JSONObject;
-import org.elasticsearch.search.sort.ScoreSortBuilder;
 
 import metaindex.data.commons.database.MxDbSearchItem;
 import metaindex.data.catalog.Catalog;
@@ -73,6 +64,7 @@ class GetItemsStreamFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 	
 	private String _query="";
 	private List<String> _prefilters = new ArrayList<>();
+	private List<String> _sourceFieldsList = null;
 	private List< IPair<String,SORTING_ORDER> > _sort = new ArrayList<>();
 	
 	/**
@@ -113,7 +105,45 @@ class GetItemsStreamFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 		}
 		
 		_requestsBuilder=new ESDocumentsRequestBuilder(
-				_catalog.getName(),_query,_prefilters,_sort,ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP);
+				_catalog.getName(),_query,_prefilters,_sort,ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP,null);
+	}
+
+	/**
+	 * 
+	 * @param sourceFieldsList list of fields to actually retrieve from document contents. If empty, retrieve only _id.
+	 * @throws DataProcessException
+	 */
+	public GetItemsStreamFromDbStmt(ICatalog c, 
+			Long fromIdx, 
+			Long size, 
+			String query,
+			List<String> prefilters, 
+			List< IPair<String,SORTING_ORDER> > sort, 
+			Integer strFieldsMaxLength,
+			List<String> sourceFieldsList,
+			ElasticSearchConnector ds) throws DataProcessException { 
+		super(ds);
+		_catalog=c;
+		_fromIdx=fromIdx;
+		_maxNbDocs=size;
+		_query=query;
+		_prefilters=prefilters;
+		_sort=sort;
+		_strFieldsMaxLength=strFieldsMaxLength;
+		
+		// Applying proper raw field for terms requiring it
+		for (IPair<String,SORTING_ORDER> curSort : _sort) {
+			String sortFieldName=curSort.getFirst();			
+			TERM_DATATYPE fieldType = c.getTerms().get(sortFieldName).getDatatype();
+			if (ICatalogTerm.getRawDatatype(fieldType).equals(RAW_DATATYPE.Ttext)) {
+				curSort.setFirst(sortFieldName+=".keyword");
+			}			
+		}
+		
+		_requestsBuilder=new ESDocumentsRequestBuilder(
+				_catalog.getName(),_query,_prefilters,_sort,
+				ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP,sourceFieldsList);
+
 	}
 
 	private void streamSearchHits(IStreamHandler<DbSearchResult> hitsStreamHandler,SearchHit[] searchHits) {
@@ -137,6 +167,9 @@ class GetItemsStreamFromDbStmt extends ESReadStreamStmt<DbSearchResult>   {
 		    	if (_curDocIdx<_fromIdx) { continue; }
 		    	
 				Map<String,Object> data = hit.getSourceAsMap();
+				// if no source field requested, the data map might be null
+				// so we replace it by an empty map to make smoother further processing
+				if (data==null) { data=new HashMap<String,Object>(); }
 				GetItemsFromDbStmt.filterData(data,_strFieldsMaxLength);
 				
 				IDbItem item = new MxDbSearchItem(

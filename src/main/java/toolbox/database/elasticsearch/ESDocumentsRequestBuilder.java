@@ -52,6 +52,8 @@ public class ESDocumentsRequestBuilder {
 	private String _query="";
 	private List< IPair<String,SORTING_ORDER> > _sortByFieldName = new ArrayList< IPair<String,SORTING_ORDER> >();
 	private String _applicativeTiemstampFieldName="";
+	// if null, retrieve all, if empty, retrieve only the _id
+	private List<String> _sourceFieldsToRetrieve = null;
 	
 	
 	private QueryBuilder buildESQuery(String queryStr) {
@@ -67,7 +69,15 @@ public class ESDocumentsRequestBuilder {
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		SearchSourceBuilder countSourceBuilder = new SearchSourceBuilder();
 		if (_fromIdx>=0) { searchSourceBuilder.from(_fromIdx); }
-		if (_size>=0) { searchSourceBuilder.size(_size); }		
+		if (_size>=0) { searchSourceBuilder.size(_size); }	
+		if (_sourceFieldsToRetrieve!=null) {
+			if (_sourceFieldsToRetrieve.size()==0) {
+				searchSourceBuilder.fetchSource(false);
+			}
+			else {
+				searchSourceBuilder.fetchSource((String[])_sourceFieldsToRetrieve.toArray(), null);
+			}
+		}
 		
 		// Combine filter queries :
 		// user query
@@ -140,15 +150,17 @@ public class ESDocumentsRequestBuilder {
 			String query,
 			List<String> prefilters, 
 			List< IPair<String,SORTING_ORDER> > sort,
-			String applicativeTiemstampFieldName // for sorting by modif timestamp, ignored if null
+			String applicativeTimestampFieldName, // for sorting by modif timestamp, ignored if null
+			List<String> sourceFields /*null to retrieve all*/
 			) 
 					throws DataProcessException {
 		_prefilters=prefilters;
 		_query=query;
 		_sortByFieldName=sort;
-		_applicativeTiemstampFieldName=applicativeTiemstampFieldName;
+		_applicativeTiemstampFieldName=applicativeTimestampFieldName;
 		_searchRequest = new SearchRequest(indexName);
 		_countRequest = new CountRequest(indexName);
+		_sourceFieldsToRetrieve=sourceFields;
 		init();
 	}
 
@@ -167,7 +179,8 @@ public class ESDocumentsRequestBuilder {
 			String query,
 			List<String> prefilters, 
 			List< IPair<String,SORTING_ORDER> > sort,
-			String applicativeTiemstampFieldName // for sorting by modif timestamp, ignored if null
+			String applicativeTimestampFieldName, // for sorting by modif timestamp, ignored if null
+			List<String> sourceFields /*null to retrieve all*/
 			) 
 					throws DataProcessException { 
 		
@@ -176,9 +189,10 @@ public class ESDocumentsRequestBuilder {
 		_prefilters=prefilters;
 		_query=query;
 		_sortByFieldName=sort;
-		_applicativeTiemstampFieldName=applicativeTiemstampFieldName;
+		_applicativeTiemstampFieldName=applicativeTimestampFieldName;
 		_searchRequest = new SearchRequest(indexName);
-		_countRequest = new CountRequest(indexName);		
+		_countRequest = new CountRequest(indexName);
+		_sourceFieldsToRetrieve=sourceFields;
 		init();
 	}
 	

@@ -369,7 +369,7 @@ MxGuiLeftBar.handleDataFileToUpload=function(fileHandle) {
 	// otherwise consider it as data files
 	let fileName = fileHandle.files[0].name;
 	var csvRegex= /(\.csv)$/;
-	var xlsRegex= /(\.xls|\.xlsx|\.ods|\.odt|\.xml)$/;
+	var xlsRegex= /(\.xls|\.xlsx|\.ods|\.odt)$/;
 	
 	if (csvRegex.test(fileName)) { _handleCsvDataFile(fileHandle); }
 	else if (xlsRegex.test(fileName)) { _handleExcelDataFile(fileHandle); }
