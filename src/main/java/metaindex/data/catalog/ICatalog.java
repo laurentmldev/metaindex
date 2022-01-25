@@ -15,8 +15,7 @@ See full version of LICENSE in <https://fsf.org/>
 import java.util.List;
 import java.util.Map;
 
-import metaindex.app.control.catalogdrive.SftpCatalogsDrive;
-import metaindex.app.control.catalogdrive.ICatalogsDrive;
+
 import metaindex.data.filter.IFilter;
 import metaindex.data.perspective.ICatalogPerspective;
 import metaindex.data.term.ICatalogTerm;
@@ -82,7 +81,11 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 	public Long getQuotaDriveMBytes();		
 	public Boolean checkQuotasNbDocsOk();
 	public Boolean checkQuotasDriveOk();
+	/* Return size of catalog files PLUS ELK index */
 	public Long getDriveUseMBytes();
+	public Long getCatalogFilesDiskUseMBytes();
+	public Long getELKIndexDiskUseMBytes();
+	public void setELKIndexDiskUseMBytes(Long diskUsageMB);
 	
 	// Files access
 	public String getLocalFsFilesPath();

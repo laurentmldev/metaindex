@@ -89,6 +89,7 @@ public class Catalog implements ICatalog {
 	
 	// from ElasticSearch DB
 	private Long _nbDocuments=0L;
+	private Long _indexDiskUsageMB=0L;
 	
 	private List<IFilter> _filters = new java.util.concurrent.CopyOnWriteArrayList<>();
 	private Semaphore _filtersLock = new Semaphore(1,true);
@@ -735,6 +736,9 @@ public class Catalog implements ICatalog {
 
 	@Override
 	public Long getDriveUseMBytes() {
+		return getCatalogFilesDiskUseMBytes() + getELKIndexDiskUseMBytes();
+	}
+	public Long getCatalogFilesDiskUseMBytes() {
 		try {
 			Long usedDiskSpace = FileSystemUtils.GetTotalSizeBytes(this.getLocalFsFilesPath()+"/");
 			return usedDiskSpace/1000000;
@@ -745,6 +749,15 @@ public class Catalog implements ICatalog {
 		}
 		
 	}
+	@Override
+	public Long getELKIndexDiskUseMBytes() {
+		return _indexDiskUsageMB;
+	}
+	@Override
+	public void setELKIndexDiskUseMBytes(Long diskUsageMB) {
+		_indexDiskUsageMB=diskUsageMB;
+	}
+	
 	@Override
 	public Boolean checkQuotasDriveOk() {
 		return getDriveUseMBytes()<this.getQuotaDriveMBytes();

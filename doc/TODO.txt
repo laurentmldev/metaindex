@@ -3,7 +3,7 @@
 v2.3.0:
 -------
 
-#139 delete all items, not only max 10000 items (ELK limit)
+remove js console "simple progress message"
 		
 Data import:
 	test new dts2csv
@@ -16,20 +16,6 @@ Data import:
 		- add a "waiting sign" icon while search is processing or while progress bar is at 0%
 		 
 	
-	loading dts perseids latinLit resources: locked WS com
-	[ERROR] 2021-10-07 21:32:06.930 [chargement de 677 &eacute;l&eacute;ments] Catalog - Aborting CSV upload operation due to server error
-	java.lang.IndexOutOfBoundsException: No group 2
-		at java.base/java.util.regex.Matcher.start(Matcher.java:483)
-		at java.base/java.util.regex.Matcher.appendExpandedReplacement(Matcher.java:1091)
-		at java.base/java.util.regex.Matcher.appendReplacement(Matcher.java:998)
-		at java.base/java.util.regex.Matcher.replaceAll(Matcher.java:1182)
-		at java.base/java.lang.String.replaceAll(String.java:2142)
-		at toolbox.utils.parsers.CsvDbItemsParser.toMap(ACsvParser.java:136)
-		at toolbox.utils.parsers.CsvDbItemsParser.parse(ACsvParser.java:119)
-		at toolbox.utils.parsers.CsvDbItemsParser.parseAll(ACsvParser.java:83)
-		at metaindex.app.control.websockets.items.WsESBulkProcess.uncompressAndPostPendingMessages(WsESBulkProcess.java:89)
-		at metaindex.app.control.websockets.items.WsESBulkProcess.run(WsESBulkProcess.java:121)
-		at toolbox.utils.AProcessingTask$RunnerThread.run(AProcessingTask.java:40)
 
 Kibana fails when using hebrew alphabet -> check with new Kibana version
 
@@ -165,9 +151,6 @@ integrate annona for annotations IIIF images overlay ?
 Omeka interface for web-publishing features ? 
 
 
-CSV upload:
-	- upload full file and then process it on server side, rather than sending it
-	  chunk by chunk from client side ...
 
 
 catalog acquire lock: automatically unlock after X hours ?
@@ -176,15 +159,7 @@ catalog acquire lock: automatically unlock after X hours ?
 
 
 
-#137 include ELK disk space for quota calculation?
-	GET /_cat/indices?v
-	GET /_cluster/stats summarizes
-
-	disc space stats not displayed when over-quota
-
 #92 mxtmp folder shall be segregated and secured by catalog
-
-#23 avoid use of kibana_user user once ELK issue 51759 us fixed
 
 #39 when delete catalog failed because of Kibana, page is not refreshed while it should be
 
@@ -281,7 +256,8 @@ v2.3.0:
 - When importing with new fields: 
 	Warning: Following field(s) listed in section 'Section' do not exist in the catalog : name
 - #139 delete all items, not only max 10000 items (ELK limit)
-
+- #23 avoid use of kibana_user user once ELK issue 51759 us fixed
+- #137 include ELK disk space for quota calculation
 v2.2.3 and 2.2.4: fixing download paths in prod env
 v2.2.2: fixed toolbox download path in prod env
 v2.2.1: fixed access restricted on toolbox in prod env 

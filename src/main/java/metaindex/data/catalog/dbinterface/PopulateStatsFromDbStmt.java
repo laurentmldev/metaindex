@@ -1,5 +1,7 @@
 package metaindex.data.catalog.dbinterface;
 
+import java.util.Iterator;
+
 /**
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -18,7 +20,7 @@ import org.apache.http.util.EntityUtils;
 import org.elasticsearch.client.Request;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.ResponseException;
-
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import metaindex.data.catalog.Catalog;
@@ -42,12 +44,13 @@ class PopulateStatsFromDbStmt extends ESPopulateStmt<ICatalog>   {
 	
 		_data=d;
 		
-		String reqStr = "/";
+		String catsStrList="";
 		for (ICatalog c : _data) {
-			if (reqStr.length()>1) { reqStr+=","; }
-			reqStr+=c.getName().replace(" ", "%20");
+			if (catsStrList.length()>1) { catsStrList+=","; }
+			catsStrList+=c.getName().replace(" ", "%20");
 		}
-		reqStr+="/_stats/docs";
+		
+		String reqStr="/_cat/indices/"+catsStrList+"?format=json&h=index,docs.count,store.size";
 		
 		_request = new Request("GET",reqStr);
 				
@@ -63,21 +66,44 @@ class PopulateStatsFromDbStmt extends ESPopulateStmt<ICatalog>   {
 								.performRequest(_request);
 			
 			String responseBody = EntityUtils.toString(response.getEntity());
-			JSONObject decodedData = new JSONObject(responseBody);
+			JSONArray decodedData = new JSONArray(responseBody);
 			
+			//[{"index":"tagad","docs.count":"179","store.size":"35.2mb"}]
+					
 			for (ICatalog c : _data) { 
 				c.setNbDocuments(0L);
-				JSONObject curCatalogStats = decodedData.getJSONObject("indices")
-														 .getJSONObject(c.getName());
+				JSONObject curCatalogStats=null;
+				Iterator<Object> it = decodedData.iterator();
+				while (it.hasNext()) {
+					JSONObject curStats = (JSONObject) it.next();
+					if (curStats.getString("index").equals(c.getName())) {
+						curCatalogStats = curStats;
+						break;
+					}					
+				}
+					
 				if (curCatalogStats==null) {
 					log.error("ignored index : "+c.getName());
 					continue;
 				}
 				
-				Long nbDocs =  curCatalogStats.getJSONObject("total")
-												.getJSONObject("docs")
-												.getLong("count");
+				Long nbDocs =  curCatalogStats.getLong("docs.count");
+				String storeSizeStr = curCatalogStats.getString("store.size");
+				Float diskUsageValueFloat = new Float(storeSizeStr.substring(0,storeSizeStr.length()-2));
+				
+				String diskUsageUnit = storeSizeStr.substring(storeSizeStr.length()-2);
+				if (diskUsageUnit.equals("mb")) { /* nothing to do */}
+				else if (diskUsageUnit.equals("kb")) { diskUsageValueFloat=diskUsageValueFloat/1000; }
+				else if (diskUsageUnit.equals("gb")) { diskUsageValueFloat=diskUsageValueFloat*1000; }
+				else {
+					String msg=c.getName()+": Unknown disk usage unit : '"+diskUsageUnit
+							+"' (known ones are only kb,mb,gb)";
+					log.error(msg);
+					throw new DataProcessException(msg);					
+				}
+
 				c.setNbDocuments(nbDocs);
+				c.setELKIndexDiskUseMBytes(diskUsageValueFloat.longValue());
 				c.setDbIndexFound(true);
 			}
 			

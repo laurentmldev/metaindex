@@ -57,7 +57,6 @@ import toolbox.utils.StreamHandler;
 public class WsControllerItem extends AMxWSController {
 	
 	private Log log = LogFactory.getLog(WsControllerItem.class);
-	private final Integer MAX_ELASTIC_SEARCH_RESULT_SIZE=10000;
 	
 	// map[userId][catalogId_requestId]=curFieldValue
 	private static Map<Integer,Map<String,String> >  _pendingUsersMultipartValues
