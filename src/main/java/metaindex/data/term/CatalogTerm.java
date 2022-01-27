@@ -23,6 +23,7 @@ import metaindex.app.Globals;
 import metaindex.app.control.websockets.items.WsControllerItem;
 import metaindex.data.catalog.ICatalog;
 import toolbox.exceptions.DataProcessException;
+import toolbox.utils.parsers.ADbItemsParser;
 
 public class CatalogTerm implements ICatalogTerm {
 
@@ -127,5 +128,8 @@ public class CatalogTerm implements ICatalogTerm {
 	public void setRawDatatype(RAW_DATATYPE rawDatatype) {
 		this._rawDatatype = rawDatatype;
 	}
-
+	@Override
+	public String getTruncatedStrTerminator() {
+		return ADbItemsParser.TRUNCATED_STR_TERMINATOR;
+	}
 }

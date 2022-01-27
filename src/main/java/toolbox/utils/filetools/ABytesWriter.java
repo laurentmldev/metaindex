@@ -43,7 +43,7 @@ public abstract class ABytesWriter implements IBytesWriter {
 	
 	public ABytesWriter(Long targetBytesSize, AProcessingTask parentProcessingTask) {
 		_targetBytesSize=targetBytesSize;
-		_parentProcessingTask=parentProcessingTask;		
+		_parentProcessingTask=parentProcessingTask;				
 	}
 
 	@Override
@@ -159,6 +159,10 @@ public abstract class ABytesWriter implements IBytesWriter {
 
 	public void setCurrentByteOffset(Integer _currentByteOffset) {
 		this._currentByteOffset = _currentByteOffset;
+	}
+
+	public AProcessingTask getParentProcessingTask() {
+		return _parentProcessingTask;
 	}
 
 	

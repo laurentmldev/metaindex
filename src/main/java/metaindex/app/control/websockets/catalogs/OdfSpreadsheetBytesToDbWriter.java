@@ -140,11 +140,13 @@ public class OdfSpreadsheetBytesToDbWriter extends ExcelSpreadsheetBytesToDbWrit
 	@Override
 	public void init(IDbItemsProcessor itemsBulkProcess,
 					 Map<String,PARSING_FIELD_TYPE> parsingTypes,
-					 Map<String,String> fieldsMapping) throws DataProcessException {
+					 Map<String,String> fieldsMapping,
+					 Integer maxStrFieldLength) throws DataProcessException {
 		_itemsBulkProcessor = itemsBulkProcess;
 		_itemsParser = new OdfSpreadsheetDbItemsParser();
 		_itemsParser.setFieldsParsingTypes(parsingTypes);
 		_itemsParser.setFieldsMapping(fieldsMapping);
+		_itemsParser.setMaxStrFieldLength(maxStrFieldLength);
 		
 		_out = new ByteArrayOutputStream();
 				

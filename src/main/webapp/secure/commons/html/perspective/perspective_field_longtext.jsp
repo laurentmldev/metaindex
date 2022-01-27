@@ -170,6 +170,12 @@ function createROFullTextPopup(textArea,itemId,termDesc,catalogDesc,
 		 // open popup
 		createROFullTextPopup(textArea,itemId,termDesc,catalogDesc, getFullFieldContentsCallback);
 	 }
+	 
+	 // truncated contents warning if needed
+	 if (fieldValue.endsWith(termDesc.truncatedStrTerminator)) {
+		 let truncatedWarnFlag = fieldNode.querySelector("._truncated_warning_");
+		 truncatedWarnFlag.style.display='block';
+	 }
  	
  	 fieldContainerNode.appendChild(fieldNode);
   }
@@ -179,12 +185,12 @@ function createROFullTextPopup(textArea,itemId,termDesc,catalogDesc,
 
 
 <div style="display:none;width:100%;" class="mx-perspective-field" id="_commons_perspectives_field_readonly_template_longtext"  >
-	<div class="_title_ "></div>
+	<div class="_title_ "></div><div class="_truncated_warning_" style="display:none;font-weight:bold;color:red">[<s:text name="Items.field.truncatedContents"/>]</div>
 	<pre class="_value_ mx-perspective-field-longtext-mini"  style="max-height:8vh;max-width:15vw;" ></pre>	               
 </div>
 
 <div style="display:none;width:100%;" class="mx-perspective-field" id="_commons_perspectives_field_editable_template_longtext"  >
-	<div class="_title_"></div>
+	<div class="_title_"></div><div class="_truncated_warning_" style="display:none;font-weight:bold;color:red">[<s:text name="Items.field.truncatedContents"/>]</div>
 	<pre class="_value_ mx-perspective-field-longtext-mini"  style="max-height:8vh;max-width:15vw;"
 		title="<s:text name="Catalogs.field.FullEdit" />"
 	></pre>

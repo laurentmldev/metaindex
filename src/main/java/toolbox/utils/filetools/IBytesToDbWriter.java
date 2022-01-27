@@ -1,6 +1,8 @@
 package toolbox.utils.filetools;
 
 
+import java.util.List;
+
 /*
 GNU GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
@@ -27,9 +29,10 @@ import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
  *
  */
 public interface IBytesToDbWriter extends IBytesWriter,IStreamProducer<IDbItem> {
-	
+
 	public void init(IDbItemsProcessor dbItemsBulkProcess, 
 					 Map<String,PARSING_FIELD_TYPE> parsingTypes,
-					 Map<String, String> fieldsMapping) throws DataProcessException ;
+					 Map<String, String> fieldsMapping,
+					 Integer maxStrFieldLength) throws DataProcessException ;
 	
 	}

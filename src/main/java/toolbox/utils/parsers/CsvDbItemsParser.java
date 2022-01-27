@@ -134,12 +134,6 @@ public class CsvDbItemsParser extends ADbItemsParser<String> {
 			}			
 			curColContents=curColContents.replace(MX_QUOTE_ESCAPE_STR, "\"");
 			curColContents=curColContents.replace(MX_SEP_ESCAPE_STR, this.getCsvSeparator());
-			/*
-			curColContents=curColContents.replaceAll(MX_GT_ESCAPE_STR, ">");
-			curColContents=curColContents.replaceAll(MX_LT_ESCAPE_STR, "<");
-			curColContents=curColContents.replaceAll(MX_DOLLARS_ESCAPE_STR, "\\$");
-			curColContents=curColContents.replaceAll(MX_ANTISLASH_ESCAPE_STR, "\\\\");
-			*/
 			
 			PARSING_FIELD_TYPE fieldType = this.getFieldsParsingTypes().get(dbFieldName);
 			extractItemStrData(result,dbFieldName,curColContents,fieldType);

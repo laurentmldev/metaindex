@@ -181,4 +181,10 @@ public interface ICatalogTerm extends IIdentifiable<Integer>{
 	void setEnumsList(List<String> enumsList);
 	void setIsMultiEnum(Boolean isMultiEnum);
 	
+	/**
+	 * used to detect if a given text have been truncated during import processing
+	 * @return
+	 */
+	public String getTruncatedStrTerminator();
+	
 }

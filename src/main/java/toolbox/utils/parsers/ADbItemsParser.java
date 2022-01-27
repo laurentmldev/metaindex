@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 
 import toolbox.database.IDbItem;
 import toolbox.utils.IPair;
@@ -38,6 +39,11 @@ public abstract class ADbItemsParser<TFrom> implements IFieldsListParser<TFrom,I
 	
 	public static final String[] MX_CR_ESCAPE_STR = { "&cr&","__CR__" };
 	public static final String[] MX_CLEAR_CELL_STR= { "&empty&","__empty__" };
+	public static final String TRUNCATED_STR_TERMINATOR = "...[TRUNCATED]";
+	
+	// truncate str fields if longer than that
+	// (if value is -1, then never truncate)
+	private Integer _maxStrFieldLength=-1;
 	
 	private Integer _nbLinesParsed=0;
 	// parsing type by db field name (only for fields chosen expected to be actually parsed)
@@ -49,6 +55,10 @@ public abstract class ADbItemsParser<TFrom> implements IFieldsListParser<TFrom,I
 	
 	/// To be overridden by specialization
 	protected abstract IDbItem buildObjectFromFieldsMap(Map<String, Object> fieldsMap);
+	
+	// keep list of items with truncated contents (because some fields having too long contents)
+	private List<String> _parsedItemsWithTruncatedContents = new ArrayList<String>();
+	private Semaphore _parseWarningsLock = new Semaphore(1,true);
 	
 	@Override
 	public String[] getColsNames() { return _csvColsNames; }
@@ -102,13 +112,21 @@ public abstract class ADbItemsParser<TFrom> implements IFieldsListParser<TFrom,I
 	
 	}	
 	
-	protected Object parseStrField(String entryStrContents) throws ParseException {
+	protected Object parseStrField(String itemId,String entryStrContents) throws ParseException, InterruptedException {
 		
 		// remove wrapping quotes if any
 		if (entryStrContents.startsWith("\"") && entryStrContents.endsWith("\"")) {
-			return entryStrContents.substring(1, entryStrContents.length()-1);
+			entryStrContents=entryStrContents.substring(1, entryStrContents.length()-1);
 		}
 					
+		// truncate string if too long
+		if (entryStrContents.length()>getMaxStrFieldLength()) {
+			entryStrContents=entryStrContents.substring(0,
+					getMaxStrFieldLength()-TRUNCATED_STR_TERMINATOR.length())+TRUNCATED_STR_TERMINATOR;
+			_parseWarningsLock.acquire();
+			_parsedItemsWithTruncatedContents.add(itemId);
+			_parseWarningsLock.release();
+		}
 		return entryStrContents; 
 	}
 	
@@ -141,11 +159,15 @@ public abstract class ADbItemsParser<TFrom> implements IFieldsListParser<TFrom,I
 										PARSING_FIELD_TYPE fieldType) 
 													throws ParseException {
 		
+		String itemId="";
+		if (parsedData.containsKey(IDbItem.DB_ID_FIELD_NAME)) {
+			itemId=(String)parsedData.get(IDbItem.DB_ID_FIELD_NAME);
+		}
 		try {
 			switch (fieldType) {
 				case TEXT:
-				case DATE: // date is parsed as a string (typically dd/mm/yyyy)
-					parsedData.put(dbFieldName, parseStrField(fieldStrValue));
+				case DATE: // date is parsed as a string (typically dd/mm/yyyy)					
+					parsedData.put(dbFieldName, parseStrField(itemId,fieldStrValue));
 					break;
 				case NUMBER:
 					parsedData.put(dbFieldName, parseNumberFieldContents(fieldStrValue));
@@ -158,8 +180,34 @@ public abstract class ADbItemsParser<TFrom> implements IFieldsListParser<TFrom,I
 			throw new ParseException("Contents not compatible with type '"+fieldType.toString()
 						+"' of field '"+dbFieldName+"' (input field '"+dbFieldName
 						+"') : "	+e.getMessage()+" : "+fieldStrValue);
+		} catch (InterruptedException e2) {
+			throw new ParseException("Parsing failed, sorry :"+e2.getMessage());
 		}
 		
 	}
+
+	public Integer getMaxStrFieldLength() {
+		return _maxStrFieldLength;
+	}
+
+	public void setMaxStrFieldLength(Integer maxStrFieldLength) {
+		this._maxStrFieldLength = maxStrFieldLength;
+	}
+	// get current warnings list and empty it
+	public List<String> retrieveTruncatedItemIds()  {
+		
+		try {
+			_parseWarningsLock.acquire();
+			List<String> rst = _parsedItemsWithTruncatedContents;
+			_parsedItemsWithTruncatedContents=new ArrayList<>();
+			_parseWarningsLock.release();
+			return rst;
+		} catch (InterruptedException e2) {
+			log.error("Exception while parsing contents: "+e2.getMessage());
+			_parseWarningsLock.release();
+			return null;
+		}
+	}
+	
 	
 }

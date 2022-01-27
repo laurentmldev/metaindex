@@ -66,6 +66,11 @@ public class WsControllerCatalogFileUpload extends AMxWSController {
 	// risks of server lock down
 	private static final Integer MAX_CSV_UPLOAD_NB_ELEMENTS = 250000;
 	
+	// max nb chars allowed in a field
+	// used to limit overhead on ELK stack
+	// extra text will be truncated
+	private static final Integer MAX_STR_FIELD_LENGTH= 50000;
+	
 	@Autowired
 	public WsControllerCatalogFileUpload(SimpMessageSendingOperations messageSender) {
 		super(messageSender);		
@@ -399,7 +404,8 @@ public class WsControllerCatalogFileUpload extends AMxWSController {
 												user.getText("Items.serverside.uploadItems.progress",requestMsg.getTotalNbEntries().toString()),
 											requestMsg.getTotalNbEntries(),now);    
 	
-    		procTask.init(dbItemsProcessor,fieldsParsingType,requestMsg.getFieldsMapping());
+    		procTask.init(dbItemsProcessor,fieldsParsingType,
+    					requestMsg.getFieldsMapping(),MAX_STR_FIELD_LENGTH);
     		procTask.start();
     		
     		// send back successful answer

@@ -132,9 +132,8 @@
  
  
  function handleMxWsServerGuiMessage(msg) {
-	 //dumpStructure(msg);
-	 
-	 console.log("simple progress msg");
+	 //dumpStructure(msg);	 
+	 //console.log("simple progress msg");
 	 if (msg.msgType=="PROGRESS") { 
 		 MxGuiLeftBar.setProgressBar(msg.processingId,msg.pourcentage,msg.text, msg.processingActive);
 	 }

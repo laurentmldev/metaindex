@@ -61,12 +61,14 @@ public class CsvBytesToDbWriter extends ABytesWriter implements IBytesToDbWriter
 	@Override
 	public void init(IDbItemsProcessor itemsBulkProcess,
 					 Map<String,PARSING_FIELD_TYPE> parsingTypes,
-					 Map<String,String> fieldsMapping) throws DataProcessException {
+					 Map<String,String> fieldsMapping,
+					 Integer maxStrFieldLength) throws DataProcessException {
 		_itemsBulkProcessor = itemsBulkProcess;
 		_csvParser = new CsvDbItemsParser();
 		_csvParser.setFieldsParsingTypes(parsingTypes);
 		_csvParser.setFieldsMapping(fieldsMapping);
 		_csvParser.setCsvSeparator(DEFAULT_CSV_SEP);
+		_csvParser.setMaxStrFieldLength(maxStrFieldLength);
 		
 	}
 	
@@ -133,7 +135,7 @@ public class CsvBytesToDbWriter extends ABytesWriter implements IBytesToDbWriter
 			throw new ParseException("Unable to split CSV line into columns: '"+e.getMessage()+"' at l."+_totalNbLines,e);
 		}
 		List<IDbItem> parsedItemsToIndex=new ArrayList<>();
-		parsedItemsToIndex = _csvParser.parseAll(csvRows); 		
+		parsedItemsToIndex = _csvParser.parseAll(csvRows); 	
 		_itemsBulkProcessor.handle(parsedItemsToIndex); 		
 	}
 
@@ -144,7 +146,7 @@ public class CsvBytesToDbWriter extends ABytesWriter implements IBytesToDbWriter
 			_unfinishedLineFromPreviousChunk="";
 			// use -1 as sequence number to indicate that its the very last one
 			handleReceivedContentsSequence(lastLine.getBytes(),-1);		
-		}
+		}		
 	}
 
 	@Override

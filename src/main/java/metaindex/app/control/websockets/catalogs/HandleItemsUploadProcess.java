@@ -69,9 +69,10 @@ public class HandleItemsUploadProcess extends HandleFileUploadProcess   {
 	
 	public void init(IDbItemsProcessor dbItemsBulkProcess,
 			Map<String,PARSING_FIELD_TYPE> parsingTypes,
-			Map<String,String> fieldsMapping) throws DataProcessException {
+			Map<String,String> fieldsMapping,
+			Integer maxStrFieldLength) throws DataProcessException {
 		
-		_dbItemsOutstream.init(dbItemsBulkProcess,parsingTypes,fieldsMapping);
+		_dbItemsOutstream.init(dbItemsBulkProcess,parsingTypes,fieldsMapping,maxStrFieldLength);
 	}
 	
 	@Override

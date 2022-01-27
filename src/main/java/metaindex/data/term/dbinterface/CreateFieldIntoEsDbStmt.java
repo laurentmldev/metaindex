@@ -58,13 +58,17 @@ class CreateFieldIntoEsDbStmt extends ESWriteStmt<ICatalogTerm>   {
             // for text objects, add a keyword subtype as 'raw', in order to allow
             // ElasticSearch to sort search results following this field
             if (ICatalogTerm.getRawDatatype(t.getDatatype())==RAW_DATATYPE.Ttext) {
-            	builder.field("fielddata", true);// allow significant terms search
             	
             	// long text shall be stored separately 
                 if (t.getDatatype()== ICatalogTerm.TERM_DATATYPE.LONG_TEXT) {
-                	builder.field("store", true);            
+                	builder.field("store", true);
+                	// disallow significant terms search 
+                	// takes a lot of JVM memory
+                	builder.field("fielddata", false);
                 }
                 else {
+                	// allow significant terms search 
+                	builder.field("fielddata", true);
 	            	builder.startObject("fields");
 	            	{
 	            		builder.startObject("keyword"); {

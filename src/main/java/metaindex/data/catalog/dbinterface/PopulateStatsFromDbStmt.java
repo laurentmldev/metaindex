@@ -91,15 +91,35 @@ class PopulateStatsFromDbStmt extends ESPopulateStmt<ICatalog>   {
 				String storeSizeStr = curCatalogStats.getString("store.size");
 				Float diskUsageValueFloat = new Float(storeSizeStr.substring(0,storeSizeStr.length()-2));
 				
-				String diskUsageUnit = storeSizeStr.substring(storeSizeStr.length()-2);
-				if (diskUsageUnit.equals("mb")) { /* nothing to do */}
-				else if (diskUsageUnit.equals("kb")) { diskUsageValueFloat=diskUsageValueFloat/1000; }
+				// target disk usage unit is MBytes
+				String diskUsageUnit=storeSizeStr.substring(storeSizeStr.length()-2);
+				if (diskUsageUnit.equals("kb")) { diskUsageValueFloat=diskUsageValueFloat/1000; }
+				else if (diskUsageUnit.equals("mb")) { /* nothing to do */}
 				else if (diskUsageUnit.equals("gb")) { diskUsageValueFloat=diskUsageValueFloat*1000; }
+				else if (diskUsageUnit.equals("tb")) { diskUsageValueFloat=diskUsageValueFloat*1000; }				
+				
 				else {
-					String msg=c.getName()+": Unknown disk usage unit : '"+diskUsageUnit
-							+"' (known ones are only kb,mb,gb)";
-					log.error(msg);
-					throw new DataProcessException(msg);					
+					// try if it is simply 'b' for bytes
+					// in that case str size is different and we need to reparse initial string
+					// TODO: maybe simply use regex instead ...
+					String errmsg=c.getName()+": Unknown disk usage unit : '"+diskUsageUnit
+							+"' (known ones are only b,kb,mb,gb,tb)";
+					
+					diskUsageUnit = storeSizeStr.substring(storeSizeStr.length()-1);
+					if (!diskUsageUnit.equals("b")) { 
+						log.error(errmsg);
+						throw new DataProcessException(errmsg);
+					}
+					try {
+						diskUsageValueFloat = 
+								new Float(storeSizeStr.substring(0,storeSizeStr.length()-1));
+						diskUsageValueFloat=diskUsageValueFloat/1000000; // convert to MBytes
+					} catch(Exception e) {
+						log.error(errmsg);
+						throw new DataProcessException(errmsg);
+						
+					}
+										
 				}
 
 				c.setNbDocuments(nbDocs);
