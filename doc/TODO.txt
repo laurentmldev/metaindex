@@ -7,6 +7,10 @@ update help texts:
 	- about calculation of drive usage (-> including  size of index contents)
 	- LONG_TEXT max length
 
+
+server.publicBaseUrl is missing and should be configured when running in a production environment. Some features may not behave correctly. See the documentation.
+
+
 limit document contents total size ?
 	mxelsrc     | bash: line 2:    10 Killed                  /usr/local/bin/docker-entrypoint.sh
 	mxelsrc exited with code 137

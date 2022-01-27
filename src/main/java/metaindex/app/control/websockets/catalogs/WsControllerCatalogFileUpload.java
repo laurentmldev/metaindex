@@ -39,6 +39,7 @@ import metaindex.data.term.ICatalogTerm;
 import metaindex.data.term.ICatalogTerm.RAW_DATATYPE;
 import metaindex.data.term.ICatalogTerm.TERM_DATATYPE;
 import metaindex.data.userprofile.IUserProfileData;
+import metaindex.data.userprofile.UserProfileData;
 import toolbox.database.IDbItem;
 import toolbox.database.IDbItemsProcessor;
 import toolbox.database.elasticsearch.ESDataProcessException;
@@ -47,6 +48,7 @@ import toolbox.exceptions.DataProcessException;
 import toolbox.utils.IProcessingTask;
 import toolbox.utils.filetools.FileDescriptor;
 import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
+import toolbox.utils.parsers.IParseWarningsHandler;
 
 /**
  * 
@@ -61,7 +63,9 @@ public class WsControllerCatalogFileUpload extends AMxWSController {
 	
 	private Log log = LogFactory.getLog(WsControllerCatalogFileUpload.class);
 	
-	private static final Long MAX_UPLOAD_SIZE_MBYTES=50L; // 50Mo max, otherwise go via SFTP
+	// 50Mo max, otherwise go via SFTP
+	private static final Long MAX_UPLOAD_SIZE_MBYTES=50L;
+	
 	// limit size of CSV files to upload at once, in order to mitigate
 	// risks of server lock down
 	private static final Integer MAX_CSV_UPLOAD_NB_ELEMENTS = 250000;
@@ -404,8 +408,45 @@ public class WsControllerCatalogFileUpload extends AMxWSController {
 												user.getText("Items.serverside.uploadItems.progress",requestMsg.getTotalNbEntries().toString()),
 											requestMsg.getTotalNbEntries(),now);    
 	
+    		class WarningsHandler implements IParseWarningsHandler {
+    			IUserProfileData _activeUser=null;
+    			List<String> warnings=new ArrayList<>();
+    			public WarningsHandler(IUserProfileData activeUser) {
+    				_activeUser=activeUser;
+    			}
+				@Override
+				public void handleParseWarning(String itemId, String fieldName, 
+						PARSING_FIELD_TYPE fieldType,
+						PARSE_WARNING_TYPES warningType) {
+					
+					if (warnings.size()==0) {
+						_activeUser.sendGuiWarningMessage(_activeUser.getText("Items.serverside.uploadWarningsDetected"));
+					}
+					String warningMsg="";
+
+					switch (warningType) {
+						case TRUNCATED_CONTENTS:
+							warningMsg=_activeUser.getText("Items.serverside.uploadWarning.fieldTruncated",
+									fieldName,itemId,MAX_STR_FIELD_LENGTH.toString());
+							break;
+						default:
+							warningMsg="WARNING: '"+warningType+"' on field '"+fieldName+"' of item "+itemId;
+					}
+					
+					warnings.add(warningMsg);
+					
+				}
+				@Override
+				public void handleStop() {
+					_activeUser.sendGuiErrorMessage(_activeUser.getText("Items.serverside.uploadWarning.synthesis",
+								new Integer(warnings.size()).toString()),
+								warnings);
+				}
+    			
+    		}
     		procTask.init(dbItemsProcessor,fieldsParsingType,
-    					requestMsg.getFieldsMapping(),MAX_STR_FIELD_LENGTH);
+    					requestMsg.getFieldsMapping(),
+    					MAX_STR_FIELD_LENGTH,new WarningsHandler(user));
     		procTask.start();
     		
     		// send back successful answer

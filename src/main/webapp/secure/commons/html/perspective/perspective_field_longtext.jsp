@@ -73,6 +73,15 @@ function createROFullTextPopup(textArea,itemId,termDesc,catalogDesc,
 	 
 	// body
 		let popupBody=popupWindow.querySelector(".modal-body");
+		// truncated data warning
+		let warningTruncatedNode=document.createElement("div");
+		warningTruncatedNode.innerHTML="[<s:text name="Items.field.truncatedContents" />]";
+		warningTruncatedNode.style.display='none';
+		warningTruncatedNode.style.color='red';
+		warningTruncatedNode.style["font-weight"]='bold';
+		popupBody.appendChild(warningTruncatedNode);
+		
+		// text area
 		textArea.innerHTML="<div class='mx-perspective-field-longtext-pleasewait'><s:text name="Items.pleaseWaitWhileLoadingFullContents" /></div>";
 		textArea.style["width"]="90%";
 		textArea.style["height"]="90%";
@@ -83,6 +92,11 @@ function createROFullTextPopup(textArea,itemId,termDesc,catalogDesc,
 		// loading full contents for this field
 		let setFullValue=function(fullValue) {
 			textArea.innerHTML=fullValue;
+			 
+			 // truncated contents warning if needed	 
+			 if (fullValue.endsWith(termDesc.truncatedStrTerminator)) {
+				 warningTruncatedNode.style.display='block';
+			 }
 		}				 		
 		popupWindow.show();
 		
@@ -141,7 +155,6 @@ function createROFullTextPopup(textArea,itemId,termDesc,catalogDesc,
 					onChangeCallback,localSuccessCallback,onUpdateErrorCallback,showWorkInProgress)
  	 }
  	
- 	 
  	 return fieldNode;
   }
  
@@ -170,12 +183,6 @@ function createROFullTextPopup(textArea,itemId,termDesc,catalogDesc,
 		 // open popup
 		createROFullTextPopup(textArea,itemId,termDesc,catalogDesc, getFullFieldContentsCallback);
 	 }
-	 
-	 // truncated contents warning if needed
-	 if (fieldValue.endsWith(termDesc.truncatedStrTerminator)) {
-		 let truncatedWarnFlag = fieldNode.querySelector("._truncated_warning_");
-		 truncatedWarnFlag.style.display='block';
-	 }
  	
  	 fieldContainerNode.appendChild(fieldNode);
   }
@@ -185,12 +192,12 @@ function createROFullTextPopup(textArea,itemId,termDesc,catalogDesc,
 
 
 <div style="display:none;width:100%;" class="mx-perspective-field" id="_commons_perspectives_field_readonly_template_longtext"  >
-	<div class="_title_ "></div><div class="_truncated_warning_" style="display:none;font-weight:bold;color:red">[<s:text name="Items.field.truncatedContents"/>]</div>
+	<div class="_title_ "></div>
 	<pre class="_value_ mx-perspective-field-longtext-mini"  style="max-height:8vh;max-width:15vw;" ></pre>	               
 </div>
 
 <div style="display:none;width:100%;" class="mx-perspective-field" id="_commons_perspectives_field_editable_template_longtext"  >
-	<div class="_title_"></div><div class="_truncated_warning_" style="display:none;font-weight:bold;color:red">[<s:text name="Items.field.truncatedContents"/>]</div>
+	<div class="_title_"></div>
 	<pre class="_value_ mx-perspective-field-longtext-mini"  style="max-height:8vh;max-width:15vw;"
 		title="<s:text name="Catalogs.field.FullEdit" />"
 	></pre>

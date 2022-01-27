@@ -20,6 +20,7 @@ import toolbox.utils.IPair;
 import toolbox.utils.filetools.IBytesToDbWriter;
 import toolbox.utils.filetools.FileDescriptor;
 import toolbox.utils.filetools.IBytesWriter;
+import toolbox.utils.parsers.IParseWarningsHandler;
 import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
 import metaindex.app.control.websockets.catalogs.ExcelSpreadsheetBytesToDbWriter.CALC_TYPE;
 
@@ -37,6 +38,7 @@ import java.util.Map;
 public class HandleItemsUploadProcess extends HandleFileUploadProcess   {
 
 	private IBytesToDbWriter _dbItemsOutstream;
+	private IParseWarningsHandler _warningsHandler;
 	
 	public static Boolean isCsvFile(String fileName) {
 		return fileName.endsWith(".csv");
@@ -70,9 +72,12 @@ public class HandleItemsUploadProcess extends HandleFileUploadProcess   {
 	public void init(IDbItemsProcessor dbItemsBulkProcess,
 			Map<String,PARSING_FIELD_TYPE> parsingTypes,
 			Map<String,String> fieldsMapping,
-			Integer maxStrFieldLength) throws DataProcessException {
+			Integer maxStrFieldLength,
+			 IParseWarningsHandler warningsHandler) throws DataProcessException {
 		
-		_dbItemsOutstream.init(dbItemsBulkProcess,parsingTypes,fieldsMapping,maxStrFieldLength);
+		_warningsHandler=warningsHandler;
+		_dbItemsOutstream.init(dbItemsBulkProcess,parsingTypes,
+				fieldsMapping,maxStrFieldLength,warningsHandler);
 	}
 	
 	@Override
@@ -85,6 +90,7 @@ public class HandleItemsUploadProcess extends HandleFileUploadProcess   {
 	public void stop() throws DataProcessException{
 		super.stop();
 		_dbItemsOutstream.stop();
+		_warningsHandler.handleStop();
 	}
 
 

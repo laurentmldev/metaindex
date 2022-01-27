@@ -36,6 +36,7 @@ import toolbox.utils.filetools.IBytesToDbWriter;
 import toolbox.utils.parsers.CsvDbItemsParser;
 import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
 import toolbox.utils.parsers.IListParser.ParseException;
+import toolbox.utils.parsers.IParseWarningsHandler;
 
 
 /**
@@ -62,13 +63,15 @@ public class CsvBytesToDbWriter extends ABytesWriter implements IBytesToDbWriter
 	public void init(IDbItemsProcessor itemsBulkProcess,
 					 Map<String,PARSING_FIELD_TYPE> parsingTypes,
 					 Map<String,String> fieldsMapping,
-					 Integer maxStrFieldLength) throws DataProcessException {
+					 Integer maxStrFieldLength,
+					 IParseWarningsHandler warningsHandler) throws DataProcessException {
 		_itemsBulkProcessor = itemsBulkProcess;
 		_csvParser = new CsvDbItemsParser();
 		_csvParser.setFieldsParsingTypes(parsingTypes);
 		_csvParser.setFieldsMapping(fieldsMapping);
 		_csvParser.setCsvSeparator(DEFAULT_CSV_SEP);
 		_csvParser.setMaxStrFieldLength(maxStrFieldLength);
+		_csvParser.setWarningsHandler(warningsHandler);
 		
 	}
 	

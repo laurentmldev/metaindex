@@ -45,6 +45,7 @@ import toolbox.utils.filetools.ABytesWriter;
 import toolbox.utils.filetools.IBytesToDbWriter;
 import toolbox.utils.parsers.IListParser.ParseException;
 import toolbox.utils.parsers.OdfSpreadsheetDbItemsParser;
+import toolbox.utils.parsers.IParseWarningsHandler;
 import toolbox.utils.parsers.ISpreadsheetDbItemsParser;
 import toolbox.utils.parsers.IFieldsListParser.PARSING_FIELD_TYPE;
 
@@ -141,13 +142,14 @@ public class OdfSpreadsheetBytesToDbWriter extends ExcelSpreadsheetBytesToDbWrit
 	public void init(IDbItemsProcessor itemsBulkProcess,
 					 Map<String,PARSING_FIELD_TYPE> parsingTypes,
 					 Map<String,String> fieldsMapping,
-					 Integer maxStrFieldLength) throws DataProcessException {
+					 Integer maxStrFieldLength,
+					 IParseWarningsHandler warningsHandler) throws DataProcessException {
 		_itemsBulkProcessor = itemsBulkProcess;
 		_itemsParser = new OdfSpreadsheetDbItemsParser();
 		_itemsParser.setFieldsParsingTypes(parsingTypes);
 		_itemsParser.setFieldsMapping(fieldsMapping);
 		_itemsParser.setMaxStrFieldLength(maxStrFieldLength);
-		
+		_itemsParser.setWarningsHandler(warningsHandler);
 		_out = new ByteArrayOutputStream();
 				
 	}

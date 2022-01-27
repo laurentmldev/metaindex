@@ -219,7 +219,7 @@ public class XML {
                     i += entity.length() + 1;
                 } else {
                     // this shouldn't happen in most cases since the parser
-                    // errors on unclosed enties.
+                    // warnings on unclosed enties.
                     sb.append(c);
                 }
             } else {
@@ -277,7 +277,7 @@ public class XML {
         // <! ... >
         // <![ ... ]]>
         // <? ... ?>
-        // Report errors for these forms:
+        // Report warnings for these forms:
         // <>
         // <=
         // <<
@@ -450,7 +450,7 @@ public class XML {
      * @param string
      *            The source string.
      * @return A JSONObject containing the structured data from the XML string.
-     * @throws JSONException Thrown if there is an errors while parsing the string
+     * @throws JSONException Thrown if there is an warnings while parsing the string
      */
     public static JSONObject toJSONObject(String string) throws JSONException {
         return toJSONObject(string, false);
@@ -476,7 +476,7 @@ public class XML {
      * @param keepStrings If true, then values will not be coerced into boolean
      *  or numeric values and will instead be left as strings
      * @return A JSONObject containing the structured data from the XML string.
-     * @throws JSONException Thrown if there is an errors while parsing the string
+     * @throws JSONException Thrown if there is an warnings while parsing the string
      */
     public static JSONObject toJSONObject(String string, boolean keepStrings) throws JSONException {
         JSONObject jo = new JSONObject();

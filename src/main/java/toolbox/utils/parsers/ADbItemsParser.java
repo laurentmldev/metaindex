@@ -41,6 +41,9 @@ public abstract class ADbItemsParser<TFrom> implements IFieldsListParser<TFrom,I
 	public static final String[] MX_CLEAR_CELL_STR= { "&empty&","__empty__" };
 	public static final String TRUNCATED_STR_TERMINATOR = "...[TRUNCATED]";
 	
+	
+	private IParseWarningsHandler _warningsHandler=null;
+	
 	// truncate str fields if longer than that
 	// (if value is -1, then never truncate)
 	private Integer _maxStrFieldLength=-1;
@@ -56,9 +59,6 @@ public abstract class ADbItemsParser<TFrom> implements IFieldsListParser<TFrom,I
 	/// To be overridden by specialization
 	protected abstract IDbItem buildObjectFromFieldsMap(Map<String, Object> fieldsMap);
 	
-	// keep list of items with truncated contents (because some fields having too long contents)
-	private List<String> _parsedItemsWithTruncatedContents = new ArrayList<String>();
-	private Semaphore _parseWarningsLock = new Semaphore(1,true);
 	
 	@Override
 	public String[] getColsNames() { return _csvColsNames; }
@@ -106,13 +106,15 @@ public abstract class ADbItemsParser<TFrom> implements IFieldsListParser<TFrom,I
 		}
 		
 		if (parseErrors.size()>0) { 
-			throw new ParseException(parseErrors.size()+" parse errors in received contents",parseErrors); 
+			throw new ParseException(parseErrors.size()+" parse warnings in received contents",parseErrors); 
 		}
 		return result;
 	
 	}	
 	
-	protected Object parseStrField(String itemId,String entryStrContents) throws ParseException, InterruptedException {
+	protected Object parseStrField(String itemId,String dbFieldName,
+				PARSING_FIELD_TYPE fieldType,String entryStrContents) 
+						throws ParseException, InterruptedException {
 		
 		// remove wrapping quotes if any
 		if (entryStrContents.startsWith("\"") && entryStrContents.endsWith("\"")) {
@@ -123,9 +125,11 @@ public abstract class ADbItemsParser<TFrom> implements IFieldsListParser<TFrom,I
 		if (entryStrContents.length()>getMaxStrFieldLength()) {
 			entryStrContents=entryStrContents.substring(0,
 					getMaxStrFieldLength()-TRUNCATED_STR_TERMINATOR.length())+TRUNCATED_STR_TERMINATOR;
-			_parseWarningsLock.acquire();
-			_parsedItemsWithTruncatedContents.add(itemId);
-			_parseWarningsLock.release();
+			
+			if (_warningsHandler!=null) {
+				_warningsHandler.handleParseWarning(itemId, dbFieldName, fieldType, 
+								IParseWarningsHandler.PARSE_WARNING_TYPES.TRUNCATED_CONTENTS);
+			}
 		}
 		return entryStrContents; 
 	}
@@ -167,7 +171,7 @@ public abstract class ADbItemsParser<TFrom> implements IFieldsListParser<TFrom,I
 			switch (fieldType) {
 				case TEXT:
 				case DATE: // date is parsed as a string (typically dd/mm/yyyy)					
-					parsedData.put(dbFieldName, parseStrField(itemId,fieldStrValue));
+					parsedData.put(dbFieldName, parseStrField(itemId,dbFieldName,fieldType,fieldStrValue));
 					break;
 				case NUMBER:
 					parsedData.put(dbFieldName, parseNumberFieldContents(fieldStrValue));
@@ -193,20 +197,12 @@ public abstract class ADbItemsParser<TFrom> implements IFieldsListParser<TFrom,I
 	public void setMaxStrFieldLength(Integer maxStrFieldLength) {
 		this._maxStrFieldLength = maxStrFieldLength;
 	}
-	// get current warnings list and empty it
-	public List<String> retrieveTruncatedItemIds()  {
-		
-		try {
-			_parseWarningsLock.acquire();
-			List<String> rst = _parsedItemsWithTruncatedContents;
-			_parsedItemsWithTruncatedContents=new ArrayList<>();
-			_parseWarningsLock.release();
-			return rst;
-		} catch (InterruptedException e2) {
-			log.error("Exception while parsing contents: "+e2.getMessage());
-			_parseWarningsLock.release();
-			return null;
-		}
+	
+	public IParseWarningsHandler getWarningsHandler() {
+		return _warningsHandler;
+	}
+	public void setWarningsHandler(IParseWarningsHandler warningsHandler) {
+		this._warningsHandler = warningsHandler;
 	}
 	
 	

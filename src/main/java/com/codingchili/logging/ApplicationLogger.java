@@ -204,7 +204,7 @@ public class ApplicationLogger {
      *
      * @param throwable the throwable to be converted.
      * @return a textual representation of the throwables trace,
-     * may be used in the app to display errors.
+     * may be used in the app to display warnings.
      */
     public static String traceToText(Throwable throwable) {
         StringWriter writer = new StringWriter();
