@@ -72,57 +72,7 @@
         </div>
  </li>
  
- 
- <!-- div>
-			 	<button id="sendCsvFileButton" onclick="event.stopPropagation();" >from CSV file</button> 
-			 </div-->
- 
- <li id="leftbar_filters_list" class="nav-item" style="display:none">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwoBis" aria-expanded="true" aria-controls="collapseTwoBis">
-          <i class="fas fa-fw fa-search"></i>
-          <span><s:text name='Items.filters' /></span>
-        </a>
-        <div id="collapseTwoBis" class="collapse _list_" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-        	<div class="mx-collapse py-2 collapse-inner rounded">
-          		<h6 class="collapse-header"><s:property value='currentUserProfile.catalogVocabulary.filtersCap'/></h6>
-          		<div id="leftbar_filters_list_insertSpot" class=" mx_collapse py-2 collapse-inner rounded" style=""></div>                        
-          	</div>          
-        </div>
- </li>
- 
- <div id="leftbar_filter_template" class="mx_left_filter collapse-item small"  style="display:none" >
-	<span class="_name_" ></span> 
-	<button class="_button_delete_ btn btn-xs float-right" type="button" 
-		onmouseover="this.classList.add('btn-danger');"
-		onmouseout="this.classList.remove('btn-danger');"
-		onclick="ws_handlers_requestDeleteFilter(this.parentNode.querySelector('._name_').innerHTML);"
-		>
-      <i class="fa fa-times fa-sm"></i>
-    </button>
-    
- 	<div class="_query_" style="display:none;" >
- 		<hr style="padding:0;margin:0;margin-top:0.2rem;">
- 		<input class="_query_input_" type="text" value="" style="width:70%;margin-top:0.4rem;margin-bottom:0.2rem;"
- 		onclick='event.stopPropagation();'
- 		onfocus="this.parentNode.querySelector('._button_update_').style.display='inline-block';"
- 		onchange="this.changed=true;"
- 		onkeypress="if (event.which==13||event.keycode==13) {  			
- 			ws_handlers_requestUpdateFilter(this.parentNode.parentNode.querySelector('._name_').innerHTML,
-			this.parentNode.parentNode.querySelector('._query_input_').value);
- 			}"
- 		onblur="if (this.changed!=true) { this.parentNode.querySelector('._button_update_').style.display='none'; }">
- 		
- 		<button class="_button_update_ btn btn-xs" style="display:none" type="button" 
-			onmouseover="this.classList.add('btn-success');"
-			onmouseout="this.classList.remove('btn-success');"
-			onclick="event.stopPropagation();				
-					ws_handlers_requestUpdateFilter(this.parentNode.parentNode.querySelector('._name_').innerHTML,
-						        					 this.parentNode.parentNode.querySelector('._query_input_').value);"
-		>
-		 <i class="fa fa-check fa-sm"></i>
-		 </button>
- 	</div>
- </div>
+
 
 <s:include value="../commons/html/form_create_term.jsp"/>
 
@@ -161,57 +111,8 @@ function _update_menus_list() {
 	statisticsOp.style.display="block";
 	MxGuiLeftBar.addOperation(statisticsOp);
 	
-	// Filters
-	var filtersOp = document.getElementById("leftbar_filters_list").cloneNode(true);
-	filtersOp.style.display="block";
-	MxGuiLeftBar.addOperation(filtersOp);
 }
-function left_buildNewFilter(descr) {
-	
-	let newFilterNode=document.getElementById("leftbar_filter_template").cloneNode(true);	
-	newFilterNode.style.display='block';
-	newFilterNode.descr=descr;
-	newFilterNode.isSelected=false;
-	
-	
-	// name
-	let nameNode=newFilterNode.querySelector("._name_");
-	nameNode.innerHTML=descr.name;
-	
-	// query input
-	let queryNode=newFilterNode.querySelector("._query_");
-	let queryInputNode=newFilterNode.querySelector("._query_input_");
-	queryInputNode.value=descr.query;
-	
-	newFilterNode.onclick=function(event) {		
-		if (newFilterNode.isSelected) { newFilterNode.deselect(); }
-		else { newFilterNode.select(); }
-	}
-	
-	newFilterNode.select=function() {
-		newFilterNode.isSelected=true;
-		queryNode.style.display='block';
-		newFilterNode.classList.add('mx_left_filter_selected');
-		newFilterNode.classList.add('mx-selected-dropdown');
-		MxGuiHeader.refreshSearch();
-	}
-	newFilterNode.deselect=function() {
-		newFilterNode.isSelected=false;
-		queryNode.style.display='none';
-		newFilterNode.classList.remove('mx_left_filter_selected');
-		newFilterNode.classList.remove('mx-selected-dropdown');
-		MxGuiHeader.refreshSearch();
-	}
-	
-	return newFilterNode
-}
-MxGuiLeftBar.getFiltersInsertSpot=function() { 
-	return document.getElementById("leftbar_filters_list_insertSpot"); 
-}
-MxGuiLeftBar.buildNewFilter=left_buildNewFilter;
-MxGuiLeftBar.openFiltersArea=function() {
-	document.getElementById('leftbar_filters_list').querySelector("._list_").classList.add("show");
-}
+
 MxGuiLeftBar.setNbMatchingItems=function(nbMatchingItems) {
 	let nbMatchNode=document.getElementById('MxGui.left.csvdownload.nbMatchDocs');	 
 	 nbMatchNode.innerHTML=nbMatchingItems;	 
@@ -359,13 +260,10 @@ MxGuiLeftBar.handleCatalogDetails=function(catalogDescr) {
 	
 	
 	_update_menus_list();
-	let filtersInsertSpot=MxGuiLeftBar.getFiltersInsertSpot();
 	let currentForm=document.getElementById("createItemForm");
 	let showCreateItemPopup=false;
 	if (currentForm!=null && currentForm.style.display!="none") { showCreateItemPopup=true; }
-	
-	clearNodeChildren(filtersInsertSpot);
-	
+			
 	// generate "create new item" form
 	if (mx_helpers_isCatalogWritable(MxGuiDetails.getCurCatalogDescription().userAccessRights)) {		
 		let createNodeFormInsertSpot=createItemOp.querySelector("._item_form_insert_spot_");	
@@ -378,38 +276,9 @@ MxGuiLeftBar.handleCatalogDetails=function(catalogDescr) {
 	}
 	
 	
-// add filters list
-	if (mx_helpers_isCatalogWritable(MxGuiDetails.getCurCatalogDescription().userAccessRights)!=true) {
-		let filterNodeTemplate=document.getElementById("leftbar_filter_template");
-		let filterDeleteButton = filterNodeTemplate.querySelector('._button_delete_');
-		filterDeleteButton.style.display='none';
-		let filterQueryInput = filterNodeTemplate.querySelector('._query_input_');
-		filterQueryInput.disabled=true;
-		let filterQueryUpdate = filterNodeTemplate.querySelector('._button_update_');
-		filterQueryUpdate.style.display='none';		
-	}
-	// not applied because after insertion (and clone) in the left menu
-	// TODO
-	for (i=0;i< catalogDescr.filters.length;i++) {
-		let curFilterDescr=catalogDescr.filters[i];
-		let newFilterNode = left_buildNewFilter(curFilterDescr);
-		filtersInsertSpot.append(newFilterNode);
-	}
 	
 }
 
-// return array of queries corresponding to selected filters
-MxGuiLeftBar.getSelectedFiltersNames=function() {
-	var result = [];
-	let filtersInsertSpot=MxGuiLeftBar.getFiltersInsertSpot();
-	for (var curFilter=filtersInsertSpot.firstChild;curFilter!==null;curFilter=curFilter.nextElementSibling) {		
-		if (typeof(curFilter)!='object') { continue; }
-		if (curFilter.isSelected) { 
-			result.push(curFilter.descr.name); 
-		}
-	}
-	return result;
-}
 
 
 </script>

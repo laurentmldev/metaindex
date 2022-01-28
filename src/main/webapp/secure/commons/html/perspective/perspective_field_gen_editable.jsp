@@ -101,6 +101,7 @@
  	 fieldNode.appendChild(newEditableFieldNode);
  	 
  	 fieldContainerNode.appendChild(fieldNode);
+
   }
   
 </script>

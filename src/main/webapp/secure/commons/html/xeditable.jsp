@@ -321,7 +321,7 @@ function xeditable_create_boolean_field(
  
  
  function xeditable_finishEditableFields() {
-	 
+
 		// activate 'x-editable' features
 		//let fieldsList = Object.keys(itemCard.descr.data);
 		for (var idx=0;idx<_xeditable_fields.length;idx++) {

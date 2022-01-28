@@ -3,9 +3,6 @@
 v2.3.0:
 -------
 
-update help texts:
-	- about calculation of drive usage (-> including  size of index contents)
-	- LONG_TEXT max length
 
 
 server.publicBaseUrl is missing and should be configured when running in a production environment. Some features may not behave correctly. See the documentation.
@@ -314,7 +311,11 @@ v2.3.0:
 - #139 delete all items, not only max 10000 items (ELK limit)
 - #23 avoid use of kibana_user user once ELK issue 51759 us fixed
 - #137 include ELK disk space for quota calculation
-
+- truncate text fields when tool long (>50k chars) and notify user with warnings
+- update help texts:
+	- about calculation of drive usage (-> including  size of index contents)
+	- LONG_TEXT max length (50000 chars)
+	
 v2.2.3 and 2.2.4: fixing download paths in prod env
 v2.2.2: fixed toolbox download path in prod env
 v2.2.1: fixed access restricted on toolbox in prod env 

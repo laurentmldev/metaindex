@@ -446,7 +446,7 @@ MxGuiLeftBar.showDownloadCsvPrevisu=function() {
 		}	
 		
 		let query = MxGuiHeader.getCurrentSearchQuery();
-		let selectedFiltersNames=MxGuiLeftBar.getSelectedFiltersNames();
+		let selectedFiltersNames=MxGuiHeader.getSelectedFiltersNames();
 		let sortString = MxGuiHeader.getCurrentSearchSortString();
 		let reversedOrder = MxGuiHeader.getCurrentSearchReversedOrder();
 		ws_handlers_requestDownloadCsvFile(selectedTermNames,query,selectedFiltersNames,sortString,reversedOrder); 

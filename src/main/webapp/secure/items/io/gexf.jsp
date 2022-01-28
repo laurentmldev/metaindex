@@ -92,7 +92,7 @@ function _buildGexfForm(catalogDescr,sortedTermsNames) {
 		}
 		
 		let query = MxGuiHeader.getCurrentSearchQuery();
-		let selectedFiltersNames=MxGuiLeftBar.getSelectedFiltersNames();
+		let selectedFiltersNames=MxGuiHeader.getSelectedFiltersNames();
 		let sortString = MxGuiHeader.getCurrentSearchSortString();
 		let reversedOrder = MxGuiHeader.getCurrentSearchReversedOrder();
 		ws_handlers_requestDownloadGraphFile(nodesDataTermIds,edgesTermIds,query,selectedFiltersNames,sortString,reversedOrder);
@@ -174,7 +174,7 @@ function _buildGexfGroupByForm(catalogDescr,sortedTermsNames) {
 		
 				
 		let query = MxGuiHeader.getCurrentSearchQuery();
-		let selectedFiltersNames=MxGuiLeftBar.getSelectedFiltersNames();
+		let selectedFiltersNames=MxGuiHeader.getSelectedFiltersNames();
 		let sortString = MxGuiHeader.getCurrentSearchSortString();
 		let reversedOrder = MxGuiHeader.getCurrentSearchReversedOrder();
 		ws_handlers_requestDownloadGraphGroupByFile(groupTermId,edgesTermIds,query,selectedFiltersNames,sortString,reversedOrder);

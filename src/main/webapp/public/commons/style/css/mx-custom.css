@@ -200,9 +200,20 @@ a.anchor_top {
 	
 }
 
+.mx-search-borders {
+	border-top:1px solid #999 !important;
+	border-bottom:1px solid #999 !important;
+	border-left:1px solid #999 !important;
+}
+.mx-search-border-right {
+	border-right:1px solid #999 !important;
+}	
+
 .mx-search-input {
 width:30vw !important;
 height:40px;
+background-color:#f5f5f5;
+
 /*margin-right:1rem;*/
 }
 

@@ -59,7 +59,7 @@
 	 }
 	// GUI refreshed on 'CatalogContentsChanged' message received appart
 	 footer_showAlert(WARNING, "<s:text name="Items.filters.deleted" /> : '"+msg.filterName+"'");
-	 filtersInsertSpot=MxGuiLeftBar.getFiltersInsertSpot();
+	 filtersInsertSpot=MxGuiHeader.getFiltersInsertSpot();
 	 for (var curFilter=filtersInsertSpot.firstChild;curFilter!==null;curFilter=curFilter.nextElementSibling) {		
 		if (typeof(curFilter)!='object') { continue; }
 		if (curFilter.descr.name==msg.filterName) { 
@@ -247,8 +247,8 @@ function ws_handlers_requestCreateFilter(filterName, query) {
 	let successCallback=function() { 
 		footer_showAlert(SUCCESS, "<s:text name="Items.filters.added" /> : "+filterName);
 		filterDescr={ "name":filterName,"query":query};
-		let newFilter=MxGuiLeftBar.buildNewFilter(filterDescr);
-		filtersInsertSpot=MxGuiLeftBar.getFiltersInsertSpot();
+		let newFilter=MxGuiHeader.buildNewFilter(filterDescr);
+		filtersInsertSpot=MxGuiHeader.getFiltersInsertSpot();
 		filtersInsertSpot.appendChild(newFilter);
 		newFilter.select();
 	}	

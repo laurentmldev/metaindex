@@ -62,20 +62,74 @@
             <div class="input-group" onkeypress="event.stopPropagation(); ">
             
             	     
-             <div class="input-group-append">
+             <div class="input-group-append ">
               	<div title="S.O.S" onclick="MxGuiHeader.showInfoModal('<s:text name="help.search.title" />','<s:text name="help.search.body" />')">
                   <i class="mx-help-icon far fa-question-circle"></i>    
                   </div>                
               </div>
              
-              <input id="header.filter.text" type="text" class="mx-search-input form-control bg-light border-0 small" 
+             <div id="filters_search_button" class="input-group-append mx-search-borders dropdown no-arrow ">
+              	
+                <button class="btn btn-secondary dropdown-toggle" id="showFilterDropdownButton" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
+                	title="<s:text name="Header.search.savequery.title"/>" > 
+                  <i class="far fa-star fa-sm text-grey-50"></i>
+                </button>
+               	  <!-- Dropdown - Filter Save Name -->
+	              <div id="showFilterDropdown" class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+	              	style="left:0;width:fit-content;" 
+	              	aria-labelledby="saveFilterDropdown">
+	              	<div onclick="event.stopPropagation();event.preventDefault();document.getElementById('add_new_filter_form').style.display='block';"
+	              			style="" >Add new filter ...</div>
+	                <div id="add_new_filter_form" style="display:none;background:#eee;border:1px solid #ccc;padding:2px;margin-bottom:1rem;border-radius:2px;" class="form-inline mr-auto w-auto navbar-search">
+	                  <div class="input-group">
+	                  	
+	                    <input id="header.filter.name" type="text" class="form-control bg-light border-0 small" 
+	                    		style="min-width:200px;height:1.3rem;margin-bottom:0.5em;"
+	                    		onkeydown="event.stopPropagation();"
+	                    		onkeypress="event.stopPropagation();
+	                    					if (event.which==13||event.keycode==13) {
+				                    			MxGuiHeader.onFilterSave(document.getElementById('header.filter.name').value,
+         									  								MxGuiHeader.getCurrentSearchQuery());
+					                    		document.getElementById('header.filter.name').value='';
+				        						this.parentNode.parentNode.parentNode.classList.remove('show');
+				        						MxGuiHeader.openFiltersArea();
+	                    					}
+	                    					"
+	                    placeholder="<s:text name="Header.savesearch.placeholder"/>" aria-label="Filter" aria-describedby="basic-addon2"              			              		 
+	                    aria-label="Search" aria-describedby="basic-addon2">
+	                    
+	                    <div class="input-group-append" >
+	                      <button class="btn btn-primary" type="button" style="height:1.3rem;"
+	                       	onclick="MxGuiHeader.onFilterSave(document.getElementById('header.filter.name').value,
+	                       									  MxGuiHeader.getCurrentSearchQuery());
+    								document.getElementById('header.filter.name').value='';
+	        						MxGuiHeader.openFiltersArea();
+	                      				" >
+	                        <i class="fas fa-check fa-xs text-grey-50" style="display:block;"></i>
+	                      </button>
+	                      <button class="btn btn-primary" type="button" style="height:1.3rem;"
+	                      		onclick="event.stopPropagation();
+	                      				document.getElementById('add_new_filter_form').style.display='none';
+	                      				document.getElementById('header.filter.name').value='';" >
+	                        <i class="fa fa-times fa-xs text-grey-50" style="display:block;"></i>
+	                      </button>
+	                    </div>		                                        
+	                  </div>
+	                </div>
+	                
+	                <div id="filters_list_insertSpot"></div>
+	              </div>
+              </div>
+            
+              
+              <input id="header.filter.text" type="text" class="mx-search-input mx-search-borders form-control border-0 small" 
               		placeholder="<s:text name="Header.search.placeholder"/>" aria-label="Filter" aria-describedby="basic-addon2"   
               		onchange="document.getElementById('header.filter.text.xs').value=this.value;"           		
               		onkeypress="event.stopPropagation(); if (event.which==13||event.keycode==13) { MxGuiHeader.refreshSearch();}"
               		onkeydown="event.stopPropagation();"
               		title="<s:text name="Header.search.querycontents.title"/>">
               		
-              <div class="input-group-append">
+              <div class="input-group-append mx-search-borders mx-search-border-right">
               	<!--  call to external (custom) function header_onSearchClick(searchQuery) -->
                 <button class="btn btn-secondary" type="button" onclick="MxGuiHeader.onFilterClick(MxGuiHeader.getCurrentSearchQuery());" 
                 	title="<s:text name="Header.search.runquery.title"/>" >
@@ -83,7 +137,7 @@
                 </button>
               </div>
               
-              <div class="input-group-append">
+              <div class="input-group-append mx-search-borders">
               	<!--  call to external (custom) function header_onSearchClick(searchQuery) -->
                 <button class="btn btn-secondary" type="button" 
                    onclick="
@@ -95,58 +149,14 @@
                 </button>
               </div>
  
-              <!-- save current filter expression -->
-               <div id="save_current_search_button" class="input-group-append dropdown no-arrow ">
-              	<!--  call to external (custom) function header_onSearchClick(searchQuery) -->
-                <button class="btn btn-secondary dropdown-toggle" id="saveFilterDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
-                	title="<s:text name="Header.search.savequery.title"/>" > 
-                  <i class="far fa-star fa-sm text-grey-50"></i>
-                </button>
-               	  <!-- Dropdown - Filter Save Name -->
-	              <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="saveFilterDropdown">
-	                <div class="form-inline mr-auto w-auto navbar-search">
-	                  <div class="input-group">
-	                    <input id="header.filter.name" type="text" class="form-control bg-light border-0 small" 
-	                    		style="min-width:200px"
-	                    		onkeydown="event.stopPropagation();"
-	                    		onkeypress="event.stopPropagation();
-	                    					if (event.which==13||event.keycode==13) {
-				                    			MxGuiHeader.onFilterSave(document.getElementById('header.filter.name').value,
-         									  								MxGuiHeader.getCurrentSearchQuery());
-					                    		document.getElementById('header.filter.text').value='';
-				        						this.parentNode.parentNode.parentNode.classList.remove('show');
-				        						MxGuiLeftBar.openFiltersArea();
-	                    					}
-	                    					"
-	                    placeholder="<s:text name="Header.savesearch.placeholder"/>" aria-label="Filter" aria-describedby="basic-addon2"              			              		 
-	                    aria-label="Search" aria-describedby="basic-addon2">
-	                    
-	                    <div class="input-group-append">
-	                      <button class="btn btn-primary" type="button"
-	                       	onclick="MxGuiHeader.onFilterSave(document.getElementById('header.filter.name').value,
-	                       									  MxGuiHeader.getCurrentSearchQuery());
-    								document.getElementById('header.filter.text').value='';
-	        						MxGuiLeftBar.openFiltersArea();
-	                      				" >
-	                        <i class="fas fa-check fa-sm text-grey-50"></i>
-	                      </button>
-	                      <button class="btn btn-primary" type="button" >
-	                        <i class="fa fa-times fa-sm text-grey-50"></i>
-	                      </button>
-	                    </div>		                                        
-	                  </div>
-	                </div>
-	              </div>
-              </div>
-            
-             <select id="header.filter.sortString" class="mx-dropdown form-control bg-light border-0 small"             	
+             <select id="header.filter.sortString" class="mx-dropdown mx-search-borders form-control bg-light border-0 small"             	
              	onchange="MxGuiHeader.refreshSearch();"           		
               	onkeypress="if (event.which==13||event.keycode==13) { MxGuiHeader.refreshSearch();}" 
               	title="<s:text name="Header.sortby.title"/>"
               	style="width:min-content;" >
               	
-              </select>
-              <select id="header.filter.sortOrderReversed" class="mx-dropdown form-control bg-light border-0 small"  
+              </select> 
+              <select id="header.filter.sortOrderReversed" class="mx-dropdown mx-search-borders mx-search-border-right form-control bg-light border-0 small"  
               	onchange="MxGuiHeader.refreshSearch();"           		
               	onkeypress="if (event.which==13||event.keycode==13) { MxGuiHeader.refreshSearch();}" 
               	title="<s:text name="Header.sortorder.title"/>"

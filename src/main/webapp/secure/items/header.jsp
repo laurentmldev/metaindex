@@ -9,7 +9,7 @@
 var _curCatalogDescr=null;
 
 function header_onFilterClick(searchQuery,orderString,reversedOrder)  {
-	var selectedFiltersNames=MxGuiLeftBar.getSelectedFiltersNames();	
+	var selectedFiltersNames=MxGuiHeader.getSelectedFiltersNames();	
 	ws_handlers_requestItemsSearch(searchQuery,selectedFiltersNames,orderString,reversedOrder);	
 }
 
@@ -34,15 +34,134 @@ function header_handleCatalogDetails(catalogDescr) {
 	  	saveCurrentSearch.style.display='none';
 	}
 	_curCatalogDescr=catalogDescr;
+	
+	let filtersInsertSpot=MxGuiHeader.getFiltersInsertSpot();
+	clearNodeChildren(filtersInsertSpot);
+	
+	
+	// add filters list
+		if (mx_helpers_isCatalogWritable(MxGuiDetails.getCurCatalogDescription().userAccessRights)!=true) {
+			let filterNodeTemplate=document.getElementById("header_filter_template");
+			let filterDeleteButton = filterNodeTemplate.querySelector('._button_delete_');
+			filterDeleteButton.style.display='none';
+			let filterQueryInput = filterNodeTemplate.querySelector('._query_input_');
+			filterQueryInput.disabled=true;
+			let filterQueryUpdate = filterNodeTemplate.querySelector('._button_update_');
+			filterQueryUpdate.style.display='none';		
+		}
+
+		// add user custom filters	
+		for (i=0;i< catalogDescr.filters.length;i++) {
+			let curFilterDescr=catalogDescr.filters[i];
+			let newFilterNode = header_buildNewFilter(curFilterDescr);
+			filtersInsertSpot.append(newFilterNode);
+		}
+	
+	
 	MxGuiHeader.showFilter();
+}
+
+//return array of queries corresponding to selected filters
+MxGuiHeader.getSelectedFiltersNames=function() {
+	var result = [];
+	let filtersInsertSpot=MxGuiHeader.getFiltersInsertSpot();
+	for (var curFilter=filtersInsertSpot.firstChild;curFilter!==null;curFilter=curFilter.nextElementSibling) {		
+		if (typeof(curFilter)!='object') { continue; }
+		if (curFilter.isSelected) { 
+			result.push(curFilter.descr.name); 
+		}
+	}
+	return result;
+}
+
+function header_buildNewFilter(descr) {
+	
+	let newFilterNode=document.getElementById("header_filter_template").cloneNode(true);	
+	newFilterNode.style.display='block';
+	newFilterNode.descr=descr;
+	newFilterNode.isSelected=false;
+	
+	// name
+	let nameNode=newFilterNode.querySelector("._name_");
+	nameNode.innerHTML=descr.name;
+	
+	// query input
+	let queryNode=newFilterNode.querySelector("._query_");
+	let queryInputNode=newFilterNode.querySelector("._query_input_");
+	queryInputNode.value=descr.query;
+	
+	newFilterNode.onclick=function(event) {		
+		if (newFilterNode.isSelected) { newFilterNode.deselect(); }
+		else { newFilterNode.select(); }
+	}
+	
+	newFilterNode.select=function() {
+		newFilterNode.isSelected=true;
+		queryNode.style.display='block';
+		newFilterNode.classList.add('mx_left_filter_selected');
+		newFilterNode.classList.add('mx-selected-dropdown');
+		MxGuiHeader.refreshSearch();
+	}
+	newFilterNode.deselect=function() {
+		newFilterNode.isSelected=false;
+		queryNode.style.display='none';
+		newFilterNode.classList.remove('mx_left_filter_selected');
+		newFilterNode.classList.remove('mx-selected-dropdown');
+		MxGuiHeader.refreshSearch();
+	}
+	
+	return newFilterNode
+}
+
+MxGuiHeader.buildNewFilter=header_buildNewFilter;
+MxGuiHeader.openFiltersArea=function() {
+	document.getElementById('showFilterDropdown').style.display='block';
+	
 }
 MxGuiHeader.onFilterClick=header_onFilterClick;
 MxGuiHeader.onFilterSave=header_onFilterSave;
 MxGuiHeader.handleCatalogDetails=header_handleCatalogDetails;
 MxGuiHeader.getCurCatalogTermsList=function() { return _curCatalogDescr.terms; }
 MxGuiHeader.getCurCatalogDescr=function() { return _curCatalogDescr; }
-
+MxGuiHeader.getFiltersInsertSpot=function() { 
+	return document.getElementById("filters_list_insertSpot"); 
+}
 
 </script>
 
+
+
+ <div id="header_filter_template" class="mx_left_filter collapse-item small"  style="display:none" >
+	<span class="_name_" ></span> 
+	<button class="_button_delete_ btn btn-xs float-right" type="button" style="border:none"
+		onmouseover="this.classList.add('btn-danger');"
+		onmouseout="this.classList.remove('btn-danger');"
+		onclick="ws_handlers_requestDeleteFilter(this.parentNode.querySelector('._name_').innerHTML);"
+		>
+      <i class="fa fa-times fa-sm"></i>
+    </button>
+    
+ 	<div class="_query_" style="display:none;" >
+ 		<hr style="padding:0;margin:0;margin-top:0.2rem;">
+ 		<input class="_query_input_" type="text" value="" style="width:70%;margin-top:0.4rem;margin-bottom:0.2rem;"
+ 		onclick='event.stopPropagation();'
+ 		onfocus="this.parentNode.querySelector('._button_update_').style.display='inline-block';"
+ 		onchange="this.changed=true;"
+ 		onkeypress="if (event.which==13||event.keycode==13) {  			
+ 			ws_handlers_requestUpdateFilter(this.parentNode.parentNode.querySelector('._name_').innerHTML,
+			this.parentNode.parentNode.querySelector('._query_input_').value);
+ 			}"
+ 		onblur="if (this.changed!=true) { this.parentNode.querySelector('._button_update_').style.display='none'; }">
+ 		
+ 		<button class="_button_update_ btn btn-xs" style="display:none" type="button" 
+			onmouseover="this.classList.add('btn-success');"
+			onmouseout="this.classList.remove('btn-success');"
+			onclick="event.stopPropagation();				
+					ws_handlers_requestUpdateFilter(this.parentNode.parentNode.querySelector('._name_').innerHTML,
+						        					 this.parentNode.parentNode.querySelector('._query_input_').value);"
+		>
+		 <i class="fa fa-check fa-sm"></i>
+		 </button>
+ 	</div>
+ </div>
 

@@ -316,7 +316,7 @@
 			footer_showAlert(ERROR, "<s:text name="Items.unableToGetItemsIds" />");
 		}
 		let query = MxGuiHeader.getCurrentSearchQuery();
-		let selectedFiltersNames=MxGuiLeftBar.getSelectedFiltersNames();
+		let selectedFiltersNames=MxGuiHeader.getSelectedFiltersNames();
 		let sortString = MxGuiHeader.getCurrentSearchSortString();
 		let reversedOrder = MxGuiHeader.getCurrentSearchReversedOrder();
 		
