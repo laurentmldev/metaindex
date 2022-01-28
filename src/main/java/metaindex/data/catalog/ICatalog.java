@@ -107,7 +107,7 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 	public void kickOutAllUsers(IUserProfileData activeUser) throws DataProcessException;
 	
 	// Filters
-	public List<IFilter> getFilters();
+	public List<IFilter> getFilters();	
 	public IFilter getFilter(Integer filterId) throws DataProcessException;	
 	public IFilter getFilter(String filterName) throws DataProcessException;	
 	public void addFilter(IFilter c) throws DataProcessException,DataProcessException;
