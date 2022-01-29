@@ -31,11 +31,10 @@ import textwrap
 from argparse import ArgumentParser, HelpFormatter
 
 
-VERSION="2.0"
+VERSION="2.1"
 
 # convention for MetaindeX to read multi-line contents from CSV
-MX_CSV_CR_MARKER="__CR__"
-MX_ESCAPED_SEPARATOR="__MX_ESCAPED_SEPARATOR__"
+CSV_CR_MARKER="&cr&"
 
 SAXON_TRANSFORM_CLASS="net.sf.saxon.Transform"
 TEI_TO_HTML5_XSL=os.sep+"html5"+os.sep+"html5.xsl"
@@ -90,8 +89,15 @@ retrievedDtsResources=[]
 def normalizeUrn(text):
     return str(text).replace(";",",").strip()
 
+# transform given string into suitable CSV contents:
+#   - if multiline, replace carriage returns by special string __CR__
+#   - if CSV separator ';' is detected, then add bounds '"' characters 
+#
 def normalizeCsvContent(text):
-    return str(text).replace("\n",MX_CSV_CR_MARKER).replace(";",MX_ESCAPED_SEPARATOR).strip()
+    csvString=str(text).replace("\n",CSV_CR_MARKER).strip()
+    if (';' in csvString):
+            csvString='"'+csvString.replace('"','\\"')+'"'
+    return csvString
 
 def normalizeIdString(text):
     text=str(text)
@@ -257,7 +263,7 @@ def extractDtsJsonContents(conf,csvId,urn,jsondata,entrypoint,parentDtsObj,attrs
         if not csvValue:
             continue
 
-        dtsObj[csv_name]=normalizeCsvContent(str(csvValue))
+        dtsObj[csv_name]=normalizeCsvContent(str(csvValue))       
     
     # store retrieved data in memory for later csv dump
     if dtsObj['dtstype']=="Collection":
@@ -354,13 +360,16 @@ def computeTextSatistics(textFile,withInlineCsv):
                 stats['nbWords']+=len(line.split())
                 stats['nbLines']+=1
                 if withInlineCsv==True:
-                    globalCsvLine+=line.replace("\n",MX_CSV_CR_MARKER).replace(";",MX_ESCAPED_SEPARATOR)
+                    globalCsvLine+=line
     
     except Exception as e:
         print("ERROR: unable to open file '"+str(textFile)+"': "+str(e))
         print("ERROR: skipping statistics for file '"+str(textFile)+"'")
         globalCsvLine="***File Not Found***"
             
+    # put CSV inline contents into quotes
+    if len(globalCsvLine)>0:
+        globalCsvLine=normalizeCsvContent(globalCsvLine)        
     return stats,globalCsvLine
     
 

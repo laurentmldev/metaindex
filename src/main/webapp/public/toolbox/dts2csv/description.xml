@@ -1,4 +1,4 @@
-<marketplace_tool name="dts2csv" version="1.0">
+<marketplace_tool name="dts2csv" version="2.1">
 	<description language="EN">
 	Python script to extract Collections, Resources and TEI data from &lt;a href="https://distributed-text-services.github.io/specifications/" target="_blank" &gt;DTS API&lt;/a&gt; and generate CSV files.&lt;br/&gt;
 	Those CSV files can be then easily imported into MetaindeX for further analysis.&lt;br/&gt;&lt;br/&gt;
