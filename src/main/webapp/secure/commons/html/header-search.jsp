@@ -73,7 +73,8 @@
              
              <div id="filters_search_button" style="opacity:0.9;z-index:9999" class="input-group-append mx-search-borders dropdown no-arrow ">
               	
-                <button class="btn btn-secondary dropdown-toggle" id="showFilterDropdownButton" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
+                <button class="btn btn-secondary dropdown-toggle" id="showFilterDropdownButton" 
+                	role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
                 	title="<s:text name="Header.search.savequery.title"/>" > 
                   <i class="fas fa-filter fa-sm text-grey-50"></i>
                   <span id="tiny_nb_active_filters" style="display:none" class="mx_filters_nb_active"></span>
@@ -83,10 +84,11 @@
 	              	style="left:0;width:fit-content;" 
 	              	aria-labelledby="saveFilterDropdown">
 	              	<div onclick="event.stopPropagation();event.preventDefault();document.getElementById('add_new_filter_form').style.display='block';"
-	              			style="" >Add new filter ...</div>
-	                <div id="add_new_filter_form" style="display:none;background:#eee;border:1px solid #ccc;padding:2px;margin-bottom:1rem;border-radius:2px;" class="form-inline mr-auto w-auto navbar-search">
-	                  <div class="input-group">
-	                    <input id="header.filter.name" type="text" class="form-control bg-light border-0 small" 
+	              			class="mx_sub_button" ><s:text name="Header.search.savequery.newfilter" />
+	                  <div id="add_new_filter_form" style="display:none;padding:5px;" 
+	                  	class="form-inline mr-auto w-auto navbar-search">
+	                    <div class="input-group">
+	                      <input id="header.filter.name" type="text" class="form-control bg-light border-0 small" 
 	                    		style="min-width:200px;height:1.3rem;margin-bottom:0.5em;"
 	                    		onkeydown="event.stopPropagation();"
 	                    		onkeypress="event.stopPropagation();
@@ -102,7 +104,7 @@
 	                    aria-label="Search" aria-describedby="basic-addon2">
 	                    
 	                    <div class="input-group-append" >
-	                      <button class="btn btn-primary" type="button" style="height:1.3rem;"
+	                      <button class="btn btn-primary" type="button" style="height:fit-content;"
 	                       	onclick="MxGuiHeader.onFilterSave(document.getElementById('header.filter.name').value,
 	                       									  MxGuiHeader.getCurrentSearchQuery());
     								document.getElementById('header.filter.name').value='';
@@ -110,7 +112,7 @@
 	                      				" >
 	                        <i class="fas fa-check fa-xs text-grey-50" style="display:block;"></i>
 	                      </button>
-	                      <button class="btn btn-primary" type="button" style="height:1.3rem;"
+	                      <button class="btn btn-secondary" type="button" style="height:fit-content;"
 	                      		onclick="event.stopPropagation();
 	                      				document.getElementById('add_new_filter_form').style.display='none';
 	                      				document.getElementById('header.filter.name').value='';" >
@@ -119,7 +121,7 @@
 	                    </div>		                                        
 	                  </div>
 	                </div>
-	                
+	                </div>
 	                <div id="filters_list_insertSpot"></div>
 	              </div>
               </div>

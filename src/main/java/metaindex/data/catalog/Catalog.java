@@ -347,14 +347,14 @@ public class Catalog implements ICatalog {
 		List<IFilter> builtinFilters = new ArrayList<>();
 		Filter myModifsFilter = new Filter();
 		myModifsFilter.setId(CATALOG_BUILTIN_FILTER_ID__MY_MODIFS);
-		myModifsFilter.setName("My Modifs");
+		myModifsFilter.setName(u.getText("Header.search.savequery.builtin.myModifs"));
 		myModifsFilter.setQuery(ICatalogTerm.MX_TERM_LASTMODIF_USERID+":"+u.getId());
 		myModifsFilter.setIsBuiltin(true);
 		builtinFilters.add(myModifsFilter);
 		
 		Filter myLastMinuteModifsFilter = new Filter();
 		myLastMinuteModifsFilter.setId(CATALOG_BUILTIN_FILTER_ID__MY_LASTMINUTE_MODIFS);
-		myLastMinuteModifsFilter.setName("My Last Minute Modifs");
+		myLastMinuteModifsFilter.setName(u.getText("Header.search.savequery.builtin.myRecentModifs"));
 		myLastMinuteModifsFilter.setQuery(ICatalogTerm.MX_TERM_LASTMODIF_USERID+":"+u.getId()
 								+" AND "+ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP+":[now-1m TO *]");
 		myLastMinuteModifsFilter.setIsBuiltin(true);

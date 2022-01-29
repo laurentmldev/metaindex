@@ -5,77 +5,10 @@ v2.3.0:
 
 update dts2csv
 
-sauvegarder la requête --> gestion des filtres
-
-impossible de modifier un champ dans les imports perseids (ID avec 2 '.' ou plus ...)
-
-upload CSV: "0 warnings pendant l'import" ...
-
+add a warning "GUI changed" in tutorials
 
 server.publicBaseUrl is missing and should be configured when running in a production environment. Some features may not behave correctly. See the documentation.
-
-
-limit document contents total size ?
-	mxelsrc     | bash: line 2:    10 Killed                  /usr/local/bin/docker-entrypoint.sh
-	mxelsrc exited with code 137
-	
-mxelsrc     | {"type": "server", "timestamp": "2022-01-26T17:03:49,304Z", "level": "WARN", "component": "o.e.m.j.JvmGcMonitorService", "cluster.name": "mx-cluster", "node.name": "mxelsrc", "message": "[gc][young][423][31] duration [4.1s], collections [3]/[6.8s], total [4.1s]/[5.8s], memory [687.2mb]->[537.9mb]/[1gb], all_pools {[young] [148mb]->[48mb]/[0b]}{[old] [534.4mb]->[424.6mb]/[1gb]}{[survivor] [4.8mb]->[5.2mb]/[0b]}", "cluster.uuid": "IUQUlIQ5QnmlQO5-6kSEHA", "node.id": "-CFuMNKwS3WYAheMMC34eg"  }
-mxelsrc     | {"type": "server", "timestamp": "2022-01-26T17:03:49,317Z", "level": "WARN", "component": "o.e.m.j.JvmGcMonitorService", "cluster.name": "mx-cluster", "node.name": "mxelsrc", "message": "[gc][423] overhead, spent [4.1s] collecting in the last [6.8s]", "cluster.uuid": "IUQUlIQ5QnmlQO5-6kSEHA", "node.id": "-CFuMNKwS3WYAheMMC34eg"  }
-mxelsrc     | {"type": "server", "timestamp": "2022-01-26T17:03:52,757Z", "level": "WARN", "component": "o.e.m.j.JvmGcMonitorService", "cluster.name": "mx-cluster", "node.name": "mxelsrc", "message": "[gc][426] overhead, spent [850ms] collecting in the last [1.3s]", "cluster.uuid": "IUQUlIQ5QnmlQO5-6kSEHA", "node.id": "-CFuMNKwS3WYAheMMC34eg"  }	
-
-mxkibana
-	<--- Last few GCs --->
-
-[1220:0x591ed50]  2703705 ms: Scavenge (reduce) 817.8 (895.5) -> 817.7 (896.8) MB, 8.0 / 0.0 ms  (average mu = 0.957, current mu = 0.897) allocation failure 
-[1220:0x591ed50]  2703732 ms: Scavenge (reduce) 818.8 (890.0) -> 818.7 (893.3) MB, 18.6 / 0.0 ms  (average mu = 0.957, current mu = 0.897) allocation failure 
-[1220:0x591ed50]  2703747 ms: Scavenge (reduce) 819.7 (897.8) -> 819.6 (899.0) MB, 10.3 / 0.0 ms  (average mu = 0.957, current mu = 0.897) allocation failure 
-
-
-<--- JS stacktrace --->
-
-FATAL ERROR: MarkCompactCollector: young object promotion failed Allocation failed - JavaScript heap out of memory
- 1: 0xa25510 node::Abort() [/usr/share/kibana/node/bin/node]
- 2: 0x9664d3 node::FatalError(char const*, char const*) [/usr/share/kibana/node/bin/node]
- 3: 0xb9a8be v8::Utils::ReportOOMFailure(v8::internal::Isolate*, char const*, bool) [/usr/share/kibana/node/bin/node]
- 4: 0xb9ac37 v8::internal::V8::FatalProcessOutOfMemory(v8::internal::Isolate*, char const*, bool) [/usr/share/kibana/node/bin/node]
- 5: 0xd56ca5  [/usr/share/kibana/node/bin/node]
- 6: 0xd8763e v8::internal::EvacuateNewSpaceVisitor::Visit(v8::internal::HeapObject, int) [/usr/share/kibana/node/bin/node]
- 7: 0xd93676 v8::internal::FullEvacuator::RawEvacuatePage(v8::internal::MemoryChunk*, long*) [/usr/share/kibana/node/bin/node]
- 8: 0xd7f80f v8::internal::Evacuator::EvacuatePage(v8::internal::MemoryChunk*) [/usr/share/kibana/node/bin/node]
- 9: 0xd7fa88 v8::internal::PageEvacuationTask::RunInParallel(v8::internal::ItemParallelJob::Task::Runner) [/usr/share/kibana/node/bin/node]
-10: 0xd72369 v8::internal::ItemParallelJob::Run() [/usr/share/kibana/node/bin/node]
-11: 0xd955d0 void v8::internal::MarkCompactCollectorBase::CreateAndExecuteEvacuationTasks<v8::internal::FullEvacuator, v8::internal::MarkCompactCollector>(v8::internal::MarkCompactCollector*, v8::internal::ItemParallelJob*, v8::internal::MigrationObserver*, long) [/usr/share/kibana/node/bin/node]
-12: 0xd95e6c v8::internal::MarkCompactCollector::EvacuatePagesInParallel() [/usr/share/kibana/node/bin/node]
-13: 0xd96035 v8::internal::MarkCompactCollector::Evacuate() [/usr/share/kibana/node/bin/node]
-14: 0xda8031 v8::internal::MarkCompactCollector::CollectGarbage() [/usr/share/kibana/node/bin/node]
-15: 0xd642f8 v8::internal::Heap::MarkCompact() [/usr/share/kibana/node/bin/node]
-16: 0xd65de8 v8::internal::Heap::CollectGarbage(v8::internal::AllocationSpace, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags) [/usr/share/kibana/node/bin/node]
-17: 0xdc4efc v8::internal::ScavengeJob::Task::RunInternal() [/usr/share/kibana/node/bin/node]
-18: 0xc8e79b non-virtual thunk to v8::internal::CancelableTask::Run() [/usr/share/kibana/node/bin/node]
-19: 0xa941f4 node::PerIsolatePlatformData::RunForegroundTask(std::unique_ptr<v8::Task, std::default_delete<v8::Task> >) [/usr/share/kibana/node/bin/node]
-20: 0xa96059 node::PerIsolatePlatformData::FlushForegroundTasksInternal() [/usr/share/kibana/node/bin/node]
-21: 0x13a0946  [/usr/share/kibana/node/bin/node]
-22: 0x13b36d5  [/usr/share/kibana/node/bin/node]
-23: 0x13a1278 uv_run [/usr/share/kibana/node/bin/node]
-24: 0xa659c4 node::NodeMainInstance::Run() [/usr/share/kibana/node/bin/node]
-25: 0x9f3d95 node::Start(int, char**) [/usr/share/kibana/node/bin/node]
-26: 0x7f038fead493 __libc_start_main [/lib64/libc.so.6]
-27: 0x982c9c  [/usr/share/kibana/node/bin/node]
-
-
-
-remove js console "simple progress message"
-		
-Data import:
-	test new dts2csv
-		no use of check __MX_ESCAPED_SEPARATOR__ not properly decoded
-	
-	CSV: check support ',' separated
-		
-	LONG_TEXT: 
-		- loading full text not done (WS sending not occuring ?): still default empty screen msg displayed 'please wait while loading full contents ...'
-		- add a "waiting sign" icon while search is processing or while progress bar is at 0%
-		 
+			
 	
 
 Kibana fails when using hebrew alphabet -> check with new Kibana version
