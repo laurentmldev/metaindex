@@ -74,6 +74,7 @@ MxGuiHeader.getSelectedFiltersNames=function() {
 	return result;
 }
 
+var nbFiltersActive=0;
 function header_buildNewFilter(descr) {
 	
 	let newFilterNode=document.getElementById("header_filter_template").cloneNode(true);	
@@ -94,11 +95,37 @@ function header_buildNewFilter(descr) {
 	let queryInputNode=newFilterNode.querySelector("._query_input_");
 	queryInputNode.value=descr.query;
 	
-	
+	let filtersButton=document.getElementById('showFilterDropdownButton');
+	let nbActiveFiltersCounter=document.getElementById('tiny_nb_active_filters');
 	newFilterNode.onclick=function(event) {		
 		event.stopPropagation();
-		if (newFilterNode.isSelected) { newFilterNode.deselect(); }
-		else { newFilterNode.select(); }
+		if (newFilterNode.isSelected) {
+			nbFiltersActive--;
+			newFilterNode.deselect();
+			if (nbFiltersActive>0) { 
+				filtersButton.classList.add('mx_filters_active');
+				nbActiveFiltersCounter.innerHTML=nbFiltersActive;
+				nbActiveFiltersCounter.style.display='block';			
+			} 
+			else { 	
+				filtersButton.classList.remove('mx_filters_active');
+				nbActiveFiltersCounter.style.display='none';
+			}
+			
+		}
+		else { 
+			nbFiltersActive++;
+			newFilterNode.select(); 
+			if (nbFiltersActive>0) { 
+				filtersButton.classList.add('mx_filters_active');
+				nbActiveFiltersCounter.innerHTML=nbFiltersActive;
+				nbActiveFiltersCounter.style.display='block';
+			} 
+			else { 	
+				filtersButton.classList.remove('mx_filters_active');
+				nbActiveFiltersCounter.style.display='none';
+			}			
+		}
 	}
 	
 	newFilterNode.select=function() {
@@ -159,7 +186,7 @@ MxGuiHeader.getFiltersInsertSpot=function() {
 		onmouseover="this.classList.add('btn-danger');"
 		onmouseout="this.classList.remove('btn-danger');"
 		>
-      <i class="fa fa-times fa-sm"></i>
+      <i class="fa fa-times fa-sm"></i>      
     </button>
     
  	<div class="_query_" style="display:none;" >
@@ -168,9 +195,10 @@ MxGuiHeader.getFiltersInsertSpot=function() {
  		onclick='event.stopPropagation();'
  		onfocus="this.parentNode.querySelector('._button_update_').style.display='inline-block';"
  		onchange="this.changed=true;"
- 		onkeypress="if (event.which==13||event.keycode==13) {  			
- 			ws_handlers_requestUpdateFilter(this.parentNode.parentNode.querySelector('._id_').innerHTML,
-			this.parentNode.parentNode.querySelector('._query_input_').value);
+ 		onkeypress="event.stopPropagation();
+ 			if (event.which==13||event.keycode==13) {  			
+ 				ws_handlers_requestUpdateFilter(this.parentNode.parentNode.querySelector('._id_').innerHTML,
+				this.parentNode.parentNode.querySelector('._query_input_').value);
  			}"
  		onblur="if (this.changed!=true) { this.parentNode.querySelector('._button_update_').style.display='none'; }">
  		

@@ -55,7 +55,6 @@
 	newFieldNode.successCallback=successCallback;
 	newFieldNode.errorCallback=errorCallback;
 	
-	console.log("### plop id="+newFieldNode.id);
 	// name
 	if (showFieldName) {
 		let fieldNameNode = newFieldNode.querySelector("._name_");

@@ -92,10 +92,6 @@ comments in CSV file make a wrong number of expected lines, then progress bar is
 
 create account / go back --> still send an email !
 	- could not reproduce ?
-
-cannot edit PAGE_URL (or INT ...) if empty (nothing happens when clicking on it)
-	- when a long text is in the doc ?
-	- could not reproduce
 	
 rest-api:
 	[ERROR] 2021-12-29 19:43:34.153 [main] DefaultClassFinder - Unable to read class [metaindex.app.control.rest.messages.Greeting]

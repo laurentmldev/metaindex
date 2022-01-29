@@ -64,6 +64,15 @@
 		if (typeof(curFilter)!='object') { continue; }
 		if (curFilter.descr.id==msg.filterId) { 
 			curFilter.parentNode.removeChild(curFilter);
+			if (curFilter.isSelected) {
+				nbFiltersActive--;
+				if (nbFiltersActive==0) { 
+					let filtersButton=document.getElementById('showFilterDropdownButton');
+					let nbActiveFiltersCounter=document.getElementById('tiny_nb_active_filters');
+					filtersButton.classList.remove('mx_filters_active');
+					nbActiveFiltersCounter.style.display='none';
+				}
+			}
 			break;
 		}
 	}
@@ -251,6 +260,16 @@ function ws_handlers_requestCreateFilter(filterName, query) {
 		filtersInsertSpot=MxGuiHeader.getFiltersInsertSpot();
 		filtersInsertSpot.appendChild(newFilter);
 		newFilter.select();
+		
+		let filtersButton=document.getElementById('showFilterDropdownButton');
+		let nbActiveFiltersCounter=document.getElementById('tiny_nb_active_filters');
+		nbFiltersActive++;	
+		nbActiveFiltersCounter.innerHTML=nbFiltersActive;
+		filtersButton.classList.add('mx_filters_active');
+		nbActiveFiltersCounter.style.display='block';
+		document.getElementById('showFilterDropdown').classList.add('show');
+		document.getElementById('add_new_filter_form').style.display='none';
+		
 	}	
 	let errorCallback=function(errorMsg) { 
 		footer_showAlert(ERROR, "<s:text name="Items.filters.notAdded" /> '"+filterName+"' : "+errorMsg);

@@ -71,11 +71,12 @@
                   </div>                
               </div>
              
-             <div id="filters_search_button" class="input-group-append mx-search-borders dropdown no-arrow ">
+             <div id="filters_search_button" style="opacity:0.9;z-index:9999" class="input-group-append mx-search-borders dropdown no-arrow ">
               	
                 <button class="btn btn-secondary dropdown-toggle" id="showFilterDropdownButton" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
                 	title="<s:text name="Header.search.savequery.title"/>" > 
                   <i class="fas fa-filter fa-sm text-grey-50"></i>
+                  <span id="tiny_nb_active_filters" style="display:none" class="mx_filters_nb_active"></span>
                 </button>
                	  <!-- Dropdown - Filter Save Name -->
 	              <div id="showFilterDropdown" class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"

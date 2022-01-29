@@ -438,9 +438,11 @@ public class WsControllerCatalogFileUpload extends AMxWSController {
 				}
 				@Override
 				public void handleStop() {
-					_activeUser.sendGuiErrorMessage(_activeUser.getText("Items.serverside.uploadWarning.synthesis",
+					if (warnings.size()>0) {
+						_activeUser.sendGuiErrorMessage(_activeUser.getText("Items.serverside.uploadWarning.synthesis",
 								new Integer(warnings.size()).toString()),
 								warnings);
+					}
 				}
     			
     		}
