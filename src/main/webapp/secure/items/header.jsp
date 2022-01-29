@@ -195,6 +195,7 @@ MxGuiHeader.getFiltersInsertSpot=function() {
  		onclick='event.stopPropagation();'
  		onfocus="this.parentNode.querySelector('._button_update_').style.display='inline-block';"
  		onchange="this.changed=true;"
+ 		onkeydown="event.stopPropagation();"
  		onkeypress="event.stopPropagation();
  			if (event.which==13||event.keycode==13) {  			
  				ws_handlers_requestUpdateFilter(this.parentNode.parentNode.querySelector('._id_').innerHTML,
