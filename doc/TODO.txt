@@ -1,25 +1,14 @@
 
 
-v2.3.0:
+
+v2.3.1:
 -------
-
-update dts2csv
-
-add a warning "GUI changed" in tutorials
-
-server.publicBaseUrl is missing and should be configured when running in a production environment. Some features may not behave correctly. See the documentation.
-			
-	
 
 Kibana fails when using hebrew alphabet -> check with new Kibana version
 
 [https-jsse-nio-20000-exec-2] WARN org.springframework.web.servlet.PageNotFound - No mapping for POST /webapp/Error401
 [https-jsse-nio-20000-exec-2] WARN org.springframework.web.servlet.PageNotFound - No mapping for POST /webapp/ErrorAuth
 	
-
-
-v2.3.1:
--------
 
 comments in CSV file make a wrong number of expected lines, then progress bar is never closed
 

@@ -71,7 +71,7 @@
                   </div>                
               </div>
              
-             <div id="filters_search_button" style="opacity:0.9;z-index:9999" class="input-group-append mx-search-borders dropdown no-arrow ">
+             <div id="filters_search_button" style="opacity:0.9;z-index:1" class="input-group-append mx-search-borders dropdown no-arrow ">
               	
                 <button class="btn btn-secondary dropdown-toggle" id="showFilterDropdownButton" 
                 	role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 

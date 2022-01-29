@@ -106,7 +106,9 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 				//
 				// if removed, then an explicit loadFullUserData() might be helpful at login time at least,
 				// so that user can see the modifs once a backup restore has been performed in the background.
-				getCurrentUserProfile().loadFullUserData();
+				if (getCurrentUserProfile()==null) {
+					log.error("Unable to retrieve data for user name '"+userName+"'");
+				} else { getCurrentUserProfile().loadFullUserData(); }
   				
 				
   				// check to detect multiple parallel users disabled for now
