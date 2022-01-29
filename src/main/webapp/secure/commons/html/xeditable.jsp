@@ -14,8 +14,8 @@
  
  function _xeditable_getEditableFieldNodeId(pk,fieldName) { 
 	 // ID shall not have any special character
-	 fieldNameId=fieldName.replace(" ","_").replace(".","_").replace(",","_").replace(";","_").replace('@','_');
-	 pkStr=pk.replace(" ","_").replace(".","_").replace(",","_").replace(";","_").replace('@','_');
+	 fieldNameId=fieldName.replaceAll(" ","_").replaceAll(".","_").replaceAll(",","_").replaceAll(";","_").replaceAll('@','_');
+	 pkStr=pk.replaceAll(" ","_").replaceAll(".","_").replaceAll(",","_").replaceAll(";","_").replaceAll('@','_');
 	 return fieldXeditableId=pkStr+"_"+fieldNameId+"_"+_xeditable_fields.length; 
 }
  
@@ -55,6 +55,7 @@
 	newFieldNode.successCallback=successCallback;
 	newFieldNode.errorCallback=errorCallback;
 	
+	console.log("### plop id="+newFieldNode.id);
 	// name
 	if (showFieldName) {
 		let fieldNameNode = newFieldNode.querySelector("._name_");
@@ -325,7 +326,7 @@ function xeditable_create_boolean_field(
 		// activate 'x-editable' features
 		//let fieldsList = Object.keys(itemCard.descr.data);
 		for (var idx=0;idx<_xeditable_fields.length;idx++) {
-			let fieldValueNode = _xeditable_fields[idx];	
+			let fieldValueNode = _xeditable_fields[idx];				
 			if (fieldValueNode.choicesDef!=null) { _xeditable_finish_list_field(fieldValueNode); }
 			else { _xeditable_finish_text_field(fieldValueNode); }	
 		}		

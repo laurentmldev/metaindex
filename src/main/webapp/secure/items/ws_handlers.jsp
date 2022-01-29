@@ -369,7 +369,7 @@ function ws_handlers_deleteItem(itemsId) {
 
 function ws_handlers_deleteAllItems() {
 	MxApi.requestDeleteItemsByQuery(MxGuiHeader.getCurrentSearchQuery(),
-									MxGuiLeftBar.getSelectedFiltersNames()); 
+									MxGuiHeader.getSelectedFiltersNames()); 
 }
 
 function ws_handlers_uploadFiles(catalogDescr,filesToUpload,successCallback,errorCallback) {
