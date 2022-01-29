@@ -1925,13 +1925,13 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 		myself._callback_UpdatedFilter_debug=debug;
 		myself._callback_UpdatedFilter=callback_func;
 	}
-	this.requestUpdateFilter = function(filterName,queryString) {
+	this.requestUpdateFilter = function(filterId,queryString) {
 		if (myself._callback_UpdatedFilter_debug==true) {
 			console.log("MxAPI Requesting Update Filter "+filterName+"='"+queryString+"'");
 		}
 		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/update_filter", {}, 
-								 JSON.stringify({"filterName":filterName,
+								 JSON.stringify({"filterId":filterId,
 									 			 "query":queryString}));
 	}
 	
@@ -1955,13 +1955,13 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 		myself._callback_DeletedFilter_debug=debug;
 		myself._callback_DeletedFilter=callback_func;
 	}
-	this.requestDeleteFilter = function(filterName) {
+	this.requestDeleteFilter = function(filterId) {
 		if (myself._callback_CreatedFilter_debug==true) {
-			console.log("MxAPI Requesting Delete Filter "+filterName);
+			console.log("MxAPI Requesting Delete Filter "+filterId);
 		}
 		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/delete_filter", {}, 
-								 JSON.stringify({"filterName":filterName}));
+								 JSON.stringify({"filterId":filterId}));
 	}
 		
 	this._handleDeletedFilterMsg= function (mxDeletedFilterMsg) {

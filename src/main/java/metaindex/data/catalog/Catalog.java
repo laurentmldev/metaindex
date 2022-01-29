@@ -25,6 +25,7 @@ import java.util.concurrent.Semaphore;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import metaindex.data.filter.Filter;
 import metaindex.data.filter.IFilter;
 import metaindex.app.Globals;
 import metaindex.app.control.catalogdrive.SftpCatalogsDrive;
@@ -342,30 +343,55 @@ public class Catalog implements ICatalog {
 	}
 	
 	@Override
-	public List<IFilter> getFilters() {
+	public List<IFilter> getBuiltinFilters(IUserProfileData u) {
+		List<IFilter> builtinFilters = new ArrayList<>();
+		Filter myModifsFilter = new Filter();
+		myModifsFilter.setId(CATALOG_BUILTIN_FILTER_ID__MY_MODIFS);
+		myModifsFilter.setName("My Modifs");
+		myModifsFilter.setQuery(ICatalogTerm.MX_TERM_LASTMODIF_USERID+":"+u.getId());
+		myModifsFilter.setIsBuiltin(true);
+		builtinFilters.add(myModifsFilter);
+		
+		Filter myLastMinuteModifsFilter = new Filter();
+		myLastMinuteModifsFilter.setId(CATALOG_BUILTIN_FILTER_ID__MY_LASTMINUTE_MODIFS);
+		myLastMinuteModifsFilter.setName("My Last Minute Modifs");
+		myLastMinuteModifsFilter.setQuery(ICatalogTerm.MX_TERM_LASTMODIF_USERID+":"+u.getId()
+								+" AND "+ICatalogTerm.MX_TERM_LASTMODIF_TIMESTAMP+":[now-1m TO *]");
+		myLastMinuteModifsFilter.setIsBuiltin(true);
+		builtinFilters.add(myLastMinuteModifsFilter);
+		
+		return builtinFilters;
+	}
+	@Override
+	public List<IFilter> getCatalogFilters() {
 		return _filters;
 	}
-	
 	@Override
-	public IFilter getFilter(Integer filterId) throws DataProcessException {
-		return _filters.stream()
+	public List<IFilter> getFilters(IUserProfileData u) {
+		List<IFilter> allFilters =  getBuiltinFilters(u);
+		allFilters.addAll(getCatalogFilters());
+		return allFilters;
+	}
+	@Override
+	public IFilter getFilter(IUserProfileData u,Integer filterId) throws DataProcessException {
+		return getFilters(u).stream()
 					.filter(c -> c.getId().equals(filterId))
 					.findFirst()
 					.orElse(null);
 	}
 	@Override
-	public IFilter getFilter(String filterName) throws DataProcessException {
-		return _filters.stream()
+	public IFilter getFilter(IUserProfileData u,String filterName) throws DataProcessException {
+		return getFilters(u).stream()
 					.filter(c -> c.getName().equals(filterName))
 					.findFirst()
 					.orElse(null);
 	}
 
 	@Override
-	public void addFilter(IFilter cat) throws DataProcessException {
+	public void addFilter(IFilter filter) throws DataProcessException {
 		try {
 			_filtersLock.acquire();
-			if (!_filters.contains(cat)) { _filters.add(cat); }
+			if (!_filters.contains(filter)) { _filters.add(filter); }
 			_filtersLock.release();
 		} catch (InterruptedException e) {
 			_filtersLock.release();

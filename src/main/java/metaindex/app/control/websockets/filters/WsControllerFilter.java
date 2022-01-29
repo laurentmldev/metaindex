@@ -98,7 +98,7 @@ public class WsControllerFilter extends AMxWSController {
     	}
     	
     	IFilter newFilter = new Filter();
-    	newFilter.setName(requestMsg.getFilterName());
+    	newFilter.setId(requestMsg.getFilterId());
     	newFilter.setQuery(requestMsg.getQuery());
     	Boolean result = Globals.Get().getDatabasesMgr().getFiltersDbInterface().updateIntoDbStmt(c, newFilter).execute();
     	
@@ -113,9 +113,12 @@ public class WsControllerFilter extends AMxWSController {
     		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.update_filter.refused_by_server"));
     	}
     	
+    	// retrieve full filter data (filterName typically)
+    	IFilter updatedFilter = c.getFilter(user, requestMsg.getFilterId()); 
     	answer.setIsSuccess(true);  
-    	answer.setFilterName(newFilter.getName());
-    	answer.setQuery(newFilter.getQuery());
+    	answer.setFilterName(updatedFilter.getName());
+    	answer.setFilterId(updatedFilter.getId());
+    	answer.setQuery(updatedFilter.getQuery());
     	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/updated_filter", answer);
     	Globals.GetStatsMgr().handleStatItem(new UpdateFilterMxStat(user,c));
         	
@@ -139,7 +142,7 @@ public class WsControllerFilter extends AMxWSController {
     	}
     	
     	IFilter newFilter = new Filter();
-    	newFilter.setName(requestMsg.getFilterName());
+    	newFilter.setId(requestMsg.getFilterId());
     	Boolean result = Globals.Get().getDatabasesMgr().getFiltersDbInterface().deleteFromDbStmt(c, newFilter).execute();
     	
     	// refresh filters list in catalog
@@ -154,7 +157,7 @@ public class WsControllerFilter extends AMxWSController {
     	}
     	
     	answer.setIsSuccess(true);  
-    	answer.setFilterName(newFilter.getName());
+    	answer.setFilterId(newFilter.getId());
     	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/deleted_filter", answer);
     	Globals.GetStatsMgr().handleStatItem(new DeleteFilterMxStat(user,c));
         	

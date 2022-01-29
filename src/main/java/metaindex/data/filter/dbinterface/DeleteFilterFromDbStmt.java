@@ -41,7 +41,7 @@ class DeleteFilterFromDbStmt extends SQLWriteStmt<IFilter>   {
 		
 		try {
 			result.add(this.getDataConnector().getConnection().prepareStatement(
-					"delete from filters where catalog_id=? and name=?"));
+					"delete from filters where catalog_id=? and filter_id=?"));
 			
 		} catch (SQLException e) { throw new DataProcessException(e); }
 		
@@ -53,7 +53,7 @@ class DeleteFilterFromDbStmt extends SQLWriteStmt<IFilter>   {
 		PreparedStatement stmt = stmts.get(0);
 		try {
 			stmt.setInt(1, _catalog.getId());
-			stmt.setString(2, dataObject.getName());
+			stmt.setInt(2, dataObject.getId());
 			stmt.addBatch();
 		} catch (SQLException e) { throw new DataProcessException(e); }		
 	}

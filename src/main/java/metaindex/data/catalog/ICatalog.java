@@ -107,9 +107,13 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 	public void kickOutAllUsers(IUserProfileData activeUser) throws DataProcessException;
 	
 	// Filters
-	public List<IFilter> getFilters();	
-	public IFilter getFilter(Integer filterId) throws DataProcessException;	
-	public IFilter getFilter(String filterName) throws DataProcessException;	
+	public static final Integer CATALOG_BUILTIN_FILTER_ID__MY_MODIFS = -1;
+	public static final Integer CATALOG_BUILTIN_FILTER_ID__MY_LASTMINUTE_MODIFS = -2;
+	public List<IFilter> getBuiltinFilters(IUserProfileData u);
+	public List<IFilter> getCatalogFilters();
+	public List<IFilter> getFilters(IUserProfileData u);	
+	public IFilter getFilter(IUserProfileData u,Integer filterId) throws DataProcessException;	
+	public IFilter getFilter(IUserProfileData u,String filterName) throws DataProcessException;	
 	public void addFilter(IFilter c) throws DataProcessException,DataProcessException;
 	public void clearFilters() throws DataProcessException;
 	

@@ -84,9 +84,6 @@ public interface IUserProfileData extends ICatalogUser,IPlanUser,IObserver<IProc
     // --------
     
     
-    public IFilter getCurrentFilter();
-    public void setCurrentFilter(Integer filterId);
-
     public Integer getCurrentDocumentId();
     public void setCurrentDocumentId(Integer docId);
     

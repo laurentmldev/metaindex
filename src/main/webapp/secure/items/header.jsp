@@ -85,12 +85,18 @@ function header_buildNewFilter(descr) {
 	let nameNode=newFilterNode.querySelector("._name_");
 	nameNode.innerHTML=descr.name;
 	
+	// id
+	let idNode=newFilterNode.querySelector("._id_");
+	idNode.innerHTML=descr.id;
+	
 	// query input
 	let queryNode=newFilterNode.querySelector("._query_");
 	let queryInputNode=newFilterNode.querySelector("._query_input_");
 	queryInputNode.value=descr.query;
 	
+	
 	newFilterNode.onclick=function(event) {		
+		event.stopPropagation();
 		if (newFilterNode.isSelected) { newFilterNode.deselect(); }
 		else { newFilterNode.select(); }
 	}
@@ -98,24 +104,39 @@ function header_buildNewFilter(descr) {
 	newFilterNode.select=function() {
 		newFilterNode.isSelected=true;
 		queryNode.style.display='block';
-		newFilterNode.classList.add('mx_left_filter_selected');
+		newFilterNode.classList.add('mx_filter_selected');
 		newFilterNode.classList.add('mx-selected-dropdown');
 		MxGuiHeader.refreshSearch();
 	}
 	newFilterNode.deselect=function() {
 		newFilterNode.isSelected=false;
 		queryNode.style.display='none';
-		newFilterNode.classList.remove('mx_left_filter_selected');
+		newFilterNode.classList.remove('mx_filter_selected');
 		newFilterNode.classList.remove('mx-selected-dropdown');
 		MxGuiHeader.refreshSearch();
 	}
 	
+	// button delete
+	let deleteButton=newFilterNode.querySelector("._button_delete_");
+	deleteButton.onclick=function(event) {
+		ws_handlers_requestDeleteFilter(descr.id);
+	}
+	
+	if (descr.isBuiltin==true) {
+		queryInputNode.disabled=true;
+		newFilterNode.classList.add('mx_filter_builtin');
+		deleteButton.style.display='none';
+	} else {
+		queryInputNode.disabled=false;
+		newFilterNode.classList.remove('mx_filter_builtin');
+		deleteButton.style.display='block';
+	}
 	return newFilterNode
 }
 
 MxGuiHeader.buildNewFilter=header_buildNewFilter;
 MxGuiHeader.openFiltersArea=function() {
-	document.getElementById('showFilterDropdown').style.display='block';
+	document.getElementById('showFilterDropdown').classList.add('show');
 	
 }
 MxGuiHeader.onFilterClick=header_onFilterClick;
@@ -131,12 +152,12 @@ MxGuiHeader.getFiltersInsertSpot=function() {
 
 
 
- <div id="header_filter_template" class="mx_left_filter collapse-item small"  style="display:none" >
-	<span class="_name_" ></span> 
+ <div id="header_filter_template" class="mx_filter collapse-item small"  style="display:none" >
+	<span class="_name_" ></span>
+	<span class="_id_" style="display:none"></span>  
 	<button class="_button_delete_ btn btn-xs float-right" type="button" style="border:none"
 		onmouseover="this.classList.add('btn-danger');"
 		onmouseout="this.classList.remove('btn-danger');"
-		onclick="ws_handlers_requestDeleteFilter(this.parentNode.querySelector('._name_').innerHTML);"
 		>
       <i class="fa fa-times fa-sm"></i>
     </button>
@@ -148,7 +169,7 @@ MxGuiHeader.getFiltersInsertSpot=function() {
  		onfocus="this.parentNode.querySelector('._button_update_').style.display='inline-block';"
  		onchange="this.changed=true;"
  		onkeypress="if (event.which==13||event.keycode==13) {  			
- 			ws_handlers_requestUpdateFilter(this.parentNode.parentNode.querySelector('._name_').innerHTML,
+ 			ws_handlers_requestUpdateFilter(this.parentNode.parentNode.querySelector('._id_').innerHTML,
 			this.parentNode.parentNode.querySelector('._query_input_').value);
  			}"
  		onblur="if (this.changed!=true) { this.parentNode.querySelector('._button_update_').style.display='none'; }">
@@ -157,7 +178,7 @@ MxGuiHeader.getFiltersInsertSpot=function() {
 			onmouseover="this.classList.add('btn-success');"
 			onmouseout="this.classList.remove('btn-success');"
 			onclick="event.stopPropagation();				
-					ws_handlers_requestUpdateFilter(this.parentNode.parentNode.querySelector('._name_').innerHTML,
+					ws_handlers_requestUpdateFilter(this.parentNode.parentNode.querySelector('._id_').innerHTML,
 						        					 this.parentNode.parentNode.querySelector('._query_input_').value);"
 		>
 		 <i class="fa fa-check fa-sm"></i>

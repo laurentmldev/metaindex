@@ -41,7 +41,7 @@ class UpdateFilterIntoDbStmt extends SQLWriteStmt<IFilter>   {
 		
 		try {
 			result.add(this.getDataConnector().getConnection().prepareStatement(
-					"update filters set query=? where catalog_id=? and name=?"));
+					"update filters set query=? where catalog_id=? and filter_id=?"));
 			
 		} catch (SQLException e) { throw new DataProcessException(e); }
 		
@@ -54,7 +54,7 @@ class UpdateFilterIntoDbStmt extends SQLWriteStmt<IFilter>   {
 		try {
 			stmt.setString(1, dataObject.getQuery());
 			stmt.setInt(2, _catalog.getId());
-			stmt.setString(3, dataObject.getName());
+			stmt.setInt(3, dataObject.getId());
 			stmt.addBatch();
 		} catch (SQLException e) { throw new DataProcessException(e); }		
 	}

@@ -15,6 +15,7 @@ public class Filter implements IFilter {
 	private String _query;
 	private String _name;
 	private Integer _id;
+	private Boolean _isBuiltin = false;
 	
 	@Override
 	public String getQuery() { return _query; }
@@ -26,4 +27,7 @@ public class Filter implements IFilter {
 	@Override
 	public Integer getId() { return _id; } 
 	public void setId(Integer id) { _id=id; }
+	@Override
+	public Boolean getIsBuiltin() { return _isBuiltin; }
+	public void setIsBuiltin(Boolean isBuiltin) { this._isBuiltin = isBuiltin; }
 }

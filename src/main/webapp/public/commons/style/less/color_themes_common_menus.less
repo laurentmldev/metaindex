@@ -33,22 +33,28 @@
  .mx-collapse-item:hover {
  	background-color: @primary_hover !important;
  }
- .mx_left_filter {
+ .mx_filter {
  	margin-top:0 !important;
  	margin-bottom:0.2rem !important;
  	margin-left:0.3rem !important;
  	margin-right:0.3rem !important;
- 	background:#ddd;
+ 	background:@bg_light_light;
  	font-size:0.6rem;
  	color:black;
  	heigt:1rem;
+ 	padding:0.3rem;
  }
-.mx_left_filter:hover {
-	background:#f3f3f3;
+ .mx_filter_builtin {
+ 	background:#ccc;
+ 	color:#777;
+ 	font-style:italic;
+ }
+.mx_filter:hover {
+	background:@bg_dark;
 	cursor:pointer;
 }
-.mx_left_filter_selected {
-	border:2px solid @active_color;
+.mx_filter_selected {
+	border:2px solid @primary_color;
 }
 
 /* ---- Right Sidebar ---- */

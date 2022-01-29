@@ -130,7 +130,7 @@ public class WsControllerItem extends AMxWSController {
     		// populate filters from selected filters
     		List<String> preFilters = new ArrayList<String>();    
     		for (String filterName : requestMsg.getFiltersNames()) {
-    			IFilter c = user.getCurrentCatalog().getFilter(filterName);
+    			IFilter c = user.getCurrentCatalog().getFilter(user,filterName);
     			if (c==null) {
     				answer.setIsSuccess(false);
     	    		answer.setSize(-1);
@@ -519,7 +519,7 @@ public class WsControllerItem extends AMxWSController {
     		List<String> preFilters = new ArrayList<String>();
     
     		for (String filterName : requestMsg.getFiltersNames()) {
-    			IFilter f = user.getCurrentCatalog().getFilter(filterName);
+    			IFilter f = user.getCurrentCatalog().getFilter(user,filterName);
     			if (f==null) {    	    		
     	    		user.sendGuiErrorMessage(user.getText("Items.server.unknownFilter"));
     	    		return;

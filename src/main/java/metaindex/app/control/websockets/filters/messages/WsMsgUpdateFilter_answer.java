@@ -11,5 +11,14 @@ See full version of LICENSE in <https://fsf.org/>
 */
 
 public class WsMsgUpdateFilter_answer extends WsMsgCreateFilter_answer {
+	private String _filterName;
 
+	public String getFilterName() {
+		return _filterName;
+	}
+
+	public void setFilterName(String filterName) {
+		this._filterName = filterName;
+	}
+	
 }

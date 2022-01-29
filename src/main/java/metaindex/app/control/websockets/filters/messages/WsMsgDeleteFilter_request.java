@@ -12,14 +12,14 @@ See full version of LICENSE in <https://fsf.org/>
 
 public class WsMsgDeleteFilter_request  {
 		
-	private String _filterName;
+	private Integer _filterId;
 	
-	public String getFilterName() {
-		return _filterName;
+	public Integer getFilterId() {
+		return _filterId;
 	}
 
-	public void setFilterName(String filterName) {
-		this._filterName = filterName;
+	public void setFilterId(Integer filterId) {
+		this._filterId = filterId;
 	}
 
 }

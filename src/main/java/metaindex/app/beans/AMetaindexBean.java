@@ -232,9 +232,6 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 	public void setCurrentCatalog(ICatalog c) {
 		_userProfileData.setCurrentCatalog(c.getId());
 	}	
-	public IFilter getCurrentFilter() {
-		return _userProfileData.getCurrentFilter();
-	}
 	
 	/* Get Definition of plans available and matching current user category */
 	public Collection<IPlan> getPlansList() {

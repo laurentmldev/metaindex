@@ -85,10 +85,9 @@ public class UserProfileData implements IUserProfileData
 	
 	private Integer _curNbCatalogsCreated = 0;
 	private ICatalog _selectedCatalog=null;
-	private Integer _currentFilterId=IFilter.ALL_ITEMS_CATALOG_ID;
 
 	private Date _itemsLastChangeDate=new Date(0);
-	private Map<Integer,Integer> _currentDocumentIdByFilterId = new java.util.concurrent.ConcurrentHashMap<>();
+	private Integer _currentDocumentId = -1;
 	private Map<Integer,USER_CATALOG_ACCESSRIGHTS> _catalogsAccessRights = new java.util.concurrent.ConcurrentHashMap<>();
 	
 	private Semaphore _userProfileLock = new Semaphore(1,true);
@@ -370,8 +369,7 @@ public class UserProfileData implements IUserProfileData
 			this.acquireLock();
 			if (catalogId==null) { _selectedCatalog=null; }
 			else { _selectedCatalog=Globals.Get().getCatalogsMgr().getCatalog(catalogId); }		
-			// select default filter when entering a catalog
-			this.setCurrentFilter(IFilter.ALL_ITEMS_CATALOG_ID);
+
 		} catch (InterruptedException e) {
 			_selectedCatalog=null;
 			log.error("For "+this.getName()+" while setting current catalog Id to '"+catalogId+"' : "+e.getMessage(),e);
@@ -386,31 +384,15 @@ public class UserProfileData implements IUserProfileData
 		if (getCurrentCatalog()==null) { return new CatalogVocabularySet(); }
 		return getCurrentCatalog().getVocabulary(this.getGuiLanguageId());
 	}
-	@Override
-	public IFilter getCurrentFilter() {
-		if (getCurrentCatalog()!=null) {
-			try {
-				return getCurrentCatalog().getFilter(_currentFilterId);
-			} catch (DataProcessException e) {
-				e.printStackTrace();
-				return null;
-			}
-		} else { return null; }
-	}
-	
-	@Override
-	public void setCurrentFilter(Integer filterId) {
-		_currentFilterId=filterId;
-	}
 	
 	@Override
 	public Integer getCurrentDocumentId() {		
-		return _currentDocumentIdByFilterId.get(_currentFilterId);
+		return _currentDocumentId;
 	}
 	
 	@Override
 	public void setCurrentDocumentId(Integer docId) {
-		_currentDocumentIdByFilterId.put(_currentFilterId, docId);
+		_currentDocumentId=docId;
 	}
 	
 	@Override

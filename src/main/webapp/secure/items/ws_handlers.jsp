@@ -58,11 +58,11 @@
 		 return;
 	 }
 	// GUI refreshed on 'CatalogContentsChanged' message received appart
-	 footer_showAlert(WARNING, "<s:text name="Items.filters.deleted" /> : '"+msg.filterName+"'");
+	 footer_showAlert(WARNING, "<s:text name="Items.filters.deleted" />");
 	 filtersInsertSpot=MxGuiHeader.getFiltersInsertSpot();
 	 for (var curFilter=filtersInsertSpot.firstChild;curFilter!==null;curFilter=curFilter.nextElementSibling) {		
 		if (typeof(curFilter)!='object') { continue; }
-		if (curFilter.descr.name==msg.filterName) { 
+		if (curFilter.descr.id==msg.filterId) { 
 			curFilter.parentNode.removeChild(curFilter);
 			break;
 		}
@@ -263,12 +263,12 @@ function ws_handlers_requestCreateFilter(filterName, query) {
 								});
 }
 
-function ws_handlers_requestDeleteFilter(filterName) {
-	MxApi.requestDeleteFilter(filterName);
+function ws_handlers_requestDeleteFilter(filterId) {
+	MxApi.requestDeleteFilter(filterId);
 }
 
-function ws_handlers_requestUpdateFilter(filterName,queryString) {
-	MxApi.requestUpdateFilter(filterName,queryString);
+function ws_handlers_requestUpdateFilter(filterId,queryString) {
+	MxApi.requestUpdateFilter(filterId,queryString);
 }
 
 function ws_handlers_requestUploadCsvFile(nbEntries,fieldsMapping,fileHandle) {	

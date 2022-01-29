@@ -67,7 +67,7 @@ public class WsControllerItemsCsvDownload extends AMxWSController {
 	    	// populate filters from selected filters
     		List<String> preFilters = new ArrayList<String>();    
     		for (String filterName : requestMsg.getFiltersNames()) {
-    			IFilter c = user.getCurrentCatalog().getFilter(filterName);
+    			IFilter c = user.getCurrentCatalog().getFilter(user,filterName);
     			if (c==null) {
     				answer.setIsSuccess(false);    	    	
     	    		answer.setRejectMessage(user.getText("Items.server.unknownFilterForSearch",

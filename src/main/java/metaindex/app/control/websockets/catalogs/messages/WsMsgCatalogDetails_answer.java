@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import metaindex.data.filter.Filter;
 import metaindex.data.filter.IFilter;
 import metaindex.app.Globals;
 import metaindex.app.control.websockets.commons.IWsMsg_answer;
@@ -83,7 +84,7 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 		this.setItemsUrlPrefix(c.getItemsUrlPrefix());
 		this.setPerspectiveMatchField(c.getPerspectiveMatchField());		
 		this.setPerspectives(c.getPerspectives());	
-		this.setFilters(c.getFilters());
+		this.setFilters(c.getFilters(u));
 		this.setIsDbIndexFound(c.isDbIndexFound());
 		this.setVocabularies(c.getVocabularies());
 		this.setVocabulary(c.getVocabulary(u.getGuiLanguageId()));
@@ -172,7 +173,7 @@ public class WsMsgCatalogDetails_answer implements IWsMsg_answer,ICatalogCustomP
 		return _filters;
 	}
 	public void setFilters(List<IFilter> filters) {
-		this._filters = filters;
+		this._filters.addAll(filters);
 	}
 	public Boolean getIsDbIndexFound() {
 		return _dbIndexFound;

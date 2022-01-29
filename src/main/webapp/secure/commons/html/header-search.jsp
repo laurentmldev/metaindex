@@ -29,7 +29,10 @@
   MxGuiHeader.getCurrentSearchSortString=header_getCurrentSearchSortString;
   MxGuiHeader.getCurrentSearchReversedOrder=header_getCurrentSearchReversedOrder;
   MxGuiHeader.showFilter=header_showFilter;
+  
+  // to be overriden
   MxGuiHeader.onFilterClick=function(queryString,orderString,reversedOrder) {}
+//to be overriden
   MxGuiHeader.onFilterSave=function(name,queryString) {}
   MxGuiHeader.refreshSearch=function() {
 	  let searchText=document.getElementById('header.filter.text').value;
@@ -72,7 +75,7 @@
               	
                 <button class="btn btn-secondary dropdown-toggle" id="showFilterDropdownButton" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
                 	title="<s:text name="Header.search.savequery.title"/>" > 
-                  <i class="far fa-star fa-sm text-grey-50"></i>
+                  <i class="fas fa-filter fa-sm text-grey-50"></i>
                 </button>
                	  <!-- Dropdown - Filter Save Name -->
 	              <div id="showFilterDropdown" class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
@@ -82,7 +85,6 @@
 	              			style="" >Add new filter ...</div>
 	                <div id="add_new_filter_form" style="display:none;background:#eee;border:1px solid #ccc;padding:2px;margin-bottom:1rem;border-radius:2px;" class="form-inline mr-auto w-auto navbar-search">
 	                  <div class="input-group">
-	                  	
 	                    <input id="header.filter.name" type="text" class="form-control bg-light border-0 small" 
 	                    		style="min-width:200px;height:1.3rem;margin-bottom:0.5em;"
 	                    		onkeydown="event.stopPropagation();"

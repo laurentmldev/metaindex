@@ -3,6 +3,13 @@
 v2.3.0:
 -------
 
+update dts2csv
+
+sauvegarder la requête --> gestion des filtres
+
+impossible de modifier un champ dans les imports perseids (ID avec 2 '.' ou plus ...)
+
+upload CSV: "0 warnings pendant l'import" ...
 
 
 server.publicBaseUrl is missing and should be configured when running in a production environment. Some features may not behave correctly. See the documentation.
