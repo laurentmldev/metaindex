@@ -74,9 +74,10 @@ MxGuiHeader.getSelectedFiltersNames=function() {
 	return result;
 }
 
-function header_addFilterShortcut(id,name,filterNode) {
+function header_addFilterShortcut(id,name,query,filterNode) {
 	shortcutNode=document.getElementById('header-filters-shortcut-template').cloneNode(true);
 	shortcutNode.id='filter_shortcut_'+id;
+	shortcutNode.title=query;
 	shortcutNode.style.display='block';
 	shortcutNode.innerHTML=name;
 	shortcutNode.onclick=function(event) {filterNode.onclick(event); }
@@ -135,7 +136,7 @@ function header_buildNewFilter(descr) {
 		
 		let shortcutNode=document.getElementById('filter_shortcut_'+descr.id);
 		if (shortcutNode==null) {			
-			shortcutNode=header_addFilterShortcut(descr.id,descr.name,newFilterNode);
+			shortcutNode=header_addFilterShortcut(descr.id,descr.name,descr.query,newFilterNode);
 		}
 		shortcutNode.classList.add("mx-header-filter-shortcut-active");
 	}
@@ -167,7 +168,7 @@ function header_buildNewFilter(descr) {
 	
 	if (descr.isBuiltin==true) {
 		newFilterNode.style.display='none';
-		header_addFilterShortcut(descr.id,descr.name,newFilterNode);
+		header_addFilterShortcut(descr.id,descr.name,descr.query,newFilterNode);
 	} 
 	return newFilterNode
 }
