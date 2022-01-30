@@ -261,14 +261,6 @@ function ws_handlers_requestCreateFilter(filterName, query) {
 		filtersInsertSpot.appendChild(newFilter);
 		newFilter.select();
 		
-		let filtersButton=document.getElementById('showFilterDropdownButton');
-		let nbActiveFiltersCounter=document.getElementById('tiny_nb_active_filters');
-		nbFiltersActive++;	
-		nbActiveFiltersCounter.innerHTML=nbFiltersActive;
-		filtersButton.classList.add('mx_filters_active');
-		nbActiveFiltersCounter.style.display='block';
-		document.getElementById('showFilterDropdown').classList.add('show');
-		document.getElementById('add_new_filter_form').style.display='none';
 		
 	}	
 	let errorCallback=function(errorMsg) { 

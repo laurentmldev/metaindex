@@ -74,6 +74,15 @@ MxGuiHeader.getSelectedFiltersNames=function() {
 	return result;
 }
 
+function header_addFilterShortcut(id,name,filterNode) {
+	shortcutNode=document.getElementById('header-filters-shortcut-template').cloneNode(true);
+	shortcutNode.id='filter_shortcut_'+id;
+	shortcutNode.style.display='block';
+	shortcutNode.innerHTML=name;
+	shortcutNode.onclick=function(event) {filterNode.onclick(event); }
+	document.getElementById('header-filters-shortcuts-container').appendChild(shortcutNode);
+	return shortcutNode;
+}
 var nbFiltersActive=0;
 function header_buildNewFilter(descr) {
 	
@@ -100,31 +109,10 @@ function header_buildNewFilter(descr) {
 	newFilterNode.onclick=function(event) {		
 		event.stopPropagation();
 		if (newFilterNode.isSelected) {
-			nbFiltersActive--;
-			newFilterNode.deselect();
-			if (nbFiltersActive>0) { 
-				filtersButton.classList.add('mx_filters_active');
-				nbActiveFiltersCounter.innerHTML=nbFiltersActive;
-				nbActiveFiltersCounter.style.display='block';			
-			} 
-			else { 	
-				filtersButton.classList.remove('mx_filters_active');
-				nbActiveFiltersCounter.style.display='none';
-			}
-			
+			newFilterNode.deselect();			
 		}
 		else { 
-			nbFiltersActive++;
-			newFilterNode.select(); 
-			if (nbFiltersActive>0) { 
-				filtersButton.classList.add('mx_filters_active');
-				nbActiveFiltersCounter.innerHTML=nbFiltersActive;
-				nbActiveFiltersCounter.style.display='block';
-			} 
-			else { 	
-				filtersButton.classList.remove('mx_filters_active');
-				nbActiveFiltersCounter.style.display='none';
-			}			
+			newFilterNode.select(); 						
 		}
 	}
 	
@@ -134,6 +122,22 @@ function header_buildNewFilter(descr) {
 		newFilterNode.classList.add('mx_filter_selected');
 		newFilterNode.classList.add('mx-selected-dropdown');
 		MxGuiHeader.refreshSearch();
+		nbFiltersActive++;
+		if (nbFiltersActive>0) { 
+			filtersButton.classList.add('mx_filters_active');
+			nbActiveFiltersCounter.innerHTML=nbFiltersActive;
+			nbActiveFiltersCounter.style.display='block';
+		} 
+		else { 	
+			filtersButton.classList.remove('mx_filters_active');
+			nbActiveFiltersCounter.style.display='none';
+		}
+		
+		let shortcutNode=document.getElementById('filter_shortcut_'+descr.id);
+		if (shortcutNode==null) {			
+			shortcutNode=header_addFilterShortcut(descr.id,descr.name,newFilterNode);
+		}
+		shortcutNode.classList.add("mx-header-filter-shortcut-active");
 	}
 	newFilterNode.deselect=function() {
 		newFilterNode.isSelected=false;
@@ -141,6 +145,18 @@ function header_buildNewFilter(descr) {
 		newFilterNode.classList.remove('mx_filter_selected');
 		newFilterNode.classList.remove('mx-selected-dropdown');
 		MxGuiHeader.refreshSearch();
+		nbFiltersActive--;
+		if (nbFiltersActive>0) { 
+			filtersButton.classList.add('mx_filters_active');
+			nbActiveFiltersCounter.innerHTML=nbFiltersActive;
+			nbActiveFiltersCounter.style.display='block';			
+		} 
+		else { 	
+			filtersButton.classList.remove('mx_filters_active');
+			nbActiveFiltersCounter.style.display='none';
+		}
+		let shortcutNode=document.getElementById('filter_shortcut_'+descr.id);
+		shortcutNode.classList.remove("mx-header-filter-shortcut-active");
 	}
 	
 	// button delete
@@ -150,14 +166,9 @@ function header_buildNewFilter(descr) {
 	}
 	
 	if (descr.isBuiltin==true) {
-		queryInputNode.disabled=true;
-		newFilterNode.classList.add('mx_filter_builtin');
-		deleteButton.style.display='none';
-	} else {
-		queryInputNode.disabled=false;
-		newFilterNode.classList.remove('mx_filter_builtin');
-		deleteButton.style.display='block';
-	}
+		newFilterNode.style.display='none';
+		header_addFilterShortcut(descr.id,descr.name,newFilterNode);
+	} 
 	return newFilterNode
 }
 

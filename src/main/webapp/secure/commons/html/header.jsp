@@ -60,7 +60,7 @@
   	</nav>
   </c:if>
   
-        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-2 static-top mx-navbar">
+        <nav class="navbar navbar-expand navbar-light bg-white topbar static-top mx-navbar">
 		
           <!-- Sidebar Toggle (Topbar) -->
           <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
