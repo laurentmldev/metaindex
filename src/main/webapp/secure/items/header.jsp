@@ -138,7 +138,7 @@ function header_buildNewFilter(descr) {
 		if (shortcutNode==null) {			
 			shortcutNode=header_addFilterShortcut(descr.id,descr.name,descr.query,newFilterNode);
 		}
-		shortcutNode.classList.add("mx-header-filter-shortcut-active");
+		shortcutNode.classList.add("mx_filters_active");
 	}
 	newFilterNode.deselect=function() {
 		newFilterNode.isSelected=false;
@@ -157,7 +157,7 @@ function header_buildNewFilter(descr) {
 			nbActiveFiltersCounter.style.display='none';
 		}
 		let shortcutNode=document.getElementById('filter_shortcut_'+descr.id);
-		shortcutNode.classList.remove("mx-header-filter-shortcut-active");
+		shortcutNode.classList.remove("mx_filters_active");
 	}
 	
 	// button delete

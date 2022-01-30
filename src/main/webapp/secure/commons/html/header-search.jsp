@@ -178,7 +178,8 @@
           <div id="header-filters-shortcuts-container"
           	class="mx-header-filter-shortcuts"
           	>
-          	
+          		
           </div>
+          
           <div id="header-filters-shortcut-template" class="mx-header-filter-shortcut" style="display:none"></div>
 </div>

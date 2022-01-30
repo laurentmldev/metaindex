@@ -146,11 +146,6 @@ input[type="file"] {
 	cursor:pointer;
 }
 
-.mx-header-filter-shortcut-active {
-	border:1px solid #444;
-	background:#eee;
-}
-	
 
 /* 
    special class to anchors so that when jumbing to anchor it is more or less
