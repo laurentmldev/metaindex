@@ -1,14 +1,6 @@
 
 
-	
-when Generating GEXF group-by on archives sample:
-	[WARN ] 2022-01-30 13:48:02.258 [clientOutboundChannel-3] SubProtocolWebSocketHandler - Terminating 'WebSocketServerSockJsSession[id=jyf6u8jf]': Buffer size 524746 bytes for session 'jyf6u8jf' exceeds the allowed limit 524288
-	--> working well in dev env
-	
-Filters shortcuts not colorized when selected
-	-> working well in dev env
-	-> clean project before export to WAR?
-	
+		
 		
 
 v2.3.1:
