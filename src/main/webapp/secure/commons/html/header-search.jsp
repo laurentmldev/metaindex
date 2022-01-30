@@ -81,7 +81,7 @@
                 </button>
                	  <!-- Dropdown - Filter Save Name -->
 	              <div id="showFilterDropdown" class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
-	              	style="left:0;width:fit-content;" 
+	              	style="left:0;width:fit-content;max-height:80vh;overflow:scroll" 
 	              	aria-labelledby="saveFilterDropdown">
 	              	<div onclick="event.stopPropagation();event.preventDefault();document.getElementById('add_new_filter_form').style.display='block';"
 	              			class="mx_sub_button" ><s:text name="Header.search.savequery.newfilter" />
@@ -89,7 +89,7 @@
 	                  	class="form-inline mr-auto w-auto navbar-search">
 	                    <div class="input-group">
 	                      <input id="header.filter.name" type="text" class="form-control bg-light border-0 small" 
-	                    		style="min-width:200px;height:1.3rem;margin-bottom:0.5em;"
+	                    		style="min-width:100px;height:1.3rem;margin-bottom:0.5em;"
 	                    		onkeydown="event.stopPropagation();"
 	                    		onkeypress="event.stopPropagation();
 	                    					if (event.which==13||event.keycode==13) {
