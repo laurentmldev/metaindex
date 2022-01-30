@@ -1909,7 +1909,7 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 		//console.log("handling request create-filter answer "+requestId);
 		let requestObj=myself.requestCreateFilterCallbacks[requestId];
 		if (requestObj==null) { return; }
-		if (parsedMsg.isSuccess==true) { requestObj.successCallback(); }
+		if (parsedMsg.isSuccess==true) { requestObj.successCallback(parsedMsg); }
 		else {
 			let errorMsg=parsedMsg.rejectMessage;
 			// ensure error message is not empty
@@ -2346,13 +2346,12 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 	}
 
 	this._handleUploadFilesProgressMsg= function(uploadFilesContentsAnswerMsg) {
-		
+				
     	myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
 		var parsedMsg = JSON.parse(uploadFilesContentsAnswerMsg.body);
 		let requestId=parsedMsg.clientRequestId;
 		let requestObj=myself.requestUploadFilesDataObjs[requestId];
-		
-		
+				
 		//console.log("handling upload files contents answer "+requestId+" : "+requestObj);
 		//console.log(parsedMsg);
 		if (requestObj==null) { return; }

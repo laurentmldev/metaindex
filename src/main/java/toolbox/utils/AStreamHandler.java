@@ -32,7 +32,7 @@ public abstract class AStreamHandler<T> extends AProcessingTask implements IStre
 	
 	
 	// send progress message every n pourcents of progress
-	private static final Integer PROGRESS_MSG_POURCENT_STEP=1;
+	private static final Double PROGRESS_MSG_POURCENT_STEP=1.0;
 	
 	private Semaphore _postingDataLock = new Semaphore(1,true);	
 	private Semaphore _stoppingProcessingLock = new Semaphore(1,true);
@@ -87,7 +87,7 @@ public abstract class AStreamHandler<T> extends AProcessingTask implements IStre
     			getActiveUser().getText(this.getProgressMessageName(), getName()),
     			AProcessingTask.pourcentage(getProcessedNbData(),getTargetNbData()));
 		
-		
+		Double nextProgressMsgRatioTreshold=PROGRESS_MSG_POURCENT_STEP/100;
 		while (!this.isAllDataProcessed()) {
 			try { 
 				// wait for having received all data to be processed 
@@ -100,12 +100,15 @@ public abstract class AStreamHandler<T> extends AProcessingTask implements IStre
 				for (T d : _bufferizedDataToHandle) {
 					handle(d);
 					addProcessedNbData(1L);
-
-					if (this.getProcessedNbData()/this.getTargetNbData()%PROGRESS_MSG_POURCENT_STEP <= 0.01) {
+					Double progressRatio = this.getProcessedNbData()/(double)this.getTargetNbData();
+					if (progressRatio>nextProgressMsgRatioTreshold) {						
 						getActiveUser().sendGuiProgressMessage(
 			    			getId(),
 			    			getActiveUser().getText(this.getProgressMessageName(), getName()),
-			    			AProcessingTask.pourcentage(getProcessedNbData(), getTargetNbData()), true /*processing continuing*/);
+			    			AProcessingTask.pourcentage(getProcessedNbData(), getTargetNbData()), true //processing continuing
+			    			);
+						nextProgressMsgRatioTreshold=progressRatio+PROGRESS_MSG_POURCENT_STEP/100;		
+						//log.error("Sending progress msg "+progressRatio*100+"%");
 					}
 					
 				}				

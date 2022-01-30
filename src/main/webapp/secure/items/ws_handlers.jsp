@@ -64,6 +64,11 @@
 		if (typeof(curFilter)!='object') { continue; }
 		if (curFilter.descr.id==msg.filterId) { 
 			curFilter.parentNode.removeChild(curFilter);
+			let filterShortcutsContainer=document.getElementById('header-filters-shortcuts-container');
+			let filterShortcut=document.getElementById('filter_shortcut_'+msg.filterId);
+			if (filterShortcut!=null) {
+				filterShortcutsContainer.removeChild(filterShortcut);
+			}
 			if (curFilter.isSelected) {
 				nbFiltersActive--;
 				if (nbFiltersActive==0) { 
@@ -253,9 +258,9 @@ function ws_handlers_requestItemsIdsSearch(query,selectedFiltersNames,sortByFiel
 	
 function ws_handlers_requestCreateFilter(filterName, query) {
 		
-	let successCallback=function() { 
+	let successCallback=function(msgResp) {
 		footer_showAlert(SUCCESS, "<s:text name="Items.filters.added" /> : "+filterName);
-		filterDescr={ "name":filterName,"query":query};
+		filterDescr={ "id":msgResp.filterId,"name":filterName,"query":query};
 		let newFilter=MxGuiHeader.buildNewFilter(filterDescr);
 		filtersInsertSpot=MxGuiHeader.getFiltersInsertSpot();
 		filtersInsertSpot.appendChild(newFilter);

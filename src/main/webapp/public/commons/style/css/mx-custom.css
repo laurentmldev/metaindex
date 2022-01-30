@@ -145,7 +145,13 @@ input[type="file"] {
 .mx-header-filter-shortcut:hover {
 	cursor:pointer;
 }
+
+.mx-header-filter-shortcut-active {
+	border:1px solid #444;
+	background:#eee;
+}
 	
+
 /* 
    special class to anchors so that when jumbing to anchor it is more or less
    to the middle, not right on the top of the screen

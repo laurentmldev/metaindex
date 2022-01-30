@@ -162,8 +162,8 @@ public class ESDocumentsDbInterface extends ESDatabaseInterface<IDbItem>
 				targetFileName);
 		
 		
-		return new ESDownloadProcess(u,name, targetFileName,streamHandler,maxNbItems,c,fromIndex,query,preFilters,sortingOrder,
-				null/*if null, retrieve all fields from docs sources*/);
+		return new ESDownloadProcess(u,name, targetFileName,streamHandler,maxNbItems,c,fromIndex,query,preFilters,sortingOrder, 
+						csvColsList /* limit sources contents from ELK to only expected CSV cols */);
 	}
 	
 	// -- extract GEXF from given search

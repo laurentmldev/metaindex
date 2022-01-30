@@ -110,7 +110,16 @@ public class GexfGroupByDumper<T extends IFieldValueMapObject> extends GexfDumpe
 					String[] edgeDesc=edgeTargetIdAndWeight.split(":");
 					String edgeTargetId=edgeDesc[0];
 					Integer edgeTargetWeight=1;
-					if (edgeDesc.length>1) { edgeTargetWeight=new Integer(edgeDesc[1]); }
+					if (edgeDesc.length>1) { 
+						try { edgeTargetWeight=new Integer(edgeDesc[1]); }
+						catch (Exception e) {
+							this.getActiveUser().sendGuiWarningMessage(
+									this.getActiveUser().getText("Items.downloadItems.gexf.badEdgeWeightSyntax",
+											item.getId(),edgeTerm.getName(),edgeTargetIdAndWeight,edgeDesc[1])
+									);
+							edgeTargetWeight=1;
+						}
+					}
 					
 					Object targetGroupIdxO=_targetId2groupIdx.get(edgeTargetId);
 					// if unknown target

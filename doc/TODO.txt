@@ -1,8 +1,24 @@
 
 
+	
+when Generating GEXF group-by on archives sample:
+	[WARN ] 2022-01-30 13:48:02.258 [clientOutboundChannel-3] SubProtocolWebSocketHandler - Terminating 'WebSocketServerSockJsSession[id=jyf6u8jf]': Buffer size 524746 bytes for session 'jyf6u8jf' exceeds the allowed limit 524288
+	--> working well in dev env
+	
+Filters shortcuts not colorized when selected
+	-> working well in dev env
+	-> clean project before export to WAR?
+	
+		
 
 v2.3.1:
 -------
+
+GEXF group-by: choose which fields to include
+	mxwebapp    | [WARN ] 2022-01-30 13:46:26.515 [clientOutboundChannel-5] SubProtocolWebSocketHandler - Terminating 'WebSocketServerSockJsSession[id=8sp754qe]': Buffer size 525484 bytes for session '8sp754qe' exceeds the allowed limit 524288
+	
+Modif-only user shall not be able to create a new type of field in the edit-mode interface
+
 
 Kibana fails when using hebrew alphabet -> check with new Kibana version
 
@@ -240,7 +256,10 @@ v2.3.0:
 - update help texts:
 	- about calculation of drive usage (-> including  size of index contents)
 	- LONG_TEXT max length (50000 chars)
-	
+- Export GEXF group-by on archives sample: fail because of Integer wrong input and no error msg raised
+	- improve exception raised back to user
+-  LINK field: built query shall have quotes: _id:"TTH-bb11:ter 4976"
+
 v2.2.3 and 2.2.4: fixing download paths in prod env
 v2.2.2: fixed toolbox download path in prod env
 v2.2.1: fixed access restricted on toolbox in prod env 

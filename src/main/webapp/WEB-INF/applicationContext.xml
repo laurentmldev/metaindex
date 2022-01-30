@@ -51,7 +51,7 @@
 	<!--bean id="eventListenerBean" class="metaindex.app.session.MxHttpSessionEventListener" /-->
 	
 	<websocket:message-broker application-destination-prefix="/wsmxapp">
-		<websocket:transport message-size="655360"/>
+		<websocket:transport message-size="655360" send-buffer-size="655360"/>
 		<websocket:stomp-endpoint path="/wsmx">
 			<websocket:handshake-interceptors>
 	            <bean class="org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor"/>

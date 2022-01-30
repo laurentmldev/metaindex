@@ -74,6 +74,12 @@ public class WsControllerFilter extends AMxWSController {
     		Globals.GetStatsMgr().handleStatItem(new ErrorOccuredMxStat(user,"websockets.create_filter.refused_by_server"));
     	}
     	
+    	// retrieve full filter data (filterName typically)
+    	IFilter updatedFilter = c.getFilter(user, requestMsg.getFilterName()); 
+    	answer.setIsSuccess(true);  
+    	answer.setFilterName(updatedFilter.getName());
+    	answer.setFilterId(updatedFilter.getId());
+    	
     	answer.setIsSuccess(true);  
     	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/created_filter", answer);
     	Globals.GetStatsMgr().handleStatItem(new CreateFilterMxStat(user,c));

@@ -20,7 +20,7 @@ function _commons_perspective_buildStrQueryGetRefItems(linksTable) {
 	
 	for (var i=0;i<linksTable.length;i++) {
 		if (query.length>0) { query+=" OR "; }
-		if (linksTable[i].id.length>0) { query+="_id:"+linksTable[i].id; }	
+		if (linksTable[i].id.length>0) { query+="_id:\""+linksTable[i].id+"\""; }	
 	}
 
 	return query;
@@ -44,7 +44,7 @@ function _commons_perspective_buildLinkToItem(itemId,itemName,title) {
 	anchorNode.href="#";
 	anchorNode.title=title;
 	anchorNode.onclick=function() {
-		MxGuiHeader.setCurrentSearchQuery("_id:"+itemId);
+		MxGuiHeader.setCurrentSearchQuery("_id:\""+itemId+"\"");
 		MxGuiHeader.refreshSearch();		
 	}
 	
