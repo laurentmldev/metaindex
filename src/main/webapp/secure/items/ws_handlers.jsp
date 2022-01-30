@@ -125,7 +125,7 @@
 		 footer_showAlert(ERROR, "Sorry, an error occured while updating filter.");
 		 return;
 	 }
-	// GUI refreshed on 'CatalogContentsChanged' message received appart
+	 document.getElementById('filter_shortcut_'+msg.filterId).title=msg.query;
 	 footer_showAlert(SUCCESS, "<s:text name="Items.filters.updated" /> : "+msg.filterName+"=\""+msg.query+"\"");
  }
  function handleMxWsCatalogs(msg) {

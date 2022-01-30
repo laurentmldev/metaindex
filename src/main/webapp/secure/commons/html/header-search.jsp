@@ -56,10 +56,10 @@
   </script>
   
           <!-- Topbar Search -->
-          <div id="header.filter" style="display:none;">
+          <div id="header.filter" style="display:none;margin-top:5px;">
           
           	
-           <div class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" style="width:auto";>
+           <div class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" style="width:auto;">
            
            
             <div class="input-group" onkeypress="event.stopPropagation(); ">
