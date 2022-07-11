@@ -19,6 +19,7 @@
   
   <link href="${webAppBaseUrl}/public/commons/style/css/mx-custom.css" rel="stylesheet">
   <link href="${webAppBaseUrl}/public/commons/style/css/mx-chat.css" rel="stylesheet">
+  <link href="${webAppBaseUrl}/public/commons/style/css/mx-quiz.css" rel="stylesheet">
  
 <!-- Apply 'less' processing guitheme style -->
 <script src="${less_javascript}" type="text/javascript"></script>

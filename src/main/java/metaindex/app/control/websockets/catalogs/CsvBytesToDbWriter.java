@@ -114,8 +114,16 @@ public class CsvBytesToDbWriter extends ABytesWriter implements IBytesToDbWriter
 						colsNames=line.split("\t",-1);
 						_csvParser.setCsvSeparator("\t");
 					}
+					// removing potential comment char form header line
 					colsNames[0]=colsNames[0].replace("#","");
-					_csvParser.setColsNames(colsNames);
+					// stripping blanks in cols names
+					String[] cleanColNames = new String[colsNames.length];
+					int idx=0;
+					for (String colName : colsNames) {
+						cleanColNames[idx]=colName.strip();
+						idx++;
+					}
+					_csvParser.setColsNames(cleanColNames);
 					_totalNbLines++;
 					continue;
 				}

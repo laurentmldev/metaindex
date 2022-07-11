@@ -64,11 +64,8 @@
           <div class="mx-collapse py-2 collapse-inner rounded pt-4" style="overflow:auto">
 	 		<s:include  value="io/csv_xls_ods.jsp" />
 	 		<s:include  value="io/gexf.jsp" />
+	 		<s:include  value="io/quiz.jsp" />
           </div>
-          
-            
-	 		  
-            
         </div>
  </li>
  
@@ -114,8 +111,13 @@ function _update_menus_list() {
 }
 
 MxGuiLeftBar.setNbMatchingItems=function(nbMatchingItems) {
-	let nbMatchNode=document.getElementById('MxGui.left.csvdownload.nbMatchDocs');	 
-	 nbMatchNode.innerHTML=nbMatchingItems;	 
+	// TODO: improve framework on a 'observable/observer' pattern?
+	// or just use a descent HTML/JS dev framework ...
+	let nbMatchNodeCsv=document.getElementById('MxGui.left.csvdownload.nbMatchDocs');
+	nbMatchNodeCsv.innerHTML=nbMatchingItems;
+	let nbMatchNodeQuiz=document.getElementById('MxGui.left.quizdownload.nbMatchDocs');
+	nbMatchNodeQuiz.innerHTML=nbMatchingItems;
+		 
 }
 
 function _left_build_newitem_form_field_desc(termId,termDesc,catalogDesc) {

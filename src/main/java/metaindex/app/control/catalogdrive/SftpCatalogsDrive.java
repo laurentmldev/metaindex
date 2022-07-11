@@ -18,12 +18,15 @@ import java.net.ServerSocket;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermission;
 import java.security.Security;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Semaphore;
@@ -53,6 +56,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import metaindex.app.Globals;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.userprofile.ICatalogUser.USER_CATALOG_ACCESSRIGHTS;
+import toolbox.exceptions.DataProcessException;
 import metaindex.data.userprofile.IUserProfileData;
 
 
@@ -136,8 +140,13 @@ public class SftpCatalogsDrive implements ICatalogsDrive {
 		try {
 			File userdriveFs = new File(p.getLocalFsFilesPath());
 			
-			// user access might have changed between 2 connections, so we refresh it
-			if (userdriveFs.exists()) { FileUtils.deleteDirectory(userdriveFs); }
+			// user access might have changed between 2 connections, so we refresh it			 
+			if (userdriveFs.exists()) {
+				// On MacOSX (at least) corresponding folders on catalogs are changed to RO when
+				// executing this command. That's why we invoke c.setLocalFsFilesPathPosixRights()
+				// few lines below to reset it.
+				FileUtils.deleteDirectory(userdriveFs); 
+			}
 			if (!userdriveFs.mkdirs()) { log.error("unable to create drive folder for user : "+userdriveFs); }
 			
 			Integer nbCatalogs=0;
@@ -150,7 +159,11 @@ public class SftpCatalogsDrive implements ICatalogsDrive {
 					Files.createSymbolicLink(
 							catalogDriveLink.toPath(), 
 							new File(c.getLocalFsFilesPath()).toPath());
-									    	
+
+					// see comment up there about 'FileUtils.deleteDirectory(userdriveFs);'
+					// need to force folder to proper access rights.
+					c.setLocalFsFilesPathPosixRights(); 
+					
 					updateQuotasWarningFile(c);
 					nbCatalogs++;
 		    	}

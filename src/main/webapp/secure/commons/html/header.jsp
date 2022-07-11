@@ -15,7 +15,7 @@
   				MxGuiHeader.hideInfoModal();
   			}">
 	 <div  id="info_modal" class="modal" style="display:block;z-index:1000;background:#fffa;">
-		  <div id="info_dialog" class="modal-dialog" style="min-width:30vw;display:block;position:absolute;margin-top:20vh;margin-left:60vh;max-height:80vh;">		  	 
+		  <div id="info_dialog" class="modal-dialog" style="min-width:30vw;max-width:80vw;display:block;position:absolute;margin-top:20vh;margin-left:60vh;max-height:80vh;">		  	 
 		     <div class="modal-content">		     
 		       <div class="modal-header">
 		            <span id="info_modal_title"> </span>
@@ -172,7 +172,7 @@
 	  MxGuiHeader.getInsertSpot().append(popupNode);
   }
   
-  MxGuiHeader.showInfoModal=function(titleTxt,bodyTxt,footerTxt) {
+  MxGuiHeader.showInfoModal=function(titleTxt,bodyTxt,footerTxt,modalWidth) {
 	  
 	  let title = document.getElementById("info_modal_title");
 	  title.innerHTML=titleTxt;
@@ -191,6 +191,8 @@
 		  else { footer.appendChild(footerTxt); }
 	  }
 	  
+	  if (modalWidth==null) { document.getElementById("info_dialog").style.width=""; }
+	  else { document.getElementById("info_dialog").style.width=modalWidth; }
 	  document.getElementById("show_info_container").style.opacity=0.0;
 	  document.getElementById("show_info_container").style.display='block';
 	  // need to give time to the transition to be loaded before applying property

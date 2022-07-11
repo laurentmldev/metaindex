@@ -15,10 +15,14 @@ See full version of LICENSE in <https://fsf.org/>
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Semaphore;
 
@@ -170,6 +174,12 @@ public class Catalog implements ICatalog {
 			log.info("created drive folder : "+getLocalFsFilesPath());
 		}
 		
+		try { setLocalFsFilesPathPosixRights(); }
+		catch(IOException ex) {
+			throw new DataProcessException(
+					"Unable to set proper POSIX access rights on catalog's drive folder: '"+getLocalFsFilesPath()+"'",ex);
+		}
+		
 		_dbAutoRefreshProcessing=new CatalogPeriodicDbReloader(this);
 		_dbAutoRefreshProcessing.start();		
 		
@@ -274,7 +284,19 @@ public class Catalog implements ICatalog {
 	public String getFilesBaseUrl() {
 		return Globals.Get().getWebAppBaseUrl()+(Globals.LOCAL_USERDATA_PATH_SUFFIX+"/"+this.getName());
 	}
-	
+	@Override
+	public void setLocalFsFilesPathPosixRights() throws IOException {
+		// need to reset
+		Set<PosixFilePermission> perms = new HashSet<PosixFilePermission>(); 
+		perms.add(PosixFilePermission.OWNER_WRITE);
+		perms.add(PosixFilePermission.OWNER_READ);
+		perms.add(PosixFilePermission.OWNER_EXECUTE);
+		perms.add(PosixFilePermission.GROUP_READ);
+		perms.add(PosixFilePermission.GROUP_EXECUTE);
+		
+		Files.setPosixFilePermissions(
+				new File(this.getLocalFsFilesPath()).toPath(),perms);	
+	}
 	@Override
 	public Integer getNbLoggedUsers() { return _loggedUsersIds.size(); }
 	

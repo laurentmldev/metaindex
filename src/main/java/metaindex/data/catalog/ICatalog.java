@@ -1,5 +1,6 @@
 package metaindex.data.catalog;
 
+import java.io.IOException;
 import java.util.Date;
 
 /*
@@ -89,6 +90,7 @@ public interface ICatalog extends IIdentifiable<Integer>,ILockable,ICatalogCusto
 	
 	// Files access
 	public String getLocalFsFilesPath();
+	public void setLocalFsFilesPathPosixRights() throws IOException;
 	public String getFilesBaseUrl();
 	
 	// Perspectives

@@ -6,12 +6,17 @@
 v2.3.1:
 -------
 
+
+
+
+
+upgrade docker version
+ 
 improve help text from tuto 1 (ATTENTION etc...)
 
 Stomp not reachable sometimes when accessing first page?
 	maybe server was on quarantine ?
 	
-
 
 GEXF group-by: choose which fields to include
 	mxwebapp    | [WARN ] 2022-01-30 13:46:26.515 [clientOutboundChannel-5] SubProtocolWebSocketHandler - Terminating 'WebSocketServerSockJsSession[id=8sp754qe]': Buffer size 525484 bytes for session '8sp754qe' exceeds the allowed limit 524288
@@ -67,6 +72,33 @@ built-in filters based on enums definitions ?
 
 v3.0.0:
 -------
+
+Quiz Generator
+	- questions types
+	 
+		- QCM
+			- yes/no
+			- date 
+		- Free text + approximate answer
+	
+	- json config file
+	- csv + pics data input files
+	- export to Quiz Maker (.qcm)
+	- offline HTML interface
+	- criticity note -> how often question is back to a given
+	- if wrong response -> criticity raises
+	- steps:
+		1- load config file (json)
+			- fields eligible for presentation: this is the one
+			- fields eligible for quiz question: what is its xxx
+			- fields eligible for suggestion: info: its yyy is zzz
+			
+		2- load contents CSV
+			- from each eligible fields, list possible values
+			
+		3- generate a question from a random file
+		
+		4- display/export qcm/export csv 
 
 3D scene exporter:
 	-user stories:		
@@ -230,6 +262,17 @@ Backlog:
 			java.sql.SQLException: No suitable driver found for jdbc:mysql://metaindex.fr:3306/metaindex?useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 Done:
 -----
+
+v2.3.1:
+
+- fixed chmod 755 (not 555) when creating local folder in dev mode (prod too?): /tmp/metaindex/userdata/catalogs/artinp
+- handle white spaces within CSV header line for CSV import
+
+SSL mxproxy <-> mxwebapp:
+[Sat Jul 02 09:26:20.497594 2022] [ssl:info] [pid 11:tid 140067080669984] [client 172.25.0.1:51750] AH02008: SSL library error 1 in handshake (server metaindex.fr:443)
+[Sat Jul 02 09:26:20.497684 2022] [ssl:info] [pid 11:tid 140067080669984] SSL Library Error: error:14094412:SSL routines:ssl3_read_bytes:sslv3 alert bad certificate (SSL alert number 42)
+
+
 v2.3.0:
 - upgraded ELK version
 - improved Kibana integration
