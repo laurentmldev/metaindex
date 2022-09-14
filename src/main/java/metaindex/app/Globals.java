@@ -13,6 +13,7 @@ See full version of LICENSE in <https://fsf.org/>
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
 import java.util.List;
@@ -58,6 +59,8 @@ import toolbox.database.sql.SQLDataConnector;
 import toolbox.exceptions.DataAccessException;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.IProcessingTask;
+import toolbox.utils.IStreamHandler;
+import toolbox.utils.SysCall;
 import toolbox.utils.mailing.DummyMailSender;
 import toolbox.utils.mailing.GoogleMailSender;
 import toolbox.utils.mailing.IEmailSender;
@@ -321,8 +324,7 @@ public class Globals {
 					+" (devMode="+isDevMode()+") and if you can read this email "
 					+"then its a good sign that everything is working fine.<br/><br/>"
 					+"See you soon ;)<br/>");
-							
-		
+
 	}
 	
 	public void stop() throws DataProcessException {

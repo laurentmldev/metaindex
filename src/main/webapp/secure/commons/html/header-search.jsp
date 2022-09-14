@@ -52,6 +52,10 @@
 	  let sortingNode = document.getElementById('header.filter.sortString');
 	  sortingNode.appendChild(optionNode);
   }
+  MxGuiHeader.getSearchShortCutsInsertSpot=function() {
+  	return document.getElementById('header-filters-shortcuts-container');
+  }
+  
   
   </script>
   

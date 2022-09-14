@@ -8,6 +8,8 @@
 
 var _curCatalogDescr=null;
 
+var FILTER_SHORTCUT_BASENAME='filter_shortcut_';
+
 function header_onFilterClick(searchQuery,orderString,reversedOrder)  {
 	var selectedFiltersNames=MxGuiHeader.getSelectedFiltersNames();	
 	ws_handlers_requestItemsSearch(searchQuery,selectedFiltersNames,orderString,reversedOrder);	
@@ -75,13 +77,25 @@ MxGuiHeader.getSelectedFiltersNames=function() {
 }
 
 function header_addFilterShortcut(id,name,query,filterNode) {
+	
+	let shortcutsInsertSpot=MxGuiHeader.getSearchShortCutsInsertSpot();
+	
+	// ensure we don't add twice the same filter shotcut
+	console.log(shortcutsInsertSpot);
+	for (idx in shortcutsInsertSpot.childNodes) {
+		let curShortCutNode=shortcutsInsertSpot.childNodes[idx];
+		if (curShortCutNode.id==FILTER_SHORTCUT_BASENAME+id) {
+			return;
+		}
+	}
+	
 	shortcutNode=document.getElementById('header-filters-shortcut-template').cloneNode(true);
-	shortcutNode.id='filter_shortcut_'+id;
+	shortcutNode.id=FILTER_SHORTCUT_BASENAME+id;
 	shortcutNode.title=query;
 	shortcutNode.style.display='block';
 	shortcutNode.innerHTML=name;
 	shortcutNode.onclick=function(event) {filterNode.onclick(event); }
-	document.getElementById('header-filters-shortcuts-container').appendChild(shortcutNode);
+	shortcutsInsertSpot.appendChild(shortcutNode);
 	return shortcutNode;
 }
 var nbFiltersActive=0;
@@ -167,8 +181,8 @@ function header_buildNewFilter(descr) {
 	}
 	
 	if (descr.isBuiltin==true) {
-		newFilterNode.style.display='none';
-		header_addFilterShortcut(descr.id,descr.name,descr.query,newFilterNode);
+		newFilterNode.style.display='none';		
+		header_addFilterShortcut(descr.id,descr.name,descr.query,newFilterNode);		
 	} 
 	return newFilterNode
 }

@@ -30,7 +30,8 @@ public class BeanWelcome extends AMetaindexBean {
 	
 	@Override
   	public String execute() throws Exception {
-		Globals.GetStatsMgr().handleStatItem(new WelcomePageMxStat(this.getCurrentUserProfile()));
+		WelcomePageMxStat stat = new WelcomePageMxStat(this.getCurrentUserProfile());	
+		Globals.GetStatsMgr().handleStatItem(stat);
 		return BeanProcessResult.BeanProcess_SUCCESS.toString();
 	}
 	

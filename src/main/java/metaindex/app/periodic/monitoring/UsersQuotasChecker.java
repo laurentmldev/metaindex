@@ -36,7 +36,7 @@ public class UsersQuotasChecker implements IPeriodicProcess {
 	private PeriodicProcessMonitor _periodicMonitor=new PeriodicProcessMonitor(this);
 	
 	// run once a day
-	public static final Integer USERS_QUOTA_CHECK_PERIOD_DAY = 1;
+	public static final Integer USERS_QUOTA_CHECK_PERIOD_DAY = 2;
 	public static final Integer USERS_MAX_QUOTA_WARNINGS = 90;
 	private Integer _id=666;
 	private String _name="Users Quotas Checker";

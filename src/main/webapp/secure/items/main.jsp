@@ -137,7 +137,7 @@
   	function local_onload() {
   		enableKibanaFrame();
 		MxGuiDetails.showHistoNavArrows();
-		enableAutoFeedOnScrollDown();
+		//enableAutoFeedOnScrollDown();
   	}
   </script>
   <script type="text/javascript">

@@ -26,18 +26,16 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
+import metaindex.data.catalog.ICatalog;
 import metaindex.data.filter.IFilter;
 import metaindex.app.Globals;
 import metaindex.app.control.websockets.items.messages.*;
 import metaindex.app.periodic.statistics.items.CsvDownloadMxStat;
-import metaindex.app.periodic.statistics.items.CsvUploadMxStat;
 import metaindex.app.control.websockets.commons.AMxWSController;
 import metaindex.data.userprofile.IUserProfileData;
-import toolbox.database.IDbItem;
 import toolbox.database.IDbSearchResult.SORTING_ORDER;
 import toolbox.database.elasticsearch.ESDownloadProcess;
 import toolbox.exceptions.DataProcessException;
-import toolbox.utils.AStreamHandler;
 import toolbox.utils.BasicPair;
 import toolbox.utils.filetools.FileSystemUtils;
 import toolbox.utils.IPair;
@@ -54,6 +52,36 @@ public class WsControllerItemsCsvDownload extends AMxWSController {
 		super(messageSender);		
 	}		
 	
+	public static List<String> buildFilters(IUserProfileData user, WsMsgCsvDownload_request requestMsg) throws DataProcessException {
+		ICatalog catalog = user.getCurrentCatalog();
+		List<String> preFilters = new ArrayList<String>();
+		
+		for (String filterName : requestMsg.getFiltersNames()) {
+			IFilter c = catalog.getFilter(user,filterName);
+			if (c==null) {
+				throw new DataProcessException(user.getText("Items.server.unknownFilterForSearch",
+					filterName.toString(),user.getCurrentCatalog().getName())); }
+			
+			preFilters.add(c.getQuery());
+		}	
+		
+		return preFilters;
+	}
+	
+	public static List< IPair<String,SORTING_ORDER> > buildSortOrfer(IUserProfileData user, WsMsgCsvDownload_request requestMsg) {
+		
+		List< IPair<String,SORTING_ORDER> > sortByFieldName = new ArrayList<>();
+		
+		SORTING_ORDER sortOrder = SORTING_ORDER.ASC;
+		if (requestMsg.getReverseSortOrder()) { sortOrder = SORTING_ORDER.DESC; }
+		
+		if (requestMsg.getSortByFieldName().length()>0) {
+			sortByFieldName.add(new BasicPair<String,SORTING_ORDER>(requestMsg.getSortByFieldName(),sortOrder));
+		}
+		return sortByFieldName;
+		
+	}
+	
     @MessageMapping("/download_items_csv_request")
     @SubscribeMapping ("/user/queue/download_items_csv_response")    				    
     public void handleDownloadItemsCsvRequest( SimpMessageHeaderAccessor headerAccessor, 
@@ -63,34 +91,10 @@ public class WsControllerItemsCsvDownload extends AMxWSController {
     	try {
 	    	
 	    	IUserProfileData user = getUserProfile(headerAccessor);
-	    	
-	    	// populate filters from selected filters
-    		List<String> preFilters = new ArrayList<String>();    
-    		for (String filterName : requestMsg.getFiltersNames()) {
-    			IFilter c = user.getCurrentCatalog().getFilter(user,filterName);
-    			if (c==null) {
-    				answer.setIsSuccess(false);    	    	
-    	    		answer.setRejectMessage(user.getText("Items.server.unknownFilterForSearch",
-    	    							filterName.toString(),user.getCurrentCatalog().getName()));
-    	    		
-    	    		this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/items", 
-    						getCompressedRawString(answer));
-    	    		return;
-    			}
-    			preFilters.add(c.getQuery());
-    		}		
-    		
-    		// populate sorting order definition
-    		SORTING_ORDER sortOrder = SORTING_ORDER.ASC;
-    		if (requestMsg.getReverseSortOrder()) { sortOrder = SORTING_ORDER.DESC; }
-    		List< IPair<String,SORTING_ORDER> > sortByFieldName = new ArrayList<>();
-    		if (requestMsg.getSortByFieldName().length()>0) {
-    			sortByFieldName.add(new BasicPair<String,SORTING_ORDER>(requestMsg.getSortByFieldName(),sortOrder));
-    		}    
+	    	    
     		String timestamp = StrTools.Timestamp(new Date());
     		String targetFileBasename=user.getCurrentCatalog().getName()+"-extract_"+timestamp+".csv";
     		String targetFileFsPath=Globals.Get().getWebappsTmpFsPath()+targetFileBasename;
-    		
     		
 	    	ESDownloadProcess procTask = Globals.Get().getDatabasesMgr().getDocumentsDbInterface()
 					.getNewCsvExtractProcessor(
@@ -102,8 +106,8 @@ public class WsControllerItemsCsvDownload extends AMxWSController {
 		    			 new Long(requestMsg.getSize()),
 		    			 new Long(requestMsg.getFromIdx()),
 		    			 requestMsg.getQuery(),
-		    			 preFilters,
-		    			 sortByFieldName,
+		    			 buildFilters(user, requestMsg),
+		    			 buildSortOrfer(user, requestMsg),
 		    			 now);
 
     		procTask.start();
@@ -127,7 +131,7 @@ public class WsControllerItemsCsvDownload extends AMxWSController {
 		{
 			log.error("Unable to process download_items_csv_file from '"+headerAccessor.getUser().getName()+"' : "+e);
 			e.printStackTrace();
-			
+			answer.setRejectMessage(e.getMessage());
 			answer.setIsSuccess(false);
 			this.messageSender.convertAndSendToUser(
     				headerAccessor.getUser().getName(),

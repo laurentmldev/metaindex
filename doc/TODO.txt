@@ -7,17 +7,14 @@ v2.3.1:
 -------
 
 
-
-
+perspective:
+	- text big size: ascenceur sur ordi the tiph
+	- unable to add a new field in existing obj. in prod env (all chards failed)
+	- import Excel: wrong dates
+	- nom de catalogue: ajouter aide que ne peut pas commencer par un chiffre
 
 upgrade docker version
- 
-improve help text from tuto 1 (ATTENTION etc...)
-
-Stomp not reachable sometimes when accessing first page?
-	maybe server was on quarantine ?
 	
-
 GEXF group-by: choose which fields to include
 	mxwebapp    | [WARN ] 2022-01-30 13:46:26.515 [clientOutboundChannel-5] SubProtocolWebSocketHandler - Terminating 'WebSocketServerSockJsSession[id=8sp754qe]': Buffer size 525484 bytes for session '8sp754qe' exceeds the allowed limit 524288
 	
@@ -66,7 +63,7 @@ add a check compliance of currently deployed mysql MX db version?
 
 color to cards based on enum field values ?
  
-CPU usage on server increases ... ???
+CPU usage on server increases slowly as time pass by
 
 built-in filters based on enums definitions ?
 
@@ -264,7 +261,10 @@ Done:
 -----
 
 v2.3.1:
-
+- when creating a new field, filters list is duplicated
+- fix help text from tuto 1: "éléments du l'interface"
+- recall for over quotas every 2 days (not every days)
+- js errors when opening catalog
 - fixed chmod 755 (not 555) when creating local folder in dev mode (prod too?): /tmp/metaindex/userdata/catalogs/artinp
 - handle white spaces within CSV header line for CSV import
 
@@ -272,6 +272,10 @@ SSL mxproxy <-> mxwebapp:
 [Sat Jul 02 09:26:20.497594 2022] [ssl:info] [pid 11:tid 140067080669984] [client 172.25.0.1:51750] AH02008: SSL library error 1 in handshake (server metaindex.fr:443)
 [Sat Jul 02 09:26:20.497684 2022] [ssl:info] [pid 11:tid 140067080669984] SSL Library Error: error:14094412:SSL routines:ssl3_read_bytes:sslv3 alert bad certificate (SSL alert number 42)
 
+quiz:
+	x del folder quiz.qcm/ when failed
+	x fix GUIErrorMsg 'undefined'
+	x keep current definition when closing/opening window
 
 v2.3.0:
 - upgraded ELK version

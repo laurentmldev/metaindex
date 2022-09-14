@@ -15,7 +15,7 @@
   				MxGuiHeader.hideInfoModal();
   			}">
 	 <div  id="info_modal" class="modal" style="display:block;z-index:1000;background:#fffa;">
-		  <div id="info_dialog" class="modal-dialog" style="min-width:30vw;max-width:80vw;display:block;position:absolute;margin-top:20vh;margin-left:60vh;max-height:80vh;">		  	 
+		  <div id="info_dialog" class="modal-dialog" style="min-width:30vw;max-width:80vw;display:block;position:absolute;margin-top:20vh;margin-left:20vw;max-height:80vh;">		  	 
 		     <div class="modal-content">		     
 		       <div class="modal-header">
 		            <span id="info_modal_title"> </span>

@@ -1,0 +1,23 @@
+<marketplace_tool name="csv2quiz" version="1.0">
+	<description language="EN">
+	Python script to generate quiz questions from contents of given CSV file&lt;br/&gt;
+	Retrieved '.qcm' file can then be open with Android App "Quiz Maker".
+	&lt;br/&gt;
+	Example from command line:
+	&lt;pre class='mx-script' &gt;python csv2quiz.py 10 quizconf.py data.csv --output myquiz.qcm --imgpath $HOME/Images&lt;/pre&gt;
+	</description>
+
+	<description language="FR">
+	Script Python pour générer un Quiz à partir d'un fichier CSV.&lt;br/&gt;
+	Le fichier '.qcm' généré peut alors être ouvert avec l'application Android "Quiz Maker".
+	&lt;br/&gt;
+	Exemple de ligne de commande:
+	&lt;pre class='mx-script' &gt;python csv2quiz.py 10 quizconf.py data.csv --output myquiz.qcm --imgpath $HOME/Images&lt;/pre&gt;
+	</description>
+	
+	<dependencies>&lt;ul&gt;
+				  &lt;li&gt; &lt;a href="https://quizmaker.com" target="_blank" &gt;Quiz Maker (Android)&lt;/a&gt; &lt;/li&gt;
+				  &lt;/ul&gt;
+				  </dependencies>
+</marketplace_tool>
+	

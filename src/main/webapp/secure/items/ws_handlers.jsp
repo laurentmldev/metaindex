@@ -183,6 +183,7 @@ function retrieveItemsSuccess(itemsAnswerMsg) {
 						clearInterval(timer);
 						retrieveItemsSuccess(itemsAnswerMsg);
 					}, 200);
+		return;
 	}
 	 let isCatalogWritable = mx_helpers_isCatalogWritable(MxGuiDetails.getCurCatalogDescription().userAccessRights);
 	 
@@ -319,7 +320,8 @@ function ws_handlers_requestDownloadCsvFile(selectedTermsList,query,selectedFilt
 	 }
 	
 	 retrieveCsvError=function(msg) { footer_showAlert(ERROR, msg.rejectMessage); }
-	 MxApi.requestDownloadItemsCsv({	"termNamesList":selectedTermsList,
+	 MxApi.requestDownloadItemsCsv({	
+		 						"termNamesList":selectedTermsList,
 		 						"fromIdx":0,
 		 						"size":-1,
 		 						"query":query,
@@ -374,6 +376,30 @@ function ws_handlers_requestDownloadGraphGroupByFile(groupTermId,selectedEdgesTe
 		 						"errorCallback":retrieveCsvError});	  
 }
 
+function ws_handlers_requestGenerateQuiz(selectedTermsList,query,selectedFiltersNames,sortByFieldName,reversedSortOrder,jsonConfig,nbQuestions,asJson) {
+	
+	 retrieveQuizSuccess=function(itemsAnswerMsg) {
+		footer_showAlert(SUCCESS, "<s:text name="Items.quiz.quizFileReady" /> : <a target='_blank' href='"+itemsAnswerMsg.quizFileUrl+"' "
+				+" title='<s:text name="Items.quiz.quizFileReady.title" />'"
+				+">"+itemsAnswerMsg.quizFileName+"</a> ("+Math.round(itemsAnswerMsg.quizFileSizeMB*1000)/1000+"MB)","",999999999);						
+	 }
+	
+	 retrieveQuizError=function(rejectMessage) { footer_showAlert(ERROR, rejectMessage); }
+	 MxApi.requestGenerateQuiz({	
+								"jsonQuizConfig":JSON.stringify(jsonConfig),
+								"nbQuestions":nbQuestions,
+								"asJson":asJson,
+								"fromIdx":0,
+								"termNamesList":selectedTermsList,
+		 						"fromIdx":0,
+		 						"size":-1,
+		 						"query":query,
+		 						"filtersNames":selectedFiltersNames,
+		 						"sortByFieldName":sortByFieldName,
+		 						"reverseSortOrder":reversedSortOrder,
+		 						"successCallback":retrieveQuizSuccess,
+		 						"errorCallback":retrieveQuizError});	  
+}
 
 
 

@@ -262,6 +262,7 @@ function MetaindexJSAPI(url, connectionParamsHashTbl)
 			myself._stompClient.subscribe('/user/queue/get_catalog_items_allids_response',myself._handleCatalogItemsIdsMsg);
 			myself._stompClient.subscribe('/user/queue/selected_item',myself._handleCatalogSelectedItemMsg);
 			myself._stompClient.subscribe('/user/queue/download_items_csv_response',myself._handleDownloadItemsCsvAnswer);
+			myself._stompClient.subscribe('/user/queue/generate_quiz_response',myself._handleGenerateQuizAnswer);
 			myself._stompClient.subscribe('/user/queue/download_items_graph_response',myself._handleDownloadItemsGraphAnswer);
 			myself._stompClient.subscribe('/user/queue/download_items_graphgroupby_response',myself._handleDownloadItemsGraphGroupByAnswer);
 			myself._stompClient.subscribe('/user/queue/created_item',myself._handleCreatedItemResponseMsg);
@@ -762,6 +763,75 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 	    
 	}
 	
+//------- Generate Quiz (QCM) file -------
+			
+	this.requestGenerateQuizCallbacks=[];
+	
+	// dataObj {
+	//	 jsonQuizConfig
+	//	 nbQuestions
+	//	 asJson (bool) 
+	//   termNamesList = []
+	//   fromIdx=0
+	//   size=-1
+	//   filtersNames=[]
+	//	 query=""
+	//   sortByFieldName=""
+	//   reverseSortOrder=false
+	//   successCallback (func)({items:[],totalHits:<int>,totalItems:<int>})
+	//   errorCallback (func)(msg)
+	// }
+	this.requestGenerateQuiz = function(dataObj) {
+	
+		if (dataObj.jsonQuizConfig==null) { 
+			console.log("Missing JSON config data for sending quiz generation request: "+parsedMsg.rejectMessage);
+			return;
+		}
+		if (dataObj.nbQuestions==null) { dataObj.nbQuestions=10; }
+		if (dataObj.asJson==null) { dataObj.asJson=false; }
+		if (dataObj.fromIdx==null) { dataObj.fromIdx=0; }
+		if (dataObj.size==null) { dataObj.size=-1; }
+		if (dataObj.filtersNames==null) { dataObj.filtersNames=[]; }
+		if (dataObj.query==null) { dataObj.query=""; }
+		if (dataObj.sortByFieldName==null) { dataObj.sortByFieldName=""; }
+		if (dataObj.reverseSortOrder==null) { dataObj.reverseSortOrder=false; }
+		if (myself._callback_CatalogItems_debug==true) {
+			console.log("MxAPI Requesting [Items Generate Quiz]");
+		}
+		
+		
+		var curRequestId=myself.requestGenerateQuizCallbacks.length;
+		myself.requestGenerateQuizCallbacks.push(dataObj);
+		dataObj.requestId=curRequestId;
+		//console.log(dataObj)
+    	//console.log('### Sending generate quiz request : '+JSON.stringify(dataObj));
+		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
+    	myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/generate_quiz_request", {},JSON.stringify(dataObj));		
+
+	}
+	
+	this._handleGenerateQuizAnswer=function(msg) {
+		myself._callback_NetworkEvent(MX_DOWNSTREAM_MSG);
+		var parsedMsg = JSON.parse(msg.body);
+		
+		let requestId=parsedMsg.requestId;
+		let requestObj=myself.requestGenerateQuizCallbacks[requestId];
+		//console.log("received handleGenerateQuizAnswer requestId="+requestId+" -> "+requestObj);
+		//console.log(parsedMsg);
+		if (requestObj==null) { return; }
+		if (parsedMsg.isSuccess==true) {
+			 
+			requestObj.successCallback(parsedMsg); 
+		}
+		else {
+			let errorMsg=parsedMsg.rejectMessage;
+			// ensure error message is not empty
+			// (otherwise can lead to some mis behaviour in user app (ex: x-editable) )
+			if (errorMsg==undefined) { errorMsg="perspective delete refused by server, sorry." }
+			requestObj.errorCallback(errorMsg); 
+		}	
+	    
+	}
 //------- Download Graph (GEXF) file --------
 				
 		this.requestGraghDownloadsCallbacks=[];

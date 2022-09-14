@@ -86,21 +86,16 @@ function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeF
 					onColsSelectionsChangeFunc();
 				}
 				matchingChoiceNode=choiceNode;
+				
+				// default is active as a TINY_TEXT
+				checkBox.checked=true;
+				checkBox.onclick();
 			}
 							
 		}
 	}
 	
-	if (found==true) { 
-		checkBox.checked=true;
-		
-		checkBox.onclick=function() {
-			clearNodeChildren(commentZone);
-			if (checkBox.checked==true) { matchingChoiceNode.selected=true; }
-			else { choiceIgnoreNode.selected=true; }
-			onColsSelectionsChangeFunc();
-		}
-	}
+	
 	
 	checkBox.getCsvColName=function() { return csvColName; }; 
 	checkBox.getTermName=function() { return colTermNodeSelect.value; }
