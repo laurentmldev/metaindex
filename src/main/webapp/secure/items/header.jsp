@@ -81,7 +81,6 @@ function header_addFilterShortcut(id,name,query,filterNode) {
 	let shortcutsInsertSpot=MxGuiHeader.getSearchShortCutsInsertSpot();
 	
 	// ensure we don't add twice the same filter shotcut
-	console.log(shortcutsInsertSpot);
 	for (idx in shortcutsInsertSpot.childNodes) {
 		let curShortCutNode=shortcutsInsertSpot.childNodes[idx];
 		if (curShortCutNode.id==FILTER_SHORTCUT_BASENAME+id) {

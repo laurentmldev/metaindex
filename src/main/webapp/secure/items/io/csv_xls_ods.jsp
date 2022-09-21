@@ -22,6 +22,7 @@ function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeF
 	commentZone.classList.add("alert-warning");
 	typeCol.append(commentZone);
 	
+	checkBox.onchange=function() { onColsSelectionsChangeFunc(); }
 	colTermNodeSelect.onchange=function() { checkBox.checked=true; onColsSelectionsChangeFunc(); }
 	let found=false;
 	let matchingChoiceNode=null;
@@ -195,10 +196,11 @@ function _getSelectedCsvColumnsDef(csvColsTable) {
 	for (idx in checkboxes) {
 		checkbox=checkboxes[idx];	
 		if (typeof(checkbox)!='object') { continue; }
-		//console.log("--- "+checkbox.getCsvColName()+" -> "+checkbox.getTermName());
 		let curCsvColName=checkbox.getCsvColName();
 		let curTermName=checkbox.getTermName();
 		let isChecked=checkbox.checked;
+		//console.log("--- "+checkbox.getCsvColName()+" -> "+checkbox.getTermName()+" : "+isChecked);
+		
 		if (isChecked==true) { csvColsTermsMap[curCsvColName]=curTermName; }
 	}
 	return csvColsTermsMap;
@@ -220,7 +222,7 @@ function _showCsvPrevisu(CSVrows,fileNameTxt,isExcelFile,fileHandle) {
 	let labelWarningIdChangeDocuments = previsuNodeFooter.querySelector("._warning_update_id_");
 	let labelWarningNoIdSelected = previsuNodeFooter.querySelector("._warning_update_noid_");
 	let selectedCsvColsDef = null;
-	function onColsSelectionsChangeFunc() {
+	function onColsSelectionsChangeFunc() {		
 		selectedCsvColsDef = _getSelectedCsvColumnsDef(csvColsTable);
 		let isIdSelected=false;
 		for (csvColName in selectedCsvColsDef) {
@@ -245,11 +247,25 @@ function _showCsvPrevisu(CSVrows,fileNameTxt,isExcelFile,fileHandle) {
 	if (isExcelFile==true) { nbEntries--; }
 	onColsSelectionsChangeFunc();
 	
+	// configure 'selectall' checkbox
+	let selectAllCheckbox=csvColsTable.querySelector("._selectall_checkbox_");
+	selectAllCheckbox.onclick=function(e) {
+		let checkboxes = csvColsTable.querySelectorAll("._csvColCheck_");
+		for (idx in checkboxes) {
+			checkbox=checkboxes[idx];	
+			if (typeof(checkbox)!='object') { continue; }
+			checkbox.checked=selectAllCheckbox.checked;
+		}
+		onColsSelectionsChangeFunc();
+	}
+	selectAllCheckbox.checked=true;
+	selectAllCheckbox.onclick(); 
+	
 	// footer
 	previsuNodeFooter.style.display='block';
 	let uploadBtn=previsuNodeFooter.querySelector('._uploadBtn_');
 	uploadBtn.onclick=function() {
-		footer_showAlert(INFO,"<s:text name="global.pleasewait"/>",null,5000);			
+		footer_showAlert(INFO,"<s:text name="global.pleasewait"/>",null,5000);
 		ws_handlers_requestUploadCsvFile(nbEntries,selectedCsvColsDef,fileHandle, CSVrows /*only used for .ods files*/); 
 		ws_handlers_refreshItemsGui();
 		MxGuiHeader.hideInfoModal();		
@@ -437,9 +453,10 @@ MxGuiLeftBar.showDownloadCsvPrevisu=function() {
 		for (idx in checkboxesList) {
 			curCheckBox=checkboxesList[idx];
 			if (typeof(curCheckBox)!='object') { continue; }
+			//console.log(curCheckBox)
 			if (curCheckBox.checked) { selectedTermNames.push(curCheckBox.termName); }		
 		}	
-		
+		//console.log(selectedTermNames)
 		let query = MxGuiHeader.getCurrentSearchQuery();
 		let selectedFiltersNames=MxGuiHeader.getSelectedFiltersNames();
 		let sortString = MxGuiHeader.getCurrentSearchSortString();
@@ -471,7 +488,7 @@ MxGuiLeftBar.showDownloadCsvPrevisu=function() {
  		  <div id="datafile_contents_previsu_body" style="display:none">
  		  		 <div><span class="_filename_"></span> : <span class="_nbEntries_"></span> <s:text name="Items.serverside.uploadItems.lines" /></div>
  		  		 <table style="margin-top:1rem;" class="_csv_columns_tbl_">
- 		  		 	<tr><th style="padding-right:1rem;min-width:2rem;"></th>
+ 		  		 	<tr><th style="padding-right:1rem;min-width:2rem;"><input class="_selectall_checkbox_" type=checkbox /></th>
  		  		 		<th><s:text name="Items.serverside.uploadItems.fileColumn"/></th>
  		  		 		<th><s:text name="Items.serverside.uploadItems.catalogField"/></th>
  		  		 	</tr>
@@ -479,18 +496,18 @@ MxGuiLeftBar.showDownloadCsvPrevisu=function() {
 			</div>
 			<div id="datafile_contents_previsu_footer" style="display:none">
 				
-				<div class="_warning_update_id_" style="margin-bottom:1rem;font-size:0.8rem;display:'none'">
+				<div class="_warning_update_id_" style="margin-bottom:1rem;font-size:0.8rem;display:'none';max-width:50%;">
 					<s:text name="Items.uploadItems.warningOverridingContents"/>
 				</div>
-				<div class="_warning_update_noid_" style="margin-bottom:1rem;font-size:0.8rem;display:'none'">
+				<div class="_warning_update_noid_" style="margin-bottom:1rem;font-size:0.8rem;display:'none';max-width:50%;">
 					<s:text name="Items.uploadItems.warningNotOverridingContents"/>
 				</div>
-				 <label class="_uploadBtn_ d-none d-sm-inline-block btn-big btn btn-info shadow-sm mx-left-button"  >
- 		  				<i class="fas fa-upload fa-sm text-white" style="margin-right:1em"></i><s:text name="global.go"></s:text>
+				 <label class="_uploadBtn_ d-none d-sm-inline-block btn-big btn btn-info shadow-sm mx-left-button" style="max-width:50%;">
+ 		  				<i class="fas fa-upload fa-sm text-white" style="margin-right:1em;"></i><s:text name="global.go"></s:text>
  		  		</label>
- 		  		<label class="_uploadDriveBtn_ d-none d-sm-inline-block btn-big btn btn-info shadow-sm mx-left-button"  
+ 		  		<label class="_uploadDriveBtn_ d-none d-sm-inline-block btn-big btn btn-info shadow-sm mx-left-button"  style="max-width:50%;"
 							style="background:grey">
- 		  				<i class="fas fa-upload fa-sm text-white" style="margin-right:1em"></i><s:text name="Items.serverside.uploadItems.importAsRawFile"></s:text>
+ 		  				<i class="fas fa-upload fa-sm text-white" style="margin-right:1em;"></i><s:text name="Items.serverside.uploadItems.importAsRawFile"></s:text>
  		  		</label>
  		  		
 			</div>

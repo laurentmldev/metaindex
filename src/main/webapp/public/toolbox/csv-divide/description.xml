@@ -1,0 +1,21 @@
+<marketplace_tool name="csv-merge" version="1.1">
+	<description language="EN">
+	Merge contents of a CSV file, both horizontally (merge data from several columns) and vertically (merge data from several rows).&lt;br/&gt;
+	&lt;br/&gt;
+	Example from command line:
+	&lt;pre class='mx-script' &gt;python csv-merge.py samples/csv-merge-confsample.py samples/sample-input.csv samples/result.csv&lt;/pre&gt;
+	</description>
+
+	<description language="FR">
+	Script Python pour combiner les données d'un fichier CSV, à la fois horizontalement (colonnes d'une même ligne) et verticalement (sur plusieurs lignes).&lt;br/&gt;
+	&lt;br/&gt;
+	Exemple de ligne de commande:
+	&lt;pre class='mx-script' &gt;python csv-merge.py samples/csv-merge-confsample.py samples/sample-input.csv samples/result.csv&lt;/pre&gt;
+	</description>
+	
+	<dependencies>&lt;ul&gt;
+				  &lt;li&gt; &lt;a href="https://www.anaconda.com/products/individual" target="_blank" &gt;Python Anaconda3&lt;/a&gt; &lt;/li&gt;
+				  &lt;/ul&gt;
+				  </dependencies>
+</marketplace_tool>
+	
