@@ -56,6 +56,7 @@ if __name__ == "__main__":
 	parser.add_argument("inputCsvFile", help="CSV File containing data to merge. First line shall contain columns names")
 	parser.add_argument("splitCol", help="Name of volumn to divide")
 	parser.add_argument("splitSep", help="Separator to detect for split operation")
+	parser.add_argument("--idcol", help="If set, add given column with a unique ID for each created line")
 	parser.add_argument("targetFileName", help="target file name.")
 	parser.add_argument("--colsList", help="List of columns to keep. Default: all")
 	parser.add_argument("--version", action="version", version="%(prog)s v"+VERSION)
@@ -74,6 +75,7 @@ if __name__ == "__main__":
 	colsPosition={}
 	colsToExport=[]
 	colIdx=0
+	newEntryNb=0
 	
 	# detect source columns position
 	for fileColName in fileColsNames:
@@ -93,8 +95,7 @@ if __name__ == "__main__":
 			if colToExport not in colsPosition:
 				print("ERROR: unable to find column '"+colToExport+"' in first line of CSV file '"+args.inputCsvFile+"' : \n"+dataLines[0])
 				sys.exit(1)		
-
-
+	
 	originalLineNb=0
 	fileout= open(args.targetFileName, 'w')
 
@@ -105,6 +106,8 @@ if __name__ == "__main__":
 			headerLine="#"
 		else:
 			headerLine+=";"
+		if args.idcol!=None:
+			headerLine=args.idcol+";"
 		headerLine+=colName
 	fileout.write(headerLine+"\n")
 	
@@ -135,6 +138,9 @@ if __name__ == "__main__":
 				continue
 			originalColums[colsPosition[args.splitCol]]=colVal
 			newLine=extractColumns(originalColums,colsToExport)
+			if args.idcol!=None:
+				newLine=str(newEntryNb)+";"+newLine
+			newEntryNb=newEntryNb+1
 			fileout.write(newLine+"\n")
 
 		originalLineNb+=1
