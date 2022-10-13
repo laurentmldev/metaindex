@@ -27,7 +27,7 @@ import codecs
 import textwrap
 from argparse import ArgumentParser, HelpFormatter
 
-VERSION="1.1"
+VERSION="1.2"
 
 ### from https://stackoverflow.com/questions/3853722/how-to-insert-newlines-on-argparse-help-text
 class RawFormatter(HelpFormatter):
@@ -113,6 +113,8 @@ if __name__ == "__main__":
 
 	# load input CSV file
 	dataLines=open(args.inputCsvFile).read().splitlines()
+	# remove optional 'comments' char from header line
+	dataLines[0]=dataLines[0].replace('#','')
 	
 	treshold_auto=float(args.treshold_auto)
 	treshold_confirm=float(args.treshold_confirm)
@@ -125,7 +127,7 @@ if __name__ == "__main__":
 	mergeColsDef=scenario['MergeColumns']
 	nbDetectedMergeCols=0	
 	# detect source columns position
-	for fileColName in fileColsNames:
+	for fileColName in fileColsNames:		
 		if fileColName==matchColName:
 			matchColIdx=colIdx
 			print("Matching field : "+fileColName+" at col. "+str(colIdx))

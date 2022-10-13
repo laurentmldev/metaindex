@@ -1,7 +1,10 @@
 package toolbox.utils.parsers;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Date;
 
 /*
 GNU GENERAL PUBLIC LICENSE
@@ -40,7 +43,7 @@ public class ExcelSpreadsheetDbItemsParser extends ADbItemsParser<Row> implement
 	
 	private Log log = LogFactory.getLog(ExcelSpreadsheetDbItemsParser.class);
 
-	
+	private DateFormat userDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 	@Override
 	protected IDbItem buildObjectFromFieldsMap(Map<String, Object> fieldsMap) {
@@ -61,11 +64,11 @@ public class ExcelSpreadsheetDbItemsParser extends ADbItemsParser<Row> implement
 		return true;
 	}
 	
+	
 	final static public LocalDate EXCEL_EPOCH_REF = LocalDate.of(1899,Month.DECEMBER,30);
 	private LocalDate excelDate2javaDate(Integer excelDate) {
 		return EXCEL_EPOCH_REF.plusDays(excelDate);
 	}
-	
 	/**
 	 * Extract a single line from csv file and populate a corresponding map with only fields requested by user
 	 */
@@ -82,7 +85,8 @@ public class ExcelSpreadsheetDbItemsParser extends ADbItemsParser<Row> implement
 		for (String colName : getColsNames()) {
 			colidx++;
 			String curColStrContents="";
-			Double curColNbContents=0.0;
+			Double curColNbContents=null;
+			Date curColDateContents=null;
 			Cell curCellContents=spreadsheetRow.getCell(colidx-1);
 			if (curCellContents!=null) {
 				switch(curCellContents.getCellType()) {
@@ -92,6 +96,7 @@ public class ExcelSpreadsheetDbItemsParser extends ADbItemsParser<Row> implement
 		                break;
 		            case NUMERIC:
 		            	curColNbContents=new Double(curCellContents.getNumericCellValue());
+		            	curColDateContents=curCellContents.getDateCellValue();
 		            	curColStrContents=curColNbContents.toString();
 		            	break;
 		            default:
@@ -122,8 +127,10 @@ public class ExcelSpreadsheetDbItemsParser extends ADbItemsParser<Row> implement
 			if (dbFieldName!=null) {
 				PARSING_FIELD_TYPE fieldType = this.getFieldsParsingTypes().get(dbFieldName);
 				
+				// Excel dates are based on a specific time origin, and need to be shifted properly.
 				if (fieldType==PARSING_FIELD_TYPE.DATE) {
-					curColStrContents=excelDate2javaDate(curColNbContents.intValue()).toString();
+					if (curColDateContents!=null) { curColStrContents=userDateFormat.format(curColDateContents); }
+					else if (curColNbContents!=null) { curColStrContents=excelDate2javaDate(curColNbContents.intValue()).toString(); }					
 				}
 				extractItemStrData(result,dbFieldName,curColStrContents,fieldType);
 			}

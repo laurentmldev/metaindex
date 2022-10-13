@@ -120,7 +120,9 @@ public class ExcelSpreadsheetBytesToDbWriter  extends ABytesWriter  implements I
 				}
 				
 				IDbItem newEntry;
-				newEntry = _itemsParser.parse(row);				
+				newEntry = _itemsParser.parse(row);	
+				// skip empty rows
+				if (newEntry.getFieldsList().size()==0) { continue; }
 				entries.add(newEntry);		
 				if (entries.size()==ISpreadsheetDbItemsParser.NBENTRIES_TO_POST_TRESHOLD) {
 					_itemsBulkProcessor.handle(entries);

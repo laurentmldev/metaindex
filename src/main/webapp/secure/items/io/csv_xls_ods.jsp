@@ -287,7 +287,7 @@ function _showCsvPrevisu(CSVrows,fileNameTxt,isExcelFile,fileHandle) {
 	}
 	
 	// show
-	MxGuiHeader.showInfoModal("<s:text name="Items.uploadItems.fromDataFile" />",previsuNode,previsuNodeFooter);
+	MxGuiHeader.showInfoModal("<s:text name="Items.uploadItems.fromDataFile" />",previsuNode,previsuNodeFooter,'50vw');
 	
 }
 
@@ -318,10 +318,14 @@ function _showChooseCalcSheet(sheetNames,fileName,choiceCallback) {
 		choiceCallback(chosenSheetName,fileName);
 		
 	}
-	let popupChoice = MxGuiPopups.newDropdownInputPopup(choices,"<s:text name="items.uploadItems.chooseSheet" />",handleChoosenSheetName);	
-	popupChoice.id="chooseCalcPopup";
-	MxGuiHeader.addPopup(popupChoice);
-	popupChoice.show();	
+	if (sheetNames.length>1) {
+		let popupChoice = MxGuiPopups.newDropdownInputPopup(choices,"<s:text name="items.uploadItems.chooseSheet" />",handleChoosenSheetName);	
+		popupChoice.id="chooseCalcPopup";
+		MxGuiHeader.addPopup(popupChoice);
+		popupChoice.show();
+	} else {
+		choiceCallback(sheetNames[0],fileName);
+	}
 }
 
 
@@ -487,7 +491,7 @@ MxGuiLeftBar.showDownloadCsvPrevisu=function() {
  		  
  		  <div id="datafile_contents_previsu_body" style="display:none">
  		  		 <div><span class="_filename_"></span> : <span class="_nbEntries_"></span> <s:text name="Items.serverside.uploadItems.lines" /></div>
- 		  		 <table style="margin-top:1rem;" class="_csv_columns_tbl_">
+ 		  		 <table style="margin-top:1rem;width:100%" class="_csv_columns_tbl_">
  		  		 	<tr><th style="padding-right:1rem;min-width:2rem;"><input class="_selectall_checkbox_" type=checkbox /></th>
  		  		 		<th><s:text name="Items.serverside.uploadItems.fileColumn"/></th>
  		  		 		<th><s:text name="Items.serverside.uploadItems.catalogField"/></th>
@@ -496,16 +500,16 @@ MxGuiLeftBar.showDownloadCsvPrevisu=function() {
 			</div>
 			<div id="datafile_contents_previsu_footer" style="display:none">
 				
-				<div class="_warning_update_id_" style="margin-bottom:1rem;font-size:0.8rem;display:'none';max-width:50%;">
+				<div class="_warning_update_id_" style="margin-bottom:1rem;font-size:0.8rem;display:'none';">
 					<s:text name="Items.uploadItems.warningOverridingContents"/>
 				</div>
-				<div class="_warning_update_noid_" style="margin-bottom:1rem;font-size:0.8rem;display:'none';max-width:50%;">
+				<div class="_warning_update_noid_" style="margin-bottom:1rem;font-size:0.8rem;display:'none';">
 					<s:text name="Items.uploadItems.warningNotOverridingContents"/>
 				</div>
-				 <label class="_uploadBtn_ d-none d-sm-inline-block btn-big btn btn-info shadow-sm mx-left-button" style="max-width:50%;">
+				 <label class="_uploadBtn_ d-none d-sm-inline-block btn-big btn btn-info shadow-sm mx-left-button" style="">
  		  				<i class="fas fa-upload fa-sm text-white" style="margin-right:1em;"></i><s:text name="global.go"></s:text>
  		  		</label>
- 		  		<label class="_uploadDriveBtn_ d-none d-sm-inline-block btn-big btn btn-info shadow-sm mx-left-button"  style="max-width:50%;"
+ 		  		<label class="_uploadDriveBtn_ d-none d-sm-inline-block btn-big btn btn-info shadow-sm mx-left-button"  style=""
 							style="background:grey">
  		  				<i class="fas fa-upload fa-sm text-white" style="margin-right:1em;"></i><s:text name="Items.serverside.uploadItems.importAsRawFile"></s:text>
  		  		</label>
@@ -528,7 +532,7 @@ MxGuiLeftBar.showDownloadCsvPrevisu=function() {
  		  	<i class="fas fa-download fa-sm text-white" style="margin-right:1em"></i><s:text name="Items.downloadItems.asCsv"></s:text>
  		  	 <span title="S.O.S" 
 	                	onclick="event.stopPropagation();event.preventDefault();
-	                			MxGuiHeader.showInfoModal('<s:text name="help.items.csv_download.title" />','<s:text name="help.items.csv_download.body" />')">
+	                			MxGuiHeader.showInfoModal('<s:text name="help.items.csv_download.title" />','<s:text name="help.items.csv_download.body" />','','25vw')">
 	                   <i class="mx-help-icon far fa-question-circle" style="color:white"></i>    
 	          </span>
  		  </label>

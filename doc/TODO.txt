@@ -8,10 +8,8 @@ v2.3.1:
 
 
 perspective:
-	- text big size: ascenceur sur ordi the tiph
 	- unable to add a new field in existing obj. in prod env (all chards failed)
 	- import Excel: wrong dates
-	- nom de catalogue: ajouter aide que ne peut pas commencer par un chiffre
 
 upgrade docker version
 	
@@ -29,6 +27,7 @@ Kibana fails when using hebrew alphabet -> check with new Kibana version
 	
 
 comments in CSV file make a wrong number of expected lines, then progress bar is never closed
+	- could not reproduce ?
 
 create account / go back --> still send an email !
 	- could not reproduce ?
@@ -261,6 +260,9 @@ Done:
 -----
 
 v2.3.1:
+perspective:
+	- text big size: ascenceur sur ordi the tiph
+	- nom de catalogue: ajouter aide que ne peut pas commencer par un chiffre
 - when creating a new field, filters list is duplicated
 - fix help text from tuto 1: "éléments du l'interface"
 - recall for over quotas every 2 days (not every days)
