@@ -241,10 +241,7 @@ function _showCsvPrevisu(CSVrows,fileNameTxt,isExcelFile,fileHandle) {
 
 	}
 	
-	let nbEntries=_buildCsvColumnsTable(CSVrows,nbEntriesNode,csvColsTable,onColsSelectionsChangeFunc,isExcelFile);
-	// ignore first row for excel files. For CSV, it shall be commented out (start with a '#') 
-	// so it is already ignored in the count
-	if (isExcelFile==true) { nbEntries--; }
+	let nbEntries=_buildCsvColumnsTable(CSVrows,nbEntriesNode,csvColsTable,onColsSelectionsChangeFunc,isExcelFile);	
 	onColsSelectionsChangeFunc();
 	
 	// configure 'selectall' checkbox
@@ -311,15 +308,15 @@ function _showChooseCalcSheet(sheetNames,fileName,choiceCallback) {
 		let curSheetName=sheetNames[index];
 		choices.push({'value':curSheetName, 'text':curSheetName});
 	}
-	function handleChoosenSheetName(chosenSheetName) {
-		let popup=document.getElementById("chooseCalcPopup");
+	function handleChosenSheetName(chosenSheetName) {
+		let popupChoice=document.getElementById("chooseCalcPopup");
 		popupChoice.id="";
 		popupChoice.hide();
 		choiceCallback(chosenSheetName,fileName);
 		
 	}
 	if (sheetNames.length>1) {
-		let popupChoice = MxGuiPopups.newDropdownInputPopup(choices,"<s:text name="items.uploadItems.chooseSheet" />",handleChoosenSheetName);	
+		let popupChoice = MxGuiPopups.newDropdownInputPopup(choices,"<s:text name="items.uploadItems.chooseSheet" />",handleChosenSheetName);	
 		popupChoice.id="chooseCalcPopup";
 		MxGuiHeader.addPopup(popupChoice);
 		popupChoice.show();

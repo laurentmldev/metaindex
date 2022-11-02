@@ -15,18 +15,11 @@ See full version of LICENSE in <https://fsf.org/>
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import org.odftoolkit.odfdom.doc.OdfSpreadsheetDocument;
 import org.odftoolkit.odfdom.doc.table.OdfTable;
@@ -40,9 +33,7 @@ import toolbox.database.IDbItem;
 import toolbox.database.IDbItemsProcessor;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.AProcessingTask;
-import toolbox.utils.IStreamProducer;
-import toolbox.utils.filetools.ABytesWriter;
-import toolbox.utils.filetools.IBytesToDbWriter;
+
 import toolbox.utils.parsers.IListParser.ParseException;
 import toolbox.utils.parsers.OdfSpreadsheetDbItemsParser;
 import toolbox.utils.parsers.IParseWarningsHandler;
@@ -92,15 +83,14 @@ public class OdfSpreadsheetBytesToDbWriter extends ExcelSpreadsheetBytesToDbWrit
 		List<IDbItem> entries = new ArrayList<>();
 		
 		OdfTable sheet = _workbook.getSpreadsheetTables().get(getSheetNumber());
-		Integer rowNb=0;
+
 		try {
 			// parse rows into IDbItems to be injected into DB
 			// flush them every n entries
-			for (OdfTableRow row : sheet.getRowList()) {				
-				rowNb++;
-
+			for (int rowIdx =0;rowIdx< sheet.getRowCount();rowIdx++) {
+				OdfTableRow row = sheet.getRowByIndex(rowIdx);
 				// extracting cols names from first row 
-				if (rowNb==1) {			
+				if (rowIdx==0) {	
 					Integer nbCells = row.getCellCount();
 					String[] colsNames=new String[nbCells];	
 					for (Integer colIdx=0;colIdx<nbCells;colIdx++) {	
@@ -110,9 +100,8 @@ public class OdfSpreadsheetBytesToDbWriter extends ExcelSpreadsheetBytesToDbWrit
 					_itemsParser.setColsNames(colsNames);
 					continue;
 				}
-				
 				IDbItem newEntry;
-				newEntry = _itemsParser.parse(row);				
+				newEntry = _itemsParser.parse(row);		
 				entries.add(newEntry);		
 				if (entries.size()==ISpreadsheetDbItemsParser.NBENTRIES_TO_POST_TRESHOLD) {
 					_itemsBulkProcessor.handle(entries);

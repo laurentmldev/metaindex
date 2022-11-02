@@ -103,7 +103,7 @@ public abstract class AProcessingTask implements IProcessingTask {
 	
 	@Override
 	public Boolean isAllDataProcessed() { 
-		return getTargetNbData().equals(getProcessedNbData()); 
+		return getTargetNbData().equals(getProcessedNbData()) ||  getProcessedNbData() > getTargetNbData(); 
 	}
 
 	@Override

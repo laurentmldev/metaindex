@@ -6,7 +6,7 @@
   <packaging>war</packaging>
   <version>2.3.2.SNAPSHOT</version>
   <name>MetaindeX</name>
-  <url>http://metaindex.fr</url>
+  <url>metaindex.fr</url>
   <repositories>
     <repository>
         <id>maven-restlet</id>
@@ -243,12 +243,12 @@
 	<dependency>
 		<groupId>org.apache.poi</groupId>
 		<artifactId>poi</artifactId>
-		<version>4.1.2</version>
+		<version>5.2.3</version>
 	</dependency>
 	<dependency>
 		<groupId>org.apache.poi</groupId>
 		<artifactId>poi-ooxml</artifactId>
-		<version>4.1.2</version>
+		<version>5.2.3</version>
 	</dependency>
 	<dependency>
 		<groupId>org.odftoolkit</groupId>
