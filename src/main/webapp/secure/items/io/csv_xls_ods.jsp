@@ -11,7 +11,7 @@
 
 
 //showCsvPrevisu : build a line of the 'CSV-columns table'
-function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeFunc,isExcelFile) {
+function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeFunc,isWorkbookSheet) {
 	
 	let typeCol=document.createElement("div");
 	let colTermNodeSelect=document.createElement("select");
@@ -106,7 +106,7 @@ function _getColTypeNode(csvColName,checkBox,badTermName,onColsSelectionsChangeF
 }
 
 // showCsvPrevisu : build CSV columns table
-function _buildCsvColumnsTable(CSVrows,nbEntriesNode,csvColsTable,onColsSelectionsChangeFunc,isExcelFile) {
+function _buildCsvColumnsTable(CSVrows,csvColsTable,onColsSelectionsChangeFunc,isWorkbookSheet) {
  
    	let curLineNb=0;
    	let nbEntries=0;
@@ -115,14 +115,15 @@ function _buildCsvColumnsTable(CSVrows,nbEntriesNode,csvColsTable,onColsSelectio
    	while (curLineNb<CSVrows.length) {
    		if (	   CSVrows[curLineNb].length>0
    				&& curLineNb>0 // ignore anyway first line which is the header (and might not have a comment '#' marker')
-   				&& CSVrows[curLineNb][0]!='#' 
+   				&& CSVrows[curLineNb][0]!='#'
+   				&& !CSVrows[curLineNb].match(/^[,;\t]+$/) // ignore empty cells (only separators)
    				&& !CSVrows[curLineNb].match(/^\s*$/)
    				&& !CSVrows[curLineNb].match(/^\s*#/)) {   			
    			nbEntries++;
    		}    			
    		curLineNb++;	    		   		
    	}
-   	nbEntriesNode.innerHTML=nbEntries;    	
+   	//console.log("nbEntries="+nbEntries);   	   	
 	    
    	// parse fields names and types
    	let fieldsDefStr=CSVrows[0];
@@ -179,7 +180,7 @@ function _buildCsvColumnsTable(CSVrows,nbEntriesNode,csvColsTable,onColsSelectio
    		// field type
    		let colType=document.createElement("td");
    		newRow.appendChild(colType);    		   				
-		colTypeNode=_getColTypeNode(curFieldStr,checkBox,badTermName,onColsSelectionsChangeFunc,isExcelFile);
+		colTypeNode=_getColTypeNode(curFieldStr,checkBox,badTermName,onColsSelectionsChangeFunc,isWorkbookSheet);
    		colType.appendChild(colTypeNode);
 	 	
 		csvColsTable.appendChild(newRow);
@@ -206,7 +207,7 @@ function _getSelectedCsvColumnsDef(csvColsTable) {
 	return csvColsTermsMap;
 }
 
-function _showCsvPrevisu(CSVrows,fileNameTxt,isExcelFile,fileHandle) {
+function _showItemsImportPrevisu(CSVrows,fileNameTxt,isWorkbookSheet,fileHandle) {
 	
 	let previsuNode=document.getElementById('datafile_contents_previsu_body').cloneNode(true);
 	let previsuNodeFooter=document.getElementById('datafile_contents_previsu_footer').cloneNode(true);
@@ -241,7 +242,8 @@ function _showCsvPrevisu(CSVrows,fileNameTxt,isExcelFile,fileHandle) {
 
 	}
 	
-	let nbEntries=_buildCsvColumnsTable(CSVrows,nbEntriesNode,csvColsTable,onColsSelectionsChangeFunc,isExcelFile);	
+	let nbEntries=_buildCsvColumnsTable(CSVrows,csvColsTable,onColsSelectionsChangeFunc,isWorkbookSheet);
+	nbEntriesNode.innerHTML=nbEntries; 
 	onColsSelectionsChangeFunc();
 	
 	// configure 'selectall' checkbox
@@ -294,7 +296,7 @@ function _handleCsvDataFile(fileHandle) {
 	reader.onload = function (file_contents) {
 		let fileName = fileHandle.files[0].name;
     	let CSVrows = file_contents.target.result.split("\n");
-    	_showCsvPrevisu(CSVrows,fileName,false,fileHandle);
+    	_showItemsImportPrevisu(CSVrows,fileName,false,fileHandle);
     }
     reader.readAsText(fileHandle.files[0]);
 }
@@ -346,11 +348,11 @@ function _handleExcelDataFile(fileHandle) {
 				
 		let result = [];
 		function handleSheetContents(sheetName,fileName) {
-			let isExcelFile=fileName.match(/\.(xlsx?|ods)$/)!=null;
+			let isWorkbookSheet=fileName.match(/\.(xls|xlsx?|ods)$/)!=null;
 			var csv = XLSX.utils.sheet_to_csv(workbook.Sheets[sheetName], {raw:false});
 			if(csv.length){
 				//console.log(csv);		    	
-				_showCsvPrevisu(csv.split('\n'),fileName,isExcelFile,fileHandle);
+				_showItemsImportPrevisu(csv.split('\n'),fileName,isWorkbookSheet,fileHandle);
 			}
 		}
 		if (workbook.SheetNames.length>1) {
