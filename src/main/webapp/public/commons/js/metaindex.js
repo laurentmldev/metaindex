@@ -1198,6 +1198,7 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 	
 	// dataObj { 
 	//	catalogId:xxx,
+	//	perspectiveName:xxx,
 	//	perspectiveJsonDef:xxx,
 	//	successCallback:xxx,
 	//	errorCallback:xxx
@@ -1220,6 +1221,7 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 		myself._callback_NetworkEvent(MX_UPSTREAM_MSG);
 		myself._stompClient.send(myself.MX_WS_APP_PREFIX+"/update_perspective", {}, 
 								 JSON.stringify({"requestId" : curRequestId,
+									 			 "perspectiveName":dataObj.perspectiveName,
 									 			 "perspectiveId":dataObj.perspectiveId,
 									 			 "catalogId":dataObj.catalogId,
 												 "jsonDef":stringifyWithoutNull(jsonCopy)									 
@@ -1240,7 +1242,7 @@ this._handleAdminMonitoringInfo= function (mxServerAdminMonitoringInfoMsg) {
 		let requestObj=myself.requestCatalogPerspectiveUpdateCallbacks[requestId];
 		//console.log("received customization requestId="+requestId+" -> "+requestObj);
 		if (requestObj==null) { return; }
-		if (parsedMsg.isSuccess==true) { requestObj.successCallback(); }
+		if (parsedMsg.isSuccess==true) { requestObj.successCallback(parsedMsg.perspectiveId); }
 		else {
 			let errorMsg=parsedMsg.rejectMessage;
 			// ensure error message is not empty

@@ -68,8 +68,7 @@ public class CreateOrUpdatePerspectiveIntoSqlDbStmt extends SQLWriteStmt<String>
 		PreparedStatement stmt = stmts.get(0);
 		try {
 			
-			JSONObject json = new JSONObject(dataObject);
-
+			JSONObject json = new JSONObject(dataObject);			
 			stmt.setInt(1, _catalog.getId());
 			stmt.setInt(2, json.getInt("id"));
 			stmt.setString(3,  json.getString("name"));

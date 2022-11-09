@@ -217,11 +217,10 @@
 	let fieldsValuesMap=itemCard.descr.data;
 	let editSuccessCallback=function(fieldName,newValue) {
 		if (newValue instanceof Array) { newValue=array2str(newValue); }
-		//console.log("changed "+fieldName+"="+newValue);
+		console.log("changed "+fieldName+"="+newValue);
 		itemCard.descr.data[fieldName]=newValue;
 		lastchangeTimestampNode.innerHTML="<s:text name='global.now'/>";
-		lastchangeUser.innerHTML="<s:text name='global.you'/>";
-		
+		lastchangeUser.innerHTML="<s:text name='global.you'/>";		
 	}
 	//dumpStructure(_curCatalogDesc);
 	

@@ -26,6 +26,7 @@ import metaindex.app.periodic.statistics.catalog.DeletePerspectiveCatalogMxStat;
 import metaindex.app.periodic.statistics.catalog.UpdatePerspectiveCatalogMxStat;
 import metaindex.app.periodic.statistics.user.ErrorOccuredMxStat;
 import metaindex.data.catalog.ICatalog;
+import metaindex.data.perspective.ICatalogPerspective;
 import metaindex.data.userprofile.IUserProfileData;
 
 @Controller
@@ -70,6 +71,8 @@ public class WsControllerPerspective extends AMxWSController {
     		}
 	    	c.loadPerspectivesFromdb();
 	    	answer.setIsSuccess(true);    	
+	    	ICatalogPerspective newPerspective = c.getPerspectives().get(requestMsg.getPerspectiveName());
+	    	answer.setPerspectiveId(newPerspective.getId());
 	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/perspective_updated", answer);
 	    	Globals.GetStatsMgr().handleStatItem(new UpdatePerspectiveCatalogMxStat(user,c));
 	    	c.releaseLock();

@@ -52,11 +52,13 @@ var _curPerspectiveTabs=[];
 	 	// CUSTOMIZABLE 
 	 	if (editMode==MxGuiPerspective.MODE_CUSTOMIZE) {
 	 		
-	 		// editabe name
+	 		// editable name
 	 		let onNameChangeCallback=function(pk,fieldName,fieldValue,successCallback, errorCallback) { 			 
 				 let perspectiveDataCopy=JSON.parse(JSON.stringify(perspectiveData));
 				 perspectiveDataCopy.name=fieldValue;
-			 	 MxApi.requestPerspectiveUpdate({ "catalogId":catalogDesc.id, "perspectiveId":perspectiveData.id,
+			 	 MxApi.requestPerspectiveUpdate({ "catalogId":catalogDesc.id, 
+			 		 							  "perspectiveId":perspectiveData.id,
+			 		 							  "perspectiveName":perspectiveDataCopy.name,
 												  "perspectiveJsonDef":perspectiveDataCopy,
 												  "successCallback":successCallback, "errorCallback":errorCallback});		 	 
 			 }
@@ -230,9 +232,9 @@ function _sendCreateNewPerspectiveRequest(perspectiveName) {
 	 if (catalogDesc.perspectives==null) { catalogDesc.perspectives=new Array();}
 	 perspectiveData=_get_new_perspective_json(perspectiveName,catalogDesc.id);
 	 
-	 function successCallback() {
+	 function successCallback(perspectiveId) {
+		 perspectiveData.id=perspectiveId;
 		 catalogDesc.perspectives[perspectiveName]=perspectiveData;
-		 
 		 MxGuiDetails.memGui();
 		 let detailsNode=MxGuiDetails.getDetailsNode();
 		 MxGuiDetails.getPerspectivesInsertSpot(detailsNode).innerHTML="";
@@ -244,6 +246,7 @@ function _sendCreateNewPerspectiveRequest(perspectiveName) {
 	 // A message will be sent back to inform success or not of operation,
 	 // then MxApi will invoke success/error callback depending on returned result
 	 MxApi.requestPerspectiveUpdate({ "catalogId":catalogDesc.id,
+		 							  "perspectiveName":perspectiveData.name,
 							 		  "perspectiveId":perspectiveData.id,
 									  "perspectiveJsonDef":perspectiveData,
 									  "successCallback":successCallback,

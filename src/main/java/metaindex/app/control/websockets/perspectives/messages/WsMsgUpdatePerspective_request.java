@@ -16,6 +16,7 @@ public class WsMsgUpdatePerspective_request  {
 	private Integer _perspectiveId;
 	private Integer _catalogId;
 	private String _jsonDef;
+	private String _perspectiveName;
 	
 	public WsMsgUpdatePerspective_request() {
 	
@@ -51,6 +52,14 @@ public class WsMsgUpdatePerspective_request  {
 
 	public void setCatalogId(Integer catalogId) {
 		this._catalogId = catalogId;
+	}
+
+	public String getPerspectiveName() {
+		return _perspectiveName;
+	}
+
+	public void setPerspectiveName(String _perspectiveName) {
+		this._perspectiveName = _perspectiveName;
 	}
 
 
