@@ -38,8 +38,8 @@
 				// ignore events comming from xeditable typing
 				if (event.originalTarget.parentNode.classList.contains('editable-input')) { return; }
 				
-				if (event.key=='ArrowRight') { MxGuiCards.selectNext(); }
-				else if (event.key=='ArrowLeft') { MxGuiCards.selectPrevious(); }
+				if (event.key=='ArrowRight') { MxItemsView.selectNext(); }
+				else if (event.key=='ArrowLeft') { MxItemsView.selectPrevious(); }
 				//escape : closing any open modal
 				if (event.which==27||event.keycode==27) {
 	  				let modals = document.getElementById('leftbar.operations.insertspot').querySelectorAll('.modal');	  				
@@ -67,7 +67,7 @@
         <!-- Cards Container -->
         
       <div id="details-wrapper">       
-        <div id="cards-content-wrapper" class="container-fluid" >
+        <div id="items-content-wrapper" class="container-fluid" >
           <s:include value="../commons/html/details-right.jsp"></s:include>
           <div class="row">
             <div id="files-dropzone" class="col-lg-12" ondrop="dropFile(event);">
@@ -80,6 +80,10 @@
 	          <div id="MxGui.cards.insertspot" class="card-deck col-sm-2 " style="max-width:100%;max-height:70vh;overflow:auto;padding:1rem;">          	
 					<!-- CARDS ARE INSERTED HERE -->
 	  		  </div>
+	  		  <table class="table table-striped"><tbody id="MxGui.table.insertspot" style="">
+	  		  		<!-- TABLE ROWS ARE INSERTED HERE -->
+	  		  </tbody></table>
+	  		  
 			  <div id="empty-placeholder" style="color:#aaa;display:none;width:100%" ><center>
 				  <h5 style="margin-top:2rem;margin-bottom:3rem;"><s:text name="Items.catalogIsEmpty"/></h5>
 				  <div id="empty-placeholder-writable">
@@ -91,7 +95,7 @@
 	   		 <s:include value="../commons/html/chat.jsp"></s:include>
 	   	   </div></div>
    		 
-    	</div><!-- End of Cards Container -->
+    	</div><!-- End of Items Container -->
       </div>
       </div><!-- End of Main content -->
           
@@ -135,6 +139,7 @@
   <script type="text/javascript">
   // called (if defined) from commons/html/head-onload.jsp
   	function local_onload() {
+  		MxItemsView.setViewMode('table');
   		enableKibanaFrame();
 		MxGuiDetails.showHistoNavArrows();
 		//enableAutoFeedOnScrollDown();
@@ -143,13 +148,14 @@
   <script type="text/javascript">
   
   function enableAutoFeedOnScrollDown() {
-	  let cardsInserspot=document.getElementById("MxGui.cards.insertspot");
+	  let cardsInserspot=document.getElementById(ITEMSVIEW_CARDS_INSERTSPOT_ID);
+	  
 	  cardsInserspot.onscroll=function() {
 		  //console.log(cardsInserspot);
 		   //console.log("height="+cardsInserspot.height+" pos="+cardsInserspot.scrollTop);
 		   
 		   let isScrollBottom=cardsInserspot.scrollTopMax - cardsInserspot.scrollTop < 1;
-	  	   let needMoreResults=MxGuiCards.getNbCards()<MxGuiDetails.getNbMatchingItems();
+	  	   let needMoreResults=MxItemsView.getNbItemsInView()<MxGuiDetails.getNbMatchingItems();
 	  	   	   
 	  	   if(isScrollBottom && needMoreResults) {		  	 
 	  	 		 let query = MxGuiHeader.getCurrentSearchQuery();
@@ -166,7 +172,7 @@
 	  				 						"filtersNames":selectedFiltersNames,
 	  				 						"sortByFieldName":sortString,
 	  				 						"reverseSortOrder":reversedOrder,
-	  				 						"successCallback":retrieveItemsSuccess,
+	  				 						"successCallback":retrieveItemsSuccess,/* from ws_handlers.jsp */
 	  				 						"errorCallback":retrieveItemsError});
 	  			
 	  	   }

@@ -51,7 +51,7 @@
   
   
  <!-- Declare cards to be manipulated in the GUI -->
- <s:include value="card.jsp" />
+ <s:include value="itemsView.jsp" />
   
   <!-- API to connect to Metaindex server --> 
   <s:include value="../js/mx_ws_connect.jsp" />

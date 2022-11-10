@@ -332,7 +332,7 @@
 	
  }
 
- MxGuiCards.extractName=function(objDescr) {
+ MxItemsView.extractName=function(objDescr) {
 	 if (objDescr.name == "") { return "<s:property value='currentUserProfile.catalogVocabulary.itemCap'/>"; }
 	 else { return objDescr.name; }
  }

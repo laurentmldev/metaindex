@@ -19,11 +19,8 @@ upgrade docker version
 GEXF group-by: choose which fields to include
 	mxwebapp    | [WARN ] 2022-01-30 13:46:26.515 [clientOutboundChannel-5] SubProtocolWebSocketHandler - Terminating 'WebSocketServerSockJsSession[id=8sp754qe]': Buffer size 525484 bytes for session '8sp754qe' exceeds the allowed limit 524288
 	
-Modif-only user shall not be able to create a new type of field in the edit-mode interface
-
 admin user shall be able to delete any catalog even if he's not the owner (with additional confirmation)
 
-Kibana fails when using hebrew alphabet -> check with new Kibana version
 
 [https-jsse-nio-20000-exec-2] WARN org.springframework.web.servlet.PageNotFound - No mapping for POST /webapp/Error401
 [https-jsse-nio-20000-exec-2] WARN org.springframework.web.servlet.PageNotFound - No mapping for POST /webapp/ErrorAuth
@@ -209,6 +206,7 @@ Backlog:
 - download selection as CSV or ZIP (CSV+files)
 - import from Zip : CSV/Excel + files
 - automated user creation and email verification
+- Kibana fails when using hebrew alphabet -> check with new Kibana version
 
 
 - implement section 'table' mode

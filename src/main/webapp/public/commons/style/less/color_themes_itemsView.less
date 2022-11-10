@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 
-/* --- Cards --- */
+/* --- Cards View Mode --- */
 
 .card-deck .card {
     min-width: @cards_size;
@@ -30,4 +30,20 @@
   background: rgba(0, 0, 0, 0.1); 
   color:#555 ;	
   transition: background linear 150ms,color 150ms;
+}
+
+
+/* --- Table View Mode --- */
+
+.mx-tableview-col-header {
+	background:@background_color;
+}
+
+
+.mx-tableview-col-header,.mx-tableview-col {
+	border-left:1px solid #ddd;
+	border-right:1px solid #ddd;
+	text-align:center;
+	
+
 }

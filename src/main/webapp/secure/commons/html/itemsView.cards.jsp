@@ -8,42 +8,28 @@
 // the page including this file shall declare a node (div) with id=MxGui.cards.insertspot
 // marking where to inject new cards
  
-var CARDS_INSERTSPOT_ID = "MxGui.cards.insertspot"
-var _activeCard = null;
-var _selectedCardsMapById = [];
+var ITEMSVIEW_CARDS_INSERTSPOT_ID = "MxGui.cards.insertspot"
 
-
-function card_ClearCards() {
-	var insertSpot = document.getElementById(CARDS_INSERTSPOT_ID);
+function itemsView_cards_clearItems() {
+	var insertSpot = document.getElementById(ITEMSVIEW_CARDS_INSERTSPOT_ID);
 	clearNodeChildren(insertSpot);
-	_activeCard = null;
-	_selectedCardsMapById = [];
 } 
-function card_addNewCard(objDescr) {
-	var insertSpot = document.getElementById(CARDS_INSERTSPOT_ID);
-	let newCard=card_buildNewCard(objDescr);
+function itemsView_cards_addNewItem(objDescr) {
+	var insertSpot = document.getElementById(ITEMSVIEW_CARDS_INSERTSPOT_ID);
+	let newCard=itemsView_cards_buildNewCard(objDescr);
 	insertSpot.appendChild(newCard);
 	return newCard;
 }
 
-function card_extractId(objDescr) { return objDescr.id; }
-function card_extractName(objDescr) { return objDescr.name; }
-function card_extractThumbnailUrl(objDescr)  { 
-	let urlStr=objDescr.thumbnailUrl;
-	if (objDescr.itemsUrlPrefix!=null && objDescr.itemsUrlPrefix!="" && !urlStr.startsWith('http')) {
-		urlStr=objDescr.itemsUrlPrefix+"/"+urlStr;
-	}
-	return urlStr; 
-}
 
 // objDescr : shall containing following data :
 //	objDescr.id
 //	objDescr.name
 //	objDescr.thumbnailUrl (optional)
-function card_buildNewCard(objDescr) {
+function itemsView_cards_buildNewCard(objDescr) {
 	
 	
-	var guiId="MxGui.card."+MxGuiCards.extractId(objDescr);
+	var guiId="MxGui.card."+MxItemsView.extractId(objDescr);
 	var newCard=document.getElementById("MxGui._templates_.card").cloneNode(true);
 	newCard.descr=objDescr;
 	newCard.id=guiId;
@@ -51,19 +37,19 @@ function card_buildNewCard(objDescr) {
 	
 	// name
 	let name = newCard.querySelector("._name_");
-	name.innerHTML=MxGuiCards.extractName(objDescr);
+	name.innerHTML=MxItemsView.extractName(objDescr);
 	newCard.getName=function() { return name.innerHTML; };// useful to get name associated to this card
 	
 	// anchor
 	let anchor = newCard.querySelector("._anchor_");
-	anchor.name="anchor-"+MxGuiCards.extractId(objDescr);
+	anchor.name="anchor-"+MxItemsView.extractId(objDescr);
 	newCard.anchorName=anchor.name;
 	
 	// container
 	let container = newCard.querySelector("._container_");
 	container.id=guiId+".container";
 	
-	imgUrl=card_extractThumbnailUrl(objDescr);
+	imgUrl=itemsView_extractThumbnailUrl(objDescr);
 	
 	if (imgUrl!=null && imgUrl.toLowerCase().match(/\.(jpeg|jpg|gif|png|tif|webp)$/)!=null) {
 		let img = newCard.querySelector("._img_");
@@ -75,7 +61,7 @@ function card_buildNewCard(objDescr) {
 	}
 	// footer
 	let footer = newCard.querySelector("._footer_");
-	footer.innerHTML=MxGuiCards.extractId(objDescr);
+	footer.innerHTML=MxItemsView.extractId(objDescr);
 	
 	// onmouseover
 	newCard.onmouseover = function(e) {
@@ -91,8 +77,8 @@ function card_buildNewCard(objDescr) {
 		container.classList.add("mx-card-selected");
 		container.classList.remove("mx-card-darker-bg");
 		container.classList.add("mx-card-lighter-bg");		
-		_selectedCardsMapById[MxGuiCards.extractId(newCard.descr)]=newCard;
-		_activeCard=newCard;				
+		_selectedItemsMapById[MxItemsView.extractId(newCard.descr)]=newCard;
+		_activeItem=newCard;				
 		MxGuiDetails.populate(newCard);		
 		MxGuiPerspective.activateLastChosenTab();
 		
@@ -102,8 +88,8 @@ function card_buildNewCard(objDescr) {
 		container.classList.remove("mx-card-selected");
 		container.classList.add("mx-card-darker-bg");	
 		MxGuiDetails.clear();
-		_selectedCardsMapById[MxGuiCards.extractId(newCard.descr)]=null;
-		_activeCard=null;
+		_selectedItemsMapById[MxItemsView.extractId(newCard.descr)]=null;
+		_activeItem=null;
 		
 		// mark cark as lighter
 		container.classList.add("mx-card-lighter-bg");
@@ -122,7 +108,7 @@ function card_buildNewCard(objDescr) {
 		}
 		else {
 			MxGuiDetails.clear();
-			card_deselectAll();
+			itemsView_deselectAll();
 			newCard.select(e); 	
 			scrollTo("page-top");
 		}
@@ -133,17 +119,17 @@ function card_buildNewCard(objDescr) {
 	return newCard;	
 };
 
-function card_deselectAll() {
-	let cardsInsertSpot = document.getElementById(CARDS_INSERTSPOT_ID); 
+function itemsView_cards_deselectAll() {
+	let cardsInsertSpot = document.getElementById(ITEMSVIEW_CARDS_INSERTSPOT_ID); 
 	for (var curCard=cardsInsertSpot.firstChild;curCard!==null;curCard=curCard.nextElementSibling) {		
 		if (typeof(curCard)!='object') { continue; }
 		if (curCard.isSelected) { curCard.deselect(); }
 	}
 } 
 
-function card_getNbCards() {
+function itemsView_cards_getNbItemsInView() {
 	let count=0;
-	var cardsInsertSpot = document.getElementById(CARDS_INSERTSPOT_ID); 
+	var cardsInsertSpot = document.getElementById(ITEMSVIEW_CARDS_INSERTSPOT_ID); 
 	for (var curCard=cardsInsertSpot.firstChild;curCard!==null;curCard=curCard.nextElementSibling) {		
 		if (typeof(curCard)!='object') { continue; }
 		count++;
@@ -151,43 +137,30 @@ function card_getNbCards() {
 	return count;
 }
 
-function card_getActiveCard() { return _activeCard; }
 
-function card_selectNext() {
+function itemsView_cards_selectNext() {
 	let nextCard=null;
-	if (card_getActiveCard()==null) { 
-		nextCard=document.getElementById(CARDS_INSERTSPOT_ID).getElementsByClassName('card')[0];
+	if (itemsView_getActiveItem()==null) { 
+		nextCard=document.getElementById(ITEMSVIEW_CARDS_INSERTSPOT_ID).getElementsByClassName('card')[0];
 	} else {
-		nextCard=card_getActiveCard().nextElementSibling;
+		nextCard=itemsView_getActiveItem().nextElementSibling;
 		if (nextCard==null) { 
-			nextCard=card_getActiveCard().parentNode.getElementsByClassName('card')[0]; 
+			nextCard=itemsView_getActiveItem().parentNode.getElementsByClassName('card')[0]; 
 		}
 	}
-	card_deselectAll();
+	itemsView_deselectAll();
 	nextCard.select();
 }
-function card_selectPrevious() {
-	if (card_getActiveCard()==null) { return; }
-	let nextCard=card_getActiveCard().previousElementSibling;
+function itemsView_cards_selectPrevious() {
+	if (itemsView_getActiveItem()==null) { return; }
+	let nextCard=itemsView_getActiveItem().previousElementSibling;
 	if (nextCard==null) { 
-		nextCard=card_getActiveCard().parentNode.getElementsByClassName('card')[card_getActiveCard().parentNode.getElementsByClassName('card').length-1]; 
+		nextCard=itemsView_getActiveItem().parentNode.getElementsByClassName('card')[itemsView_getActiveItem().parentNode.getElementsByClassName('card').length-1]; 
 	}
-	card_deselectAll();
+	itemsView_deselectAll();
 	nextCard.select(); 
 }
 
-// Public Interface
-var MxGuiCards={}
-MxGuiCards.deselectAll=card_deselectAll;
-// expect structure with at least fields 'id','name','thumbnailUrl', 
-MxGuiCards.addNewCard=card_addNewCard;
-MxGuiCards.clearCards=card_ClearCards;
-MxGuiCards.getActiveCard=card_getActiveCard;
-MxGuiCards.selectNext=card_selectNext;
-MxGuiCards.selectPrevious=card_selectPrevious;
-MxGuiCards.extractName=card_extractName;
-MxGuiCards.extractId=card_extractId;
-MxGuiCards.getNbCards=card_getNbCards;
 
 </script>
 

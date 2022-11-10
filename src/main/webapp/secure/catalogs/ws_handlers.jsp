@@ -105,16 +105,16 @@ function handleNbCreatedCatalogs(profileData) {
 		 return;
 	 }
 	 //console.log(msg);
-	 let curActiveCard=MxGuiCards.getActiveCard();
+	 let curActiveCard=MxItemsView.getActiveItem();
 	 let newCurActiveCard=null;	 
 	 if (msg.length==0) { MxGuiMain.showTextEmptyCatalog(); }
 	 else { MxGuiMain.hideTextEmptyCatalog(); }
 	 
 	 
-	 MxGuiCards.clearCards();
+	 MxItemsView.clearItems();
 	 for (var i=0;i<msg.length;i++) {
 		  curCatalogDescr=msg[i];
-		  newCatalogCard=MxGuiCards.addNewCard(curCatalogDescr);		  
+		  newCatalogCard=MxItemsView.addNewItem(curCatalogDescr);		  
 		  if (curCatalogDescr.isUserCurrentCatalog==true) { newCurActiveCard=newCatalogCard; }		  
 	 }	 
 	 if (newCurActiveCard!=null) { 
@@ -134,9 +134,9 @@ function handleNbCreatedCatalogs(profileData) {
  function ws_handlers_deleteCatalog(catalogId) {
 	
 	function successCallback() {
-		MxGuiCards.deselectAll();
+		MxItemsView.deselectAll();
 		footer_showAlert(WARNING, "<s:text name="Catalogs.catalogDeletedSuccessfully" />");
-		if (MxGuiCards.getNbCards()==1) { handleMxWsCatalogs([]); }
+		if (MxItemsView.getNbItemsInView()==1) { handleMxWsCatalogs([]); }
 		ws_handlers_refreshCatalogsGui();
 	}
 	function errorCallback(msg) { footer_showAlert(WARNING, "<s:text name="Catalogs.unableToDeleteCatalog" /> : "+msg); }

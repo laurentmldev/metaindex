@@ -212,7 +212,7 @@ function details_reconfirm_delete_catalog(catId) {
  MxGuiDetails.memGui=details_memGui;
  MxGuiDetails.restoreGui=details_restoreGui;
  MxGuiDetails.updateUsersTab=details_updateUsersTab;
- MxGuiCards.extractName=function(objDescr) {
+ MxItemsView.extractName=function(objDescr) {
 	 if (objDescr["vocabulary"] != null) { return objDescr.vocabulary.name; }
 	 else { return objDescr.name; }
  }

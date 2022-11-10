@@ -96,7 +96,7 @@
 	 
 	 let prevCard=_details_cards_history[_details_cards_history_current_index];
 	 if (prevCard==null) { return; }// just in case 
-	 MxGuiCards.deselectAll();
+	 MxItemsView.deselectAll();
 	 MxGuiDetails.populate(prevCard,true /*don't modify history with it*/);
 	 MxGuiDetails.open();
 	 MxGuiDetails.showAlert(prevCard.getName(),1000);
@@ -122,7 +122,7 @@
 	 if (nextCard==null) { return; }// just in case 
 	 
 	 MxGuiDetails.showAlert(nextCard.getName(),1000);
-	 MxGuiCards.deselectAll();
+	 MxItemsView.deselectAll();
 	 MxGuiDetails.populate(nextCard,true /*don't modify history with it*/);
 	 MxGuiDetails.open();
  }

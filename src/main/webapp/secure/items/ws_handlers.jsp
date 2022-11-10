@@ -195,20 +195,20 @@ function retrieveItemsSuccess(itemsAnswerMsg) {
 	 if (isCatalogWritable) { MxGuiMain.enableFileDropzone(); }
 	 else { MxGuiMain.disableFileDropzone(); }
 	 
-	 MxGuiCards.deselectAll();	 
+	 MxItemsView.deselectAll();	 
 	 MxGuiLeftBar.setNbMatchingItems(itemsAnswerMsg.totalHits);
 	 MxGuiDetails.setNbMatchingItems(itemsAnswerMsg.totalHits);
 	 MxGuiDetails.setNbTotalItems(itemsAnswerMsg.totalItems);
-	 if (itemsAnswerMsg.fromIdx==0) { MxGuiCards.clearCards(); }
+	 if (itemsAnswerMsg.fromIdx==0) { MxItemsView.clearItems(); }
 	 
 	 for (var idx=0;idx<itemsAnswerMsg.items.length;idx++) {
 		 var item=itemsAnswerMsg.items[idx];
-		 MxGuiCards.addNewCard(item);		 
+		 MxItemsView.addNewItem(item);		 
 	 }	 
 		 
 	 // if only one item in the result, open it directly
 	 if (itemsAnswerMsg.items.length==1) {
-		 MxGuiCards.selectNext();
+		 MxItemsView.selectNext();
 	 }
 	 
 }

@@ -15,7 +15,7 @@
 
 
 <body id="page-top" 
-	onload="checkBrowser(); websocketsStartup();">
+	onload="checkBrowser(); websocketsStartup(); MxItemsView.setViewMode('cards');">
 
   <!-- Page Wrapper -->
   <div id="wrapper">
@@ -42,6 +42,7 @@
           <div id="MxGui.cards.insertspot" class="card-deck col-sm-2 " style="max-width:100%">          	
 				<!-- CARDS ARE INSERTED HERE -->
   		  </div><!-- End of cards insert spot -->
+  		  
 		
 		  <div id="empty-placeholder" style="color:#aaa;width:100%" ><center>
 			  <h5 style="margin-top:2rem;margin-bottom:3rem;"><s:text name="Catalogs.empty"/></h5>			  
