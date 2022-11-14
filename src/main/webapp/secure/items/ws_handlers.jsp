@@ -163,6 +163,8 @@
 <script type="text/javascript" >
 function retrieveItemsError(msg) { footer_showAlert(ERROR, msg); }
 
+
+
 function retrieveItemsSuccess(itemsAnswerMsg) {
 	
 	// clear timer displaying amsg to refresh page if no items displayed
@@ -201,9 +203,10 @@ function retrieveItemsSuccess(itemsAnswerMsg) {
 	 MxGuiDetails.setNbTotalItems(itemsAnswerMsg.totalItems);
 	 if (itemsAnswerMsg.fromIdx==0) { MxItemsView.clearItems(); }
 	 
+	 let termsDescList=MxItemsView.getCurrentTermsDesc();	 
 	 for (var idx=0;idx<itemsAnswerMsg.items.length;idx++) {
 		 var item=itemsAnswerMsg.items[idx];
-		 MxItemsView.addNewItem(item);		 
+		 MxItemsView.addNewItem(item,termsDescList);		 
 	 }	 
 		 
 	 // if only one item in the result, open it directly

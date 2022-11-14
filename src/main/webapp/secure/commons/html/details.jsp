@@ -42,8 +42,10 @@
               
           </div>
 		</td>
+		<td><div id="MxGui.details.viewMode" title="Change view mode" style="display:none"> <i id=""  class="mx-help-icon far fa-list-alt"  style="font-size:1.4rem;"></i></div></td>
 		<td><div title="<s:text name="globals.prevElement"/>" style="margin-left:2rem;" onclick="_details_prev();"> <i id="details_prev_arrow" class="mx-history-disabled-nav-button mx-help-icon far fa-caret-left" style="display:none;font-weight:bold;font-size:2rem;"></i></div></td>
 		<td><div title="<s:text name="globals.nextElement"/>" onclick="_details_next();"> <i id="details_next_arrow"  class="mx-history-disabled-nav-button mx-help-icon far fa-caret-right"  style="display:none;font-weight:bold;font-size:2rem;"></i></div></td>
+		
 		
 	</tr></table>          
 </div>

@@ -11,6 +11,27 @@ var _activeItem = null;
 var _selectedItemsMapById = [];
 var _itemsViewMode="cards"; // cards|table 
 
+
+function itemsView_toggleViewMode(ev,mode) {
+	if (mode!=null) { _itemsViewMode=mode; }
+	
+	if (_itemsViewMode=="cards") { 
+		_itemsViewMode="table";
+		document.getElementById(ITEMSVIEW_TABLE_INSERTSPOT_ID).style.display='';
+		document.getElementById(ITEMSVIEW_CARDS_INSERTSPOT_ID).style.display='none';
+		
+	}
+	else if (_itemsViewMode=="table") { 
+		_itemsViewMode="cards";
+		document.getElementById(ITEMSVIEW_TABLE_INSERTSPOT_ID).style.display='none';
+		document.getElementById(ITEMSVIEW_CARDS_INSERTSPOT_ID).style.display='';
+	}
+	else {
+		console.log("unhandle items view mode '"+mode+"'. Authorized modes are table|cards. ")
+		return;
+	}
+	MxGuiHeader.onFilterClick(MxGuiHeader.getCurrentSearchQuery());
+}
 function itemsView_setViewMode(mode) {
 	if (mode=="cards")  { _itemsViewMode="cards" }
 	else if (mode=="table")  { _itemsViewMode="table" }
@@ -20,6 +41,17 @@ function itemsView_setViewMode(mode) {
 	}
 }
 
+function itemsView_getCurrentTermsDesc() {
+	let termsDescList=[];
+	let sortedTermsNames = Object.keys(MxGuiDetails.getCurCatalogDescription().terms).sort();		
+	for (var termIdx=0;termIdx<sortedTermsNames.length;termIdx++) {
+		termName=sortedTermsNames[termIdx];
+		let termDesc = MxGuiDetails.getCurCatalogDescription().terms[termName];
+		termsDescList.push(termDesc);
+	}
+	
+	return termsDescList;	
+}
 
 
 function itemsView_clearItems() {
@@ -28,25 +60,29 @@ function itemsView_clearItems() {
 	_activeItem = null;
 	_selectedItemsMapById = [];
 } 
-function itemsView_addNewItem(objDescr) {
+function itemsView_addNewItem(objDescr,termsDescList) {	
 	if (_itemsViewMode=="cards") { return itemsView_cards_addNewItem(objDescr); }
-	else if (_itemsViewMode=="table") { return itemsView_table_addNewItem(objDescr); }
+	else if (_itemsViewMode=="table") { return itemsView_table_addNewItem(objDescr,termsDescList); }
 }
 
 function itemsView_deselectAll() {
 	if (_itemsViewMode=="cards") { return itemsView_cards_deselectAll(); }
+	else if (_itemsViewMode=="table") { return itemsView_table_deselectAll(); }
 } 
 
 function itemsView_getNbItemsInView() {
 	if (_itemsViewMode=="cards") { return itemsView_cards_getNbItemsInView(); }
+	else if (_itemsViewMode=="table") { return itemsView_table_getNbItemsInView(); }
 }
 
 
 function itemsView_selectNext() {
 	if (_itemsViewMode=="cards") { return itemsView_cards_selectNext(); }
+	else if (_itemsViewMode=="table") { return itemsView_table_selectNext(); }
 }
 function itemsView_selectPrevious() {
 	if (_itemsViewMode=="cards") { return itemsView_cards_selectPrevious(); }
+	else if (_itemsViewMode=="table") { return itemsView_table_selectPrevious(); }
 }
 
 
@@ -60,10 +96,13 @@ function itemsView_extractThumbnailUrl(objDescr)  {
 	}
 	return urlStr; 
 }
+
 function itemsView_getActiveItem() { return _activeItem; }
 
 //Public Interface
 var MxItemsView={}
+MxItemsView.toggleViewMode=itemsView_toggleViewMode;
+MxItemsView.getCurrentTermsDesc=itemsView_getCurrentTermsDesc;
 MxItemsView.setViewMode=itemsView_setViewMode;
 MxItemsView.deselectAll=itemsView_deselectAll;
 //expect structure with at least fields 'id','name','thumbnailUrl', 

@@ -18,19 +18,28 @@ function itemsView_table_clearItems() {
 	clearNodeChildren(insertSpot);
 	
 	let headerRow=document.createElement("tr");
-	let fieldsList=tmpFieldsList;//todo: get from catalog desrc
-	for (var i=0;i<fieldsList.length;i++) {
-		let curFieldName=fieldsList[i];
+	let termsDescList=MxItemsView.getCurrentTermsDesc();
+	
+	// id
+	let headerFieldColTitle=document.createElement("th");
+	headerFieldColTitle.classList.add("mx-tableview-col-header");
+	headerFieldColTitle.innerHTML="id";
+	headerRow.appendChild(headerFieldColTitle);
+	
+	// fields
+	for (var i=0;i<termsDescList.length;i++) {
+		let curTermDesc=termsDescList[i];
+		let curTermName=mx_helpers_getTermName(curTermDesc, MxGuiDetails.getCurCatalogDescription());		
 		let headerFieldColTitle=document.createElement("th");
 		headerFieldColTitle.classList.add("mx-tableview-col-header");
-		headerFieldColTitle.innerHTML=curFieldName;
+		headerFieldColTitle.innerHTML=curTermName;
 		headerRow.appendChild(headerFieldColTitle);
 	}
 	insertSpot.appendChild(headerRow);
 } 
-function itemsView_table_addNewItem(objDescr) {
+function itemsView_table_addNewItem(objDescr,termsDescList) {
 	var insertSpot = document.getElementById(ITEMSVIEW_TABLE_INSERTSPOT_ID);
-	let newRow=itemsView_buildNewTableEntry(objDescr);
+	let newRow=itemsView_buildNewTableEntry(objDescr,termsDescList);
 	insertSpot.appendChild(newRow);
 	return newRow;
 }
@@ -40,39 +49,40 @@ function itemsView_table_addNewItem(objDescr) {
 //	objDescr.id
 //	objDescr.name
 //	objDescr.thumbnailUrl (optional)
-function itemsView_buildNewTableEntry(objDescr) {
+function itemsView_buildNewTableEntry(objDescr,termsDescList) {
 	
 	var guiId="MxGui.tablerow."+MxItemsView.extractId(objDescr);
 	var newItemRow=document.createElement("tr");
 	newItemRow.descr=objDescr;
 	newItemRow.id=guiId;
+	newItemRow.classList.add("mx-tableview-row")
 	
+	// id
+	let newCol=document.createElement("td");		
+	newCol.classList.add("mx-tableview-col");
+	newCol.innerHTML=objDescr.id;
+	newItemRow.appendChild(newCol);
+	newCol.name="anchor-"+MxItemsView.extractId(objDescr);
 	
-	for (var idx=0;idx<tmpFieldsList.length;idx++) {
-		let curField=tmpFieldsList[idx];
-		let newCol=document.createElement("td");		
+	// fields
+	for (var idx=0;idx<termsDescList.length;idx++) {
+		let newCol=document.createElement("td");
 		newCol.classList.add("mx-tableview-col");
-
-		if (curField=="id") { newCol.innerHTML=objDescr.id; }
-		else { newCol.innerHTML=objDescr.data[curField]; }
-		
+		let curTermDesc=termsDescList[idx];				
+		newCol.innerHTML=objDescr.data[curTermDesc.name]; 		
 		newItemRow.appendChild(newCol);
 	}
-	// name
-	let name=MxItemsView.extractName(objDescr);
-	newItemRow.getName=function() { return name.innerHTML; };// useful to get name associated to this card
 	
-	// anchor
-	//let anchor = newItemRow.querySelector("._anchor_");
-	//anchor.name="anchor-"+MxItemsView.extractId(objDescr);
-	//newItemRow.anchorName=anchor.name;
+	// "summary" name
+	let name=MxItemsView.extractName(objDescr);
+	newItemRow.getName=function() { return name.innerHTML; };// useful to get name associated to this item
 	
 	// onmouseover
 	newItemRow.onmouseover = function(e) {
-		//container.classList.add('mx-card-lighter-bg');
+		newItemRow.classList.add('mx-card-lighter-bg');
 	}
 	newItemRow.onmouseout = function(e) {
-		//container.classList.remove('mx-card-lighter-bg');
+		newItemRow.classList.remove('mx-card-lighter-bg');
 	}
 	
 	newItemRow.isSelected=false;	
@@ -143,11 +153,11 @@ function itemsView_table_getNbItemsInView() {
 function itemsView_table_selectNext() {
 	let nextRow=null;
 	if (itemsView_getActiveItem()==null) { 
-		nextRow=document.getElementById(ITEMSVIEW_TABLE_INSERTSPOT_ID).getElementsByClassName('card')[0];
+		nextRow=document.getElementById(ITEMSVIEW_TABLE_INSERTSPOT_ID).getElementsByClassName('mx-tableview-row')[0];
 	} else {
 		nextRow=itemsView_getActiveItem().nextElementSibling;
 		if (nextRow==null) { 
-			nextRow=itemsView_getActiveItem().parentNode.getElementsByClassName('card')[0]; 
+			nextRow=itemsView_getActiveItem().parentNode.getElementsByClassName('mx-tableview-row')[0]; 
 		}
 	}
 	itemsView_deselectAll();
@@ -157,7 +167,7 @@ function itemsView_table_selectPrevious() {
 	if (itemsView_getActiveItem()==null) { return; }
 	let prevRow=itemsView_getActiveItem().previousElementSibling;
 	if (prevRow==null) { 
-		prevRow=itemsView_getActiveItem().parentNode.getElementsByClassName('card')[itemsView_getActiveItem().parentNode.getElementsByClassName('card').length-1]; 
+		prevRow=itemsView_getActiveItem().parentNode.getElementsByClassName('mx-tableview-row')[itemsView_getActiveItem().parentNode.getElementsByClassName('mx-tableview-row').length-1]; 
 	}
 	itemsView_deselectAll();
 	prevRow.select(); 

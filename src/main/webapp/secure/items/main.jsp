@@ -80,7 +80,7 @@
 	          <div id="MxGui.cards.insertspot" class="card-deck col-sm-2 " style="max-width:100%;max-height:70vh;overflow:auto;padding:1rem;">          	
 					<!-- CARDS ARE INSERTED HERE -->
 	  		  </div>
-	  		  <table class="table table-striped"><tbody id="MxGui.table.insertspot" style="">
+	  		  <table class="table table-striped"><tbody id="MxGui.table.insertspot" style="display:none;">
 	  		  		<!-- TABLE ROWS ARE INSERTED HERE -->
 	  		  </tbody></table>
 	  		  
@@ -139,9 +139,11 @@
   <script type="text/javascript">
   // called (if defined) from commons/html/head-onload.jsp
   	function local_onload() {
-  		MxItemsView.setViewMode('table');
   		enableKibanaFrame();
 		MxGuiDetails.showHistoNavArrows();
+		document.getElementById("MxGui.details.viewMode").style.display="";
+		document.getElementById("MxGui.details.viewMode").onclick=itemsView_toggleViewMode;
+		
 		//enableAutoFeedOnScrollDown();
   	}
   </script>
