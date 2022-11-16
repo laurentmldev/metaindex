@@ -34,12 +34,12 @@
 				}
 				
 				"
-	onkeydown="event.stopPropagation();
+	onkeydown="event.stopPropagation(); 
 				// ignore events comming from xeditable typing
 				if (event.originalTarget.parentNode.classList.contains('editable-input')) { return; }
 				
-				if (event.key=='ArrowRight') { MxItemsView.selectNext(); }
-				else if (event.key=='ArrowLeft') { MxItemsView.selectPrevious(); }
+				if (event.key=='ArrowRight' || event.key=='ArrowDown') { event.preventDefault(); MxItemsView.selectNext(); }
+				else if (event.key=='ArrowLeft' || event.key=='ArrowUp') { event.preventDefault(); MxItemsView.selectPrevious(); }
 				//escape : closing any open modal
 				if (event.which==27||event.keycode==27) {
 	  				let modals = document.getElementById('leftbar.operations.insertspot').querySelectorAll('.modal');	  				
@@ -82,6 +82,10 @@
 	  		  </div>
 	  		  <table class="table table-striped"><tbody id="MxGui.table.insertspot" style="display:none;">
 	  		  		<!-- TABLE ROWS ARE INSERTED HERE -->
+	  		  </tbody></table>
+	  		  <table id="plop" style="border:1px solid black"><tbody id="" style="">
+	  		  		<tr><td style="border:1px solid black" >AAA</td><td style="border:1px solid black" >BBB</td></tr>
+	  		  		<tr><td style="border:1px solid black" >AAA</td><td style="border:1px solid black" >BBB</td></tr>
 	  		  </tbody></table>
 	  		  
 			  <div id="empty-placeholder" style="color:#aaa;display:none;width:100%" ><center>

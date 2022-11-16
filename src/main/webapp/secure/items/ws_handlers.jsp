@@ -209,6 +209,9 @@ function retrieveItemsSuccess(itemsAnswerMsg) {
 		 MxItemsView.addNewItem(item,termsDescList);		 
 	 }	 
 		 
+	 setTableResizable(document.getElementById(ITEMSVIEW_TABLE_INSERTSPOT_ID));
+	 setTableResizable(document.getElementById("plop"));
+	 
 	 // if only one item in the result, open it directly
 	 if (itemsAnswerMsg.items.length==1) {
 		 MxItemsView.selectNext();

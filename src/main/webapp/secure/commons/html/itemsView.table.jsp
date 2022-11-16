@@ -2,6 +2,9 @@
 <%@ taglib uri="/struts-tags" prefix="s" %>  
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
+
+<s:include value="/public/commons/js/resizable-table.jsp" /> 
+
 <script type="text/javascript">
 
 //
@@ -68,8 +71,13 @@ function itemsView_buildNewTableEntry(objDescr,termsDescList) {
 	for (var idx=0;idx<termsDescList.length;idx++) {
 		let newCol=document.createElement("td");
 		newCol.classList.add("mx-tableview-col");
-		let curTermDesc=termsDescList[idx];				
-		newCol.innerHTML=objDescr.data[curTermDesc.name]; 		
+		let curTermDesc=termsDescList[idx];	
+		let value = objDescr.data[curTermDesc.name];
+		if (value == null) { 
+			newCol.innerHTML="";
+			newCol.classList.add("mx-tableview-col-undef");
+		} else { newCol.innerHTML=objDescr.data[curTermDesc.name]; }
+		 		
 		newItemRow.appendChild(newCol);
 	}
 	
@@ -79,18 +87,18 @@ function itemsView_buildNewTableEntry(objDescr,termsDescList) {
 	
 	// onmouseover
 	newItemRow.onmouseover = function(e) {
-		newItemRow.classList.add('mx-card-lighter-bg');
+		newItemRow.classList.add('mx-item-hover');
 	}
 	newItemRow.onmouseout = function(e) {
-		newItemRow.classList.remove('mx-card-lighter-bg');
+		newItemRow.classList.remove('mx-item-hover');
 	}
 	
 	newItemRow.isSelected=false;	
 	newItemRow.select = function(e) {
 		newItemRow.isSelected=true;		
-		newItemRow.classList.add("mx-card-selected");
-		newItemRow.classList.remove("mx-card-darker-bg");
-		newItemRow.classList.add("mx-card-lighter-bg");		
+		newItemRow.classList.add("mx-item-selected");
+		newItemRow.classList.add("mx-item-visited");
+		
 		_selectedItemsMapById[MxItemsView.extractId(newItemRow.descr)]=newItemRow;
 		_activeItem=newItemRow;				
 		MxGuiDetails.populate(newItemRow);		
@@ -99,15 +107,11 @@ function itemsView_buildNewTableEntry(objDescr,termsDescList) {
 	}
 	newItemRow.deselect = function(e) {
 		newItemRow.isSelected=false;
-		newItemRow.classList.remove("mx-card-selected");
-		newItemRow.classList.add("mx-card-darker-bg");	
+		newItemRow.classList.remove("mx-item-selected");	
 		MxGuiDetails.clear();
 		_selectedItemsMapById[MxItemsView.extractId(newItemRow.descr)]=null;
 		_activeItem=null;
-		
-		// mark cark as lighter
-		newItemRow.classList.add("mx-card-lighter-bg");
-		 
+				 
 	}
 	
 	newItemRow.onclick = function(e) {

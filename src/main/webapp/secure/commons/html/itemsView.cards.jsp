@@ -65,18 +65,17 @@ function itemsView_cards_buildNewCard(objDescr) {
 	
 	// onmouseover
 	newCard.onmouseover = function(e) {
-		container.classList.add('mx-card-lighter-bg');
+		container.classList.add('mx-item-hover');
 	}
 	newCard.onmouseout = function(e) {
-		container.classList.remove('mx-card-lighter-bg');
+		container.classList.remove('mx-item-hover');
 	}
 	
 	newCard.isSelected=false;	
 	newCard.select = function(e) {
 		newCard.isSelected=true;		
-		container.classList.add("mx-card-selected");
-		container.classList.remove("mx-card-darker-bg");
-		container.classList.add("mx-card-lighter-bg");		
+		container.classList.add("mx-item-selected");
+		container.classList.add("mx-item-visited");
 		_selectedItemsMapById[MxItemsView.extractId(newCard.descr)]=newCard;
 		_activeItem=newCard;				
 		MxGuiDetails.populate(newCard);		
@@ -84,15 +83,12 @@ function itemsView_cards_buildNewCard(objDescr) {
 		
 	}
 	newCard.deselect = function(e) {
-		newCard.isSelected=false;
-		container.classList.remove("mx-card-selected");
-		container.classList.add("mx-card-darker-bg");	
+		newCard.isSelected=false;		
+		container.classList.remove("mx-item-selected");
 		MxGuiDetails.clear();
 		_selectedItemsMapById[MxItemsView.extractId(newCard.descr)]=null;
 		_activeItem=null;
 		
-		// mark cark as lighter
-		container.classList.add("mx-card-lighter-bg");
 		 
 	}
 	
