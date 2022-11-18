@@ -160,7 +160,7 @@ function createROFullTextPopup(textArea,itemId,termDesc,catalogDesc,
  
  
 	
- function _commons_perspective_build_readonly_field_longtext(itemId,catalogDesc,tabIdx,sectionIdx,fieldIdx,fieldContainerNode,
+ function _commons_perspective_build_readonly_field_longtext(itemId,catalogDesc,fieldContainerNode,
 		 fieldVisuDesc,termDesc,fieldValue,getFullFieldContentsCallback) {
  		 
  	 let fieldNode=document.getElementById("_commons_perspectives_field_readonly_template_longtext").cloneNode(true);
@@ -186,6 +186,8 @@ function createROFullTextPopup(textArea,itemId,termDesc,catalogDesc,
  	
  	 fieldContainerNode.appendChild(fieldNode);
   }
+ 
+ MxGuiPerspective.buildLongText_RO=_commons_perspective_build_readonly_field_longtext;
  
 </script>
 

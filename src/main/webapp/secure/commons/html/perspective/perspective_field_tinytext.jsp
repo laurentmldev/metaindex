@@ -19,16 +19,16 @@
 	};
 	
 	
- function _commons_perspective_build_readonly_field_tinytext(catalogDesc,tabIdx,sectionIdx,fieldIdx,fieldContainerNode,fieldVisuDesc,termDesc,fieldValue) {
- 	
+ function _commons_perspective_build_readonly_field_tinytext(catalogDesc,fieldContainerNode,fieldVisuDesc,termDesc,fieldValue) {
+
  	 let fieldNode=document.getElementById("_commons_perspectives_field_readonly_template_tinytext").cloneNode(true);
  	 fieldNode.id="";
- 	 fieldNode.style.display="block";
+ 	 fieldNode.style.display="contents";
  	 
  	 // title
  	 let title = fieldNode.querySelector("._title_");
  	 if (fieldVisuDesc.showTitle==true) { title.innerHTML=mx_helpers_getTermName(termDesc, catalogDesc)+": "; }
- 	 else { title.style.display='none'; }
+ 	 else { title.parentElement.style.display='none'; }
  	 
  	 // value
  	 let valueNode = fieldNode.querySelector("._value_");
@@ -70,6 +70,8 @@
  	 
  	 fieldContainerNode.appendChild(fieldNode);
   }
+ 
+ MxGuiPerspective.buildTinyText_RO=_commons_perspective_build_readonly_field_tinytext;
 </script>
 
 

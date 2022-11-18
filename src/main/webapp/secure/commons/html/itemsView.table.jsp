@@ -21,6 +21,8 @@ function itemsView_table_clearItems() {
 	clearNodeChildren(insertSpot);
 	
 	let headerRow=document.createElement("tr");
+	headerRow.style.position='sticky';
+	headerRow.style.top=0;
 	let termsDescList=MxItemsView.getCurrentTermsDesc();
 	
 	// id
@@ -48,6 +50,36 @@ function itemsView_table_addNewItem(objDescr,termsDescList) {
 }
 
 
+function itemsView_extractColumnContents(colNode,termDesc,fieldValue,itemId) {
+	let fieldVisuDesc={
+			"showTitle":false,
+			"size":"small",
+			"color":"normal",
+			"weight":"normal"
+	}
+	let catalogDesc=MxGuiDetails.getCurCatalogDescription();
+	
+	if (termDesc.datatype=="IMAGE_URL") {
+		MxGuiPerspective.buildImgUrl_RO(catalogDesc,colNode,fieldVisuDesc,termDesc,fieldValue);
+		
+	} else if (termDesc.datatype=="PAGE_URL" 
+ 			|| termDesc.datatype=="AUDIO_URL"
+ 			|| termDesc.datatype=="VIDEO_URL") {
+		
+ 		MxGuiPerspective.buildUrl_RO(catalogDesc,colNode,fieldVisuDesc,termDesc,fieldValue);
+ 	}
+ 	else if (termDesc.datatype=="LINK") {
+ 		MxGuiPerspective.buildLink_RO(catalogDesc,colNode,fieldVisuDesc,termDesc,itemId,fieldValue);
+ 	}
+ 	else if (termDesc.datatype=="LONG_TEXT") {
+ 		MxGuiPerspective.buildLongText_RO(itemId,catalogDesc,colNode,fieldVisuDesc,termDesc,fieldValue,ws_handlers_requestItemLongFieldValue);
+ 	}
+ 	else { 		
+ 		MxGuiPerspective.buildTinyText_RO(catalogDesc,colNode,fieldVisuDesc,termDesc,fieldValue); 	
+	}
+	
+}
+
 // objDescr : shall containing following data :
 //	objDescr.id
 //	objDescr.name
@@ -61,11 +93,10 @@ function itemsView_buildNewTableEntry(objDescr,termsDescList) {
 	newItemRow.classList.add("mx-tableview-row")
 	
 	// id
-	let newCol=document.createElement("td");		
-	newCol.classList.add("mx-tableview-col");
-	newCol.innerHTML=objDescr.id;
-	newItemRow.appendChild(newCol);
-	newCol.name="anchor-"+MxItemsView.extractId(objDescr);
+	let newColId=document.createElement("td");		
+	newColId.classList.add("mx-tableview-col");
+	newColId.innerHTML=objDescr.id;
+	newItemRow.appendChild(newColId);	
 	
 	// fields
 	for (var idx=0;idx<termsDescList.length;idx++) {
@@ -76,7 +107,10 @@ function itemsView_buildNewTableEntry(objDescr,termsDescList) {
 		if (value == null) { 
 			newCol.innerHTML="";
 			newCol.classList.add("mx-tableview-col-undef");
-		} else { newCol.innerHTML=objDescr.data[curTermDesc.name]; }
+		} else { 
+			let fieldValue=objDescr.data[curTermDesc.name];
+			itemsView_extractColumnContents(newCol,curTermDesc,fieldValue,objDescr.id);
+		}
 		 		
 		newItemRow.appendChild(newCol);
 	}
@@ -84,6 +118,7 @@ function itemsView_buildNewTableEntry(objDescr,termsDescList) {
 	// "summary" name
 	let name=MxItemsView.extractName(objDescr);
 	newItemRow.getName=function() { return name.innerHTML; };// useful to get name associated to this item
+	newItemRow.title=name;
 	
 	// onmouseover
 	newItemRow.onmouseover = function(e) {
@@ -98,6 +133,7 @@ function itemsView_buildNewTableEntry(objDescr,termsDescList) {
 		newItemRow.isSelected=true;		
 		newItemRow.classList.add("mx-item-selected");
 		newItemRow.classList.add("mx-item-visited");
+		newColId.classList.add("mx-tableview-visited-id");
 		
 		_selectedItemsMapById[MxItemsView.extractId(newItemRow.descr)]=newItemRow;
 		_activeItem=newItemRow;				
@@ -122,7 +158,7 @@ function itemsView_buildNewTableEntry(objDescr,termsDescList) {
 		}
 		if (newItemRow.isSelected) { 
 			newItemRow.deselect(e);
-			scrollTo(anchor.name);			
+			newItemRow.scrollTo();			
 		}
 		else {
 			MxGuiDetails.clear();

@@ -82,7 +82,7 @@ function _commons_perspective_buildRefsDocsList(itemId,docIdsListStr,termDesc) {
 
 
 
-function _commons_perspective_build_readonly_field_reference(catalogDesc,tabIdx,sectionIdx,fieldIdx,fieldContainerNode,
+function _commons_perspective_build_readonly_field_reference(catalogDesc,fieldContainerNode,
 																				fieldVisuDesc,termDesc,itemId,fieldValue) {
 	 let fieldNode=document.getElementById("_commons_perspectives_field_template_reference").cloneNode(true);
 	 fieldNode.id="";
@@ -120,6 +120,8 @@ function _commons_perspective_build_readonly_field_reference(catalogDesc,tabIdx,
 	 
 	 fieldContainerNode.appendChild(fieldNode);
  }
+ 
+MxGuiPerspective.buildLink_RO=_commons_perspective_build_readonly_field_reference;
 
 </script>
 

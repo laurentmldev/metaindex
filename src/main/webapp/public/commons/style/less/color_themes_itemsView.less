@@ -45,6 +45,7 @@
 .mx-tableview-col-header {
 	background:@background_color;
 	color: @bg_dark;
+	
 }
 
 
@@ -53,9 +54,18 @@
 	border-right:1px solid #ddd;
 	text-align:center;
 	font-size:0.6rem;
+	width:fit-content;
+	padding:0.3rem;
 }
 
-.mx-tableview-col-undef {
+.mx-tableview-col-undef {	
+	box-shadow: inset 0 0 0.2rem 0.1rem #ccc;
+	background: #eee;
+}
+
+.mx-tableview-visited-id {
+	font-weight:bold;
+	background:@bg_dark;
+	color:@counter_text_color;
 	
-	box-shadow: inset 0 0 0.4rem 0.1rem #ccc;
 }

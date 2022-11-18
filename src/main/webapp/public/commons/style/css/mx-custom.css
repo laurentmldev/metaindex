@@ -173,7 +173,8 @@ a.anchor_top {
 .mx-perspective-field {	
 	background:inherit;
 	/*border:1px dashed orange;*/
-	width:min-content;
+	/*width:min-content;*/
+	width:auto;
 	vertical-align:middle;
 	text-align:center;
 	/*margin-right:10vw;

@@ -77,15 +77,11 @@
 	          <s:include value="details.jsp"></s:include>
 	          
 	          <!-- Contents -->
-	          <div id="MxGui.cards.insertspot" class="card-deck col-sm-2 " style="max-width:100%;max-height:70vh;overflow:auto;padding:1rem;">          	
+	          <div id="MxGui.cards.insertspot" class="card-deck col-sm-2 " style="max-width:100%;max-height:65vh;overflow:auto;padding:1rem;margin:0;">          	
 					<!-- CARDS ARE INSERTED HERE -->
 	  		  </div>
-	  		  <table class="table table-striped"><tbody id="MxGui.table.insertspot" style="display:none;">
+	  		  <table class="table-striped" style="display:block;max-width:100%;max-height:65vh;overflow:auto;padding:0;margin:0"><tbody id="MxGui.table.insertspot" style="display:none;">
 	  		  		<!-- TABLE ROWS ARE INSERTED HERE -->
-	  		  </tbody></table>
-	  		  <table id="plop" style="border:1px solid black"><tbody id="" style="">
-	  		  		<tr><td style="border:1px solid black" >AAA</td><td style="border:1px solid black" >BBB</td></tr>
-	  		  		<tr><td style="border:1px solid black" >AAA</td><td style="border:1px solid black" >BBB</td></tr>
 	  		  </tbody></table>
 	  		  
 			  <div id="empty-placeholder" style="color:#aaa;display:none;width:100%" ><center>

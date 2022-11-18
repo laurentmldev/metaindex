@@ -5,17 +5,17 @@
   <script type="text/javascript">
   function setTableResizable(table) {
 	  
-	  let curCol = undefined;
-	  let nxtCol = undefined;
-	  let  pageX = undefined;
-	  let nxtColWidth = undefined;
-	  let curColWidth = undefined;
+	  let curCol = null;
+	  let nxtCol = null;
+	  let  pageX = null;
+	  let nxtColWidth = null;
+	  let curColWidth = null;
 	  
 	  let row = table.getElementsByTagName('tr')[0];
-	  cols = row ? row.children : undefined;
+	  cols = row ? row.children : null;
 	  if (!cols) return;
 	  
-	  table.style.overflow = 'hidden';
+	  //table.style.overflow = 'hidden';
 	  
 	  let tableHeight = table.offsetHeight;
 	  
@@ -30,46 +30,50 @@
 		  var pageX,curCol,nxtCol,curColWidth,nxtColWidth;
 		  
 		  div.addEventListener('mousedown',function(e) {
+			  
 			  curCol = e.target.parentElement;
 			  nxtCol = curCol.nextElementSibling;
+			  console.log("nxtCol="+nxtCol);
 			  pageX= e.pageX;
 			  
 			  let padding = paddingDiff(curCol);
 			  curColWidth = curCol.offsetWidth - padding;
 			  if (nxtCol) {
-				  nxtColWidth = nxtCol.ofsetWidth - padding;
+				  nxtColWidth = nxtCol.offsetWidth - padding;
 			  }
 		  });
 		  
 		  div.addEventListener('mouseover',function(e) {
-			  // TODO
 			  e.target.style.borderRight = '3px solid pink';
 		  });
 		  
 		  div.addEventListener('mouseout',function(e) {
-			  e.target.style.borderRight = ''; 
+			  if (!curCol) { e.target.style.borderRight = ''; }  
 		  });
 		  
-		  div.addEventListener('mousemove',function(e) {
+		  document.addEventListener('mousemove',function(e) {
 			  
-			 if (curCol!=undefined) {
+			 if (curCol) {
 				 
 				 let diffX = e.pageX - pageX;
 				 if (nxtCol) {
+				
 					 nxtCol.style.width = (nxtColWidth - (diffX))+'px';
 					 
 				 }
 				 curCol.style.width = (curColWidth + (diffX))+'px';
-				 console.log("width="+curCol.style.width);
+				 //console.log("curCol="+curCol+" width="+curCol.style.width);
 			 } 
 		  });
-		  div.addEventListener('mouseup',function(e) {
-			  curCol = undefined;
-			  nxtCol = undefined;
-			  pageX = undefined;
-			  nxtColWidth = undefined;
-			  curColWidth = undefined;
-			  
+		  document.addEventListener('mouseup',function(e) {
+			  if (curCol) {
+				  curCol = null;
+				  nxtCol = null;
+				  pageX = null;
+				  nxtColWidth = null;
+				  curColWidth = null;
+				  e.target.style.borderRight = '';
+			  }
 		  });
 		  
 	  }
@@ -79,7 +83,7 @@
 		  var div = document.createElement('div');
 		  div.style.top = 0;
 		  div.style.right = 0;
-		  div.style.width = '5px';
+		  div.style.width = '10px';
 		  div.style.position = 'absolute';
 		  div.style.cursor = 'col-resize';
 		  div.style.userSelect = 'none';

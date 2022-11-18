@@ -8,7 +8,7 @@
  <script type="text/javascript" >
 
 
- function _commons_perspective_build_readonly_field_link_url(catalogDesc,tabIdx,sectionIdx,fieldIdx,fieldContainerNode,fieldVisuDesc,termDesc,fieldValue) {
+ function _commons_perspective_build_readonly_field_link_url(catalogDesc,fieldContainerNode,fieldVisuDesc,termDesc,fieldValue) {
  	
  	 let fieldNode=document.getElementById("_commons_perspectives_field_readonly_template_link_url").cloneNode(true);
  	 fieldNode.id="";
@@ -51,6 +51,7 @@
  	 fieldContainerNode.appendChild(fieldNode);
   }
   
+ MxGuiPerspective.buildUrl_RO=_commons_perspective_build_readonly_field_link_url;
 
 </script>
 
