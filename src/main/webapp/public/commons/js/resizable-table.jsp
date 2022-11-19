@@ -11,23 +11,29 @@
 	  let nxtColWidth = null;
 	  let curColWidth = null;
 	  
-	  let row = table.getElementsByTagName('tr')[0];
-	  cols = row ? row.children : null;
-	  if (!cols) return;
-	  
-	  //table.style.overflow = 'hidden';
-	  
 	  let tableHeight = table.offsetHeight;
-	  
-	  for (var i=0;i<cols.length;i++) {
-		  var div= createDiv(tableHeight);
-		  cols[i].appendChild(div);
-		  cols[i].style.position='relative';
+	  let tableRows = table.getElementsByTagName('tr');
+	  if (tableRows.length<=1) { return; }
+	   
+	  let headerFirstRow = tableRows[0];
+	  let resizeRow = document.createElement("tr");
+	  headerCols = headerFirstRow ? headerFirstRow.children : null;
+	  for (var i=0;i<headerCols.length;i++) {
+		  let resizeCol = document.createElement("td");
+		  resizeRow.appendChild(resizeCol);
+		  var div= createDiv(tableHeight, -tableHeight);
+		  resizeCol.appendChild(div);
+		  resizeCol.style.position='relative';		  
 		  setListeners(div);
 	  }
+	  table.appendChild(resizeRow);
 	  
 	  function setListeners(div) {
 		  var pageX,curCol,nxtCol,curColWidth,nxtColWidth;
+		  
+		  div.addEventListener('onclick',function(e) {
+			  e.stopPropagation();
+		  });
 		  
 		  div.addEventListener('mousedown',function(e) {
 			  
@@ -79,9 +85,10 @@
 	  }
 	  
 	  
-	  function createDiv(height) {
+	  function createDiv(height,topOffset) {
+		  
 		  var div = document.createElement('div');
-		  div.style.top = 0;
+		  div.style.top = topOffset+"px";
 		  div.style.right = 0;
 		  div.style.width = '10px';
 		  div.style.position = 'absolute';
