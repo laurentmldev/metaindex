@@ -162,7 +162,7 @@ function itemsView_cards_selectPrevious() {
 
       <div id="MxGui._templates_.card" class="card mb-4 mx-card" style="display:none;" >
 		<a class="_anchor_ anchor_middle" name="" ></a>
-       	 <img src="" alt="" class="card-img-top _img_" style="display:none;min-height:7rem">
+       	 <img src="" alt="" class="card-img-top _img_" style="display:none;min-height:7rem;max-height:80%">
        	 <span class="_no_img_" style="display:none;min-height:7rem"></span>
        	 
          <div id="_container_id_" class="card-img-overlay py-3 d-flex flex-row align-items-top justify-content-between mx-card-darker-bg _container_" 

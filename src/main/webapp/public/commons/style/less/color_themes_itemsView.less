@@ -1,6 +1,9 @@
 @charset "UTF-8";
 
 
+.mx-table-resizer {
+	borderRight:3px solid purple;
+}
 
 .mx-item-hover {
 	border: 2px solid @active_color !important;
@@ -16,7 +19,7 @@
 
 
 .mx-item-selected {  
-  background: @active_color !important;   
+  background: rgba(@active_color, 0.4) !important; 
   transition: background linear 150ms,color 150ms;
   cursor:pointer;
 }
@@ -36,7 +39,6 @@
 
 .mx-card-darker-bg {  
   background: rgba(0, 0, 0, 0.2); 
-  /*color:rgba(240,240,240) ;*/	
   transition: background linear 150ms,color 150ms;
 }
 

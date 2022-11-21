@@ -69,7 +69,8 @@ function itemsView_extractColumnContents(colNode,termDesc,fieldValue,itemId) {
  		MxGuiPerspective.buildUrl_RO(catalogDesc,colNode,fieldVisuDesc,termDesc,fieldValue);
  	}
  	else if (termDesc.datatype=="LINK") {
- 		MxGuiPerspective.buildLink_RO(catalogDesc,colNode,fieldVisuDesc,termDesc,itemId,fieldValue);
+ 		let showHeader=false;
+ 		MxGuiPerspective.buildLink_RO(catalogDesc,colNode,fieldVisuDesc,termDesc,itemId,fieldValue,showHeader);
  	}
  	else if (termDesc.datatype=="LONG_TEXT") {
  		MxGuiPerspective.buildLongText_RO(itemId,catalogDesc,colNode,fieldVisuDesc,termDesc,fieldValue,ws_handlers_requestItemLongFieldValue);
@@ -212,6 +213,7 @@ function itemsView_table_selectPrevious() {
 	itemsView_deselectAll();
 	prevRow.select(); 
 }
+
 
 
 </script>

@@ -77,12 +77,14 @@
 	          <s:include value="details.jsp"></s:include>
 	          
 	          <!-- Contents -->
-	          <div id="MxGui.cards.insertspot" class="card-deck col-sm-2 " style="max-width:100%;max-height:65vh;overflow:auto;padding:1rem;margin:0;">          	
+	          <div id="MxGui.cards.insertspot" class="card-deck col-sm-2 _itemsView_autofeed_" style="max-width:100%;max-height:65vh;overflow:auto;padding:1rem;margin:0;">          	
 					<!-- CARDS ARE INSERTED HERE -->
 	  		  </div>
-	  		  <table class="table-striped" style="display:block;max-width:100%;max-height:65vh;overflow:auto;padding:0;margin:0"><tbody id="MxGui.table.insertspot" style="display:none;">
-	  		  		<!-- TABLE ROWS ARE INSERTED HERE -->
-	  		  </tbody></table>
+	  		  <table class="table-striped _itemsView_autofeed_" style="display:block;max-width:100%;max-height:65vh;overflow:auto;padding:0;margin:0">
+		  		  <tbody id="MxGui.table.insertspot" style="display:none;">
+		  		  		<!-- TABLE ROWS ARE INSERTED HERE -->
+		  		  </tbody>
+	  		  </table>
 	  		  
 			  <div id="empty-placeholder" style="color:#aaa;display:none;width:100%" ><center>
 				  <h5 style="margin-top:2rem;margin-bottom:3rem;"><s:text name="Items.catalogIsEmpty"/></h5>
@@ -142,47 +144,13 @@
   		enableKibanaFrame();
 		MxGuiDetails.showHistoNavArrows();
 		document.getElementById("MxGui.details.viewMode").style.display="";
-		document.getElementById("MxGui.details.viewMode").onclick=itemsView_toggleViewMode;
+		document.getElementById("MxGui.details.viewMode").onclick=itemsView_toggleViewMode;				
 		
-		//enableAutoFeedOnScrollDown();
+		MxItemsView.enableAutoFeedOnScrollDown();
   	}
   </script>
   <script type="text/javascript">
   
-  function enableAutoFeedOnScrollDown() {
-	  let cardsInserspot=document.getElementById(ITEMSVIEW_CARDS_INSERTSPOT_ID);
-	  
-	  cardsInserspot.onscroll=function() {
-		  //console.log(cardsInserspot);
-		   //console.log("height="+cardsInserspot.height+" pos="+cardsInserspot.scrollTop);
-		   
-		   let isScrollBottom=cardsInserspot.scrollTopMax - cardsInserspot.scrollTop < 1;
-	  	   let needMoreResults=MxItemsView.getNbItemsInView()<MxGuiDetails.getNbMatchingItems();
-	  	   	   
-	  	   if(isScrollBottom && needMoreResults) {		  	 
-	  	 		 let query = MxGuiHeader.getCurrentSearchQuery();
-	  	 		 let selectedFiltersNames=MxGuiHeader.getSelectedFiltersNames();
-	  	 		 let sortString = MxGuiHeader.getCurrentSearchSortString();
-	  	 		 let reversedOrder = MxGuiHeader.getCurrentSearchReversedOrder();
-	  	 		  
-	  		  	 retrieveItemsError=function(msg) { footer_showAlert(ERROR, msg); }
-	  			 _fromIdx=_fromIdx+NB_ITEMS_PER_REQUEST;
-	  			 
-	  			 MxApi.requestCatalogItems({"fromIdx":_fromIdx,
-	  				 						"size":NB_ITEMS_PER_REQUEST,
-	  				 						"query":query,
-	  				 						"filtersNames":selectedFiltersNames,
-	  				 						"sortByFieldName":sortString,
-	  				 						"reverseSortOrder":reversedOrder,
-	  				 						"successCallback":retrieveItemsSuccess,/* from ws_handlers.jsp */
-	  				 						"errorCallback":retrieveItemsError});
-	  			
-	  	   }
-	  	   
-	  	   
-	  	};
-
-  }
 //configure Kibana Frame
   function enableKibanaFrame() {
 	  let kibanaFrameParent=document.getElementById("kibana_frame_cont");

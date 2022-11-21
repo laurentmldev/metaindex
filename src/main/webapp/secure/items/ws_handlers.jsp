@@ -209,13 +209,16 @@ function retrieveItemsSuccess(itemsAnswerMsg) {
 		 MxItemsView.addNewItem(item,termsDescList);		 
 	 }	 
 		 
-	 setTableResizable(document.getElementById(ITEMSVIEW_TABLE_INSERTSPOT_ID));
+	 // set itemsView resizable
+	 setTableResizable(document.getElementById(ITEMSVIEW_TABLE_INSERTSPOT_ID), ".mx-table-resizer");
 
 	 
 	 // if only one item in the result, open it directly
 	 if (itemsAnswerMsg.items.length==1) {
 		 MxItemsView.selectNext();
 	 }
+	 
+	 
 	 
 }
 

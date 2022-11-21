@@ -3,7 +3,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
   <script type="text/javascript">
-  function setTableResizable(table) {
+  function setTableResizable(table,resizerClassName) {
 	  
 	  let curCol = null;
 	  let nxtCol = null;
@@ -50,11 +50,11 @@
 		  });
 		  
 		  div.addEventListener('mouseover',function(e) {
-			  e.target.style.borderRight = '3px solid pink';
+			  e.target.classList.add(resizerClassName);
 		  });
 		  
 		  div.addEventListener('mouseout',function(e) {
-			  if (!curCol) { e.target.style.borderRight = ''; }  
+			  if (!curCol) { e.target.classList.remove(resizerClassName); }  
 		  });
 		  
 		  document.addEventListener('mousemove',function(e) {

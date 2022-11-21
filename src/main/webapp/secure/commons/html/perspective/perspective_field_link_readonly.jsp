@@ -17,7 +17,7 @@ where contents is a coma-separated list of documents IDs.
 
 // build list of children connected to a given document
 // return div containing datafield with refs
-function _commons_perspective_buildRefsDocsList(itemId,docIdsListStr,termDesc) {	
+function _commons_perspective_buildRefsDocsList(itemId,docIdsListStr,termDesc,showHeader) {
 	
 	let linksTable=_parseLinksList(docIdsListStr);
 	let refDocsListEnabledByIdNode = document.createElement("div");
@@ -30,15 +30,18 @@ function _commons_perspective_buildRefsDocsList(itemId,docIdsListStr,termDesc) {
 		
 		let docsListFieldset = document.getElementById("_perspective_field_link_refsdocs_fieldset_template_").cloneNode(true);
 		docsListFieldset.id=itemId+"_"+termDesc.name+"_docslist_readonly";
-		docsListFieldset.style.display='block';
+		docsListFieldset.style.display='contents';
 		refDocsListEnabledByIdNode.appendChild(docsListFieldset);
 		
 		// legend
 		let legend= docsListFieldset.querySelector("._legend_");
-		legend.innerHTML="References : "+itemsAnswerMsg.items.length;
-		legend.onclick=function() {
-			MxGuiHeader.setCurrentSearchQuery(_commons_perspective_buildStrQueryGetRefItems(linksTable));
-			MxGuiHeader.refreshSearch();		
+		if (showHeader==false) { legend.style.display='none'; }
+		else {
+			legend.innerHTML="References : "+itemsAnswerMsg.items.length;
+			legend.onclick=function() {
+				MxGuiHeader.setCurrentSearchQuery(_commons_perspective_buildStrQueryGetRefItems(linksTable));
+				MxGuiHeader.refreshSearch();		
+			}
 		}
 		
 		// refs docs table
@@ -83,7 +86,10 @@ function _commons_perspective_buildRefsDocsList(itemId,docIdsListStr,termDesc) {
 
 
 function _commons_perspective_build_readonly_field_reference(catalogDesc,fieldContainerNode,
-																				fieldVisuDesc,termDesc,itemId,fieldValue) {
+														fieldVisuDesc,termDesc,itemId,fieldValue,showHeader) {
+	
+	 if (showHeader==null) { showHeader=true; }
+	
 	 let fieldNode=document.getElementById("_commons_perspectives_field_template_reference").cloneNode(true);
 	 fieldNode.id="";
 	 fieldNode.style.display="block";
@@ -99,7 +105,7 @@ function _commons_perspective_build_readonly_field_reference(catalogDesc,fieldCo
 	 
 	 if (fieldValue.length>0) {		 		 
 		 // list documents listed
-		let refsListNode=_commons_perspective_buildRefsDocsList(itemId,fieldValue,termDesc);
+		let refsListNode=_commons_perspective_buildRefsDocsList(itemId,fieldValue,termDesc,showHeader);
 		valueNode.appendChild(refsListNode);		 		 
 	 }
 	 

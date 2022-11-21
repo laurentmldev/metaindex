@@ -99,6 +99,47 @@ function itemsView_extractThumbnailUrl(objDescr)  {
 
 function itemsView_getActiveItem() { return _activeItem; }
 
+
+function itemsView_enableAutoFeedOnScrollDown() {
+	let itemsInsertSpots=document.querySelectorAll("._itemsView_autofeed_");
+	
+	for (var i=0;i<itemsInsertSpots.length;i++) {
+	  let insertSpot=itemsInsertSpots[i];
+	  
+	  insertSpot.onscroll=function() {
+		  
+		  //console.log(insertSpot);
+		   //console.log("height="+insertSpot.height+" pos="+insertSpot.scrollTop);
+		   
+		   let isScrollBottom=insertSpot.scrollTopMax - insertSpot.scrollTop < 1;
+	  	   let needMoreResults=MxItemsView.getNbItemsInView()<MxGuiDetails.getNbMatchingItems();
+	  	   	   
+	  	   if(isScrollBottom && needMoreResults) {		  	 
+	  	 		 let query = MxGuiHeader.getCurrentSearchQuery();
+	  	 		 let selectedFiltersNames=MxGuiHeader.getSelectedFiltersNames();
+	  	 		 let sortString = MxGuiHeader.getCurrentSearchSortString();
+	  	 		 let reversedOrder = MxGuiHeader.getCurrentSearchReversedOrder();
+	  	 		  
+	  		  	 retrieveItemsError=function(msg) { footer_showAlert(ERROR, msg); }
+	  			 _fromIdx=_fromIdx+NB_ITEMS_PER_REQUEST;
+	  			 
+	  			 MxApi.requestCatalogItems({"fromIdx":_fromIdx,
+	  				 						"size":NB_ITEMS_PER_REQUEST,
+	  				 						"query":query,
+	  				 						"filtersNames":selectedFiltersNames,
+	  				 						"sortByFieldName":sortString,
+	  				 						"reverseSortOrder":reversedOrder,
+	  				 						"successCallback":retrieveItemsSuccess,/* from ws_handlers.jsp */
+	  				 						"errorCallback":retrieveItemsError});
+	  			
+	  	   }
+	  	   
+	  	   
+	  	};
+	}
+}
+
+
 //Public Interface
 var MxItemsView={}
 MxItemsView.toggleViewMode=itemsView_toggleViewMode;
@@ -114,5 +155,6 @@ MxItemsView.selectPrevious=itemsView_selectPrevious;
 MxItemsView.extractName=itemsView_extractName;
 MxItemsView.extractId=itemsView_extractId;
 MxItemsView.getNbItemsInView=itemsView_getNbItemsInView;
+MxItemsView.enableAutoFeedOnScrollDown=itemsView_enableAutoFeedOnScrollDown;
 
 </script>

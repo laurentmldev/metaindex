@@ -421,7 +421,7 @@ function _commons_perspective_buildEditableReferenceTerm(catalogDesc,tabIdx,sect
 
 	
 <input id="_perspective_field_link_weight_input_" class="_perspective_field_link_weight_input_" 
-				type="number" style="width:3em;height:3em;display:none" min="1" value="1"/>
+				type="number" style="width:4em;height:3em;display:none" min="1" value="1"/>
 	
 
 <table id="_perspective_field_link_refsdocs_fieldset_template_raw_container_editable" style="display:none;" >
