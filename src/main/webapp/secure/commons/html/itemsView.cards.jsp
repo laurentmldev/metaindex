@@ -22,6 +22,15 @@ function itemsView_cards_addNewItem(objDescr) {
 }
 
 
+function itemsView_cards_updateFieldValue(itemId,fieldName,newValue,fieldTermDesc) {
+	let guiId="MxGui.card."+itemId;
+	let card=document.getElementById(guiId);
+	let objDesc=card.descr;
+	
+	//ws_handlers_requestItemById(...); // TODO
+	console.log(objDesc);
+}
+
 // objDescr : shall containing following data :
 //	objDescr.id
 //	objDescr.name

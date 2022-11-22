@@ -15,6 +15,7 @@ var ITEMSVIEW_TABLE_INSERTSPOT_ID = "MxGui.table.insertspot"
 
 var tmpFieldsList=["id","nom","date"];
 
+
 function itemsView_table_clearItems() {
 	var insertSpot = document.getElementById(ITEMSVIEW_TABLE_INSERTSPOT_ID);
 
@@ -81,6 +82,17 @@ function itemsView_extractColumnContents(colNode,termDesc,fieldValue,itemId) {
 	
 }
 
+
+function itemsView_table_updateFieldValue(itemId,fieldName,newValue,fieldTermDesc) {
+	let guiId="MxGui.tablerow."+itemId+"."+fieldName;
+	let valueCell=document.getElementById(guiId);
+	if (valueCell==null) { return; }
+	valueCell.innerHTML="";
+	itemsView_extractColumnContents(valueCell,fieldTermDesc,newValue,itemId);
+}
+
+
+
 // objDescr : shall containing following data :
 //	objDescr.id
 //	objDescr.name
@@ -104,6 +116,7 @@ function itemsView_buildNewTableEntry(objDescr,termsDescList) {
 		let newCol=document.createElement("td");
 		newCol.classList.add("mx-tableview-col");
 		let curTermDesc=termsDescList[idx];	
+		newCol.id=guiId+"."+curTermDesc.name;	
 		let value = objDescr.data[curTermDesc.name];
 		if (value == null) { 
 			newCol.innerHTML="";
@@ -112,7 +125,7 @@ function itemsView_buildNewTableEntry(objDescr,termsDescList) {
 			let fieldValue=objDescr.data[curTermDesc.name];
 			itemsView_extractColumnContents(newCol,curTermDesc,fieldValue,objDescr.id);
 		}
-		 		
+				
 		newItemRow.appendChild(newCol);
 	}
 	

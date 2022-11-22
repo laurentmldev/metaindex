@@ -10,7 +10,7 @@
   
  <s:include value="../commons/html/perspective/perspective.jsp" />
  <script type="text/javascript" >
-
+ 
  var _curCatalogDesc=null;
  var _curItemCard=null;
  var _details_DEFAULT_PERSPECTIVE_NAME="default";
@@ -220,7 +220,9 @@
 		console.log("changed "+fieldName+"="+newValue);
 		itemCard.descr.data[fieldName]=newValue;
 		lastchangeTimestampNode.innerHTML="<s:text name='global.now'/>";
-		lastchangeUser.innerHTML="<s:text name='global.you'/>";		
+		lastchangeUser.innerHTML="<s:text name='global.you'/>";
+		
+		MxItemsView.updateFieldValue(itemCard.descr.id,fieldName,newValue);
 	}
 	//dumpStructure(_curCatalogDesc);
 	

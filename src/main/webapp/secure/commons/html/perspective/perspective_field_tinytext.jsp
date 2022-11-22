@@ -77,7 +77,7 @@
 
 
 <div style="display:none;" class="mx-perspective-field" id="_commons_perspectives_field_readonly_template_tinytext"  >
-	<table style="width:100%;"><tr>
+	<table><tr>
 		<td class="mx-perspective-field-title"><span class="_title_"></span></td>
 		<td><div style="width:100%;max-height:10vh;overflow:auto;" class="_value_"></div></td>
 	</tr></table>               

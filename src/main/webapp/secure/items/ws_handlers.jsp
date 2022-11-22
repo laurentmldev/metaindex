@@ -165,6 +165,7 @@ function retrieveItemsError(msg) { footer_showAlert(ERROR, msg); }
 
 
 
+
 function retrieveItemsSuccess(itemsAnswerMsg) {
 	
 	// clear timer displaying amsg to refresh page if no items displayed
@@ -203,10 +204,9 @@ function retrieveItemsSuccess(itemsAnswerMsg) {
 	 MxGuiDetails.setNbTotalItems(itemsAnswerMsg.totalItems);
 	 if (itemsAnswerMsg.fromIdx==0) { MxItemsView.clearItems(); }
 	 
-	 let termsDescList=MxItemsView.getCurrentTermsDesc();	 
 	 for (var idx=0;idx<itemsAnswerMsg.items.length;idx++) {
 		 var item=itemsAnswerMsg.items[idx];
-		 MxItemsView.addNewItem(item,termsDescList);		 
+		 MxItemsView.addNewItem(item);		 
 	 }	 
 		 
 	 // set itemsView resizable
@@ -260,6 +260,22 @@ function ws_handlers_requestItemsIdsSearch(query,selectedFiltersNames,sortByFiel
 		 						"filtersNames":selectedFiltersNames,
 		 						"sortByFieldName":sortByFieldName,
 		 						"reverseSortOrder":reversedSortOrder,
+		 						"successCallback":successCallback,
+		 						"errorCallback":errorCallback});
+} 
+
+
+function ws_handlers_requestItemById(itemId,successCallback,errorCallback) {
+	
+	let fromIdx=0;
+	let size=1;
+	
+	 MxApi.requestCatalogItems({"fromIdx":fromIdx,
+		 						"size":size,
+		 						"query":"_id="+itemId,
+		 						"filtersNames":"",
+		 						"sortByFieldName":"",
+		 						"reverseSortOrder":"",
 		 						"successCallback":successCallback,
 		 						"errorCallback":errorCallback});
 } 

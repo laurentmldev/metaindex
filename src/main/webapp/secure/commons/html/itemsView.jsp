@@ -11,7 +11,6 @@ var _activeItem = null;
 var _selectedItemsMapById = [];
 var _itemsViewMode="cards"; // cards|table 
 
-
 function itemsView_toggleViewMode(ev,mode) {
 	if (mode!=null) { _itemsViewMode=mode; }
 	
@@ -43,7 +42,10 @@ function itemsView_setViewMode(mode) {
 
 function itemsView_getCurrentTermsDesc() {
 	let termsDescList=[];
-	let sortedTermsNames = Object.keys(MxGuiDetails.getCurCatalogDescription().terms).sort();		
+	let catalogDesc=MxGuiDetails.getCurCatalogDescription();
+	if (catalogDesc==null) { return termsDescList; }
+	
+	let sortedTermsNames = Object.keys(catalogDesc.terms).sort();		
 	for (var termIdx=0;termIdx<sortedTermsNames.length;termIdx++) {
 		termName=sortedTermsNames[termIdx];
 		let termDesc = MxGuiDetails.getCurCatalogDescription().terms[termName];
@@ -60,7 +62,8 @@ function itemsView_clearItems() {
 	_activeItem = null;
 	_selectedItemsMapById = [];
 } 
-function itemsView_addNewItem(objDescr,termsDescList) {	
+function itemsView_addNewItem(objDescr) {
+	let termsDescList=MxItemsView.getCurrentTermsDesc();	 	 
 	if (_itemsViewMode=="cards") { return itemsView_cards_addNewItem(objDescr); }
 	else if (_itemsViewMode=="table") { return itemsView_table_addNewItem(objDescr,termsDescList); }
 }
@@ -129,7 +132,7 @@ function itemsView_enableAutoFeedOnScrollDown() {
 	  				 						"filtersNames":selectedFiltersNames,
 	  				 						"sortByFieldName":sortString,
 	  				 						"reverseSortOrder":reversedOrder,
-	  				 						"successCallback":retrieveItemsSuccess,/* from ws_handlers.jsp */
+	  				 						"successCallback":retrieveItemsSuccess, // from ws_handlers.jsp
 	  				 						"errorCallback":retrieveItemsError});
 	  			
 	  	   }
@@ -139,6 +142,20 @@ function itemsView_enableAutoFeedOnScrollDown() {
 	}
 }
 
+function itemsView_updateFieldValue(itemId,fieldName,newValue) {
+	let fieldTermsDesc=null;
+	let termsDescList=MxItemsView.getCurrentTermsDesc();
+	for (var i=0;i<termsDescList.length;i++) {
+		let curTermDesc=termsDescList[i];
+		if (curTermDesc.name==fieldName) {
+			fieldTermsDesc=curTermDesc;
+			break;
+		}
+	}
+	
+	if (_itemsViewMode=="cards") { return itemsView_cards_updateFieldValue(itemId,fieldName,newValue,fieldTermsDesc); }
+	else if (_itemsViewMode=="table") { return itemsView_table_updateFieldValue(itemId,fieldName,newValue,fieldTermsDesc); }	
+}
 
 //Public Interface
 var MxItemsView={}
@@ -156,5 +173,6 @@ MxItemsView.extractName=itemsView_extractName;
 MxItemsView.extractId=itemsView_extractId;
 MxItemsView.getNbItemsInView=itemsView_getNbItemsInView;
 MxItemsView.enableAutoFeedOnScrollDown=itemsView_enableAutoFeedOnScrollDown;
+MxItemsView.updateFieldValue=itemsView_updateFieldValue;
 
 </script>
