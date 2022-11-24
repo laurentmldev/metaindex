@@ -210,7 +210,7 @@ function retrieveItemsSuccess(itemsAnswerMsg) {
 	 }	 
 		 
 	 // set itemsView resizable
-	 setTableResizable(document.getElementById(ITEMSVIEW_TABLE_INSERTSPOT_ID), ".mx-table-resizer");
+	 setTableResizable(document.getElementById(ITEMSVIEW_TABLE_INSERTSPOT_ID), "mx-table-resizer");
 
 	 
 	 // if only one item in the result, open it directly
@@ -267,15 +267,7 @@ function ws_handlers_requestItemsIdsSearch(query,selectedFiltersNames,sortByFiel
 
 function ws_handlers_requestItemById(itemId,successCallback,errorCallback) {
 	
-	let fromIdx=0;
-	let size=1;
-	
-	 MxApi.requestCatalogItems({"fromIdx":fromIdx,
-		 						"size":size,
-		 						"query":"_id="+itemId,
-		 						"filtersNames":"",
-		 						"sortByFieldName":"",
-		 						"reverseSortOrder":"",
+	 MxApi.requestCatalogItems({"query":"_id:"+itemId,
 		 						"successCallback":successCallback,
 		 						"errorCallback":errorCallback});
 } 

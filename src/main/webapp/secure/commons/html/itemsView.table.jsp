@@ -13,18 +13,39 @@
  
 var ITEMSVIEW_TABLE_INSERTSPOT_ID = "MxGui.table.insertspot"
 
-var tmpFieldsList=["id","nom","date"];
+var _fieldsToDisplay=[];
+
+function itemsView_table_fieldShallBeDisplayed(fieldName) {
+	return _fieldsToDisplay.length==0 || _fieldsToDisplay.includes(fieldName);
+}
+function itemsView_table_getNbFieldsToDisplay(termsDescList) {
+	if (_fieldsToDisplay.length==0) { return termsDescList.length; }
+	else { return _fieldsToDisplay.length; }
+}
 
 
 function itemsView_table_clearItems() {
+	
 	var insertSpot = document.getElementById(ITEMSVIEW_TABLE_INSERTSPOT_ID);
-
+	let termsDescList=MxItemsView.getCurrentTermsDesc();
+	
 	clearNodeChildren(insertSpot);
+	
+	let menuHeaderRow=document.createElement("tr");
+	menuHeaderRow.style.position='sticky';
+	menuHeaderRow.style.top=0;
+	let nbFieldsInTable=itemsView_table_getNbFieldsToDisplay(termsDescList)+1;
+	menuHeaderCol=document.createElement("td");
+	menuHeaderCol.colspan=nbFieldsInTable;
+	menuHeaderCol.innerHTML="####### "+nbFieldsInTable+" ########";
+	menuHeaderRow.appendChild(menuHeaderCol);
+	insertSpot.appendChild(menuHeaderRow);
+	
 	
 	let headerRow=document.createElement("tr");
 	headerRow.style.position='sticky';
 	headerRow.style.top=0;
-	let termsDescList=MxItemsView.getCurrentTermsDesc();
+	
 	
 	// id
 	let headerFieldColTitle=document.createElement("th");
@@ -35,7 +56,8 @@ function itemsView_table_clearItems() {
 	// fields
 	for (var i=0;i<termsDescList.length;i++) {
 		let curTermDesc=termsDescList[i];
-		let curTermName=mx_helpers_getTermName(curTermDesc, MxGuiDetails.getCurCatalogDescription());		
+		let curTermName=mx_helpers_getTermName(curTermDesc, MxGuiDetails.getCurCatalogDescription());
+		if (!itemsView_table_fieldShallBeDisplayed(curTermName)) { continue; }
 		let headerFieldColTitle=document.createElement("th");
 		headerFieldColTitle.classList.add("mx-tableview-col-header");
 		headerFieldColTitle.innerHTML=curTermName;
@@ -115,7 +137,8 @@ function itemsView_buildNewTableEntry(objDescr,termsDescList) {
 	for (var idx=0;idx<termsDescList.length;idx++) {
 		let newCol=document.createElement("td");
 		newCol.classList.add("mx-tableview-col");
-		let curTermDesc=termsDescList[idx];	
+		let curTermDesc=termsDescList[idx];
+		if (!itemsView_table_fieldShallBeDisplayed(curTermDesc.name)) { continue; }
 		newCol.id=guiId+"."+curTermDesc.name;	
 		let value = objDescr.data[curTermDesc.name];
 		if (value == null) { 

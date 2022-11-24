@@ -24,11 +24,26 @@ function itemsView_cards_addNewItem(objDescr) {
 
 function itemsView_cards_updateFieldValue(itemId,fieldName,newValue,fieldTermDesc) {
 	let guiId="MxGui.card."+itemId;
-	let card=document.getElementById(guiId);
-	let objDesc=card.descr;
+	let curCard=document.getElementById(guiId);
 	
-	//ws_handlers_requestItemById(...); // TODO
-	console.log(objDesc);
+	function errorCb(errMsg) { footer_showAlert(ERROR,errMsg); }
+	function successCb(resp) {
+		objDescr=resp.items[0];
+		let newCard = itemsView_cards_buildNewCard(objDescr);
+		curCard.replaceWith(newCard);
+		newCard.select();
+		
+
+	}
+	
+	// need little time to let database updating internally new value	
+	let timer = setInterval(function() {
+		console.log("updating");
+		clearInterval(timer); 
+		ws_handlers_requestItemById(itemId,successCb,errorCb); 
+	}, 1000);
+	
+	
 }
 
 // objDescr : shall containing following data :

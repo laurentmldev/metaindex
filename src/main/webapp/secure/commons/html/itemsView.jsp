@@ -143,6 +143,7 @@ function itemsView_enableAutoFeedOnScrollDown() {
 }
 
 function itemsView_updateFieldValue(itemId,fieldName,newValue) {
+	// find corresponding termDesc
 	let fieldTermsDesc=null;
 	let termsDescList=MxItemsView.getCurrentTermsDesc();
 	for (var i=0;i<termsDescList.length;i++) {
