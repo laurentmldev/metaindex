@@ -9,6 +9,7 @@
 // marking where to inject new cards
  
 var ITEMSVIEW_CARDS_INSERTSPOT_ID = "MxGui.cards.insertspot"
+var ITEMSVIEW_CARDS_AREA_ID = ITEMSVIEW_CARDS_INSERTSPOT_ID;
 
 function itemsView_cards_clearItems() {
 	var insertSpot = document.getElementById(ITEMSVIEW_CARDS_INSERTSPOT_ID);

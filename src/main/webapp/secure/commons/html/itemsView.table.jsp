@@ -5,47 +5,106 @@
 
 <s:include value="/public/commons/js/resizable-table.jsp" /> 
 
+         
 <script type="text/javascript">
 
 //
 // the page including this file shall declare a node (div) with id=MxGui.cards.insertspot
 // marking where to inject new cards
  
-var ITEMSVIEW_TABLE_INSERTSPOT_ID = "MxGui.table.insertspot"
+var ITEMSVIEW_TABLE_INSERTSPOT_ID = "MxGui.table.insertspot";
+var ITEMSVIEW_TABLE_AREA_ID = "MxGui.table.area";
 
 var _fieldsToDisplay=[];
+var _fieldsToDisplayInit=false;
 
 function itemsView_table_fieldShallBeDisplayed(fieldName) {
-	return _fieldsToDisplay.length==0 || _fieldsToDisplay.includes(fieldName);
+	return _fieldsToDisplay.includes(fieldName);
 }
 function itemsView_table_getNbFieldsToDisplay(termsDescList) {
 	if (_fieldsToDisplay.length==0) { return termsDescList.length; }
 	else { return _fieldsToDisplay.length; }
 }
 
-
+function itemsView_table_updateColsChoiceMenu(termsDescList) {
+	
+	let colsChoiceWidget=document.getElementById("itemsView.contextualMenu");
+	
+	let termChoicesInsertSpot=colsChoiceWidget.querySelector(".dropdown-menu");
+	clearNodeChildren(termChoicesInsertSpot);
+	
+	if (_fieldsToDisplayInit==false) {
+		for (var i=0;i<termsDescList.length;i++) {
+			let curTerm=termsDescList[i];
+			_fieldsToDisplay.push(curTerm.name);
+			_fieldsToDisplayInit=true;
+		}
+	}
+	
+	// add perspectives list
+	let perspectives=MxGuiDetails.getCurCatalogDescription().perspectives;
+	let perspectivesNames=Object.keys(perspectives);	
+	for (var i=0;i<perspectivesNames.length;i++) {
+		fieldsList=[];
+		let curPerspectiveData=perspectives[perspectivesNames[i]];
+		for (var tabIdx=0;tabIdx<curPerspectiveData.tabs;tabIdx++) {
+			let curTab=curPerspectiveData.tabs[tabIdx];
+			for (var sectionIdx=0;sectionIdx<curTab.sections;sectionIdx++) {
+				let curSection=curTab.sections[sectionIdx];
+				for (var fieldIdx=0;fieldIdx<curSection.fields;fieldIdx++) {
+					let curfield=curSection.fields[fieldIdx];
+					fieldsList.push(curfield.term);
+				}
+			}
+		}
+		console.log(fieldsList);
+			
+	}
+	
+	
+	// add manual columns
+	for (var i=0;i<termsDescList.length;i++) {
+		let curTerm=termsDescList[i];
+		let curChoice=document.createElement("a");
+		curChoice.classList="dropdown-item";
+		curChoice.classList.add("mx-tableview-fieldchoice");
+		if (_fieldsToDisplay.includes(curTerm.name)) {
+			curChoice.classList.add("mx-tableview-fieldchoice-selected");
+		}
+		curChoice.href="#";
+		let curTermGuiName=mx_helpers_getTermName(curTerm, MxGuiDetails.getCurCatalogDescription());
+		curChoice.innerHTML=curTermGuiName;
+		curChoice.title=curTerm.name;
+		
+		curChoice.onclick=function(e) {
+			e.stopPropagation();
+			if (_fieldsToDisplay.includes(curTerm.name)) {				
+				_fieldsToDisplay=_fieldsToDisplay.filter(function(val) { return val!=curTerm.name} );
+				curChoice.classList.remove("mx-tableview-fieldchoice-selected");								
+			} else {
+				_fieldsToDisplay.push(curTerm.name);
+				curChoice.classList.add("mx-tableview-fieldchoice-selected");
+			}
+			MxGuiHeader.refreshSearch();
+		}
+		termChoicesInsertSpot.appendChild(curChoice);
+	}
+	
+	
+	return colsChoiceWidget;
+	
+}
 function itemsView_table_clearItems() {
+	
 	
 	var insertSpot = document.getElementById(ITEMSVIEW_TABLE_INSERTSPOT_ID);
 	let termsDescList=MxItemsView.getCurrentTermsDesc();
-	
+	itemsView_table_updateColsChoiceMenu(termsDescList);
 	clearNodeChildren(insertSpot);
-	
-	let menuHeaderRow=document.createElement("tr");
-	menuHeaderRow.style.position='sticky';
-	menuHeaderRow.style.top=0;
-	let nbFieldsInTable=itemsView_table_getNbFieldsToDisplay(termsDescList)+1;
-	menuHeaderCol=document.createElement("td");
-	menuHeaderCol.colspan=nbFieldsInTable;
-	menuHeaderCol.innerHTML="####### "+nbFieldsInTable+" ########";
-	menuHeaderRow.appendChild(menuHeaderCol);
-	insertSpot.appendChild(menuHeaderRow);
-	
 	
 	let headerRow=document.createElement("tr");
 	headerRow.style.position='sticky';
 	headerRow.style.top=0;
-	
 	
 	// id
 	let headerFieldColTitle=document.createElement("th");
@@ -55,15 +114,16 @@ function itemsView_table_clearItems() {
 	
 	// fields
 	for (var i=0;i<termsDescList.length;i++) {
-		let curTermDesc=termsDescList[i];
-		let curTermName=mx_helpers_getTermName(curTermDesc, MxGuiDetails.getCurCatalogDescription());
-		if (!itemsView_table_fieldShallBeDisplayed(curTermName)) { continue; }
+		let curTermDesc=termsDescList[i];		
+		if (!_fieldsToDisplay.includes(curTermDesc.name)) { continue; }
 		let headerFieldColTitle=document.createElement("th");
 		headerFieldColTitle.classList.add("mx-tableview-col-header");
-		headerFieldColTitle.innerHTML=curTermName;
+		let curTermGuiName=mx_helpers_getTermName(curTermDesc, MxGuiDetails.getCurCatalogDescription());		
+		headerFieldColTitle.innerHTML=curTermGuiName;
 		headerRow.appendChild(headerFieldColTitle);
 	}
 	insertSpot.appendChild(headerRow);
+	
 } 
 function itemsView_table_addNewItem(objDescr,termsDescList) {
 	var insertSpot = document.getElementById(ITEMSVIEW_TABLE_INSERTSPOT_ID);
@@ -138,7 +198,7 @@ function itemsView_buildNewTableEntry(objDescr,termsDescList) {
 		let newCol=document.createElement("td");
 		newCol.classList.add("mx-tableview-col");
 		let curTermDesc=termsDescList[idx];
-		if (!itemsView_table_fieldShallBeDisplayed(curTermDesc.name)) { continue; }
+		if (!_fieldsToDisplay.includes(curTermDesc.name)) { continue; }
 		newCol.id=guiId+"."+curTermDesc.name;	
 		let value = objDescr.data[curTermDesc.name];
 		if (value == null) { 

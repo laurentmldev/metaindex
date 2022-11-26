@@ -210,6 +210,9 @@ function retrieveItemsSuccess(itemsAnswerMsg) {
 	 }	 
 		 
 	 // set itemsView resizable
+	 // we have in our table 1 menu row and one header row.
+	 // so the header row is at index 1.
+	 let headerDataRowIdx=1; 
 	 setTableResizable(document.getElementById(ITEMSVIEW_TABLE_INSERTSPOT_ID), "mx-table-resizer");
 
 	 

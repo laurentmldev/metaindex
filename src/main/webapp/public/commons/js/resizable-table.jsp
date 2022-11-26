@@ -15,18 +15,22 @@
 	  let tableRows = table.getElementsByTagName('tr');
 	  if (tableRows.length<=1) { return; }
 	   
-	  let headerFirstRow = tableRows[0];
+	  // add a special row at the bottom of the table
+	  // containing the div element materializing our cells separators
+	  let headerRow = tableRows[0];	  
 	  let resizeRow = document.createElement("tr");
-	  headerCols = headerFirstRow ? headerFirstRow.children : null;
+	  headerCols = headerRow ? headerRow.children : null;
 	  for (var i=0;i<headerCols.length;i++) {
 		  let resizeCol = document.createElement("td");
 		  resizeRow.appendChild(resizeCol);
 		  var div= createDiv(tableHeight, -tableHeight);
 		  resizeCol.appendChild(div);
-		  resizeCol.style.position='relative';		  
+		  resizeCol.style.position='relative';
+		  //div.style.border="2px solid pink";
 		  setListeners(div);
 	  }
 	  table.appendChild(resizeRow);
+	  // ----------------------------------------------
 	  
 	  function setListeners(div) {
 		  var pageX,curCol,nxtCol,curColWidth,nxtColWidth;
@@ -39,7 +43,6 @@
 			  
 			  curCol = e.target.parentElement;
 			  nxtCol = curCol.nextElementSibling;
-			  console.log("nxtCol="+nxtCol);
 			  pageX= e.pageX;
 			  
 			  let padding = paddingDiff(curCol);
@@ -57,16 +60,10 @@
 			  if (!curCol) { e.target.classList.remove(resizerClassName); }  
 		  });
 		  
-		  document.addEventListener('mousemove',function(e) {
-			  
-			 if (curCol) {
-				 
+		  document.addEventListener('mousemove',function(e) {			  
+			 if (curCol) {				 
 				 let diffX = e.pageX - pageX;
-				 if (nxtCol) {
-				
-					 nxtCol.style.width = (nxtColWidth - (diffX))+'px';
-					 
-				 }
+				 if (nxtCol) { nxtCol.style.width = (nxtColWidth - (diffX))+'px'; }
 				 curCol.style.width = (curColWidth + (diffX))+'px';
 				 //console.log("curCol="+curCol+" width="+curCol.style.width);
 			 } 

@@ -16,14 +16,14 @@ function itemsView_toggleViewMode(ev,mode) {
 	
 	if (_itemsViewMode=="cards") { 
 		_itemsViewMode="table";
-		document.getElementById(ITEMSVIEW_TABLE_INSERTSPOT_ID).style.display='';
-		document.getElementById(ITEMSVIEW_CARDS_INSERTSPOT_ID).style.display='none';
+		document.getElementById(ITEMSVIEW_TABLE_AREA_ID).style.display='';
+		document.getElementById(ITEMSVIEW_CARDS_AREA_ID).style.display='none';
 		
 	}
 	else if (_itemsViewMode=="table") { 
 		_itemsViewMode="cards";
-		document.getElementById(ITEMSVIEW_TABLE_INSERTSPOT_ID).style.display='none';
-		document.getElementById(ITEMSVIEW_CARDS_INSERTSPOT_ID).style.display='';
+		document.getElementById(ITEMSVIEW_TABLE_AREA_ID).style.display='none';
+		document.getElementById(ITEMSVIEW_CARDS_AREA_ID).style.display='';
 	}
 	else {
 		console.log("unhandle items view mode '"+mode+"'. Authorized modes are table|cards. ")

@@ -80,11 +80,23 @@
 	          <div id="MxGui.cards.insertspot" class="card-deck col-sm-2 _itemsView_autofeed_" style="max-width:100%;max-height:65vh;overflow:auto;padding:1rem;margin:0;">          	
 					<!-- CARDS ARE INSERTED HERE -->
 	  		  </div>
-	  		  <table class="table-striped _itemsView_autofeed_" style="display:block;max-width:100%;max-height:65vh;overflow:auto;padding:0;margin:0">
-		  		  <tbody id="MxGui.table.insertspot" style="display:none;">
-		  		  		<!-- TABLE ROWS ARE INSERTED HERE -->
-		  		  </tbody>
-	  		  </table>
+	  		  <div id="MxGui.table.area" style="display:none">
+	  		  
+						<div id="itemsView.contextualMenu"  class="nav-item dropdown no-arrow">
+				              <a class="nav-link dropdown-toggle" href="#" id="itemsViewTableDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				                Select Fields
+				              </a>
+				              
+							<div class="dropdown-menu shadow animated--grow-in" style="text-align:center" aria-labelledby="itemsViewTableDropdown">
+				            </div>
+				         </div>
+	         
+			  		  <table class="table-striped _itemsView_autofeed_" style="display:block;max-width:100%;max-height:65vh;overflow:auto;padding:0;margin:0">
+				  		  <tbody id="MxGui.table.insertspot" >
+				  		  		<!-- TABLE ROWS ARE INSERTED HERE -->
+				  		  </tbody>
+			  		  </table>
+	  		  </div>
 	  		  
 			  <div id="empty-placeholder" style="color:#aaa;display:none;width:100%" ><center>
 				  <h5 style="margin-top:2rem;margin-bottom:3rem;"><s:text name="Items.catalogIsEmpty"/></h5>

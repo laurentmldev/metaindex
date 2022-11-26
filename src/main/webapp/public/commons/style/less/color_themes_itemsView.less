@@ -15,6 +15,7 @@
 
 .mx-item-visited {  
   border: 1px solid @bg_dark;
+  color:@bg_dark;
 }
 
 
@@ -46,11 +47,10 @@
 /* --- Table View Mode --- */
 
 .mx-tableview-col-header {
-	background:@background_color;
-	color: @bg_dark;
+	background:@bg_light;
+	color: @text_color;
 	
 }
-
 
 .mx-tableview-col-header,.mx-tableview-col {
 	border-left:1px solid #ddd;
@@ -67,8 +67,30 @@
 }
 
 .mx-tableview-visited-id {
+/*
 	font-weight:bold;
-	background:@bg_dark;
-	color:@counter_text_color;
+	background:@secondary_color;
+	*/
+
+}
+
+.mx-tableview-fieldchoice {
+	background:none;
+	color: @text_color;
+	margin:0.2rem;
+	padding:0.1rem;
+	border:1px solid @bg_dark;
+	width:80%;
+	overflow:auto;
 	
 }
+
+.mx-tableview-fieldchoice:hover {
+	font-weight:bold;
+	background:none;
+}
+
+.mx-tableview-fieldchoice-selected {
+	background:@bg_light !important;
+}
+
