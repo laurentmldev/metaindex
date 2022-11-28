@@ -40,7 +40,7 @@ function itemsView_setViewMode(mode) {
 	}
 }
 
-function itemsView_getCurrentTermsDesc() {
+function itemsView_getCurrentTermsDesc(requestedTermName) {
 	let termsDescList=[];
 	let catalogDesc=MxGuiDetails.getCurCatalogDescription();
 	if (catalogDesc==null) { return termsDescList; }
@@ -49,6 +49,7 @@ function itemsView_getCurrentTermsDesc() {
 	for (var termIdx=0;termIdx<sortedTermsNames.length;termIdx++) {
 		termName=sortedTermsNames[termIdx];
 		let termDesc = MxGuiDetails.getCurCatalogDescription().terms[termName];
+		if (requestedTermName!=null && requestedTermName==termName) { return termDesc; }
 		termsDescList.push(termDesc);
 	}
 	

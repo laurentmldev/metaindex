@@ -74,7 +74,7 @@
 
 }
 
-.mx-tableview-fieldchoice {
+.mx-tableview-fieldchoice, .mx-tableview-fieldgrpchoice {
 	background:none;
 	color: @text_color;
 	margin:0.2rem;
@@ -85,7 +85,7 @@
 	
 }
 
-.mx-tableview-fieldchoice:hover {
+.mx-tableview-fieldchoice:hover,.mx-tableview-fieldgrpchoice:hover {
 	font-weight:bold;
 	background:none;
 }
@@ -94,3 +94,7 @@
 	background:@bg_light !important;
 }
 
+.mx-tableview-fieldgrpchoice {	
+	border:	2px solid @bg_dark;	
+	border-radius:0.5rem;
+}

@@ -83,8 +83,11 @@
 	  		  <div id="MxGui.table.area" style="display:none">
 	  		  
 						<div id="itemsView.contextualMenu"  class="nav-item dropdown no-arrow">
-				              <a class="nav-link dropdown-toggle" href="#" id="itemsViewTableDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				                Select Fields
+				              <a class="nav-link dropdown-toggle btn btn-default btn-sm alert alert-info"
+				              style="width:max-content;padding:0.2rem;margin-top:1rem;font-size:0.8rem;" 
+				              	href="#" id="itemsViewTableDropdown" role="button" data-toggle="dropdown" 
+				              	aria-haspopup="true" aria-expanded="false">
+				                <s:text name="Items.table.selectColumns" />
 				              </a>
 				              
 							<div class="dropdown-menu shadow animated--grow-in" style="text-align:center" aria-labelledby="itemsViewTableDropdown">
