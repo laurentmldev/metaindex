@@ -15,14 +15,18 @@
 
 .mx-item-visited {  
   border: 1px solid @bg_dark;
-  color:@bg_dark;
+  background: rgba(@active_color, 0.6) !important; 
+  color:@bg_dark - 150;
+  
 }
 
 
 .mx-item-selected {  
-  background: rgba(@active_color, 0.4) !important; 
   transition: background linear 150ms,color 150ms;
   cursor:pointer;
+  background: rgba(@bg_dark + 100, 0.8)  !important;
+  
+  border: 2px solid @bg_dark;
 }
 
 
@@ -32,6 +36,7 @@
     min-width: @cards_size;
     width: @cards_size;
     max-width: @cards_size;
+    color:#ddd;
 }
 
 .card-deck .card:hover {
@@ -39,7 +44,7 @@
 }
 
 .mx-card-darker-bg {  
-  background: rgba(0, 0, 0, 0.2); 
+  background: rgba(0, 0, 0, 0.5); 
   transition: background linear 150ms,color 150ms;
 }
 

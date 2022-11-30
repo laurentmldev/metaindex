@@ -194,7 +194,7 @@ function itemsView_cards_selectPrevious() {
           	style="border-radius:2px;" >
            <h6 class="m-0 small font-weight-bold _name_">_name_</h6>           
          </div>
-         <div class="card-footer text-center small _footer_" style="font-size:0.5rem;" >_id_</div>                
+         <div class="card-footer text-center small _footer_" style="font-size:0.4rem;" >_id_</div>                
        </div><!-- /.card -->   
 
 <!-- ###### -->      

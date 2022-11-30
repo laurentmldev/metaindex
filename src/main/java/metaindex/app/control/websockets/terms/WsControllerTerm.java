@@ -160,8 +160,12 @@ public class WsControllerTerm extends AMxWSController {
     	}
     	term = ICatalogTerm.BuildCatalogTerm(requestMsg.getTermDatatype());
     	term.setCatalogId(requestMsg.getCatalogId());
-    	term.setName(requestMsg.getTermName());   
+    	term.setName(requestMsg.getTermName());
     	
+    	// default isMultiEnum=True for images
+    	if (requestMsg.getTermDatatype().equals(TERM_DATATYPE.IMAGE_URL)) {
+    		term.setIsMultiEnum(true);
+    	}
     	try {
     		Boolean result = Globals.Get().getDatabasesMgr().getTermsDbInterface()
     					.createIntoDbStmt(c,term).execute();

@@ -67,8 +67,10 @@
  function _commons_perspective_build_readonly_field_image_url(catalogDesc,fieldContainerNode,fieldVisuDesc,termDesc,fieldValue) {
 	 
 	 let fieldNode=null;
+	 let urlsList=fieldValue.split(",");
+	 isReallyMultiEnum=termDesc.isMultiEnum==true && urlsList.length>1;
 
-	 if (termDesc.isMultiEnum==true) {
+	 if (isReallyMultiEnum==true) {
 		 fieldNode=document.getElementById("_commons_perspectives_multifield_readonly_template_image_url").cloneNode(true);	 	 
 	 } else {
 		 fieldNode=document.getElementById("_commons_perspectives_field_readonly_template_image_url").cloneNode(true);	 	 	 
@@ -87,8 +89,8 @@
  	 // value
  	 let pageNumber = fieldNode.querySelector("._page_number_");
  	 let valueNode = fieldNode.querySelector("._value_");
- 	if (termDesc.isMultiEnum==true) {
- 		let urlsList=fieldValue.split(",");
+ 	 
+ 	 if (isReallyMultiEnum) {
  		
 		for (var urlidx in urlsList) {
 			 let url=urlsList[urlidx];
@@ -102,7 +104,14 @@
 			 if (urlidx>0) { imgNode.style.display="none"; }
 			 else {  pageNumber.innerHTML="1/"+urlsList.length; }
 			 valueNode.append(imgNode);
-		 }	 	 
+		 }	 
+		
+		 // prev/next (for multi only)
+		 let prevButton=fieldNode.querySelector("._prev_");
+		 prevButton.onclick=function(e) {e.stopPropagation(); nextPic(valueNode,pageNumber,true); }
+		 let nextButton=fieldNode.querySelector("._next_");
+		 nextButton.onclick=function(e) { e.stopPropagation(); nextPic(valueNode,pageNumber); }
+		 
 	 } else {
 		 valueNode.classList.add("mx-perspective-field-img-size-"+fieldVisuDesc.size);
 	 	 let imgUrl=_buildImgUrl(fieldValue,catalogDesc.itemsUrlPrefix);	 	 
@@ -110,15 +119,7 @@
 	 	 valueNode.title=imgUrl;	 	 	 	 
 	 }
  	 
- 	 // prev/next (for multi only)
- 	 if (termDesc.isMultiEnum==true) {
- 		 let prevButton=fieldNode.querySelector("._prev_");
- 		 prevButton.onclick=function() { nextPic(valueNode,pageNumber,true); }
- 		 let nextButton=fieldNode.querySelector("._next_");
- 		 nextButton.onclick=function() { nextPic(valueNode,pageNumber); }
- 		 
- 	 }
- 	 fieldContainerNode.appendChild(fieldNode);
+ 	  fieldContainerNode.appendChild(fieldNode);
   }
 
  MxGuiPerspective.buildImgUrl_RO=_commons_perspective_build_readonly_field_image_url;
