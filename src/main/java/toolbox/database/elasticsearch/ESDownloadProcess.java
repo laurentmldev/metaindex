@@ -108,8 +108,12 @@ public class ESDownloadProcess extends AProcessingTask   {
 		    		if (totalHits==null) { 
 		    			log.warn("No Hits for given data extraction request");			    			
 		    		}
-		    		_streamHandler.setTargetNbData(totalHits);
-		    		setTargetNbData(totalHits);
+		    		// getTargetNbData()<0 means 'as much as possible'
+		    		// then maximum is the totalHits number
+		    		if (getTargetNbData()<0 || totalHits<getTargetNbData()) {
+			    		_streamHandler.setTargetNbData(totalHits);
+			    		setTargetNbData(totalHits);
+		    		}
 		    		List<IDbItem> items = loadedResult.getItems();
 		    		addReceivedNbData(new Long(items.size()));
 		    		_streamHandler.handle(items);			    		

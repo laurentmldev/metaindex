@@ -102,8 +102,12 @@ public abstract class AProcessingTask implements IProcessingTask {
 	}
 	
 	@Override
-	public Boolean isAllDataProcessed() { 
-		return getTargetNbData().equals(getProcessedNbData()) ||  getProcessedNbData() > getTargetNbData(); 
+	public Boolean isAllDataProcessed() {
+		//log.error("### "+_runnerThread.getName()+" targetNbData="+getTargetNbData()+" nbProcessed="+getProcessedNbData());
+		return getTargetNbData()>=0 && (
+					getTargetNbData().equals(getProcessedNbData()) 
+				||  getProcessedNbData() > getTargetNbData()
+			  ); 
 	}
 
 	@Override
@@ -111,6 +115,8 @@ public abstract class AProcessingTask implements IProcessingTask {
 		return _targetNbData;
 	}
 	@Override
+	/** if targetNbData<0, we suppose then that it will be known later and will
+	 * be updated during process. */
 	public void setTargetNbData(Long targetNbData) {
 		this._targetNbData = targetNbData;
 	}

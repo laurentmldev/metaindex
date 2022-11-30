@@ -103,7 +103,7 @@ public class WsControllerItemsCsvDownload extends AMxWSController {
 		    			 user.getText("Items.downloadItems.csv.extracting"),
 		    			 targetFileFsPath,
 		    			 requestMsg.getTermNamesList(),
-		    			 new Long(requestMsg.getSize()),
+		    			 new Long(requestMsg.getSize()),// if <0, it means 'as much as possible' (i.e. all items)
 		    			 new Long(requestMsg.getFromIdx()),
 		    			 requestMsg.getQuery(),
 		    			 buildFilters(user, requestMsg),

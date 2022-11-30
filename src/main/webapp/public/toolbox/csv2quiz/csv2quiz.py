@@ -766,10 +766,15 @@ if __name__ == "__main__":
             confJson=loadJson(args.configfile)
         except Exception as e:
             print("ERROR: "+str(e))
+            sys.exit(1)
 
         print("[loading CSV]",flush=True)
         csvLines=open(args.csvfile).read().splitlines()
-
+        nbLines=len(csvLines)
+        if nbLines<=1:
+            print("ERROR: given CSV file seems empty: "+args.csvfile)
+            sys.exit(1)
+			 
         print("[creating contents map]",flush=True)
         fieldsInfo=buildFieldsInfo(csvLines,confJson, daemonOption=args.d)
         #print(fieldsInfo)

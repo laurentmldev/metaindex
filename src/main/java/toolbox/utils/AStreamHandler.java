@@ -94,7 +94,7 @@ public abstract class AStreamHandler<T> extends AProcessingTask implements IStre
 				Thread.sleep(200);
 				
 				if (this.getProcessedNbData()==0) { beforeFirst(); }
-				
+				if (_bufferizedDataToHandle.size()>0) { log.error("#### dumping "+_bufferizedDataToHandle.size()+" lines"); }
 				_postingDataLock.acquire();
 				//if (_bufferizedDataToHandle.size()>0) { log.error("#### dumping "+_bufferizedDataToHandle.size()+" lines"); }
 				for (T d : _bufferizedDataToHandle) {

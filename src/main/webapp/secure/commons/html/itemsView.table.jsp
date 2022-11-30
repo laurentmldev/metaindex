@@ -15,15 +15,17 @@
 var ITEMSVIEW_TABLE_INSERTSPOT_ID = "MxGui.table.insertspot";
 var ITEMSVIEW_TABLE_AREA_ID = "MxGui.table.area";
 
-var _fieldsToDisplay=[];
-var _fieldsToDisplayInit=false;
+var _itemsView_table_fieldsToDisplay=[];
+var _itemsView_table_fieldsToDisplayInit=false;
+var _itemsView_table_allFieldsStr="";
+var _itemsView_table_allFieldsList=[];
 
 function itemsView_table_fieldShallBeDisplayed(fieldName) {
-	return _fieldsToDisplay.includes(fieldName);
+	return _itemsView_table_fieldsToDisplay.includes(fieldName);
 }
 function itemsView_table_getNbFieldsToDisplay(termsDescList) {
-	if (_fieldsToDisplay.length==0) { return termsDescList.length; }
-	else { return _fieldsToDisplay.length; }
+	if (_itemsView_table_fieldsToDisplay.length==0) { return termsDescList.length; }
+	else { return _itemsView_table_fieldsToDisplay.length; }
 }
 
 function itemsView_table_updateColsChoice() {
@@ -32,7 +34,7 @@ function itemsView_table_updateColsChoice() {
 	for (var i=0;i<colsChoiceItems.length;i++) {
 		let curChoiceItem=colsChoiceItems[i];
 		curChoiceItem.classList.remove("mx-tableview-fieldchoice-selected");
-		if (_fieldsToDisplay.includes(curChoiceItem.termName)) {
+		if (_itemsView_table_fieldsToDisplay.includes(curChoiceItem.termName)) {
 			curChoiceItem.classList.add("mx-tableview-fieldchoice-selected");
 		}
 	}
@@ -46,30 +48,29 @@ function itemsView_table_updateColsChoiceMenu(termsDescList) {
 	let termChoicesInsertSpot=colsChoiceWidget.querySelector(".dropdown-menu");
 	clearNodeChildren(termChoicesInsertSpot);
 	
-	let allFieldsStr="";
-	let allFieldsList=[];
-	if (_fieldsToDisplayInit==false) {
+
+	if (_itemsView_table_fieldsToDisplayInit==false) {
 		for (var i=0;i<termsDescList.length;i++) {
 			let curTerm=termsDescList[i];
-			_fieldsToDisplay.push(curTerm.name);
-			allFieldsStr=allFieldsStr+" "+curTerm.name;
-			allFieldsList.push(curTerm.name);			
+			_itemsView_table_fieldsToDisplay.push(curTerm.name);
+			_itemsView_table_allFieldsStr=_itemsView_table_allFieldsStr+" "+curTerm.name;
+			_itemsView_table_allFieldsList.push(curTerm.name);			
 		}
-		_fieldsToDisplayInit=true;		
+		_itemsView_table_fieldsToDisplayInit=true;		
 	}
 	
-	// add select All columns
+	// add "select All columns" button
 	let selectAllColsChoice=document.createElement("a");
 	selectAllColsChoice.classList="dropdown-item";
 	selectAllColsChoice.classList.add("mx-tableview-fieldgrpchoice");		
 	selectAllColsChoice.href="#";
-	selectAllColsChoice.innerHTML="All";
-	selectAllColsChoice.title=allFieldsStr;
-	selectAllColsChoice.fiedsList=allFieldsList;
+	selectAllColsChoice.innerHTML="<s:text name="Items.table.allColumns"/>";
+	selectAllColsChoice.title=_itemsView_table_allFieldsStr;
+	selectAllColsChoice.fiedsList=_itemsView_table_allFieldsList;
 	
 	selectAllColsChoice.onclick=function(e) {
 		e.stopPropagation();
-		_fieldsToDisplay=selectAllColsChoice.fiedsList;				
+		_itemsView_table_fieldsToDisplay=selectAllColsChoice.fiedsList;				
 		itemsView_table_updateColsChoice();
 	}
 	termChoicesInsertSpot.appendChild(selectAllColsChoice);
@@ -105,7 +106,7 @@ function itemsView_table_updateColsChoiceMenu(termsDescList) {
 		
 		curChoice.onclick=function(e) {
 			e.stopPropagation();
-			_fieldsToDisplay=curChoice.fiedsList;				
+			_itemsView_table_fieldsToDisplay=curChoice.fiedsList;				
 			itemsView_table_updateColsChoice();
 		}
 		termChoicesInsertSpot.appendChild(curChoice);
@@ -118,7 +119,7 @@ function itemsView_table_updateColsChoiceMenu(termsDescList) {
 		let curChoice=document.createElement("a");
 		curChoice.classList="dropdown-item";
 		curChoice.classList.add("mx-tableview-fieldchoice");
-		if (_fieldsToDisplay.includes(curTerm.name)) {
+		if (_itemsView_table_fieldsToDisplay.includes(curTerm.name)) {
 			curChoice.classList.add("mx-tableview-fieldchoice-selected");
 		}
 		curChoice.href="#";
@@ -129,15 +130,15 @@ function itemsView_table_updateColsChoiceMenu(termsDescList) {
 		
 		curChoice.onclick=function(e) {
 			e.stopPropagation();
-			if (_fieldsToDisplay.includes(curTerm.name)) {				
-				_fieldsToDisplay=_fieldsToDisplay.filter(function(val) { return val!=curTerm.name} );				
-			} else { _fieldsToDisplay.push(curTerm.name); }
+			if (_itemsView_table_fieldsToDisplay.includes(curTerm.name)) {				
+				_itemsView_table_fieldsToDisplay=_itemsView_table_fieldsToDisplay.filter(function(val) { return val!=curTerm.name} );				
+			} else { _itemsView_table_fieldsToDisplay.push(curTerm.name); }
 			itemsView_table_updateColsChoice();
 		}
 
 		curChoice.ondblclick=function(e) {
 			e.stopPropagation();
-			_fieldsToDisplay=[curTerm.name];				
+			_itemsView_table_fieldsToDisplay=[curTerm.name];				
 			itemsView_table_updateColsChoice();
 		}
 		termChoicesInsertSpot.appendChild(curChoice);
@@ -168,7 +169,7 @@ function itemsView_table_clearItems() {
 	// fields
 	for (var i=0;i<termsDescList.length;i++) {
 		let curTermDesc=termsDescList[i];		
-		if (!_fieldsToDisplay.includes(curTermDesc.name)) { continue; }
+		if (!_itemsView_table_fieldsToDisplay.includes(curTermDesc.name)) { continue; }
 		let headerFieldColTitle=document.createElement("th");
 		headerFieldColTitle.classList.add("mx-tableview-col-header");
 		let curTermGuiName=mx_helpers_getTermName(curTermDesc, MxGuiDetails.getCurCatalogDescription());		
@@ -251,7 +252,7 @@ function itemsView_buildNewTableEntry(objDescr,termsDescList) {
 		let newCol=document.createElement("td");
 		newCol.classList.add("mx-tableview-col");
 		let curTermDesc=termsDescList[idx];
-		if (!_fieldsToDisplay.includes(curTermDesc.name)) { continue; }
+		if (!_itemsView_table_fieldsToDisplay.includes(curTermDesc.name)) { continue; }
 		newCol.id=guiId+"."+curTermDesc.name;	
 		let value = objDescr.data[curTermDesc.name];
 		if (value == null) { 
