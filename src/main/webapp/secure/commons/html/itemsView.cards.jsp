@@ -11,12 +11,16 @@
 var ITEMSVIEW_CARDS_INSERTSPOT_ID = "MxGui.cards.insertspot"
 var ITEMSVIEW_CARDS_AREA_ID = ITEMSVIEW_CARDS_INSERTSPOT_ID;
 
+function itemsView_cards_getItemsInsertSpot() {
+	return document.getElementById(ITEMSVIEW_CARDS_INSERTSPOT_ID);	
+} 
+
 function itemsView_cards_clearItems() {
-	var insertSpot = document.getElementById(ITEMSVIEW_CARDS_INSERTSPOT_ID);
+	var insertSpot = itemsView_cards_getItemsInsertSpot();
 	clearNodeChildren(insertSpot);
 } 
 function itemsView_cards_addNewItem(objDescr) {
-	var insertSpot = document.getElementById(ITEMSVIEW_CARDS_INSERTSPOT_ID);
+	var insertSpot = itemsView_cards_getItemsInsertSpot();
 	let newCard=itemsView_cards_buildNewCard(objDescr);
 	insertSpot.appendChild(newCard);
 	return newCard;
@@ -58,6 +62,7 @@ function itemsView_cards_buildNewCard(objDescr) {
 	var newCard=document.getElementById("MxGui._templates_.card").cloneNode(true);
 	newCard.descr=objDescr;
 	newCard.id=guiId;
+	newCard.dbid=MxItemsView.extractId(objDescr);
 	
 	
 	// name
@@ -99,22 +104,22 @@ function itemsView_cards_buildNewCard(objDescr) {
 	newCard.isSelected=false;	
 	newCard.select = function(e) {
 		newCard.isSelected=true;		
-		container.classList.add("mx-item-selected");
 		container.classList.add("mx-item-visited");
-		_selectedItemsMapById[MxItemsView.extractId(newCard.descr)]=newCard;
-		_activeItem=newCard;				
+		container.classList.add("mx-item-selected");
+		_activeItem=newCard;					
 		MxGuiDetails.populate(newCard);		
 		MxGuiPerspective.activateLastChosenTab();
+		itemsView_saveSelectionContext();
 		
 	}
 	newCard.deselect = function(e) {
 		newCard.isSelected=false;		
 		container.classList.remove("mx-item-selected");
-		MxGuiDetails.clear();
-		_selectedItemsMapById[MxItemsView.extractId(newCard.descr)]=null;
-		_activeItem=null;
-		
-		 
+		container.classList.add("mx-item-visited");
+		if (_activeItem!=null && _activeItem.dbid==newCard.dbid) { 
+			_activeItem=null;
+			MxGuiDetails.clear();			
+		}						 
 	}
 	
 	newCard.onclick = function(e) {
@@ -125,7 +130,10 @@ function itemsView_cards_buildNewCard(objDescr) {
 		}
 		if (newCard.isSelected) { 
 			newCard.deselect(e);
-			scrollTo(anchor.name);			
+			scrollTo(anchor.name);	
+			if (_lastActiveItemId==newCard.dbid) {
+				_lastActiveItemId=null;
+			}
 		}
 		else {
 			MxGuiDetails.clear();
@@ -141,7 +149,7 @@ function itemsView_cards_buildNewCard(objDescr) {
 };
 
 function itemsView_cards_deselectAll() {
-	let cardsInsertSpot = document.getElementById(ITEMSVIEW_CARDS_INSERTSPOT_ID); 
+	let cardsInsertSpot = itemsView_cards_getItemsInsertSpot(); 
 	for (var curCard=cardsInsertSpot.firstChild;curCard!==null;curCard=curCard.nextElementSibling) {		
 		if (typeof(curCard)!='object') { continue; }
 		if (curCard.isSelected) { curCard.deselect(); }
@@ -150,7 +158,7 @@ function itemsView_cards_deselectAll() {
 
 function itemsView_cards_getNbItemsInView() {
 	let count=0;
-	var cardsInsertSpot = document.getElementById(ITEMSVIEW_CARDS_INSERTSPOT_ID); 
+	var cardsInsertSpot = itemsView_cards_getItemsInsertSpot(); 
 	for (var curCard=cardsInsertSpot.firstChild;curCard!==null;curCard=curCard.nextElementSibling) {		
 		if (typeof(curCard)!='object') { continue; }
 		count++;
@@ -162,7 +170,7 @@ function itemsView_cards_getNbItemsInView() {
 function itemsView_cards_selectNext() {
 	let nextCard=null;
 	if (itemsView_getActiveItem()==null) { 
-		nextCard=document.getElementById(ITEMSVIEW_CARDS_INSERTSPOT_ID).getElementsByClassName('card')[0];
+		nextCard=itemsView_cards_getItemsInsertSpot().getElementsByClassName('card')[0];
 	} else {
 		nextCard=itemsView_getActiveItem().nextElementSibling;
 		if (nextCard==null) { 
@@ -174,12 +182,17 @@ function itemsView_cards_selectNext() {
 }
 function itemsView_cards_selectPrevious() {
 	if (itemsView_getActiveItem()==null) { return; }
-	let nextCard=itemsView_getActiveItem().previousElementSibling;
-	if (nextCard==null) { 
-		nextCard=itemsView_getActiveItem().parentNode.getElementsByClassName('card')[itemsView_getActiveItem().parentNode.getElementsByClassName('card').length-1]; 
+	else {
+		let nextCard=itemsView_getActiveItem().previousElementSibling;
+		if (nextCard==null) { 
+			nextCard=itemsView_getActiveItem()
+				.parentNode.getElementsByClassName('card')[itemsView_getActiveItem()
+				.parentNode.getElementsByClassName('card').length-1]; 
+		}
+		itemsView_deselectAll();
+		nextCard.select();
 	}
-	itemsView_deselectAll();
-	nextCard.select(); 
+	 
 }
 
 

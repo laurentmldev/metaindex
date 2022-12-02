@@ -15,7 +15,7 @@
 
 
 <body id="page-top" 
-	onload="checkBrowser(); websocketsStartup(); MxItemsView.setViewMode('cards');">
+	onload="checkBrowser(); websocketsStartup();">
 
   <!-- Page Wrapper -->
   <div id="wrapper">

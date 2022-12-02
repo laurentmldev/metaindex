@@ -20,6 +20,10 @@ var _itemsView_table_fieldsToDisplayInit=false;
 var _itemsView_table_allFieldsStr="";
 var _itemsView_table_allFieldsList=[];
 
+function itemsView_table_getItemsInsertSpot() {
+	return document.getElementById(ITEMSVIEW_TABLE_INSERTSPOT_ID);	
+} 
+
 function itemsView_table_fieldShallBeDisplayed(fieldName) {
 	return _itemsView_table_fieldsToDisplay.includes(fieldName);
 }
@@ -151,7 +155,7 @@ function itemsView_table_updateColsChoiceMenu(termsDescList) {
 function itemsView_table_clearItems() {
 	
 	
-	var insertSpot = document.getElementById(ITEMSVIEW_TABLE_INSERTSPOT_ID);
+	var insertSpot = itemsView_table_getItemsInsertSpot();
 	let termsDescList=MxItemsView.getCurrentTermsDesc();
 	itemsView_table_updateColsChoiceMenu(termsDescList);
 	clearNodeChildren(insertSpot);
@@ -180,7 +184,7 @@ function itemsView_table_clearItems() {
 	
 } 
 function itemsView_table_addNewItem(objDescr,termsDescList) {
-	var insertSpot = document.getElementById(ITEMSVIEW_TABLE_INSERTSPOT_ID);
+	var insertSpot = itemsView_table_getItemsInsertSpot();
 	let newRow=itemsView_buildNewTableEntry(objDescr,termsDescList);
 	insertSpot.appendChild(newRow);
 	return newRow;
@@ -239,6 +243,7 @@ function itemsView_buildNewTableEntry(objDescr,termsDescList) {
 	var newItemRow=document.createElement("tr");
 	newItemRow.descr=objDescr;
 	newItemRow.id=guiId;
+	newItemRow.dbid=MxItemsView.extractId(objDescr);
 	newItemRow.classList.add("mx-tableview-row")
 	
 	// id
@@ -268,7 +273,7 @@ function itemsView_buildNewTableEntry(objDescr,termsDescList) {
 	
 	// "summary" name
 	let name=MxItemsView.extractName(objDescr);
-	newItemRow.getName=function() { return name.innerHTML; };// useful to get name associated to this item
+	newItemRow.getName=function() { return name; };// useful to get name associated to this item
 	newItemRow.title=name;
 	
 	// onmouseover
@@ -282,23 +287,24 @@ function itemsView_buildNewTableEntry(objDescr,termsDescList) {
 	newItemRow.isSelected=false;	
 	newItemRow.select = function(e) {
 		newItemRow.isSelected=true;		
-		newItemRow.classList.add("mx-item-selected");
 		newItemRow.classList.add("mx-item-visited");
-		newColId.classList.add("mx-tableview-visited-id");
-		
-		_selectedItemsMapById[MxItemsView.extractId(newItemRow.descr)]=newItemRow;
+		newItemRow.classList.add("mx-item-selected");
 		_activeItem=newItemRow;				
+		_lastActiveItem_id=MxItemsView.extractId(objDescr);
 		MxGuiDetails.populate(newItemRow);		
 		MxGuiPerspective.activateLastChosenTab();
+		itemsView_saveSelectionContext();
 		
 	}
 	newItemRow.deselect = function(e) {
 		newItemRow.isSelected=false;
-		newItemRow.classList.remove("mx-item-selected");	
-		MxGuiDetails.clear();
-		_selectedItemsMapById[MxItemsView.extractId(newItemRow.descr)]=null;
-		_activeItem=null;
-				 
+		newItemRow.classList.remove("mx-item-selected");
+		newItemRow.classList.add("mx-item-visited");
+		newColId.classList.add("mx-tableview-visited-id");
+		if (_activeItem!=null && _activeItem.dbid==newItemRow.dbid) { 
+			MxGuiDetails.clear();
+			_activeItem=null;
+		}				
 	}
 	
 	newItemRow.onclick = function(e) {
@@ -309,7 +315,10 @@ function itemsView_buildNewTableEntry(objDescr,termsDescList) {
 		}
 		if (newItemRow.isSelected) { 
 			newItemRow.deselect(e);
-			newItemRow.scrollTo();			
+			newItemRow.scrollTo();		
+			if (_lastActiveItemId==newItemRow.dbid) {
+				_lastActiveItemId=null;
+			}
 		}
 		else {
 			MxGuiDetails.clear();
@@ -323,7 +332,7 @@ function itemsView_buildNewTableEntry(objDescr,termsDescList) {
 };
 
 function itemsView_table_deselectAll() {
-	let tableInsertSpot = document.getElementById(ITEMSVIEW_TABLE_INSERTSPOT_ID); 
+	let tableInsertSpot = itemsView_table_getItemsInsertSpot(); 
 	for (var curItemRow=tableInsertSpot.firstChild;curItemRow!==null;curItemRow=curItemRow.nextElementSibling) {		
 		if (typeof(curItemRow)!='object') { continue; }
 		if (curItemRow.isSelected) { curItemRow.deselect(); }
@@ -332,7 +341,7 @@ function itemsView_table_deselectAll() {
 
 function itemsView_table_getNbItemsInView() {
 	let count=0;
-	var tableInsertSpot = document.getElementById(ITEMSVIEW_TABLE_INSERTSPOT_ID); 
+	var tableInsertSpot = itemsView_table_getItemsInsertSpot(); 
 	for (var curItemRow=tableInsertSpot.firstChild;curItemRow!==null;curItemRow=curItemRow.nextElementSibling) {		
 		if (typeof(curItemRow)!='object') { continue; }
 		count++;
@@ -344,7 +353,7 @@ function itemsView_table_getNbItemsInView() {
 function itemsView_table_selectNext() {
 	let nextRow=null;
 	if (itemsView_getActiveItem()==null) { 
-		nextRow=document.getElementById(ITEMSVIEW_TABLE_INSERTSPOT_ID).getElementsByClassName('mx-tableview-row')[0];
+		nextRow=itemsView_table_getItemsInsertSpot().getElementsByClassName('mx-tableview-row')[0];
 	} else {
 		nextRow=itemsView_getActiveItem().nextElementSibling;
 		if (nextRow==null) { 

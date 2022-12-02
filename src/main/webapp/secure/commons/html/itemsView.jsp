@@ -8,17 +8,48 @@
 <script type="text/javascript">
 
 var _activeItem = null;
-var _selectedItemsMapById = [];
 var _itemsViewMode="cards"; // cards|table 
+var _lastActiveItemId = null;
+var _lastVisitedItemIds = [];
+
+function itemsView_getItemsInsertSpot() {
+	if (_itemsViewMode=="cards") { return itemsView_cards_getItemsInsertSpot(); }
+	else if (_itemsViewMode=="table") { return itemsView_table_getItemsInsertSpot(); }
+}
+
+function itemsView_saveSelectionContext() {
+
+	let insertSpot = itemsView_getItemsInsertSpot();	
+	_lastActiveItemId=null;
+	for (var i=0;i<insertSpot.children.length;i++) {
+		let curItem=insertSpot.children[i];
+		if (typeof(curItem)!='object') { continue; }		
+		if (curItem.querySelector(".mx-item-visited")!=null
+				|| curItem.classList.contains("mx-item-visited")) { _lastVisitedItemIds.push(curItem.dbid); }
+		if (curItem.querySelector(".mx-item-selected")!=null
+				|| curItem.classList.contains("mx-item-selected")) { _lastActiveItemId=curItem.dbid; }
+
+	} 
+}
+
+function itemsView_restoreItemSelectionContext(item) {	
+	if (_lastVisitedItemIds.includes(item.dbid)) { 
+		item.deselect();
+	}
+	if (_lastActiveItemId!=null && _lastActiveItemId==item.dbid) { 
+		item.select(); 
+	} 
+}
+
 
 function itemsView_toggleViewMode(ev,mode) {
+		
 	if (mode!=null) { _itemsViewMode=mode; }
 	
 	if (_itemsViewMode=="cards") { 
 		_itemsViewMode="table";
 		document.getElementById(ITEMSVIEW_TABLE_AREA_ID).style.display='';
-		document.getElementById(ITEMSVIEW_CARDS_AREA_ID).style.display='none';
-		
+		document.getElementById(ITEMSVIEW_CARDS_AREA_ID).style.display='none';						
 	}
 	else if (_itemsViewMode=="table") { 
 		_itemsViewMode="cards";
@@ -29,15 +60,9 @@ function itemsView_toggleViewMode(ev,mode) {
 		console.log("unhandle items view mode '"+mode+"'. Authorized modes are table|cards. ")
 		return;
 	}
+	
+	
 	MxGuiHeader.onFilterClick(MxGuiHeader.getCurrentSearchQuery());
-}
-function itemsView_setViewMode(mode) {
-	if (mode=="cards")  { _itemsViewMode="cards" }
-	else if (mode=="table")  { _itemsViewMode="table" }
-	else {
-		console.log("unhandle items view mode '"+mode+"'. Authorized modes are table|cards. ")
-		return;
-	}
 }
 
 function itemsView_getCurrentTermsDesc(requestedTermName) {
@@ -57,16 +82,22 @@ function itemsView_getCurrentTermsDesc(requestedTermName) {
 }
 
 
-function itemsView_clearItems() {
+function itemsView_clearItems() {	
+	if (_activeItem != null) { _activeItem.deselect(); };
 	if (_itemsViewMode=="cards") { return itemsView_cards_clearItems(); }
 	else if (_itemsViewMode=="table") { return itemsView_table_clearItems(); }
-	_activeItem = null;
-	_selectedItemsMapById = [];
+	
 } 
 function itemsView_addNewItem(objDescr) {
-	let termsDescList=MxItemsView.getCurrentTermsDesc();	 	 
-	if (_itemsViewMode=="cards") { return itemsView_cards_addNewItem(objDescr); }
-	else if (_itemsViewMode=="table") { return itemsView_table_addNewItem(objDescr,termsDescList); }
+	let termsDescList=MxItemsView.getCurrentTermsDesc();	
+	let newItem=null;
+	if (_itemsViewMode=="cards") { newItem=itemsView_cards_addNewItem(objDescr); }
+	else if (_itemsViewMode=="table") { newItem=itemsView_table_addNewItem(objDescr,termsDescList); }
+	
+	itemsView_restoreItemSelectionContext(newItem);
+	
+	return newItem;
+	
 }
 
 function itemsView_deselectAll() {
@@ -88,7 +119,6 @@ function itemsView_selectPrevious() {
 	if (_itemsViewMode=="cards") { return itemsView_cards_selectPrevious(); }
 	else if (_itemsViewMode=="table") { return itemsView_table_selectPrevious(); }
 }
-
 
 
 function itemsView_extractId(objDescr) { return objDescr.id; }
@@ -163,7 +193,6 @@ function itemsView_updateFieldValue(itemId,fieldName,newValue) {
 var MxItemsView={}
 MxItemsView.toggleViewMode=itemsView_toggleViewMode;
 MxItemsView.getCurrentTermsDesc=itemsView_getCurrentTermsDesc;
-MxItemsView.setViewMode=itemsView_setViewMode;
 MxItemsView.deselectAll=itemsView_deselectAll;
 //expect structure with at least fields 'id','name','thumbnailUrl', 
 MxItemsView.addNewItem=itemsView_addNewItem;

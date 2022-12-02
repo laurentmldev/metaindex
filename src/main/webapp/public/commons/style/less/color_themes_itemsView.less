@@ -6,16 +6,17 @@
 }
 
 .mx-item-hover {
-	border: 2px solid @active_color !important;
+	border: 3px solid @bg_dark !important;
 	transition: border linear 150ms;
 	-webkit-box-shadow: 0 0 0.4rem 0.5rem @active_color;
   	box-shadow: 0 0 0.4rem 0.05rem @active_color;
   	transition: border linear 150ms,box-shadow 150ms;
+  	background: rgba(@active_color - 50, 0.9) !important;
 }
 
 .mx-item-visited {  
   border: 1px solid @bg_dark;
-  background: rgba(@active_color, 0.6) !important; 
+  background: rgba(@active_color - 20, 0.8) !important; 
   color:@bg_dark - 150;
   
 }
@@ -25,8 +26,8 @@
   transition: background linear 150ms,color 150ms;
   cursor:pointer;
   background: rgba(@bg_dark + 100, 0.8)  !important;
-  
-  border: 2px solid @bg_dark;
+  color:@active_color - 100;
+  border: 3px solid @bg_dark;
 }
 
 
