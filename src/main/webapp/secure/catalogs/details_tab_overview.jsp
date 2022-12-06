@@ -199,6 +199,10 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 			let quotaNbDocs=newPopulatedCatalogDetails.querySelector("._quota_nb_docs_");
 			let maxNbDocs=catalogCard.descr.quotaNbDocs;
 			let curNbDocs=catalogCard.descr.nbDocuments;
+<c:if test="${mxRunMode == 'standalone'}" >
+			quotaNbDocs.innerHTML=curNbDocs;
+</c:if>
+<c:if test="${mxRunMode != 'standalone'}" >
 			let usagePourcentNbDocs=(curNbDocs*100)/maxNbDocs;
 			usagePourcentNbDocs=Math.round(usagePourcentNbDocs * 100) / 100;
 			let pourcentClass="";
@@ -235,10 +239,15 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 					&& catalogCard.descr.ownerId==<s:property value="currentUserProfile.id"/>) {
 				quotaNbDocs.appendChild(_makeUpgradePlanButtton("details_overview_upgrade_quotaNbDocs"));
 			}
-			
+</c:if>
+
 	// quotas drive space
 			let quotaDrive=newPopulatedCatalogDetails.querySelector("._quota_drive_");
 			let currentUseMBytes=catalogCard.descr.driveUseMBytes;		
+<c:if test="${mxRunMode == 'standalone'}" >
+			quotaDrive.innerHTML=currentUseMBytes+" MB"
+</c:if>
+<c:if test="${mxRunMode != 'standalone'}" >
 			let maxUseSpaceMBytes=catalogCard.descr.quotaDriveMBytes;
 			let usagePourcentDriveSpace=100;
 			if (maxUseSpaceMBytes>0) { usagePourcentDriveSpace=(currentUseMBytes*100)/maxUseSpaceMBytes; }
@@ -290,7 +299,9 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 				console.log("ARGGG");
 				quotaDrive.appendChild(_makeUpgradePlanButtton("details_overview_upgrade_quotaDrive"));
 			}
+</c:if>				
 		}	
+	
 		
 	// catalog thumbnail url
 		let thumbnailUrl = newPopulatedCatalogDetails.querySelector("._thumbnail_url_");
@@ -519,7 +530,10 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 						        <td  style="font-style:italic" class="_access_rights_"></td>						        
 						      </tr>
 						      <tr class="_quota_nb_docs_row_" >
-						        <td  style="font-style:italic"><s:text name="Catalogs.overview.quotaTitleNbDocs" />
+						        <td  style="font-style:italic">
+						        	<c:if test="${mxRunMode == 'standalone'}" ><s:text name="Catalogs.overview.quotaTitleNbDocs.standalone" /></c:if>
+						        	<c:if test="${mxRunMode != 'standalone'}" ><s:text name="Catalogs.overview.quotaTitleNbDocs" /></c:if>
+						        							        	
 						        	<span title="S.O.S" 
 						                	onclick="event.stopPropagation();event.preventDefault();
 						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.quota_nbdocs.title" />','<s:text name="help.catalog.overview.quota_nbdocs.body" />')">
@@ -529,7 +543,9 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 						        <td  style="font-style:italic" class="_quota_nb_docs_"></td>
 						      </tr>
 						      <tr class="_quota_drive_row_">
-						        <td  style="font-style:italic"><s:text name="Catalogs.overview.quotaTitleDrive" />
+						        <td  style="font-style:italic">
+						        	<c:if test="${mxRunMode == 'standalone'}" ><s:text name="Catalogs.overview.quotaTitleDrive.standalone" /></c:if>
+						        	<c:if test="${mxRunMode != 'standalone'}" ><s:text name="Catalogs.overview.quotaTitleDrive" /></c:if>
 						        	<span title="S.O.S" 
 						                	onclick="event.stopPropagation();event.preventDefault();
 						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.quota_drive.title" />','<s:text name="help.catalog.overview.quota_drive.body" />')">

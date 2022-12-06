@@ -779,6 +779,9 @@ public class Catalog implements ICatalog {
 	
 	@Override
 	public Boolean checkQuotasNbDocsOk() {
+		// no quota limit in standalone mode
+		if (Globals.isInStandaloneMode()) { return true; }
+		
 		return this.getNbDocuments()<this.getQuotaNbDocs();		
 	}
 
@@ -808,6 +811,9 @@ public class Catalog implements ICatalog {
 	
 	@Override
 	public Boolean checkQuotasDriveOk() {
+		// no quota limit in standalone mode
+		if (Globals.isInStandaloneMode()) { return true; }
+
 		return getDriveUseMBytes()<this.getQuotaDriveMBytes();
 	}
 

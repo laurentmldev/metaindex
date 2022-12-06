@@ -11,6 +11,7 @@ import java.util.concurrent.Semaphore;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import metaindex.app.Globals;
 import metaindex.data.catalog.Catalog;
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.exceptions.DataProcessException;
@@ -51,6 +52,7 @@ public abstract class ASimpleStatisticsManager implements IStatisticsManager {
 	}
 	public void handleStatItem(IStatisticItem s) throws DataProcessException {
 		
+		if (!Globals.isInServerMode()) { return; }
 		try {
 			
 			this.acquireLock();		

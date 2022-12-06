@@ -13,6 +13,7 @@ See full version of LICENSE in <https://fsf.org/>
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import metaindex.app.Globals;
 import metaindex.app.beans.AMetaindexBean;
 import metaindex.app.beans.AMetaindexBean.BeanProcessResult;
 import metaindex.data.userprofile.IUserProfileData.USER_ROLE;
@@ -30,6 +31,11 @@ public class BeanProfile extends AMetaindexBean {
 	
 	@Override
   	public String execute() throws Exception {
+		
+		// ensure standalone user is not trying to be used
+		if (Globals.isInStandaloneMode() && !isStandaloneModeAuthorized(this.getCurrentUserProfile())) {
+			return BeanProcessResult.BeanProcess_ConstraintERROR.toString();
+		}
 		return BeanProcessResult.BeanProcess_SUCCESS.toString();
 	}
 	

@@ -20,6 +20,7 @@ import org.apache.struts2.ServletActionContext;
 
 import metaindex.app.Globals;
 import metaindex.app.Globals.APPLICATION_STATUS;
+import metaindex.app.beans.AMetaindexBean.BeanProcessResult;
 import metaindex.data.commons.globals.guilanguage.IGuiLanguage;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.IUserProfileData.CATEGORY;
@@ -49,10 +50,16 @@ public class BeanSignupSendEmail extends ABeanEmailConfirmPasswdAction {
 	@Override
   	synchronized public String execute() throws Exception {
 		
+		
+		
 		try { 
 			
 			if (Globals.Get().getApplicationStatus()==APPLICATION_STATUS.STOPPED) {
 					throw new DataProcessException("application is not running, unable to create new account for now");								
+			}
+			
+			if (Globals.isInStandaloneMode()) {
+				return BeanProcessResult.BeanProcess_ConstraintERROR.toString();
 			}
 			
 			clearOldRequests();

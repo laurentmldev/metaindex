@@ -12,7 +12,7 @@
 onkeypress="if (event.which==13||event.keycode==13) {
 		document.getElementById('form').submit();
 	}"
-	onload="createForm();"
+	onload="createForm();autologin();"
 	>
 <s:include value="/public/commons/js/helpers.jsp" />
 <s:include value="generic_form/body.jsp" >
@@ -39,7 +39,7 @@ onkeypress="if (event.which==13||event.keycode==13) {
 	        	aria-describedby="emailHelp" placeholder="<s:text name="Profile.email" />">
          </div>
         <div class="form-group">
-            <input type="password" name='password' style="background:#f5f5f5" class="form-control form-control-user  mx_welcome_input" 
+            <input id='password' type="password" name='password' style="background:#f5f5f5" class="form-control form-control-user  mx_welcome_input" 
             	placeholder="<s:text name="session.password" />">
         </div>
        
@@ -86,6 +86,20 @@ onkeypress="if (event.which==13||event.keycode==13) {
 		let formContents=document.getElementById('contents');
 		formInsertSpot.append(formContents);
 		formContents.style.display='block';
+	}
+	
+	function autologin() {		
+		<c:if test="${mxRunMode == 'standalone' && param.badcredentials == null}" >
+		console.log("standalone ...");
+		let autologinTimer = setInterval(function() {
+			console.log("standalone !");
+			clearInterval(autologinTimer); 
+			document.getElementById('email').value="<s:property value='mxStandaloneLogin'/>";
+			document.getElementById('password').value="<s:property value='mxStandalonePassword'/>";
+			document.getElementById('form').submit();
+		}, 1000);
+		</c:if>
+		
 	}
  </script>
 </body>

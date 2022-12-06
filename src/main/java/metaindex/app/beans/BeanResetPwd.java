@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 
 import metaindex.app.Globals;
 import metaindex.app.Globals.APPLICATION_STATUS;
+import metaindex.app.beans.AMetaindexBean.BeanProcessResult;
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.exceptions.DataProcessException;
 
@@ -53,6 +54,10 @@ public class BeanResetPwd extends BeanResetPwdSendEmail {
 			if (Globals.Get().getApplicationStatus()==APPLICATION_STATUS.STOPPED) {
 					throw new DataProcessException("application is not running, unable to create new account for now");								
 			}
+			if (Globals.isInStandaloneMode()) {
+				return BeanProcessResult.BeanProcess_ConstraintERROR.toString();
+			}
+			
 			
 			IUserProfileData u = Globals.Get().getUsersMgr().getUserByName(this.getEmail());
 			if (u==null ) {
@@ -67,6 +72,11 @@ public class BeanResetPwd extends BeanResetPwdSendEmail {
 			_expectedPasswordReset.remove(u.getId());
 			
 			u.setName(getEmail());
+			
+			if (!isStandaloneModeAuthorized(u)) {
+				log.error("Standaloe user trying to be used in non-standalone mode");
+				return BeanProcessResult.BeanProcess_ERROR.toString();
+			}
 			Globals.Get().getDatabasesMgr().getUserProfileSqlDbInterface()
 					.getPopulateUserProfileIdFromDbStmt(u).execute();	    		    		
 			

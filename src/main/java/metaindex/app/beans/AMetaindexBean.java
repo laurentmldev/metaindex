@@ -32,6 +32,7 @@ import metaindex.data.filter.IFilter;
 import metaindex.data.commons.globals.plans.IPlan;
 import metaindex.app.Globals;
 import metaindex.app.Globals.APPLICATION_STATUS;
+import metaindex.app.beans.AMetaindexBean.BeanProcessResult;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.userprofile.IUserProfileData;
 import metaindex.data.userprofile.UserProfileData;
@@ -59,6 +60,12 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 
 	public boolean isUserLogged() { return this.getCurrentUserProfile().getName().length()>0; }
     
+	// standalone user forbidden in non standalone mode
+	public boolean isStandaloneModeAuthorized(IUserProfileData u) {
+		if (u!=null && u.getName().equals(Globals.GetMxProperty("mx.standalone.login"))) {
+			return false;
+		} else { return true; }
+	}
 	@Override
   	public void prepare() throws Exception {
 		
@@ -257,6 +264,9 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 	
 	public String getMxRole() {	return _userProfileData.getRole().toString(); }
 	public Boolean getMxDevMode() {	return Globals.Get().isDevMode(); }
+	public String getMxRunMode() {	return Globals.GetMxProperty("mx.runmode"); }
+	public String getMxStandaloneLogin() {	return Globals.GetMxProperty("mx.standalone.login"); }
+	public String getMxStandalonePassword() {	return Globals.GetMxProperty("mx.standalone.password"); }
 	
 	public String getMxAppStatus() { return Globals.Get().getApplicationStatus().toString(); }
 	

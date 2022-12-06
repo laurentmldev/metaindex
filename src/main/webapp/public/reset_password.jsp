@@ -19,8 +19,9 @@ onkeypress="if (event.which==13||event.keycode==13) {
 	<script type="text/javascript">
 	
 	function checkPassword(str) {
-		 var re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
-	      return re.test(str);
+		 return true;
+		 let re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
+	     return re.test(str);
 	}
 	function checkForm(showMessage)
     {

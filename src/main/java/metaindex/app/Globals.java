@@ -73,6 +73,8 @@ public class Globals {
 	public static final Integer AUTOREFRESH_PERIOD_SEC=5;
 	private static final String MX_EMAIL_SUBJECT_PREFIX= "[MetaindeX]";
 	public static final String LOCAL_USERDATA_PATH_SUFFIX="/userdata/catalogs";
+	public static final String MX_RUNMODE_STANDALONE="standalone";
+	public static final String MX_RUNMODE_SERVER="server";
 	
 	// files stored in catalogs drive must be normalized in order to ensure their are
 	// always accessible via corresponding UTF-8 URI
@@ -295,19 +297,21 @@ public class Globals {
 			} catch (Exception e) {
 				throw new DataProcessException("Application initialization failed.",e);
 			}
-			log.info("starting statistics manager ... ");
-			_mxStats.start();
 			
+			if (Globals.GetMxProperty("mx.runmode").equals(Globals.MX_RUNMODE_SERVER)) {
+				log.info("starting statistics manager ... ");
+				_mxStats.start();
+				log.info("starting quotas checker ... ");
+				_mxUsersQuotaChecker.start();
+			}
 			log.info("starting tmp files cleaner ... ");
 			_mxTmpFolderCleaner.start();
 			
-			log.info("starting quotas checker ... ");
-			_mxUsersQuotaChecker.start();
 			
 			log.info("MetaindeX connections init done");
 			
 			
-			if (isDevMode()) {
+			if (isDevMode() || isInStandaloneMode()) {
 				_mailSender=new DummyMailSender();
 			}
 		}
@@ -340,6 +344,13 @@ public class Globals {
 			_mxUsersQuotaChecker.stop();
 			log.info("MetaindeX connections closed");
 		
+	}
+	
+	public static Boolean isInServerMode() {
+		return Globals.GetMxProperty("mx.runmode").equals(Globals.MX_RUNMODE_SERVER);
+	}
+	public static Boolean isInStandaloneMode() {
+		return Globals.GetMxProperty("mx.runmode").equals(Globals.MX_RUNMODE_STANDALONE);
 	}
 	public IGuiLanguagesManager getGuiLanguagesMgr() { return _guiLanguagesManager; }
 	public IGuiThemesManager getGuiThemesMgr() { return _guiThemesManager; }

@@ -15,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 
 import metaindex.app.Globals;
 import metaindex.app.Globals.APPLICATION_STATUS;
+import metaindex.app.beans.AMetaindexBean.BeanProcessResult;
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.exceptions.DataProcessException;
 
@@ -42,6 +43,9 @@ public class BeanContactUs extends BeanProfile {
 			
 			if (Globals.Get().getApplicationStatus()==APPLICATION_STATUS.STOPPED) {
 					throw new DataProcessException("application is not running, unable to process contact-form message");								
+			}
+			if (Globals.GetMxProperty("mx.runmode").equals(Globals.MX_RUNMODE_STANDALONE)) {
+				return BeanProcessResult.BeanProcess_ConstraintERROR.toString();
 			}
 			
 			if (getMsg().length()==0 || getEmail().length()==0) {

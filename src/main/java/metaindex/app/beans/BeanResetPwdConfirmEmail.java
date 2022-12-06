@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import metaindex.app.Globals;
 import metaindex.app.Globals.APPLICATION_STATUS;
+import metaindex.app.beans.AMetaindexBean.BeanProcessResult;
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.exceptions.DataProcessException;
 
@@ -57,6 +58,9 @@ public class BeanResetPwdConfirmEmail extends BeanResetPwdSendEmail {
 			
 			if (Globals.Get().getApplicationStatus()==APPLICATION_STATUS.STOPPED) {
 					throw new DataProcessException("application is not running, unable to create new account for now");								
+			}
+			if (Globals.isInStandaloneMode()) {
+				return BeanProcessResult.BeanProcess_ConstraintERROR.toString();
 			}
 			
 			BeanResetPwdSendEmail.AwaitingAccount a = getAwaitingAccount(getEmail(),getRequestId());
