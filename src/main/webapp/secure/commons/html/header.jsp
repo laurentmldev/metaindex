@@ -108,6 +108,7 @@
                   <i class="fas fa-user fa-lg fa-fw mr-2 text-gray-400"></i>
                   <s:text name="Profile.preferences"></s:text>
                 </a>
+                <c:if test="${mxRunMode == 'server'}" >
                 <a class="dropdown-item" href="#" onclick="document.getElementById(MX_HEADER_PLANS_POPUP_ID).toggleShowHide();">
                   <i class="fas fa-euro-sign fa-lg fa-fw mr-2 text-gray-400"></i>
                   <s:text name="Profile.plans"></s:text>
@@ -116,6 +117,7 @@
                   <i class="fas fa-envelope fa-lg fa-fw mr-2 text-gray-400"></i>
                   	<s:text name="contactform.title"></s:text>
                 </a>
+                </c:if>
                 <a id="tutorials" class="dropdown-item" href="Tutorials?origin=Catalogs" >
                   <i class="fas fa-award fa-lg fa-fw mr-2 text-gray-400"></i>
                   	<s:text name="tutorials.title"></s:text>
@@ -124,10 +126,12 @@
                   <i class="fas fa-tools fa-lg fa-fw mr-2 text-gray-400"></i>
                   	<s:text name="Toolbox.title"></s:text>
                 </a>
+                <c:if test="${mxRunMode != 'standalone'}" >
                 <a class="dropdown-item" data-toggle="modal" data-target="#logoutModal">
                   <i class="fas fa-running fa-lg fa-fw mr-2 text-gray-400"></i>
                   <s:text name="Profile.logout"></s:text>
                 </a>                
+                </c:if>
               </div>
               
             </li>

@@ -9,12 +9,13 @@
           <i class="fas fa-shield-alt fa-jedi"></i>
           <span><s:text name="Admin.title"></s:text></span>
         </a>
-        
+ 
+ <c:if test="${mxRunMode != 'standalone'}" >
  <a class="nav-link collapsed" href="#" onclick="document.getElementById(MX_CATALOGS_SEARCH_POPUP_ID).toggleShowHide();updateCatalogsSearchList();" >
           <i class="fas fa-fw fa-search"></i>
           <span><s:text name="Catalogs.searchCatalog"></s:text></span>
         </a>
-        
+ </c:if>       
  <c:if test="${mxRole == 'ROLE_ADMIN' || mxRole == 'ROLE_USER'}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-fw fa-star"></i>
@@ -95,7 +96,7 @@ MxGuiLeftBar.updateNbCatalogsCreated=function(curNb,maxNb) {
 	document.getElementById("leftbar_catalog_nbCreatedCatalogs").onclick=function() {
 		document.getElementById(MX_HEADER_PLANS_POPUP_ID).toggleShowHide();
 	}
-	
+	<c:if test="${mxRunMode != 'standalone'}" >
 	if (curNb>=maxNb) {
 		document.getElementById("leftbar_create_catalog").style.display="none";
 		document.getElementById("leftbar_catalog_nbCreatedCatalogs").style.display="block";
@@ -103,9 +104,14 @@ MxGuiLeftBar.updateNbCatalogsCreated=function(curNb,maxNb) {
 		document.getElementById("leftbar_create_catalog").style.display="block";
 		document.getElementById("leftbar_catalog_nbCreatedCatalogs").style.display="none";
 	}
+	</c:if>
+	<c:if test="${mxRunMode == 'standalone'}" >
+	document.getElementById("leftbar_create_catalog").style.display="block";
+	document.getElementById("leftbar_catalog_nbCreatedCatalogs").style.display="none";
+	</c:if>
 }
 
-
+<c:if test="${mxRunMode != 'standalone'}" >
 var MX_CATALOGS_SEARCH_POPUP_ID="catalogs_search_popup";
 buildCatalogsSearchPopup(document.getElementById("catalogs_popups_container"));
 
@@ -114,6 +120,7 @@ if (mx_helpers_isAdmin()) {
 	document.getElementById("admin-op").style.display='block';
 	buildAdminInfoPopup(document.getElementById("admin_popups_container"));
 }
+</c:if>
 
 
 </script>

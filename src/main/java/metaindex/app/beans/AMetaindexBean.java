@@ -266,10 +266,10 @@ public abstract class AMetaindexBean extends ActionSupport implements Preparable
 	public Boolean getMxDevMode() {	return Globals.Get().isDevMode(); }
 	public String getMxRunMode() {	return Globals.GetMxProperty("mx.runmode"); }
 	public String getMxStandaloneLogin() {	return Globals.GetMxProperty("mx.standalone.login"); }
-	public String getMxStandalonePassword() {	return Globals.GetMxProperty("mx.standalone.password"); }
+	public String getMxStandalonePassword() { return Globals.GetMxProperty("mx.standalone.password"); }
 	
 	public String getMxAppStatus() { return Globals.Get().getApplicationStatus().toString(); }
-	
+	public String getMxDriveHostPath() { return Globals.GetMxProperty("mx.drive.standalone.hostPath"); }
 	
 	/** TODO temporary for avoiding Struts auto populate error on form submit for those fields */
 	public void setSubmit(String dummy){}

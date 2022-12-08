@@ -531,26 +531,46 @@ function _refreshItemsNames_options(dropdown,curItemsNamesStr,catalogCard) {
 						      </tr>
 						      <tr class="_quota_nb_docs_row_" >
 						        <td  style="font-style:italic">
-						        	<c:if test="${mxRunMode == 'standalone'}" ><s:text name="Catalogs.overview.quotaTitleNbDocs.standalone" /></c:if>
-						        	<c:if test="${mxRunMode != 'standalone'}" ><s:text name="Catalogs.overview.quotaTitleNbDocs" /></c:if>
-						        							        	
-						        	<span title="S.O.S" 
+						        	<c:if test="${mxRunMode == 'standalone'}" >
+						        		<s:text name="Catalogs.overview.quotaTitleNbDocs.standalone" />
+						        		<span title="S.O.S" 
+						                	onclick="event.stopPropagation();event.preventDefault();
+						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.quota_nbdocs.title" />',' <s:text name="help.catalog.overview.quota_nbdocs.body.standalone" />')">
+							                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
+							             </span>
+						        	</c:if>
+						        	<c:if test="${mxRunMode != 'standalone'}" >
+						        		<s:text name="Catalogs.overview.quotaTitleNbDocs" />
+						        		<span title="S.O.S" 
 						                	onclick="event.stopPropagation();event.preventDefault();
 						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.quota_nbdocs.title" />','<s:text name="help.catalog.overview.quota_nbdocs.body" />')">
-						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
-						             </span>
+							                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
+							             </span>
+						        	</c:if>
+						        							        	
+						        	
 						        </td>
 						        <td  style="font-style:italic" class="_quota_nb_docs_"></td>
 						      </tr>
 						      <tr class="_quota_drive_row_">
 						        <td  style="font-style:italic">
-						        	<c:if test="${mxRunMode == 'standalone'}" ><s:text name="Catalogs.overview.quotaTitleDrive.standalone" /></c:if>
-						        	<c:if test="${mxRunMode != 'standalone'}" ><s:text name="Catalogs.overview.quotaTitleDrive" /></c:if>
-						        	<span title="S.O.S" 
+						        	<c:if test="${mxRunMode == 'standalone'}" >
+						        		<s:text name="Catalogs.overview.quotaTitleDrive.standalone" />
+						        		<span title="S.O.S" 
+						                	onclick="event.stopPropagation();event.preventDefault();
+						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.quota_drive.title" />','<s:text name="help.catalog.overview.quota_drive.body.standalone" /> <b><s:property value="mxDriveHostPath"/></b>')">
+						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
+						             </span>
+						        	</c:if>
+						        	<c:if test="${mxRunMode != 'standalone'}" >
+						        		<s:text name="Catalogs.overview.quotaTitleDrive" />
+						        		<span title="S.O.S" 
 						                	onclick="event.stopPropagation();event.preventDefault();
 						                			MxGuiHeader.showInfoModal('<s:text name="help.catalog.overview.quota_drive.title" />','<s:text name="help.catalog.overview.quota_drive.body" />')">
 						                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
 						             </span>
+						        	</c:if>
+						        	
 						        </td>
 						        <td  style="font-style:italic" class="_quota_drive_"></td>
 						       </tr>

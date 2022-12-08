@@ -28,6 +28,7 @@ import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.common.unit.TimeValue;
 
+import metaindex.app.Globals;
 import metaindex.app.control.websockets.users.WsControllerUser.CATALOG_MODIF_TYPE;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.term.ICatalogTerm;
@@ -169,7 +170,13 @@ public class ESBulkProcess extends AProcessingTask implements IDbItemsProcessor 
 	}
 
 
+	// TODO: this check shall be located somewhere in applicative part,
+	// not in toolbox
 	private void checkQuota() throws DataProcessException {
+		
+		// no quota in Standalone mode
+		if (Globals.isInStandaloneMode()) { return; }
+		
 		// update catalog nb documents every nth posted data
 		if (this.getReceivedNbData()%BULK_FLUSH_TRESHOLD==0) {
 			_catalog.loadStatsFromDb();

@@ -394,6 +394,7 @@ public class Globals {
 
 		return   "\n	###### MetaindeX v"+Globals.GetMxProperty("mx.version")+"  ######"+"\n"
 				+"- mx.devmode="+isDevMode()+"\n"
+				+"- mx.runmode="+Globals.GetMxProperty("mx.runmode")+"\n"
 				+"- mx.host="+Globals.GetMxProperty("mx.host")+"\n"
 				+"- mx.protocol="+Globals.GetMxProperty("mx.protocol")+"\n"
 				+"- mx.port="+Globals.GetMxProperty("mx.port")+"\n"

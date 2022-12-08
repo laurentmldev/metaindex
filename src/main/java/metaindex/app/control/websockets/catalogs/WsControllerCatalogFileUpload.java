@@ -111,8 +111,9 @@ public class WsControllerCatalogFileUpload extends AMxWSController {
 	    	
 	    	// check quota
 	    	Long totalSpaceNeededMByte = 0L;
-	    	for (FileDescriptor desc : requestMsg.getFileDescriptions()) { totalSpaceNeededMByte+=desc.getByteSize()/1000000;}	    	
-	    	if (c.getQuotaDriveMBytes()-c.getDriveUseMBytes()<totalSpaceNeededMByte) {
+	    	for (FileDescriptor desc : requestMsg.getFileDescriptions()) { totalSpaceNeededMByte+=desc.getByteSize()/1000000;}	 
+	    	// no quota in standalone mode
+	    	if (!Globals.isInStandaloneMode() && c.getQuotaDriveMBytes()-c.getDriveUseMBytes()<totalSpaceNeededMByte) {
 	    		answer.setIsSuccess(false);
 	    		answer.setRejectMessage(user.getText("Catalogs.quotasExceededDriveSpace",
 						c.getQuotaDriveMBytes().toString()));
