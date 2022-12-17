@@ -247,7 +247,9 @@
 
   }
 
+  <c:if test="${mxRunMode != 'standalone'}" >
   // update contact-us target with current location
   // so that we can go back here if canceled by user
   document.getElementById('contactUs').href+=window.location.href;
+  </c:if>
   </script>
