@@ -10,7 +10,10 @@
       <!-- Sidebar - Brand -->
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="Catalogs">
               
-        <div id="leftbar.uptitle" class="sidebar-brand-text mx-3" style="padding-bottom:0;padding-top:1rem;">MetaindeX</div>        
+        <div id="leftbar.uptitle" class="sidebar-brand-text mx-3" style="padding-bottom:0;padding-top:1rem;">MetaindeX
+        <c:if test="${mxRunMode == 'standalone'}" >
+        <div style="font-size:0.6rem;font-family:Times;letter-spacing:1.5px;" >Standalone Edition</div></c:if>
+        </div>        
       </a>
 
      

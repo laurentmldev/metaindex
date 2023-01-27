@@ -94,22 +94,23 @@ if __name__ == "__main__":
 		for colToExport in colsToExport:
 			if colToExport not in colsPosition:
 				print("ERROR: unable to find column '"+colToExport+"' in first line of CSV file '"+args.inputCsvFile+"' : \n"+dataLines[0])
-				sys.exit(1)		
+				sys.exit(1)	
+			else:
+				print("column '"+colToExport+"' found at position "+str(colsPosition[colToExport]))
 	
 	originalLineNb=0
 	fileout= open(args.targetFileName, 'w')
 
 	# generate header line (cols names)
 	headerLine=""
+	if args.idcol!=None:
+		headerLine=args.idcol
 	for colName in colsToExport:
-		if len(headerLine)==0:
-			headerLine="#"
-		else:
-			headerLine+=";"
-		if args.idcol!=None:
-			headerLine=args.idcol+";"
+		if len(headerLine)>0:
+			headerLine+=";"		
 		headerLine+=colName
-	fileout.write(headerLine+"\n")
+	print("headerLine="+headerLine)
+	fileout.write("#"+headerLine+"\n")
 	
 
 	# for each line from input CSV file

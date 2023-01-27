@@ -104,7 +104,7 @@ function itemsView_cards_buildNewCard(objDescr) {
 	newCard.isSelected=false;	
 	newCard.select = function(e) {
 		newCard.isSelected=true;		
-		container.classList.add("mx-item-visited");
+		container.classList.remove("mx-item-visited");
 		container.classList.add("mx-item-selected");
 		_activeItem=newCard;					
 		MxGuiDetails.populate(newCard);		

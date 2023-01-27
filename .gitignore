@@ -2,4 +2,5 @@
 *proprietary*
 *Proprietary*
 TODO.txt
-.DS_Store
+*.DS_Store*
+metaindex.war

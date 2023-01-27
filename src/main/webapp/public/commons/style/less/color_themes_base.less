@@ -1,0 +1,51 @@
+
+
+@text_color : @primary_color - 30;
+@background_color : @secondary_color + 100;
+@active_color : @primary_color + 30;
+@frozen_color : @secondary_color + 20;
+@bg_light : @primary_color + 100;
+@bg_dark : @secondary_color - 30;
+
+/* 
+@text_color : blue;
+@background_color : green;
+@active_color : pink;
+@frozen_color : orange;
+@bg_light : white;
+@bg_dark : purple;
+*/
+/* ------- */
+
+
+@counter_text_color : @background_color;
+
+@primary_color_gradient : @active_color - 100;
+@primary_active: @active_color;
+@primary_hover: @primary_active;
+@primary_hover_border: @active_color - 40;
+
+@secondary_color_gradient : @frozen_color - 100; 
+@secondary_active: @frozen_color;
+@secondary_hover: @secondary_active;
+@secondary_hover_border: @secondary_hover - 40;
+
+@bg_light_light : @bg_light + 20;
+@bg_light_transparent : @bg_light + 40;
+@bg_dark_transparent :  @bg_dark + 40;
+
+@shadow_color: rgba(90, 90, 110, 0.25);
+
+
+/* links */
+@link: @primary_color;
+@link_hover : #aaa;
+
+@import "./color_themes_common.less";
+@import "./color_themes_common_gradients.less";
+@import "./color_themes_common_buttons.less";
+@import "./color_themes_common_menus.less";
+@import "./color_themes_common_inputs.less";
+@import "./color_themes_common_modals.less";
+@import "./color_themes_itemsView.less";
+@import "./color_themes_details.less";

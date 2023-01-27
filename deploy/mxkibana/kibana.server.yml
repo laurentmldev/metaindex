@@ -1,0 +1,26 @@
+
+### /!\ this configuration is expected to be accessed through
+### MetaindeX proxy via URL https://metaindex.fr/metaindex/kibana/
+### Trying to access directly Kibana (i.e. bypassing the proxy) will lead to
+### a redirect loop with near infinate URL to login form.
+
+# Default Kibana configuration for docker target
+server.name: "MetaindeX Kibana Server"
+server.host: "0"
+#server.host: "mxkibana"
+server.port: 5601
+elasticsearch.hosts: [ "http://mxelsrc:9200" ]
+
+server.basePath: "/metaindex/kibana"
+server.publicBaseUrl: "https://metaindex.fr/metaindex/kibana"
+
+# stored in kibana.keystore file
+elasticsearch.username: "kibana"
+elasticsearch.password: "mxKibanaPwd"
+
+# do not activate this : basePath rewrite is handled by the proxy
+# and do not need to be added by kibana itself otherwise it will be
+# added twice in URL
+#server.rewriteBasePath: true
+
+#logging.dest: /usr/share/kibana/logs/kibana.log

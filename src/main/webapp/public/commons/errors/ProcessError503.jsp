@@ -44,7 +44,10 @@
             <div class="error mx-auto" data-text="<s:text name="global.errorpage.ERROR"/>-503"><s:text name="global.errorpage.ERROR"/>-503</div>
             <p class="lead text-gray-800 mb-5"><s:text name="global.errorpage.error503" /></p>
             <p class="text-gray-600 mb-0" style="padding-bottom:5rem"><s:text name="global.errorpage.pleaseTryAgainLater"/></p>
-            <p class="text-gray-600 mb-0" style="padding-bottom:5rem"><s:text name="global.errorpage.contactUsIfNeeded"/></p>
+            <p class="text-gray-600 mb-0" style="padding-bottom:5rem">
+	            <c:if test="${mxRunMode != 'standalone'}" ><s:text name="global.errorpage.contactUsIfNeeded"/></c:if>
+	            <c:if test="${mxRunMode == 'standalone'}" ><s:text name="global.errorpage.contactUsIfNeeded.standalone"/></c:if>
+            </p>
             <a  href="${webAppBaseUrl}/loginform"><s:text name="global.errorpage.backToApp" /></a>
           </div>
 

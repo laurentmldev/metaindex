@@ -4,9 +4,9 @@
   <groupId>metaindex</groupId>
   <artifactId>metaindex</artifactId>
   <packaging>war</packaging>
-  <version>2.3.2.SNAPSHOT</version>
+  <version>3.0.1.SNAPSHOT</version>
   <name>MetaindeX</name>
-  <url>metaindex.fr</url>
+  <url>https://github.com/laurentmldev/metaindex</url>
   <repositories>
     <repository>
         <id>maven-restlet</id>

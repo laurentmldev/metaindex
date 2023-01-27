@@ -287,7 +287,7 @@ function itemsView_buildNewTableEntry(objDescr,termsDescList) {
 	newItemRow.isSelected=false;	
 	newItemRow.select = function(e) {
 		newItemRow.isSelected=true;		
-		newItemRow.classList.add("mx-item-visited");
+		newItemRow.classList.remove("mx-item-visited");
 		newItemRow.classList.add("mx-item-selected");
 		_activeItem=newItemRow;				
 		_lastActiveItem_id=MxItemsView.extractId(objDescr);

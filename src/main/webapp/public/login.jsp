@@ -90,9 +90,7 @@ onkeypress="if (event.which==13||event.keycode==13) {
 	
 	function autologin() {		
 		<c:if test="${mxRunMode == 'standalone' && param.badcredentials == null}" >
-		console.log("standalone ...");
 		let autologinTimer = setInterval(function() {
-			console.log("standalone !");
 			clearInterval(autologinTimer); 
 			document.getElementById('email').value="<s:property value='mxStandaloneLogin'/>";
 			document.getElementById('password').value="<s:property value='mxStandalonePassword'/>";

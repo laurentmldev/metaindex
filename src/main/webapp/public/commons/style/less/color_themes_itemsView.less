@@ -5,30 +5,29 @@
 	border-right:2px solid @bg_dark;
 }
 
-.mx-item-hover {
-	border: 3px solid @bg_dark !important;
+.mx-item-selected {
+	color:@text_color;
+	box-shadow:  0.3rem 0.3rem 1rem #444;
+}
+.mx-item-hover,.mx-item-selected {
+	border: 2px solid @bg_dark !important;
 	transition: border linear 150ms;
-	-webkit-box-shadow: 0 0 0.4rem 0.5rem @active_color;
-  	box-shadow: 0 0 0.4rem 0.05rem @active_color;
-  	transition: border linear 150ms,box-shadow 150ms;
-  	background: rgba(@active_color - 50, 0.9) !important;
+	transition: border linear 150ms,box-shadow 150ms;
+  	background: rgba(@active_color, 0.5) !important;
+  	
+}
+
+.mx-item-hover {    
+  cursor:pointer; 
+    	  
 }
 
 .mx-item-visited {  
-  border: 1px solid @bg_dark;
-  background: rgba(@active_color - 20, 0.8) !important; 
-  color:@bg_dark - 150;
+  border: 2px dashed @bg_dark;
+  background: rgba(@frozen_color, 0.5) !important;   
   
 }
 
-
-.mx-item-selected {  
-  transition: background linear 150ms,color 150ms;
-  cursor:pointer;
-  background: rgba(@bg_dark + 100, 0.8)  !important;
-  color:@active_color - 100;
-  border: 3px solid @bg_dark;
-}
 
 
 /* --- Cards View Mode --- */
@@ -45,13 +44,20 @@
 }
 
 .mx-card-darker-bg {  
-  background: rgba(0, 0, 0, 0.5); 
+  background: rgba(#888, 0.5);
   transition: background linear 150ms,color 150ms;
+  color:black;
 }
 
 
 /* --- Table View Mode --- */
 
+.mx-tableview-row {
+}
+
+.mx-tableview-row:hover {
+	box-shadow:  0.3rem 0.3rem 1rem #444;
+}
 .mx-tableview-col-header {
 	background:@bg_light;
 	color: @text_color;

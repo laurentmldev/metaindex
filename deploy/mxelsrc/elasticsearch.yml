@@ -1,0 +1,12 @@
+cluster.name: "mx-cluster"
+
+network.host: 0.0.0.00
+#network.host: "mxelsrc"
+xpack.security.enabled: true
+xpack.security.transport.ssl.enabled: true
+
+# volume to be mounted by docker
+path.repo: [ "/usr/share/mxelsrc/backups" ]
+
+indices.lifecycle.history_index_enabled: false
+
