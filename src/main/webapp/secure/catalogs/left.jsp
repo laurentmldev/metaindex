@@ -48,7 +48,7 @@
 						 			}"
 				 		>
 				 		
-			 		<button class="_button_update_ btn "  type="button" style="margin-top:0.5rem"
+			 		<button class="_button_update_ btn"  type="button" style="margin-top:0.5rem; color:#666;"
 							onmouseover="this.classList.add('btn-success');"
 							onmouseout="this.classList.remove('btn-success');"
 							onclick="event.stopPropagation();

@@ -193,16 +193,9 @@
           <div class="mx-copyright text-center my-auto">
           <center>
           <table><tr><td><center>
-            <span><b><s:text name="globals.copyright"/></b><br/>MetaindeX v<s:property value="mxVersion"/><br/><s:property value="mxFooterInfo"/></span>
-          
-          <center>
-          </td><td>
-		<a class="" href="https://secure.europeanssl.eu" target="_blank" style="">
-           			<img src="https://secure.europeanssl.eu/seal/metaindex.fr/150" 
-           			style="margin-left:3rem;" />
-           			
-		</a>	
-		</td>
+            <span><b><s:text name="globals.copyright"/></b> - MetaindeX <s:text name="mxRunMode"/> v<s:property value="mxVersion"/><br/><s:property value="mxFooterInfo"/></span>          
+          </center>
+          </td>
 		<td style="text-align:center;min-width:10rem;">
 		<span ><s:text name="welcome.requiredConfig" /></span>
 		</td></tr></table>

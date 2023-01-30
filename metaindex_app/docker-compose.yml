@@ -136,7 +136,7 @@ services:
       - mx.port=$HTTPS_PORT
       - mx.appname=webapp
       - mx.runmode=$RUNMODE      
-      - mx.footer.info=SIREN 538 805 508
+      - mx.footer.info=Production Env.
       - mx.userdata.path=$MX_USERDATA_PATH
       - mx.statistics.update_period_sec=$MX_STATISTICS_UPDATEPERIOD_SEC
       - mx.drive.sftp.port=$MX_PUBLIC_PORT_DRIVE_SFTP      

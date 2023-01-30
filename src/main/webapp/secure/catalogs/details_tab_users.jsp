@@ -5,6 +5,19 @@
 
  <script type="text/javascript" >
 
+
+ function details_updateUsersTab() {
+ 	let isAdmin =mx_helpers_isCatalogAdmin(_curCatalogDesc.userAccessRights);	
+ 	let navtabs=document.getElementById("details_catalog_"+_curCatalogDesc.id);
+ 	if (navtabs!=null) {
+ 		let usersTab=navtabs.querySelector(".users-tab");
+ 		if (isAdmin==true) { usersTab.style.display="block"; }
+ 		else { usersTab.style.display="none"; }
+ 	}
+ }
+
+
+ 
  function _handlerCatalogUsers(usersData) {
 	 let usersTable=document.getElementById("usersRolesTable");
 	 clearNodeChildren(usersTable);

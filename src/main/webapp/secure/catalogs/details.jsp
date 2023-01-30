@@ -179,17 +179,6 @@ function details_memGui() {
  }
 
 
- function details_updateUsersTab() {
- 	let isAdmin =mx_helpers_isCatalogAdmin(_curCatalogDesc.userAccessRights);	
- 	let navtabs=document.getElementById("details_catalog_"+_curCatalogDesc.id);
- 	if (navtabs!=null) {
- 		let usersTab=navtabs.querySelector(".users-tab");
- 		if (isAdmin==true) { usersTab.style.display="block"; }
- 		else { usersTab.style.display="none"; }
- 	}
- }
-
-
 function details_reconfirm_delete_catalog(catId) {
 	
 	function confirmAction() { ws_handlers_deleteCatalog(catId); }
@@ -309,6 +298,7 @@ function details_reconfirm_delete_catalog(catId) {
 				                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
 				             </span>
 						</a>
+						<c:if test="${mxRunMode != 'standalone'}" >
 						<a class="nav-item nav-link mx-tab-tiny-shadow users-tab" onclick="MxGuiCatalogUsersTab.updateUsersList();" 
 								id="nav-users-tab" data-toggle="tab" href="#nav-users" role="tab" aria-controls="nav-users" aria-selected="false"
 								style="display:none"><s:text name="Catalogs.users"></s:text>
@@ -318,16 +308,18 @@ function details_reconfirm_delete_catalog(catId) {
 				                   <i class="mx-help-icon far fa-question-circle" style=""></i>    
 				             </span>
 						</a>
+						</c:if>
 					</div>
 				</nav>
 				<div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
 					<s:include value="details_tab_overview.jsp" />
 					<s:include value="details_tab_mapping.jsp" />
 					<s:include value="details_tab_lexic.jsp" />
-					<s:include value="details_tab_perspectives.jsp" />	
-					<s:include value="details_tab_users.jsp" />					
+					<s:include value="details_tab_perspectives.jsp" />
+					<c:if test="${mxRunMode != 'standalone'}" >	
+					<s:include value="details_tab_users.jsp" />
+					</c:if> 					
 				</div>
 	
  </div>
- 
  

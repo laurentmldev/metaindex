@@ -26,7 +26,9 @@
 		 footer_showAlert(ERROR, "<s:text name="Catalogs.unableToEnterPleaseRefresh" />");
 		 return;
 	 }
+	 <c:if test="${mxRunMode != 'standalone'}" >
 	 MxGuiDetails.updateUsersTab();
+	 </c:if>
 	 //console.log("selected catalog '"+msg.catalogId+"'");	 
  }
 

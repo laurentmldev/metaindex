@@ -56,9 +56,7 @@ function buildStandaloneTarball() {
 
 }
 
-
-TARGETS_FOLDER=$DEV_FOLDER/mxtools/docker
-WAR_FILE=$TARGETS_FOLDER/$DEV_TARGET_NAME/mxwebapp/metaindex.war
+WAR_FILE=$DEV_DOCKER_PATH/$DEV_TARGET_NAME/mxwebapp/metaindex.war
 
 if [ ! -f "$WAR_FILE" ]; then
 	>&2 echo -e $RED"ERROR : WAR file not reachable : $NORMAL $WAR_FILE"$NORMAL
@@ -70,13 +68,13 @@ MX_VERSIONTAG=$(cd $TMP_FOLDER && unzip $WAR_FILE 2>&1 >/dev/null && grep "mx.ve
 MX_BUILDATE=$(cd $TMP_FOLDER && grep "mx.builddatetag=" WEB-INF/classes/metaindex.properties | cut -d= -f 2)
 DEV_MODE=$(cd $TMP_FOLDER && grep "mx.devmode=" WEB-INF/classes/metaindex.properties | cut -d= -f 2)
 APP_DATAPACK_NAME=$DEV_TARGET_NAME-$MX_VERSIONTAG
+echo "WAR File=$WAR_FILE"
 echo "MX_VERSIONTAG=$MX_VERSIONTAG"
 echo "MX_BUILDATE=$MX_BUILDATE"
 echo "DEV_MODE=$DEV_MODE"
 
-#buildServerTarball ${APP_DATAPACK_NAME}".server" $TARGETS_FOLDER
-buildStandaloneTarball ${APP_DATAPACK_NAME}".standalone" $TARGETS_FOLDER
-
+buildStandaloneTarball ${APP_DATAPACK_NAME}".standalone" $DEV_DOCKER_PATH
+buildServerTarball ${APP_DATAPACK_NAME}".server" $DEV_DOCKER_PATH
 
 
 exit 0

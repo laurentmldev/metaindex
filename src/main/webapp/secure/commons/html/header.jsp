@@ -53,7 +53,8 @@
   	Dev-Mode Active
   	</nav>
   </c:if>
-  <c:if test="${mxDevMode == false && currentUserProfile.role == 'ROLE_ADMIN'}" >
+  
+  <c:if test="${mxDevMode == false && mxRunMode != 'standalone' && currentUserProfile.role == 'ROLE_ADMIN'}" >
   	<nav class="navbar navbar-expand topbar static-top"
   			style="background:red;height:2rem;color:white;font-weight:bold;">
   	/!\ ADMIN User - Be careful

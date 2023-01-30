@@ -47,6 +47,8 @@
 	<div class="sidebar-brand-text counter-text app-title " 
 		style="text-align:center;width:100%;color:#ccc;font-size:0.8rem;padding:0;margin:0;line-height:0.5;">
 		MetaindeX
+		<div style="padding-top:1rem;line-height:1em;"><a  href="#" onclick="showTermsAndConditions();"><s:text name="signup.termsAndCondition"/></a>
+		</div>
 		<div style="width:100%;margin-top:0.5rem;"><center> <table><tr>
         	<td style="width:10px"><span id="upstream_light" style="display:none;opacity:0.3;color:white;font-size:0.8rem;margin:0;padding:0;text-shadow:none;">&uarr;</span></td>
         	<td style="width:10px"><span id="downstream_light" style="display:none;opacity:0.3;color:white;font-size:0.8rem;margin:0;padding:0;text-shadow:none;">&darr;</span></td>
@@ -55,6 +57,8 @@
 	
     </ul>
    
+    
+    
     <!-- End of Sidebar -->
     
      <div id="progressbar-template" class="progress mx-progress " style="display:none; margin:1em;">
@@ -65,6 +69,18 @@
 	 
 	 
     <script>
+    
+    function showTermsAndConditions() {
+  	  
+  	  let textNode=document.createElement("div");
+  	  textNode.innerHTML='<s:text name="signup.termsAndCondition.body" />';
+  	  textNode.style["font-size"]="0.8rem";
+  	  
+  	  MxGuiHeader.showInfoModal(
+    			"<s:text name='signup.termsAndCondition' />",
+    			textNode
+    			);
+    }
     
     var PROGRESS_FINISHED_DISAPPEAR_DELAY_SEC=3;
     

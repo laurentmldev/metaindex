@@ -46,15 +46,10 @@
             </div>
         
         	<div class="row" >
-        			<div style="width:100%;text-align:center">
-        			  <style type="text/css">a.eussl_seal:hover .eussl_bubble { visibility:visible; } a.eussl_seal .eussl_bubble { visibility:hidden; width:145.5px; height:200px; margin-left:3.75px; border:1px solid #6c81b3; border-radius:0 0 3px 3px; overflow:hidden; border-top:0; }</style>	 		 	
-					  <a class="eussl_seal eussltip" href="https://secure.europeanssl.eu" target="_blank" >
-					    <img src="https://secure.europeanssl.eu/seal/metaindex.fr/150" alt="Secured by EuropeanSSL.eu" />					    	         			
-					  </a>
-				    </div>	
-            	<div class="app-title mx-copyright" 
-            	style="" >
-            	<s:text name="globals.copyright"/> - MetaindeX v<s:property value="mxVersion"/><br/><s:property value="mxFooterInfo"/></div>
+        			<div class="app-title mx-copyright" 
+            	style="" >            	
+            	<span><b><s:text name="globals.copyright"/></b> - MetaindeX <s:text name="mxRunMode"/> v<s:property value="mxVersion"/><br/><s:property value="mxFooterInfo"/></span>
+            	</div>
             </div>
           </div>
         </div>

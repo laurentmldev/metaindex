@@ -18,8 +18,7 @@ GRAY="\\033[0;2m"
 # dev server
 DEV_FOLDER=$HOME/dev/workspace
 DEV_TARBALLS_PATH=$DEV_FOLDER/mxdeliveries
-DEV_TOOLS_PATH=$DEV_FOLDER/mxtools
-DEV_DOCKER_PATH=$DEV_FOLDER/mxtools/docker
+DEV_DOCKER_PATH=$DEV_FOLDER/metaindex
 DEV_TARGET_NAME=metaindex_app
 
 TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")

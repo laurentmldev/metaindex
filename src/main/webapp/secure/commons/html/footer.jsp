@@ -3,19 +3,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>  
   
   
-  <script>
-  function showTermsAndConditions() {
-	  
-	  let textNode=document.createElement("div");
-	  textNode.innerHTML='<s:text name="signup.termsAndCondition.body" />';
-	  textNode.style["font-size"]="0.8rem";
-	  
-	  MxGuiHeader.showInfoModal(
-  			"<s:text name='signup.termsAndCondition' />",
-  			textNode
-  			);
-  }
-  </script>
+  
   <!-- Footer -->
   		
       <footer class="sticky-footer bg-white">
@@ -25,8 +13,11 @@
         </div>
         <div class="container my-auto">
           <div class="mx-copyright text-center">
-            <div><s:text name="globals.copyright"/> - MetaindeX v<s:property value="mxVersion"/> <s:property value="mxFooterInfo"/></div>
-            <a href="#" onclick="showTermsAndConditions();"><s:text name="signup.termsAndCondition"/></a>            
+            <div>
+<span><b><s:text name="globals.copyright"/></b> - MetaindeX - <s:property value="mxRunMode"/> edition<br/>
+			v<s:property value="mxVersion"/> / <s:property value="mxFooterInfo"/></span>
+            </div>
+                       
           </div>
           
         </div>

@@ -260,17 +260,8 @@ function goBack() { window.location.href=origin; }
   <footer class="sticky-footer bg-white">
         <div class="container my-auto">
           <div class="mx-copyright text-center my-auto">
-            <span><b><s:text name="globals.copyright"/></b> - MetaindeX v<s:property value="mxVersion"/><br/><s:property value="mxFooterInfo"/></span>
-          </div>
-          <center>
-        <div>
-		<a class="" href="https://secure.europeanssl.eu" target="_blank" style="">
-           			<img src="https://secure.europeanssl.eu/seal/metaindex.fr/150" 
-           			style="margin-top:1rem" />
-           			
-		</a>	
-		</div>
-		</center>
+            <span><b><s:text name="globals.copyright"/></b> - MetaindeX <s:text name="mxRunMode"/> v<s:property value="mxVersion"/><br/><s:property value="mxFooterInfo"/></span>
+          </div>        
         </div>
        
        </footer>
