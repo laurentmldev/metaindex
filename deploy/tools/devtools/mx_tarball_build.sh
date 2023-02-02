@@ -25,6 +25,7 @@ function buildServerTarball() {
 	cd $TMP_FOLDER && tar Lczf $DEV_TARBALLS_PATH/$tarballName.tgz $tarballName && rm -rf $TMP_FOLDER
 
 	echo "generated SERVER $DEV_TARBALLS_PATH/$tarballName.tgz"
+	ls -l $DEV_TARBALLS_PATH/$tarballName.tgz
 }
 
 function buildStandaloneTarball() {
@@ -49,7 +50,7 @@ function buildStandaloneTarball() {
 	mkdir $TMP_FOLDER/$tarballName/ssl
 	cp -RL $targetsFolder/$DEV_TARGET_NAME/ssl/*.standalone $TMP_FOLDER/$tarballName/ssl
 
-	cd $TMP_FOLDER && zip -r $DEV_TARBALLS_PATH/$tarballName.zip $tarballName && cd - && rm -rf $TMP_FOLDER/$tarballName
+	cd $TMP_FOLDER && zip -qr $DEV_TARBALLS_PATH/$tarballName.zip $tarballName && cd - >/dev/null && rm -rf $TMP_FOLDER/$tarballName
 
 	echo "generated STANDALONE tarball:"
 	ls -l $DEV_TARBALLS_PATH/$tarballName.zip
@@ -67,13 +68,15 @@ rm -rf $TMP_FOLDER && mkdir -p $TMP_FOLDER
 MX_VERSIONTAG=$(cd $TMP_FOLDER && unzip $WAR_FILE 2>&1 >/dev/null && grep "mx.versiontag=" WEB-INF/classes/metaindex.properties | cut -d= -f 2)
 MX_BUILDATE=$(cd $TMP_FOLDER && grep "mx.builddatetag=" WEB-INF/classes/metaindex.properties | cut -d= -f 2)
 DEV_MODE=$(cd $TMP_FOLDER && grep "mx.devmode=" WEB-INF/classes/metaindex.properties | cut -d= -f 2)
-APP_DATAPACK_NAME=$DEV_TARGET_NAME-$MX_VERSIONTAG
+APP_DATAPACK_NAME=metaindex-$MX_VERSIONTAG
 echo "WAR File=$WAR_FILE"
 echo "MX_VERSIONTAG=$MX_VERSIONTAG"
 echo "MX_BUILDATE=$MX_BUILDATE"
 echo "DEV_MODE=$DEV_MODE"
 
+echo
 buildStandaloneTarball ${APP_DATAPACK_NAME}".standalone" $DEV_DOCKER_PATH
+echo
 buildServerTarball ${APP_DATAPACK_NAME}".server" $DEV_DOCKER_PATH
 
 

@@ -119,8 +119,25 @@ cp $DOCKER_ENV_ROOT.$RUNMODE $DOCKER_ENV_ROOT.current
 if [ "$DEBUG" == "1" ]; then
     cat  $DOCKER_ENV_ROOT.debug >> $DOCKER_ENV_ROOT.current
 elif [ "$RUNMODE" == "server" ]; then
-    echo "[Extracting config for for PROD SERVER env]"
-    ./tools/server_install/decode_secrets.sh >> $DOCKER_ENV_ROOT.current
+    echo "[Extracting config for PROD SERVER env]"
+    if [ ! -f "./tools/decode_secrets.sh" ]; then
+        >&2 echo "ERROR: to start a server edition, you must create a './tools/decode_secrets.sh' file.
+        This script shall display in stdout following docker env values for your specific environment:
+        MX_TARGET_KEYSTORE_PASSWORD=xxx
+        ELK_METAINDEX_PASSWD=xxx
+        ELK_KIBANA_PASSWORD=xxx
+        ELK_ELASTIC_PASSWORD=xxx
+        MYSQL_PASSWORD=xxx
+        MYSQL_ROOT_PASSWORD=xxx
+        MX_GOOGLE_MAILER_USER=xxx
+        MX_GOOGLE_MAILER_PASSWD=xxx
+        MX_ADMIN_MAILER_RECIPIENT=xxx
+        MX_PAYMENT_LOGIN=xxx
+        MX_PAYMENT_PASSWORD=xxx"
+
+        exit 1
+    fi
+    ./tools/decode_secrets.sh >> $DOCKER_ENV_ROOT.current
     if [ "$?" != "0" ]; then
         >&2 echo "ERROR: unable to extract prod config params, sorry"
         exit 1

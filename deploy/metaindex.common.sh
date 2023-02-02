@@ -6,17 +6,28 @@ WAIT_STARTUP_SEC=600
     
 MODULES_LIST="mxwebapp mxproxy mxmysql mxelsrc mxkibana mxpma"
 VOLUMES_LIST="mxmysql-data mxmysql-backups mxelsrc-data mxelsrc-config mxelsrc-logs mxelsrc-backups"
-WSL_HOME_ROOT="/mnt/c/Users"
+WSL_WIN_USERSPATH="/mnt/c/Users"
 function checkWslConfig() {
 
     isWsl=0
-    userName=$(id -un)
-    if [ ! -d "$WSL_HOME_ROOT/$userName" ]; then
+    userHomeFolder=$(id -un)
+    
+    # check if we are in Windows (WSL) env
+    if [ ! -d "$WSL_WIN_USERSPATH" ]; then
         return
     fi
-    echo "[creating Windows WSL config]"
+
+    if [ -z "$WINHOME" ]; then     
+        WINHOME=$(wslpath  "$(wslvar USERPROFILE)")   
+        if [ -z "$WINHOME" ] || [ ! -d "$WINHOME" ]; then
+            >&2 echo "ERROR: unable to find Windows Home folder within $WINHOME."            
+            exit 1
+        fi
+    fi
+
+    echo "[creating Windows WSL config within $WINHOME]"
     
-    wslconfig_target=$WSL_HOME_ROOT/$userName/.wslconfig
+    wslconfig_target=$WINHOME/.wslconfig
     wslconfig_source=$(dirname $0)/wslconfig
     if [ ! -f "$wslconfig_target" ]; then
         cp $wslconfig_source $wslconfig_target
@@ -27,17 +38,18 @@ function checkWslConfig() {
     else
         diff $wslconfig_target $wslconfig_source >/dev/null
         if [ "$?" != "0" ]; then
-            >&2 echo "Existing wslconfig file ($wslconfig_target)  differs from expected one ($wslconfig_source), please report contents from into it and start again."
+            >&2 echo "Existing wslconfig file ($wslconfig_target) differs from expected one ($wslconfig_source), please report contents from into it and start again."
             exit 1
         fi   
     fi
 
-    mkdir -p $WSL_HOME_ROOT/$userName/Documents/metaindex
+    mkdir -p $WINHOME/Documents/metaindex/app
     if [ "$?" != "0" ]; then
-        >&2 echo "ERROR: unable to create catalogs drive as $WSL_HOME_ROOT/$userName/Documents/metaindex, aborting."
+        >&2 echo "ERROR: unable to create catalogs drive as $WINHOME/Documents/metaindex, aborting."
         exit 1
     fi
-    perl -pi -e "s/MX_USERDATA_HOSTPATH=.*/MX_USERDATA_HOSTPATH=\/mnt\/c\/Users\/$userName\/Documents\/metaindex/" .env.standalone
+
+    perl -pi -e "s%MX_USERDATA_HOSTPATH=.*%MX_USERDATA_HOSTPATH=$WINHOME/Documents/metaindex%" .env.standalone
     if [ "$?" != "0" ]; then
         >&2 echo "ERROR: unable to fix catalogs drive path into file .env.standalone, aborting."
         exit 1

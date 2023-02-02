@@ -19,7 +19,7 @@ GRAY="\\033[0;2m"
 DEV_FOLDER=$HOME/dev/workspace
 DEV_TARBALLS_PATH=$DEV_FOLDER/mxdeliveries
 DEV_DOCKER_PATH=$DEV_FOLDER/metaindex
-DEV_TARGET_NAME=metaindex_app
+DEV_TARGET_NAME=deploy
 
 TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
 TMP_FOLDER=$HOME/tmp/mx
