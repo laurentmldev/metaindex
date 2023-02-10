@@ -6,7 +6,7 @@ script_dir=$(dirname $0)
 
 source $script_dir/metaindex.common.sh
 
-RUNMODE=server
+RUNMODE=standalone
 DEBUG=
 DOCKER_ENV_ROOT=".env"
 STATUS_ONLY=0
@@ -56,7 +56,7 @@ function usage() {
     echo "      OPTIONS:"
     echo "        -h : show help"
     echo "        -d <0|1>: if 1 start in debug mode (mxwebapp not launched and needed ports open for run in debug mode)"
-    echo "        -m <mode> : start metaindex in given mode: server|standalone (default is server)"
+    echo "        -m <mode> : start metaindex in given mode: server|standalone (default is standalone)"
     echo "        -s: simply give status of current conf"    
     echo
 }

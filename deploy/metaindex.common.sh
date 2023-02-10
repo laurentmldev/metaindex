@@ -9,25 +9,40 @@ VOLUMES_LIST="mxmysql-data mxmysql-backups mxelsrc-data mxelsrc-config mxelsrc-l
 WSL_WIN_USERSPATH="/mnt/c/Users"
 function checkWslConfig() {
 
-    isWsl=0
-    userHomeFolder=$(id -un)
+    RESTART=0
     
     # check if we are in Windows (WSL) env
     if [ ! -d "$WSL_WIN_USERSPATH" ]; then
         return
     fi
 
-    if [ -z "$WINHOME" ]; then     
-        WINHOME=$(wslpath  "$(wslvar USERPROFILE)")   
-        if [ -z "$WINHOME" ] || [ ! -d "$WINHOME" ]; then
-            >&2 echo "ERROR: unable to find Windows Home folder within $WINHOME."            
-            exit 1
-        fi
+    if [ -z "$USERPOFILE" ]; then     
+        >&2 echo "ERROR: variable 'USERPROFILE' not set. Please execute cmd.exe and run following command: \
+'setx WSLENV USERPROFILE/up' and start again." 
+        exit 1
+    fi
+    if [ ! -d "$USERPOFILE" ]; then     
+        >&2 echo "ERROR: variable 'USERPROFILE' does not point to a valid folder: $USERPROFILE" 
+        exit 1
     fi
 
-    echo "[creating Windows WSL config within $WINHOME]"
+    echo "[creating Windows WSL config within $USERPROFILE]"
     
-    wslconfig_target=$WINHOME/.wslconfig
+    mkdir -p $USERPROFILE/Documents/metaindex/app
+    if [ "$?" != "0" ]; then
+        >&2 echo "ERROR: unable to create catalogs drive as $USERPROFILE/Documents/metaindex, aborting."
+        exit 1
+    fi
+
+    perl -pi -e "s%MX_USERDATA_HOSTPATH=.*%MX_USERDATA_HOSTPATH=$USERPROFILE/Documents/metaindex%" .env.standalone
+    if [ "$?" != "0" ]; then
+        >&2 echo "ERROR: unable to fix catalogs drive path into file .env.standalone, aborting."
+        exit 1
+    else
+        echo "Catalogs files contents will be in your Documents/metaindex/<catalog> folder."
+    fi
+
+    wslconfig_target=$USERPROFILE/.wslconfig
     wslconfig_source=$(dirname $0)/wslconfig
     if [ ! -f "$wslconfig_target" ]; then
         cp $wslconfig_source $wslconfig_target
@@ -35,26 +50,22 @@ function checkWslConfig() {
             >&2 echo "ERROR: unable to create wslconfig file $wslconfig_target, aborting."
             exit 1
         fi   
-    else
-        diff $wslconfig_target $wslconfig_source >/dev/null
-        if [ "$?" != "0" ]; then
-            >&2 echo "Existing wslconfig file ($wslconfig_target) differs from expected one ($wslconfig_source), please report contents from into it and start again."
-            exit 1
-        fi   
+        RESTART=1
     fi
 
-    mkdir -p $WINHOME/Documents/metaindex/app
+    diff $wslconfig_target $wslconfig_source >/dev/null
     if [ "$?" != "0" ]; then
-        >&2 echo "ERROR: unable to create catalogs drive as $WINHOME/Documents/metaindex, aborting."
+        >&2 echo "Existing wslconfig file ($wslconfig_target) differs from expected one ($wslconfig_source), \
+please add in it the following contents, restart your computer launch again MetaindeX:"
+        cat $wslconfig_source
+        sleep 5
         exit 1
-    fi
+    fi   
 
-    perl -pi -e "s%MX_USERDATA_HOSTPATH=.*%MX_USERDATA_HOSTPATH=$WINHOME/Documents/metaindex%" .env.standalone
-    if [ "$?" != "0" ]; then
-        >&2 echo "ERROR: unable to fix catalogs drive path into file .env.standalone, aborting."
-        exit 1
-    else
-        echo "Catalogs files contents will be in your Documents/metaindex/<catalog> folder."
+    if [ "$RESTART" == "1" ]; then
+        echo "MetaindeX config for Windows is done now. Please restart your computer and launch again MetaindeX."
+        sleep 5
+        exit 0
     fi
 
 }
