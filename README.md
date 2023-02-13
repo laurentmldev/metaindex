@@ -44,15 +44,18 @@ Ready-to-use tarballs are available hereunder.
 
 ### Installation Steps on W10
 
-    - download and install Docker Desktop application
-    - ensure that Docker demo application runs properly
     - install WSL OS "Debian"    
+	- Power shell
+	- wsl.exe -d Debian --install
+    - download and install latest Docker Desktop application (tested with version 4.16) https://www.docker.com/products/docker-desktop/
+    - ensure that Docker demo application runs properly
             
 Then you can install and run application:
     - download tarball of latest version (.zip)
     - unzip it in your Documents/metaindex/app folder
 
 #### Start Application on W10
+    - if not done yet, start docker Desktop application
     - double-click on MetaindeX.START link (you'll have to restart your computer the first time)
 
 #### Start Application on Linux
@@ -90,6 +93,8 @@ NOTE: for a running Server edition, you'll need to do following additional thing
 
 MetaindeX app is a JE22 WebServer with following components:
 
+![Alt text](relative/path/to/img.jpg?raw=true "Title")
+
 Client Side:
     - HTML5/javascript (jsp) pages
     - Colors styles based on 'less' processing
@@ -102,7 +107,7 @@ Server Side:
     - Apache sshd server for SFTP access to catalog drive
     - Integrated Kibana app for statistics as a self-service
     - 
-    
+
 ## References
 
 MetaindeX functionalities and usage has been described through several academical publications:
