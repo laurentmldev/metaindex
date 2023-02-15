@@ -10,20 +10,20 @@ You will typically want to use it if your data is too big for smooth run with Ex
 ## Features
 
 MetaindeX can be install in 2 versions:
-    - Standalone edition: it is simpler to deploy and allows a single user to work with MetaindeX offline (no need to be connected to internet)
+    - Standalone edition: it is simpler to deploy and allows a single user to work with MetaindeX offline (no need to be connected to internet except for tutorial videos)
     - Server edition: needs more configuration setup and is aiming to allow several users to work together on a central server, generally deployed on internet or intranet of your organization.
 
-Following Features are available in Standalone edition:    
+Following Features are available in both Standalone and Server editions:
     - Import data from CSV/Excel/OpenOffice
     - Export data to CSV/Gephi
-    - Navigate through your data either in cards or table view
-    - Modern HTML5/javascript interface
-    - Powerful Search Engine
-    - Designed to handle heavy contents (100k+ elements)
-    - Associate raw documents and web links to your contents (typically pictures) 
-    - Handle connections between elements to generate graphs with Gephi
+    - Cards & Table Navigation Mode
+    - Lightweight client HTML5/javascript interface
+    - Powerful Search Engine (lucene)
+    - Robust to heavy contents (100k+ elements)
+    - Include raw data (ex:pictures) and external web links to documents
+    - Build connections between elements to generate graphs with Gephi
     - Integrates Kibana (from ElasticStack) statistics module
-    - Customize interface to your contents
+    - Easy interface customization to match your data model 
     - Multi-language (English and French available for now)
     - Automatic Quizz Generator
     
@@ -90,7 +90,6 @@ NOTE: for Server edition, you'll need to do following additional things before b
     
 NOTE2: Secrets management needs still some improvements, and might change in upcoming versions.
 
-
 ## Architecture Overview
 
 MetaindeX app is a JE22 WebServer application, with following components:
@@ -115,5 +114,5 @@ Server Side:
 ## References
 
 MetaindeX functionalities and usage has been described through several academical publications:
-    - 
+    - TBC
 
