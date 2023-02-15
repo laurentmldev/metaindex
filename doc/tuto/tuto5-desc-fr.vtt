@@ -1,0 +1,114 @@
+WEBVTT
+
+
+00:00:00.000 --> 00:00:02.500 line:50% 
+*** Tutoriels MetaindeX ***
+
+00:00:00.000 --> 00:00:02.500 line:50% 
+5- Configurer des champs énumérés
+
+00:00:02.500 --> 00:00:09.000 line:50%
+Dans ce tutoriel, nous allons apprendre à contraindre 
+les valeurs d'un champ à une liste énumérée, 
+permettant une édition par choix parmi une liste ou cases à cocher.
+-
+Je vais utiliser le catalogue <b>demo_artists</b> créé durant le <b>Tutoriel 2</b>.
+
+00:00:09.000 --> 00:00:13.500 line:50%
+Les explications peuvent aller assez vite,
+vous pouvez mettre la vidéo sur pause, et respirer!
+
+00:00:13.500 --> 00:00:16.000 line:80%
+je commence par me connecter à MetaindeX
+
+00:00:16.000 --> 00:00:20.000 line:80%
+J'ai pu accéder à cette page en cliquant sur le bouton <b>Sign in</b>
+en haut à droite de la page d'acceuil MetaindeX
+
+00:00:20.000 --> 00:00:27.500 line:80%
+j'utilise le bouton <b>Enter</b> pour accéder au contenu du catalogue 
+
+00:00:27.500 --> 00:00:31.000 line:80%
+et je clique sur le guitariste de jazz Wes Montgomery
+
+00:00:31.000 --> 00:00:38.000 line:100%
+je veux que le champ <b>gender</b> ait une valeur parmi <b>woman</b>, <b>man</b>, <b>undefined</b>
+
+00:00:38.000 --> 00:00:45.000 line:100%
+si je clique sur <b>Edit Mode</b> et modifie ce champ,
+une zone de saisie de texte libre m'est proposée
+
+00:00:45.000 --> 00:00:50.000 line:100%
+je souhaite avoir à la place une <b>liste de choix</b> à sélectionner
+
+00:00:50.000 --> 00:00:55.000 line:100%
+pour ce, je me dirige vers le panneau des catalogues (en haut à gauche)
+
+00:00:55.000 --> 00:01:00.000 line:100%
+puis ouvre le panneau <b>Fields</b>
+
+00:01:00.000 --> 00:01:05.000 line:100%
+ici sont listés tous les champs utilisés dans ce catalogue
+
+00:01:06.000 --> 00:01:10.000 line:100%
+avec le nom et le type du champ
+
+00:01:10.000 --> 00:01:15.000 line:100%
+mais également 2 colonnes nommées <b>Enumeration</b> et <b>Multi</b>
+
+00:01:15.000 --> 00:01:20.000 line:100%
+<b>Enumeration</b> peut contenir une liste des valeurs acceptables, séparées par des virgules
+
+00:01:20.000 --> 00:01:25.000 line:100%
+<b>Multi</b> définit si plusieurs de ces valeurs en même temps sont autorisées
+
+00:01:25.000 --> 00:01:38.000 line:100%
+je définis donc ma liste de valeurs pour le champ <b>gender</b>
+<i>séparées par des ','</i>
+
+00:01:38.000 --> 00:01:43.000 line:100%
+de retour dans le contenu du catalogue avec le bouton <b>Enter</b>
+
+00:01:43.000 --> 00:01:47.000 line:100%
+je clique de nouveau sur le guitariste de jazz Wes Montgomery, dont le genre est "man"
+
+00:01:47.000 --> 00:01:52.000 line:100%
+j'active le <b>Mode Edition</b> et clique sur le champ <b>gender</b> pour le modifier
+
+00:01:52.000 --> 00:02:03.000 line:100%
+en effet, je peux choisir désormais parmi la liste des valeurs attendues
+
+00:02:03.000 --> 00:02:08.000 line:100%
+maintenant je veux pouvoir choisir plusieurs valeurs à la fois 
+
+00:02:08.000 --> 00:02:11.000 line:100%
+je retourne donc dans la configuration du champ,
+
+00:02:11.000 --> 00:02:22.000 line:100%
+et j'active l'option <b>Multi</b> pour ce champ <b>gender</b>
+
+00:02:22.000 --> 00:02:30.000 line:100%
+de retour à Wes Montgomery dans le contenu du catalogue,
+
+00:02:30.000 --> 00:02:34.000 line:100%
+je réactive le <b>Mode Edition</b> et modifie le champ <b>gender</>
+
+00:02:34.000 --> 00:02:50.000 line:100%
+je peux désormais sélectionner plusieurs valeurs à la fois
+
+00:02:53.000 --> 00:03:06.000 line:100%
+je désactive cette option <b>Multi</b> 
+
+00:03:06.000 --> 00:03:15.000 line:100%
+et voilà ...
+
+00:03:14.500 --> 00:03:25.000 line:30% 
+*** The End ***
+
+00:03:16.500 --> 00:03:25.000 line:30% 
+Liens utiles sous cette video 
+-
+Voir aussi les autres tutos MetaindeX :
+- graphiques statistiques avec Kibana
+- graphes et connexions avec Gephi
+- et plus encore ...

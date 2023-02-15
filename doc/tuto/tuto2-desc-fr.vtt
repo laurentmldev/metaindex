@@ -1,0 +1,255 @@
+WEBVTT
+
+
+00:00:00.000 --> 00:00:02.500 line:50% 
+*** Tutoriels MetaindeX ***
+
+00:00:00.000 --> 00:00:02.500 line:50% 
+2- Excel/Csv importer et exporter
+
+00:00:02.500 --> 00:00:09.000 line:50%
+dans ce tutoriel, nous allons apprendre :
+- à injecter dans MetaindeX un fichier .ods et des images associées,
+- à télécharger depuis MetaindeX un fichier .csv pour travailler hors ligne
+
+00:00:09.000 --> 00:00:14.500 line:50%
+Les explications peuvent aller assez vite,
+vous pouvez mettre la vidéo sur pause, et respirer!
+
+00:00:14.500 --> 00:00:16.000 line:80%
+mon fichier .ods décrit des artistes que j'aime bien
+
+00:00:21.000 --> 00:00:24.000 line:100%
+la colonne <b>id</b> est un identifiant unique 
+
+00:00:24.000 --> 00:00:27.000 line:100%
+<i>MetaindeX en crée un pour vous si absent</i>
+
+00:00:27.000 --> 00:00:31.000 line:100%
+puis suivent le type et le nom de l'artiste
+
+00:00:31.000 --> 00:00:42.000 line:100%
+puis la date de naissance <b>birthdate</b>
+<b>ATTENTION</b> les colonnes de date doivent être de <b>type 'texte'</b>
+
+00:00:42.000 --> 00:00:45.000 line:100%
+sinon elles risquent d'être ignorées lors de l'import 
+
+00:00:46.000 --> 00:00:51.000 line:100%
+l'année de naissance <b>birthyear</b> est déduite de <b>birthdate</b>
+
+00:00:51.000 --> 00:00:56.000 line:100%
+l'avoir en colonne séparée permet de faciliter 
+certains traitements statistiques avec Kibana
+
+00:00:56.000 --> 00:01:01.000 line:100%
+puis vient le genre : <b>gender</b>
+
+00:01:01.000 --> 00:01:15.000 line:100%
+suit un nom de fichier : il s'agit d'un portrait de l'artiste,
+obtenu sur Wikipedia
+
+00:01:15.000 --> 00:01:22.000 line:100%
+Je l'utiliserai pour agrémenter mes artistes de
+leur portrait dans MetaindeX
+
+00:01:25.000 --> 00:01:27.000 line:100%
+la référence à Wikipedia : <b>portrait_source</b>
+
+00:01:27.000 --> 00:01:31.000 line:100%
+j'imagine ensuite le nombre de guitares possédées par chacun
+
+00:01:31.000 --> 00:01:40.000 line:100%
+ainsi que leur artiste favori 
+<i>en utilisant l'<b>id</b> dudit artiste</i>
+
+00:01:40.000 --> 00:01:44.000 line:100%
+pur hasard, il se trouve que chacun adore un artiste présent dans la liste
+
+00:01:44.000 --> 00:01:50.000 line:100%
+je vais maintenant me connecter à MetaindeX
+
+00:01:50.000 --> 00:01:55.000 line:80%
+J'ai pu accéder à cette page en cliquant sur le bouton <b>Sign in</b>
+en haut à droite de la page d'acceuil MetaindeX 
+
+00:01:58.000 --> 00:02:05.000 line:100%
+je crée un nouveau catalogue pour accueillir mes données
+
+00:02:05.000 --> 00:02:10.000 line:100%
+<i>voir <b>Tuto 1</b> pour plus de détails sur cette étape</i>
+
+00:02:12.200 --> 00:02:15.200 line:100%
+la boîte jaune est juste un message de quotas
+<i>j'ai atteind le nombre maximum de catalogues</i>
+
+00:02:15.200 --> 00:02:18.000 line:100%
+j'accède au contenu du catalogue
+
+00:02:20.000 --> 00:02:25.000 line:100%
+le catalogue est vide, je veux y injecter le contenu de mon fichier .ods
+
+00:02:25.000 --> 00:02:33.000 line:100%
+je fais glisser le fichier vers mon catalogue
+
+00:02:37.000 --> 00:02:40.000 line:100%
+je sélectionne les colonnes que je souhaite importer (côté gauche)
+
+00:02:40.000 --> 00:02:44.000 line:100%
+j'y associe un champ du catalogue (côté droit)
+
+00:02:44.000 --> 00:02:47.000 line:100%
+mon nouveau catalogue n'a aucun champ pour l'instant
+
+00:02:47.000 --> 00:02:49.000 line:100%
+MetaindeX va les créer lors de l'import
+
+00:02:49.000 --> 00:02:52.000 line:100%
+la prochaine fois, cette assignation sera automatique
+
+00:02:52.000 --> 00:02:57.000 line:100%
+choisir le bon type de données est important pour les futures analyses statistiques
+<i>voir <b>Tuto 3</b> créer des graphiques statistiques</b>
+
+00:02:57.000 --> 00:03:00.000 line:100%
+<b>DATE</b> pour les dates
+<i>rappelez-vous elles doivent être de type 'texte' dans le fichier xls/ods</i>
+
+00:03:00.000 --> 00:03:05.000 line:100%
+<b>INTEGER</b> ou <b>FLOAT</b> pour les nombres
+
+00:03:05.000 --> 00:03:13.000 line:100%
+<b>IMAGE_URL</b> pour les images,
+cela peut être également un permalink pointant n'importe où sur le web 
+
+00:03:15.000 --> 00:03:20.000 line:100%
+le type <b>LINK</b> pour des liens vers d'autres documents du catalogue
+<i>la valeur est alors l'<b>id</b> unique du document référencé</b>
+
+00:03:20.000 --> 00:03:22.000 line:100%
+je clique alors sur le bouton vert <b>Go</b> pour commencer le chargement
+
+00:03:22.000 --> 00:03:24.500 line:100%
+MetaindeX commence par créer les nouveaux champs
+
+00:03:25.000 --> 00:03:27.000 line:100%
+puis importe le contenu du fichier et crée les documents correspondants
+
+00:03:27.000 --> 00:03:33.000 line:100%
+mes données sont désormais dans le catalogue,
+chaque carte correspond à un artiste 
+
+00:03:33.000 --> 00:03:38.000 line:100%
+mais l'image semble être manquante ...
+
+00:03:38.000 --> 00:03:43.000 line:100%
+c'est normal car je n'ai pas encore transmis mes images
+
+00:03:43.000 --> 00:03:48.000 line:100%
+donc maintenant je vais importer les images dans le drive du catalogue
+
+00:03:48.000 --> 00:03:54.000 line:100%
+<b>Attention</b>: je sélectionne les images elles-mêmes, 
+pas le dossier qui les contient!
+
+00:03:54.000 --> 00:04:04.000 line:100%
+puis je les glisse simplement vers le contenu du catalogue
+
+00:04:04.000 --> 00:04:08.000 line:100%
+je peux maintenant rafraîchir la vue (Ctrl+R) 
+
+00:04:10.000 --> 00:04:15.000 line:100%
+et l'image est bien là!
+
+00:04:15.000 --> 00:04:19.000 line:100%
+je veux nom des artistes comme <b>titre des cartes</b> 
+et leur portrait comme <b>miniature</b>
+
+00:04:19.000 --> 00:04:22.000 line:100% 
+je retourne sur le panneau <b>Overview</b> du catalogue (via le lien en haut à gauche)
+
+00:04:22.000 --> 00:04:30.000 line:100%
+je configure le paramètre <b>Cards Title</b> 
+avec les champs <b>first_name</b> et <b>family_name</b>
+
+00:04:30.000 --> 00:04:38.000 line:100%
+puis un séparateur '-' et le <b>type</b> de l'artiste
+
+00:04:38.000 --> 00:04:45.000 line:100%
+et j'utilise le champ <b>portrait</b> comme miniature
+
+00:04:45.000 --> 00:04:48.000 line:100%
+je retourne dans le contenu du catalogue pour voir les changements
+
+00:04:48.000 --> 00:04:55.000 line:100%
+et bien cela est beaucoup mieux je trouve
+
+00:05:00.000 --> 00:05:05.000 line:100%
+demain je me rends dans une obscure salle d'archives coupée du monde
+et dois travailler hors ligne sur les <b>femmes nées avant 1900</b>
+
+00:05:05.000 --> 00:05:10.000 line:100%
+je vais donc extraire les données correspondantes en fichier CSV
+
+00:05:10.000 --> 00:05:17.000 line:100%
+tout d'abord je dois les retrouver, via une réquête dans la barre de recherche en haut
+<i>voir <b>Tuto 1</b> pour une introduction aux requêtes</b>
+
+00:05:17.000 --> 00:05:25.000 line:100%
+<i>"femmes nées avant 1900"</i>:
+<b>Requête</b> : gender:woman AND birthdate:&lt;1900
+
+00:05:25.000 --> 00:05:35.000 line:100%
+3 artistes correspondent: 
+Georges Sand, Virginia Woolf and Agatha Christie
+
+00:05:35.000 --> 00:05:38.000 line:100%
+maintenant je veux télécharger un CSV pour ces seules 3 artistes
+
+00:05:38.000 --> 00:05:41.000 line:100%
+je clique sur la gauche // <b>Import/Export Items</b> // <b>Download CSV</b>
+
+00:05:41.000 --> 00:05:50.000 line:100%
+je ne prends que les champs qui m'intéressent
+
+00:05:50.000 --> 00:05:55.000 line:100%
+puis confirme avec le bouton vert pour démarrer la génération du CSV
+
+00:05:55.000 --> 00:06:00.000 line:100%
+ue fois le fichier prêt, je clique sur le lien pour le télécharger
+
+00:06:05.000 --> 00:06:10.000 line:100%
+je peux maintenant en modifier le contenu hos ligne (ici avec OpenOffice)
+
+00:06:16.000 --> 00:06:20.000 line:100%
+je découvre dans mes archives que Georges Sand était une fanatique de guitares
+
+00:06:20.000 --> 00:06:25.000 line:100%
+donc je modifie la cellule correspondante
+
+00:06:25.000 --> 00:06:30.000 line:100%
+et je sauvegarde mon fichier CSV local
+
+00:06:35.000 --> 00:06:40.000 line:100%
+une fois de retour, pour synchroniser mes données, 
+je refais glisser le fichier CSV vers le contenu du catalogue
+
+00:06:40.000 --> 00:06:45.000 line:100%
+cette fois-ci les champs sont automatiquement reconnus
+
+00:06:45.000 --> 00:06:50.000 line:100%
+et je clique sur le bouton vert pour démarrer la mise à jour du catalogue
+
+00:06:50.000 --> 00:06:55.000 line:100%
+je constate ici que mes données ont été correctement synchronisées
+
+00:07:00.000 --> 00:07:20.000 line:30% 
+*** The End ***
+
+00:07:02.000 --> 00:07:20.000 line:40% 
+Liens utiles sous cette video 
+-
+Voir aussi les autres tutoriels MetaindeX :
+- graphiques statistiques avec Kibana
+- graphes and connexions avec Gephi
+- et plus encore ...

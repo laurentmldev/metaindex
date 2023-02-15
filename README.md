@@ -1,18 +1,19 @@
 # MetaindeX
 
 MetaindeX is a free open-source cataloger.
-It can be seen as a low-cost and accessible way of managing small or heavy well-organized datasets
-(i.e. where contents are already clean and arranged by metadata).
+It can be seen as aready-to-deploy application for managing small to heavy datasets.
+It supposes though that imported data is already properly organized
+(i.e. where contents are already clean and arranged by metadata) and does not offer embedded features to clean your data.
 
-It is typically useful if your data is too big for Excel or if you want statistics and plots about its contents.
+You will typically want to use it if your data is too big for smooth run with Excel or if you want statistics and plots about its contents.
 
 ## Features
 
-MetaindeX has 2 build flavours: standalone and server.
-    - Standalone edition is simpler to deploy and allows a single user to work with MetaindeX
-    - Server edition needs more configuration setup and is aiming to allow several users to work together on same server
+MetaindeX can be install in 2 versions:
+    - Standalone edition: it is simpler to deploy and allows a single user to work with MetaindeX offline (no need to be connected to internet)
+    - Server edition: needs more configuration setup and is aiming to allow several users to work together on a central server, generally deployed on internet or intranet of your organization.
 
-Standalone and Server Edition Features:
+Following Features are available in Standalone edition:    
     - Import data from CSV/Excel/OpenOffice
     - Export data to CSV/Gephi
     - Navigate through your data either in cards or table view
@@ -23,13 +24,13 @@ Standalone and Server Edition Features:
     - Handle connections between elements to generate graphs with Gephi
     - Integrates Kibana (from ElasticStack) statistics module
     - Customize interface to your contents
-    - Multi-language (En and Fr available for now)
+    - Multi-language (English and French available for now)
     - Automatic Quizz Generator
     
-Server Edition only:
+Server Edition offers following additional features:
     - Manage users accounts and sessions
     - Manage Quota
-    - Control access rights to catalogs
+    - Control users access rights to catalogs
 
 ## Startup Guide
 
@@ -64,16 +65,17 @@ Then you can install and run application:
 
 ## Building MetaindeX from sources
 
-Building metaindex project can only be done from Linux (or W10/WSL) environment:
+Building metaindex project has only been tested under Linux environment:
     - open project under Eclipse
     - export project as a WAR file into <prj_root>/deploy/mxwebapp/metaindex.war
     - run building script: $ cd <prj_root>/deploy && ./tools/devtools/mx_tarball_build.sh
 
-NOTE: for a running Server edition, you'll need to do following additional things:
+NOTE: for Server edition, you'll need to do following additional things before biulding tarballs:
     - create valid file <prj_root>/deploy/ssl/mxwebapp.server/metaindex.p12
     - create valid file <prj_root>/deploy/ssl/mxproxy.server/metaindex.crt
     - create valid file <prj_root>/deploy/ssl/mxproxy.server/metaindex.key
     - create a <prj_root>/deploy/tools/decode_secrets.sh script displaying following infos on stdout:
+
         MX_TARGET_KEYSTORE_PASSWORD=xxx
         ELK_METAINDEX_PASSWD=xxx
         ELK_KIBANA_PASSWORD=xxx
@@ -86,27 +88,29 @@ NOTE: for a running Server edition, you'll need to do following additional thing
         MX_PAYMENT_LOGIN=xxx
         MX_PAYMENT_PASSWORD=xxx
     
-    NOTE2: Secrets management is not currently well handled, this shall be improved in upcoming versions.
+NOTE2: Secrets management needs still some improvements, and might change in upcoming versions.
 
 
 ## Architecture Overview
 
-MetaindeX app is a JE22 WebServer with following components:
+MetaindeX app is a JE22 WebServer application, with following components:
 
-![Alt text](relative/path/to/img.jpg?raw=true "Title")
+![Architeture Overview](doc/visuals/archi.png?raw=true "MetaindeX Architecture Overview")
 
 Client Side:
     - HTML5/javascript (jsp) pages
     - Colors styles based on 'less' processing
     - Live communication with server based on websockets 
+    - Integrated Connection to Kibana tool (Elasticstack)
+    - SFTP server to access catalogs' drive (mainly useful for server edition, since for standalone edition files can directly be accessed on local file system)
 
 Server Side:
-    - Spring framework
+    - Spring framework for access control
     - MySQL database to store users personnal data and catalogs configuration
     - Elasticsearch to store catalogs contents
-    - Apache sshd server for SFTP access to catalog drive
     - Integrated Kibana app for statistics as a self-service
-    - 
+    - Apache sshd server for SFTP access to catalog drive
+    
 
 ## References
 

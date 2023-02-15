@@ -1,0 +1,113 @@
+WEBVTT
+
+
+00:00:00.000 --> 00:00:02.500 line:50% 
+*** MetaindeX Tutorials ***
+
+00:00:00.000 --> 00:00:02.500 line:50% 
+5- Configure fields enumerations
+
+00:00:02.500 --> 00:00:09.000 line:50%
+In this tutorial, we'll see how to configure field enumeration, 
+allowing easier editing with dropdown list and checkboxes.
+-
+I will use the <b>demo_artists</b> catalog already imported in <b>Tutorial 2</b>.
+
+00:00:09.000 --> 00:00:13.500 line:50%
+Explanations might go a bit fast sometimes, 
+so feel free to pause the video, and breath!
+
+00:00:13.500 --> 00:00:16.000 line:80%
+First I log in MetaindeX app
+
+00:00:16.000 --> 00:00:20.000 line:80%
+I've accessed this login page by clicking on <b>Sign-in</b> button,
+top right of MetaindeX welcome page
+
+00:00:20.000 --> 00:00:27.500 line:80%
+I click <b>Enter</b> button to access catalog's contents 
+
+00:00:27.500 --> 00:00:31.000 line:80%
+and click on jazz guitarist Wes Montgomery
+
+00:00:31.000 --> 00:00:38.000 line:100%
+I want field <b>gender</b> to be either <b>woman</b>, <b>man</b>, <b>undefined</b>
+
+00:00:38.000 --> 00:00:45.000 line:100%
+if I click on <b>Edit Mode</b> and modify this value, 
+I just get a free-text input for now 
+
+00:00:45.000 --> 00:00:50.000 line:100%
+what I want is a <b>list of choices to click on</b>
+
+00:00:50.000 --> 00:00:55.000 line:100%
+to configure that, I click on catalog's panel (top left)
+
+00:00:55.000 --> 00:01:00.000 line:100%
+and go to <b>Fields</b> tab
+
+00:01:00.000 --> 00:01:05.000 line:100%
+here are listed all fields used in the catalog
+
+00:01:06.000 --> 00:01:10.000 line:100%
+with the <b>Name</b> and <b>Type</b>
+
+00:01:10.000 --> 00:01:15.000 line:100%
+but also 2 columns named <b>Enumeration</b> and <b>Multi</b>
+
+00:01:15.000 --> 00:01:20.000 line:100%
+<b>Enumeration</b> can contain a <b>coma-separated list</b> of acceptable values
+
+00:01:20.000 --> 00:01:25.000 line:100%
+<b>Multi</b> says if several of those values are possible at the same time
+
+00:01:25.000 --> 00:01:38.000 line:100%
+so I define a set of allowed values for the field <b>gender</b>
+<i>separated with ','</i>
+
+00:01:38.000 --> 00:01:43.000 line:100%
+I enter now into catalogs contents pressing <b>Enter</b> button
+
+00:01:43.000 --> 00:01:47.000 line:100%
+I open jazz guitarist Wes Montgomery, whos <b>gender</b> is "man"
+
+00:01:47.000 --> 00:01:52.000 line:100%
+I activate <b>Edit Mode</b> and click on <b>gender</b> field
+
+00:01:52.000 --> 00:02:03.000 line:100%
+so indeed, now I can choose among a list of possible values
+
+00:02:03.000 --> 00:02:08.000 line:100%
+now I want to allow several values at the same time,
+
+00:02:08.000 --> 00:02:11.000 line:100%
+I go back to <b>Catalogs panel</b>, <b>Fields</b> tab,
+
+00:02:11.000 --> 00:02:22.000 line:100%
+I activate the <b>Multi</b> option for field <b>gender</b>
+
+00:02:22.000 --> 00:02:30.000 line:100%
+I go back to Wes Montgomery in catalog's contents
+
+00:02:30.000 --> 00:02:34.000 line:100%
+I activate again <b>Edit Mode</b> and change <b>gender</> value
+
+00:02:34.000 --> 00:02:50.000 line:100%
+I can now select several values at the same time
+
+00:02:53.000 --> 00:03:06.000 line:100%
+now I go back to disable <b>Multi</b> option 
+
+00:03:06.000 --> 00:03:15.000 line:100%
+well, that's it folks.
+
+00:03:14.500 --> 00:03:25.000 line:30% 
+*** The End ***
+
+00:03:18.500 --> 00:03:25.000 line:30% 
+Useful links available below this video 
+-
+See also other MetaindeX tutorials for 
+- statistics with Kibana
+- graphs with Gephi
+- and more ...

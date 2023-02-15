@@ -1,0 +1,350 @@
+WEBVTT
+
+
+00:00:00.000 --> 00:00:03.000 line:50% 
+*** Tutoriels MetaindeX ***
+
+00:00:00.000 --> 00:00:03.000 line:50% 
+3- Graphiques Statistiques avec Kibana
+
+00:00:03.000 --> 00:00:09.000 line:50%
+Nous allons créer des graphiques statistiques à partir de notre catalogue.
+Ce tutorial est assez dense, faites des pauses et prenez le temps
+de comprendre pas à pas chaque étape.
+
+00:00:09.000 --> 00:00:14.000 line:50%
+Nous allons apprendre à faire un graphique en camembert
+ainsi qu'un histogramme chronologique. 
+
+00:00:14.000 --> 00:00:18.000 line:80%
+je commence par me connecter à MetaindeX
+
+00:00:24.000 --> 00:00:27.000 line:80%
+j'entre dans mon catalogue <b>demo_artists</b> 
+<i>celui créé lors du <b>Tuto 2 : Excel import/export</b>"</i>  
+
+00:00:27.000 --> 00:00:33.000 line:80%
+pour <b>l'histogramme chronologique</b>, je veux voir 
+comment la proportion hommes/femmes évolue par tranches de 25 ans, en utilisant:
+
+00:00:33.000 --> 00:00:39.000 line:80%
+<b>birthyear</b> : pour regrouper les artistes tous les 25 ans 
+<b>gender</b> : <b>woman</b>, <b>man<b> or <b>undefined<b>
+
+00:00:39.000 --> 00:00:48.000 line:80%
+Pour le <b>camembert</b> : 
+<b>nb_guitars</b> : combien de guitares chaque artiste possède
+<b>type</b> : <b>writer</b>, <b>actor</b>, <b>filmdirector</b> ou <b>guitarist<b>
+
+00:00:48.000 --> 00:00:57.000 line:80%
+Ainsi pour Mme Linda Hamilton (aka Sarah Connor) nous avons :
+- <b>gender</b> : woman
+- <b>type</b> : actor
+- <b>nb_guitars</b> : 4
+- <b>birthyear</b> : 1964
+
+00:00:57.000 --> 00:01:02.000 line:80%
+je souhaite que Kibana ordonne les artistes chronologiquement par date de naissance  (<b>birthdate</b>).
+
+00:01:02.000 --> 00:01:05.000 line:80%
+pour cela je vais dans le panneau <b>Overview</b>
+
+00:01:05.000 --> 00:01:20.000 line:80%
+et règle le paramètre <b>Kibana Timefield</b> sur <b>birthdate</b> 
+
+00:01:10.000 --> 00:01:20.000 line:80%
+<i>par défaut les documents sont ordonnés selon la date de dernière modification</i> 
+
+00:01:20.000 --> 00:01:23.000 line:80%
+je veux maintenant aller dans le module de statistique
+
+00:01:23.000 --> 00:01:25.000 line:80%
+je retourne dans le contenu du catalogue
+
+00:01:25.000 --> 00:01:30.000 line:80%
+puis dans le panneau de gauche // <b>Statistics</b> //  <b>Go to Kibana</b> 
+
+00:01:31.000 --> 00:01:33.000 line:80%
+cela ouvre un nouvel onglet dans le navigateur
+
+00:01:33.000 --> 00:01:38.000 line:80%
+Kibana est une application tierce de la suite ElasticStack, 
+et fonctionne sur la même base de données que MetaindeX 
+
+00:01:38.000 --> 00:01:44.000 line:80%
+je me connecte avec les mêmes email et  mot de passe  
+ 
+00:01:44.000 --> 00:01:47.000 line:100%
+puisque Kibana fonctionne sur la même base de données que MetaindeX
+
+00:01:47.000 --> 00:01:51.000 line:100%
+je vais y retrouver le contenu de mon catalogue
+
+00:01:51.000 --> 00:01:56.000 line:100%
+les principaux modules sont accessibbles en haut à gauche
+
+00:01:56.000 --> 00:02:01.000 line:100%
+Kibana présente 3 modules principaux :
+- <b>Discover</b> : vue d'ensemble des données
+- <b>Dashboard</b> : regrouper les graphiques dans un tableau de bord
+- <b>Visualize</b> : créer des graphiques
+
+00:02:01.000 --> 00:02:06.000 line:100%
+<b>Discover</b> (vue d'ensemble) est pour l'instant vide
+
+00:02:06.000 --> 00:02:11.000 line:100%
+parce-que Kibana recherche les documents en remontant au maximum il y a 15mins ...
+tandis que les <b>birthdates</b> datent de plusieurs décades. 
+
+00:02:11.000 --> 00:02:20.000 line:100%
+je configure donc <b>absolute start-date</b> à l'année 1700 
+pour y inclure les <b>birthdates</b> de mes artistes
+
+00:02:20.000 --> 00:02:23.000 line:100%
+je rafraîchis en cliquant sur le bouton <b>Refresh</b> en haut à droite
+
+00:02:23.000 --> 00:02:28.000 line:100%
+je vois alors une simple distribution des artistes en fonction de leur date de naissance
+
+00:02:25.000 --> 00:02:28.000 line:100%
+<i>souvenez-vous que nous avons demandé à Kibana d'ordonner les artistes selon le champ <b>birthdate</b></i>  
+
+00:02:28.000 --> 00:02:35.000 line:100%
+chaque ligne contient les données d'un artiste
+
+00:02:35.000 --> 00:02:40.000 line:100%
+je veux créer un graphique, je vais donc dans le module <b>Visualize</b> 
+
+00:02:40.000 --> 00:02:44.000 line:100%
+je clique sur le gros bouton bleu to démarrer le guide de création
+
+00:02:44.000 --> 00:02:47.000 line:100%
+Kibana propose de nombreux types de graphiques
+
+00:02:47.000 --> 00:02:50.000 line:100%
+je veux commencer par un camembert (pie chart) montrant la répartition des artistes par type
+
+00:02:50.000 --> 00:02:52.000 line:100%
+<i>je confirme le catalogue à utiliser</i>
+
+00:02:53.000 --> 00:02:56.000 line:100%
+le graphiques Kibana sont principalement configurés selon 2 étapes:
+
+00:02:56.000 --> 00:03:02.000 line:100%
+1- grouper les documents dans des "paniers" nommés <b>buckets</b> 
+
+00:03:02.000 --> 00:03:09.000 line:100%
+2- pour chaque bucket, en faire ressortir une donnée aggrégée à afficher, nommée <b>metric</b>
+
+00:03:05.000 --> 00:03:09.000 line:100%
+<i>la métrique la plus simple est le nombre de documents par bucket</i>
+
+00:03:09.000 --> 00:03:14.000 line:100%
+je veux regrouper les artistes selon leur <b>type</b> 
+
+00:03:14.000 --> 00:03:17.000 line:100%
+je définis donc des buckets basés sur le champ <b>type</b>
+
+00:03:17.000 --> 00:03:20.000 line:100%
+je choisis l'aggrégation de type <b>Terms</b>
+
+00:03:20.000 --> 00:03:24.000 line:100%
+je ne veux pas que  Kibana considère chaque mot séparément
+
+00:03:24.000 --> 00:03:30.000 line:100%
+le texte <i>"éléphant bleu"</i> ne doit donner qu'une seule part du camembert,
+non pas 2 parts, <i>"éléphant"</i> et <i>"bleu"</i>
+
+00:03:30.000 --> 00:03:34.000 line:100%
+pour cela je choisis <b>type.keyword</b> plutôt que <b>type</b> 
+
+00:03:34.000 --> 00:03:37.000 line:100%
+je clique sur le bouton <b>Update</b> en bas à droite
+pour rafraîchir le graphique
+
+00:03:38.000 --> 00:03:41.000 line:100%
+je vois que 32% des artistes sont des écrivains (writers)
+
+00:03:41.000 --> 00:03:43.000 line:100%
+et 29% sont des acteurs
+
+00:03:43.000 --> 00:03:50.000 line:100%
+je préfère un vrai camembert plutôt qu'un donut, et voir les stats,
+j'active donc les options correspondantes
+
+00:03:50.000 --> 00:03:55.000 line:100%
+je clique de nouveau sur <b>Update</b> pour rafraîchir
+
+00:03:55.000 --> 00:04:00.000 line:100%
+ça me convient et je veux souvegarder le graphique en ligne,
+je clique donc sur le bouton bleu <b>Save</b> en haut à gauche
+
+00:04:00.000 --> 00:04:05.000 line:100%
+je lui donne un nom
+
+00:04:05.000 --> 00:04:10.000 line:100%
+et je confirme en cliquant sur le bouton <b>Save</b>
+ 
+00:04:25.000 --> 00:04:29.000 line:100%
+maintenant je veux voir combien de guitares chaque groupe possède
+
+00:04:29.000 --> 00:04:32.000 line:100%
+je dois donc remplacer la métrique <b>Count</b>
+ 
+00:04:32.000 --> 00:04:39.000 line:100%
+par la somme (<b>Sum</b>) de <b>nb_guitars</b>
+
+00:04:39.000 --> 00:04:45.000 line:100%
+ainsi chaque part du camembert représente le nombre
+total de guitares possédées par les artistes de chaque groupe
+
+00:04:45.000 --> 00:04:47.000 line:100%
+je rafraîchis le graphique
+
+00:04:47.000 --> 00:04:52.000 line:100%
+je vois que la majorité des guitares est possédée par des acteurs (44%)
+
+00:04:52.000 --> 00:04:56.000 line:100%
+en d'autres termes, la somme du champ <b>nb_guitars</b> des acteurs
+
+00:04:56.000 --> 00:05:00.000 line:100%
+représente 44% de la somme du champ <b>nb_guitars</b> de tous les artistes 
+
+00:05:00.000 --> 00:05:05.000 line:100%
+je sauvegarde également ce graphique
+
+00:05:05.000 --> 00:05:10.000 line:100%
+j'active l'option <b>Save as new</b> pour en créer un nouveau 
+plutôt que modifier le précédent
+
+00:05:10.000 --> 00:05:15.000 line:100%
+je le nomme et je confirme
+
+00:05:15.000 --> 00:05:19.000 line:100%
+pour retrouver mes graphiques sauvegardés, je clique sur <b>Visualize</b> en haut à gauche
+
+00:05:20.000 --> 00:05:25.000 line:100%
+maintenant je veux créer un histogramme
+montrant l'évolution chronologique du genre de mes artistes
+
+00:05:25.000 --> 00:05:28.000 line:100%
+je clique sur <b>Vertical Bar</b>
+
+00:05:28.000 --> 00:05:32.000 line:100%
+<i>je confirme le catalogue à utiliser</i>
+
+00:05:32.000 --> 00:05:40.000 line:100%
+je groupe les artistes par quarts de siècle sur l'axe X
+
+00:05:40.000 --> 00:05:45.000 line:100%
+avec l'aggrégation <b>Histogram</b>
+
+00:05:45.000 --> 00:05:49.000 line:100%
+appliquée au champ <b>birthyear</b> 
+
+00:05:49.000 --> 00:05:53.000 line:100%
+en groupant les artistes par sections de 25 ans
+
+00:05:53.000 --> 00:05:56.000 line:100%
+et je clique sur <b>Update</b> pour voir le résultat
+
+00:05:56.000 --> 00:06:04.000 line:100%
+je vois pour l'instant l'évolution du nombre d'artistes 
+par tranches (buckets) de 25 ans
+
+00:06:00.000 --> 00:06:04.000 line:100%
+<i>il y a 21 artistes pour le bucket "1950-1975"</b>
+
+00:06:07.000 --> 00:06:15.000 line:100%
+maintenant je vais subdiviser chaque tranche de 25 ans
+en sous-paniers groupant les artistes par genre
+
+00:06:15.000 --> 00:06:20.000 line:100%
+en utilisant l'aggrégation <b>Terms</b> (la même que pour le camembert)
+
+00:06:20.000 --> 00:06:25.000 line:100% 
+cette fois-ci j'utilise le champ <b>gender.keyword</b>
+
+00:06:25.000 --> 00:06:28.000 line:100%
+et rafraîchis la vue 
+
+00:06:33.000 --> 00:06:50.000 line:100%
+pas mal, mais je n'aime pas ces couleurs,
+je vais utiliser bleu pour les garçons, rose pour les filles et vert pour "undefined" (original non?)
+
+00:06:51.000 --> 00:06:59.000 line:100%
+je vois donc qu'il y a bien plus d'hommes que de femmes dans ce corpus,
+bien que cela s'améliore pour les 50 dernières années 
+
+00:06:59.000 --> 00:07:10.000 line:100%
+je sauvegarde ce graphique également
+
+00:07:15.000 --> 00:07:20.000 line:100%
+je retourne à la vue globale du module <b>Visualize</b>
+
+00:07:20.000 --> 00:07:24.000 line:100%
+je veux voir ces 3 graphiques ensembles sur un même tableau de bord
+
+00:07:24.000 --> 00:07:27.000 line:100%
+dans le menu à gauche, je clique sur <b>Dashboard</b>
+
+00:07:27.000 --> 00:07:30.000 line:100%
+puis le bouton bleu pour en créer un nouveau
+
+00:07:30.000 --> 00:07:33.000 line:100%
+puis sur le lien <b>Add an existing object</b>
+
+00:07:33.000 --> 00:07:38.000 line:100%
+je sélectionne alors mes graphiques un à un pour les ajouter au tableau de bord
+
+00:07:45.000 --> 00:07:55.000 line:100%
+je raffine l'agencement des graphiques 
+
+00:08:10.000 --> 00:08:18.000 line:100%
+puis sauvegarde le tableau de bord
+
+00:08:18.000 --> 00:08:23.000 line:100%
+ces graphiques sont <b>mis à jour automatiquement</b>
+chaque fois que des changements sont fais dans MetaindeX 
+
+00:08:23.000 --> 00:08:30.000 line:100%
+de retour dans MetaindeX
+je vais par exemple supprimer tous les acteurs
+
+00:08:30.000 --> 00:08:35.000 line:100%
+dans la zone de saisie en haut de l'écran
+je rentre la requête "<b>type:actor</b>"
+
+00:08:35.000 --> 00:08:40.000 line:100%
+je trouve 25 acteurs, et je les supprime tous
+via le menu contextuel en haut
+
+00:08:40.000 --> 00:08:47.000 line:100%
+attention, il n'y a pas de retour possible!
+
+00:08:47.000 --> 00:08:49.000 line:100%
+les acteurs sont supprimés
+
+00:08:49.000 --> 00:08:53.000 line:100%
+je vide la requête,
+et il me reste désormais 60 artists 
+
+00:08:53.000 --> 00:08:55.000 line:100%
+de retour dans Kibana
+
+00:08:55.000 --> 00:09:03.000 line:100%
+je rafraîchis le tableau de bord et vois effectivement
+que les graphiques sont mis à jour!
+
+00:09:03.000 --> 00:09:06.000 line:100%
+et voilà ... !
+
+00:09:07.000 --> 00:09:18.000 line:30% 
+*** The End ***
+
+00:09:09.000 --> 00:09:18.000 line:30% 
+Liens utiles sous cette video 
+-
+Voir aussi les autres tutos MetaindeX : 
+- graphes et connexions
+- and more ...

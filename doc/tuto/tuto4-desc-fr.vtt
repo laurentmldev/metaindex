@@ -1,0 +1,338 @@
+WEBVTT
+
+
+00:00:00.000 --> 00:00:02.000 line:50% 
+*** Tutoriels MetaindeX ***
+
+00:00:00.000 --> 00:00:02.000 line:50% 
+4- Graphes et connexions avec Gephi
+
+00:00:02.000 --> 00:00:10.000 line:50%
+Dans ce tutoriel, nous allons explorer les connexions entre nos données, 
+à l'aide de l'outil Open-Source <b>Gephi</b> pour dessiner des graphes.
+-
+Je vais utiliser le catalogue <b>demo_artists</b> créé durant le <b>Tutoriel 2</b>.
+
+00:00:10.000 --> 00:00:13.500 line:50%
+Ce tutorial est assez dense, faites des pauses et prenez le temps
+de comprendre pas à pas chaque étape.
+
+00:00:13.500 --> 00:00:18.000 line:100%
+examinons tout d'abord notre fichier de données
+<i>même fichier que dans le <b>Tuto 2</b></i>
+
+00:00:18.000 --> 00:00:30.000 line:100%
+les valeurs de la colonne <b>favorite_artist_id</b> sont des <b>ids</b> d'autres artistes
+
+00:00:30.000 --> 00:00:37.000 line:100%
+je veux tracer des graphes montrant ces liens
+et étudier ainsi les relations entre les artistes
+
+00:00:37.000 --> 00:00:40.000 line:100%
+je commence par me connecter à MetaindeX
+
+00:00:40.000 --> 00:00:44.000 line:100%
+J'ai pu accéder à cette page en cliquant sur le bouton <b>Sign in</b>
+en haut à droite de la page d'acceuil MetaindeX
+
+00:00:44.000 --> 00:00:50.000 line:100%
+dans le catalogue <b>demo_artists</b>, je vais dans le panneau <b>Fields</b>,
+listant les champs utilisés par les documents du catalogue.
+
+00:00:50.000 --> 00:00:54.000 line:100%
+le type du champ <b>favorite_artist_id</b> est <b>LINK</b>
+
+00:00:54.000 --> 00:00:59.000 line:100%
+ainsi MetaindeX sait que la valeur est l'identifiant d'un autre document
+
+00:00:59.000 --> 00:01:03.000 line:100%
+j'ouvre maintenant le catalogue avec le bouton <b>Enter</b>  
+puis clique sur Marcel Pagnol
+
+00:01:03.000 --> 00:01:08.000 line:100%
+la valeur affichée de <b>favorite_artist_id</b> est un <b>nom</b> (Isaac Asimov),
+
+00:01:08.000 --> 00:01:13.000 line:100%
+mais un survol de ce champ nous montre la valeur sous-jacente 
+(l'<b>id</b> de cet artiste)
+
+00:01:13.000 --> 00:01:18.000 line:100%
+en cliquant dessus je saute à Isaac Asimov, avec effectivement l'<b>id</b> correspondant.
+
+00:01:18.000 --> 00:01:24.000 line:100%
+la requête courante contient maintenant l'id de Isaac Asimov, je la vide donc
+pour afficher à nouveau tous les documents
+
+00:01:25.000 --> 00:01:31.000 line:100%
+donc chaque artiste référence un autre artiste via ce champ
+
+00:01:33.000 --> 00:01:39.200 line:100%
+je veux créer un fichier de graphe que je puisse ouvrir avec l'outil <b>Gephi</b> 
+je clique sur le panneau de gauche // <b>Import/Export Items</b> // <b>Download GEXF</b> 
+
+00:01:39.200 --> 00:01:44.900 line:100%
+chaque artiste sera un <b>noeud</b> du graphe, et chaque <b>favorite_artist_id</b> un <b>lien</b> du graphe. 
+
+00:01:44.900 --> 00:01:48.000 line:100%
+je sélectionne les champs à injecter dans les noeuds
+
+00:01:48.000 --> 00:01:52.000 line:100%
+et choisis les liens à utiliser : <b>favorite_artist_id</b>
+
+00:01:52.000 --> 00:02:02.000 line:100%
+je clique sur le bouton <b>Start</b> pour générer le fichier
+
+00:02:05.000 --> 00:02:13.000 line:100%
+ue fois le fichier généré, je clique sur le lien pour le télécharger
+
+00:02:13.000 --> 00:02:23.000 line:100%
+je vais maintenant dans <b>Gephi</b>. C'est un outil open-source
+pour visualiser des graphes, facile à installer.
+<i>Voir le lien en bas de cette page.</i> 
+
+00:02:23.000 --> 00:02:33.000 line:100%
+j'ouvre le fichier GEXF tout juste téléchargé
+
+00:02:33.000 --> 00:02:37.000 line:100%
+85 noeuds sont détectés (85 artistes)
+et 85 liens (1 artiste favori pour chacun)
+
+00:02:37.000 --> 00:02:41.000 line:100%
+je choisis graphe <b>mixed</b> pour préserver la direction des liens
+et appuie sur OK pour charger le contenu
+
+00:02:41.000 --> 00:02:45.000 line:100%
+<b>Gephi</b> se présente sous 3 modules,
+visibles en haut de l'écran
+
+00:02:45.000 --> 00:02:50.000 line:100%
+- <b>Overview</b> : pour controler le graphe
+
+00:02:52.000 --> 00:02:59.000 line:100%
+- <b>Data Laboratory</b> : pour explorer and transformer les données 
+<i>similaire à OpenRefine</i>
+
+00:02:59.000 --> 00:03:03.000 line:100%
+- <b>Preview</b> : pour personnaliser le rendu et exporter (pdf,svg,jpg)
+
+00:03:03.000 --> 00:03:11.000 line:100%
+de retour au module Overview, le panneau <b>Graph</b> est une visualisation rapide du graphe
+
+00:03:11.000 --> 00:03:15.000 line:100%
+le panneau <b>Appearance</b>  contrôle la couleur et la taille des noeuds et des liens
+
+00:03:15.000 --> 00:03:19.000 line:100%
+le panneau <b>Layout</b> contrôle la disposition des noeuds
+
+00:03:19.000 --> 00:03:21.500 line:100%
+je peux utiliser la souris pour zoomer et se déplacer
+
+00:03:21.500 --> 00:03:25.000 line:100%
+je veux colorer les noeuds en fonction de leur <b>type</b>
+
+00:03:25.000 --> 00:03:29.000 line:100%
+je choisis l'outil <b>colors</b> / mode <b>partition</b>  
+
+00:03:29.000 --> 00:03:34.000 line:100%
+et je sélectionne le champ <b>type</b> field pour la partition
+
+00:03:34.000 --> 00:03:37.000 line:100%
+<b>Gephi</b> affiche les groupes détectés
+
+00:03:37.000 --> 00:03:41.000 line:100%
+je peux appuyer sur <b>Apply</b> pour voir le résultat 
+
+00:03:41.000 --> 00:03:45.000 line:100%
+je veux maintenant que la taille des noeuds soit proportionnelle à <b>nb_guitars</b> 
+
+00:03:45.000 --> 00:03:50.000 line:100%
+je choisis l'outil <b>size</b> / mode <b>Ranking</b> 
+
+00:03:50.000 --> 00:03:57.000 line:100%
+et sélectionne le champ <b>nb_guitars</b> pour la partition
+et clique de nouveau sur <b>Apply</b>
+
+00:03:57.000 --> 00:04:01.000 line:100%
+les noeuds les plus gros sont les artistes avec le plus de guitares
+
+00:04:01.000 --> 00:04:05.000 line:100%
+si plutôt je veux une taille proportionnelle au <b>nombre de liens</b>
+
+00:04:05.000 --> 00:04:09.000 line:100%
+je change <b>Ranking</b> pour être basé sur <b>In-Degree</b>
+(nombre de liens entrant)
+
+00:04:09.000 --> 00:04:14.000 line:100%
+ainsi les noeuds les plus gros sont ceux le plus
+référencés par le champ <b>favorite_artists_id</b>
+
+00:04:14.000 --> 00:04:23.000 line:100%
+j'affiche le label des noeuds (ici nom et type des artistes)
+et ajuste leur taille
+
+00:04:23.000 --> 00:04:28.000 line:100%
+je vois ici que le guitariste flamenco <i>Paco de Lucia</i> a beaucoup de succès!
+
+00:04:30.000 --> 00:04:34.000 line:100%
+je veux améliorer la disposition des noeuds, 
+car pour l'instant c'est assez confus
+
+00:04:34.000 --> 00:04:37.000 line:100%
+au chargement, <b>Gephi</b> dispose les noeuds au hasard
+
+00:04:37.000 --> 00:04:42.000 line:100%
+plusieurs algorithmes sont disponibles pour améliorer cette disposition,
+mais il n'y a pas de <b>solution parfaite</i>
+
+00:04:42.000 --> 00:05:05.000 line:100%
+il est courant de devoir en enchaîner plusieurs pour être satisfait ...
+
+00:05:05.000 --> 00:05:12.000 line:100%
+je peux aussi déplacer les noeuds à la main si besoin
+
+00:05:12.000 --> 00:05:16.000 line:100%
+cela me convient, je vais maintenant finaliser le rendu puis exporter le graphe
+
+00:05:16.000 --> 00:05:22.000 line:100%
+je change pour le module <b>Preview</b> 
+
+00:05:22.000 --> 00:05:26.000 line:100%
+il existe plusieurs profiles prédéfinis,
+j'aime bien le <i>fond noir</i>, pas vous?
+
+00:05:26.000 --> 00:05:31.000 line:100%
+je clique sur <b>Refresh</b> pour mettre à jour le graphe 
+
+00:05:31.000 --> 00:05:34.000 line:100%
+j'ai besoin de réinitialiser le niveau de zoom
+
+00:05:34.000 --> 00:05:39.000 line:100%
+il faut également améliorer la taille des labels
+
+00:05:39.000 --> 00:05:46.000 line:100%
+je désactive l'option <b>proportional labels</b>,
+pour garder les labels à taille constante
+
+00:05:46.000 --> 00:05:51.000 line:100%
+et je ne vois pas les liens,
+je donne une valeur plus grande au paramètre <b>Thickness</b> des liens
+
+00:05:51.000 --> 00:05:56.000 line:100%
+et je clique de nouveau sur <b>Refresh</b>
+
+00:05:56.000 --> 00:06:00.000 line:100%
+ce résultat me convient
+
+00:06:00.000 --> 00:06:05.000 line:100%
+je veux le sauvegarder au format SVG ...
+
+00:06:10.000 --> 00:06:20.000 line:100%
+maintenant je veux étudier les relations 
+entre les groupes d'artistes (actor,guitarist,filmdirector,writer)
+
+00:06:20.000 --> 00:06:25.000 line:100%
+je ferme le projet Gephi actuel et <b>retourne dans MetaindeX</b>
+
+00:06:31.000 --> 00:06:36.000 line:100%
+je clique de nouveau sur <b>GEXF download</b>
+
+00:06:36.000 --> 00:06:39.000 line:100%
+en utilisant l'option <b>Group mode</b>
+
+00:06:39.000 --> 00:06:45.000 line:100%
+je veux regrouper les artistes appartenant à un même <b>type</b> 
+
+00:06:45.000 --> 00:06:50.000 line:100%
+cela va créer donc un noeud pour chaque valeur possible de <b>type</b>
+(actor,guitarist,filmdirector,writer)
+
+00:06:50.000 --> 00:06:54.000 line:100%
+et les liens seront aggrégés aux groupes correspondants
+
+00:06:54.000 --> 00:06:58.000 line:100%
+j'utilise toujours le champ <b>favorite_artist_id</b> pour les liens
+
+00:07:00.000 --> 00:07:15.000 line:100%
+je télécharge ce nouveau fichier et l'importe dans <b>Gephi</b>
+
+00:07:15.000 --> 00:07:20.000 line:100%
+(le nom de ce fichier contient 'groupby-type')  
+
+00:07:20.000 --> 00:07:25.000 line:100%
+seulement 4 noeuds sont détectés cette fois, comme attendu
+(actor,guitarist,filmdirector,writer)
+
+00:07:25.000 --> 00:07:30.000 line:100%
+je choisis toujours <b>mixed</b> pour conserver l'orientation des liens
+et je clique sur <b>OK</b>
+
+00:07:30.000 --> 00:07:40.000 line:100%
+j'affiche les labels des noeuds et augmente leur taille
+
+00:07:40.000 --> 00:07:45.000 line:100%
+je colore les noeuds en gris avec l'outils <b>colors</b> / mode <b>Unique</b>
+
+00:07:45.000 --> 00:07:50.000 line:100%
+et je mets leur taille proportionnelle à leur attribut <b>size</b>
+avec l'outil <b>taille</b> / mode <b>Ranking</b> 
+
+00:07:50.000 --> 00:07:56.000 line:100%
+l'attribut <b>size</b> est le nombre d'artists contenu dans chaque groupe
+
+00:07:56.000 --> 00:08:05.000 line:100%
+il a été généré par MetaindeX lors de la génération du fichier 
+
+00:08:05.000 --> 00:08:10.000 line:100%
+je l'utilise donc pour dessiner des noeuds plus gros s'ils comprennent plus d'artistes
+
+00:08:10.000 --> 00:08:15.000 line:100%
+j'augmente la taille maximum pour rendre les écarts plus visibles
+
+00:08:15.000 --> 00:08:20.000 line:100%
+je vois là qu'il y a davantage d'acteurs et écrivains 
+que de guitaristes et réalisateurs 
+
+00:08:20.000 --> 00:08:35.000 line:100%
+j'essaie d'améliorer la disposition des noeuds
+
+00:08:37.000 --> 00:08:47.000 line:100%
+maintenant je vais dans le module <b>Preview</b> pour finaliser le rendu et préparer l'export 
+
+00:08:47.000 --> 00:08:55.000 line:100%
+j'active les labels et clique sur <b>Refresh</b>
+
+00:08:55.000 --> 00:09:00.000 line:100%
+et désactive la taille du label proportionnelle à la taille du noeud
+
+00:09:00.000 --> 00:09:05.000 line:100%
+j'augmente à la main la taille des labels
+
+00:09:10.000 --> 00:09:15.000 line:100%
+les liens vont dans le <b>sens des aiguilles d'une montre</b>
+
+00:09:15.000 --> 00:09:20.000 line:100%
+je déduis donc la direction des liens sur la base de leur courbure
+
+00:09:20.000 --> 00:09:35.000 line:100%
+je rends les liens plus épais 
+à l'aide de l'option <b>Rescale weight</b> et des paramètres associés
+
+00:09:35.000 --> 00:09:42.000 line:100%
+je vois donc grâce à ce graphe que seulement
+quelques acteurs aiment des écrivains
+
+00:09:42.000 --> 00:09:47.000 line:100%
+et aucun écrivain n'aime un acteur
+
+00:09:50.000 --> 00:10:05.000 line:100%
+je sauvegarde également ce graphe
+
+00:10:12.000 --> 00:10:25.000 line:30% 
+*** The End ***
+
+00:10:14.000 --> 00:10:25.000 line:30% 
+Liens utiles sous cette video 
+-
+Voir aussi les autres tutos MetaindeX :
+- graphiques statistiques avec Kibana
+- et bien plus ...

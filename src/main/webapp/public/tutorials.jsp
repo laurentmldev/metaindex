@@ -31,7 +31,7 @@
   
   <script type="text/javascript"> 
  
-var TUTO_VIDEO_BASEURI="/webapp/public/commons/media/video/tuto/";
+var TUTO_VIDEO_BASEURL="<s:text name="tutorials.baseurl" />";
 var tuto_contents=null;
 var tuto_title=null;
 var tuto_desc=null;
@@ -76,8 +76,8 @@ function activateTuto(buttonObj,tutoid,tutoTitle,tutoDesc,tutoLinks) {
 	
 	tuto_title.innerHTML=tutoTitle;
 	tuto_desc.innerHTML=tutoDesc;
-	tuto_video_src.src=TUTO_VIDEO_BASEURI+tutoid+".m4v";
-	tuto_video_captions.src=TUTO_VIDEO_BASEURI+tutoid+"-desc-"+language_shortname+".vtt";
+	tuto_video_src.src=TUTO_VIDEO_BASEURL+tutoid+".m4v";
+	tuto_video_captions.src=TUTO_VIDEO_BASEURL+tutoid+"-desc-"+language_shortname+".vtt";
 	tuto_video_captions.srclang=language_shortname;
 	tuto_video.load();
 	tuto_contents.style.display="block";	
