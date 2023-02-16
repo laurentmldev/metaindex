@@ -133,7 +133,7 @@ MetaindeX app is a JE22 WebServer application with a basic MVC approach, synthet
 ![Architeture Overview Figure](doc/visuals/archi.png?raw=true "MetaindeX Architecture Overview")
 
 Client Side:
-*  HTML5/javascript pages, :x: special framework used (might be part of a future evolution)
+*  HTML5/javascript pages, no special framework used (might be part of a future evolution)
 *  Colors styling based on 'less' processing
 *  Live communication with server based on websockets 
 *  Integrated Connection to Kibana tool (Elasticstack)
@@ -148,6 +148,9 @@ Server Side:
 
 ## References
 
-MetaindeX functionalities and usage has been described through several academical publications:
-*  TBC
+MetaindeX functionalities and usage has been described through some academical publications:
+*  [HistoInformatics 2021](https://ceur-ws.org/Vol-2981/): [Specifying a Generic Working Environment on Historical Data, based on MetaindeX, Kibana and Gephi](https://ceur-ws.org/Vol-2981/paper1.pdf)
+* [Link Archives 2021](https://ceur-ws.org/Vol-3019/): [ A Ready-to-Use Solution to Explore Linked Archives with MetaindeX and Gephi](https://ceur-ws.org/Vol-3019/LinkedArchives_2021_paper_8.pdf)
+* [FOSDEM 2022](https://archive.fosdem.org/2022/) [MetaindeX and user requirements for a generic catalog application](https://archive.fosdem.org/2022/schedule/event/open_research_metaindex/)
+    * ![Video Presentation](https://video.fosdem.org/2022/D.research/open_research_metaindex.webm)
 
