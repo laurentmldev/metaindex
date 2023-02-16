@@ -10,6 +10,8 @@ You will typically want to use it if your data is too big for smooth run with Ex
 ![Screenshot 2](src/main/webapp/public/commons/media/img/screenshots/stats-map.png?raw=true "Stats Map screenshot")
 ![Screenshot 3](src/main/webapp/public/commons/media/img/screenshots/stats.png?raw=true "Stats Plots screenshot")
 
+![Tuto 1](doc/tuto/tuto1.m4v?raw=true "Tuto1")
+
 To help you cleaning your data, you can first use [OpenRefine](https://openrefine.org) tool. If this is not suffiscient, you will probably need to go into some code. Few python tools are available [here](src/main/webapp/public/toolbox) which could help you in this task.
 
 ## Features
@@ -155,5 +157,5 @@ MetaindeX functionalities and usage has been described through some academical p
     * [ A Ready-to-Use Solution to Explore Linked Archives with MetaindeX and Gephi](https://ceur-ws.org/Vol-3019/LinkedArchives_2021_paper_8.pdf)
 * [FOSDEM 2022](https://archive.fosdem.org/2022/): 
     * [MetaindeX and user requirements for a generic catalog application](https://archive.fosdem.org/2022/schedule/event/open_research_metaindex/)
-    * [![Video Presentation](https://video.fosdem.org/2022/D.research/open_research_metaindex.webm)]
+    * ![Video Presentation](https://video.fosdem.org/2022/D.research/open_research_metaindex.webm)
 
