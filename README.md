@@ -87,6 +87,7 @@ Create a catalog and play with basic features.
 Your browser does not support the video tag.
 </video> 
 
+<h1>Test</h1>
 ### Excel import / export (7min)
 
 Upload an Excel file into MetaindeX, and then download a subset in order to work offline.
