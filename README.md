@@ -82,6 +82,11 @@ Please note that those videos have been done with v2.1.0 of MetaindeX, and some 
 Create a catalog and play with basic features. 
 ![Introduction & Basics](doc/tuto/tuto1.m4v?raw=true "Introduction & Basics")
 
+ <video width="320" height="240" controls>
+  <source src="doc/tuto/tuto1.m4v" type="video/m4v">
+Your browser does not support the video tag.
+</video> 
+
 ### Excel import / export (7min)
 
 Upload an Excel file into MetaindeX, and then download a subset in order to work offline.
