@@ -1,22 +1,18 @@
 # MetaindeX
 
-MetaindeX is a free open-source and ready-to-deploy cataloger application: it allows you to create, edit, consult and search within small to heavy datasets.
+MetaindeX is a free open-source and ready-to-deploy cataloger application: create, edit, consult and search within small to heavy datasets.
 
-You can import data from Excel, ODF or CSV files, supposing that contents are clean (i.e. not ambiguous).
-
-You will typically want to use it if your data is too big for smooth run with Excel or if you want statistics and plots about its contents.
+You will typically want to use MetaindeX if your data is too big for smooth run with Excel or if you want advanced statistics and plots about its contents without coding.
 
 ![Screenshot 1](src/main/webapp/public/commons/media/img/screenshots/cards1.png?raw=true "Cards View screenshot")
 ![Screenshot 2](src/main/webapp/public/commons/media/img/screenshots/stats-map.png?raw=true "Stats Map screenshot")
 ![Screenshot 3](src/main/webapp/public/commons/media/img/screenshots/stats.png?raw=true "Stats Plots screenshot")
 
-![Tuto 1](doc/tuto/tuto1.m4v?raw=true "Tuto1")
-
-To help you cleaning your data, you can first use [OpenRefine](https://openrefine.org) tool. If this is not suffiscient, you will probably need to go into some code. Few python tools are available [here](src/main/webapp/public/toolbox) which could help you in this task.
+MetaindeX is not a data cleaning tool. To help you cleaning your data, you can first use [OpenRefine](https://openrefine.org) tool. If this is not suffiscient, you will probably need to go into some code. Few python tools are available [here](src/main/webapp/public/toolbox) which could help you in this task.
 
 ## Features
 
-MetaindeX can be install in 2 versions:
+MetaindeX can be install in 2 flavors:
 * **Standalone edition:** it is simpler to deploy and allows a single user to work with MetaindeX offline (no need to be connected to internet except for tutorial videos)
 * **Server edition**: needs more configuration setup and is aiming to allow several users to work together on a central server, generally deployed on internet or intranet of your organization.
 
@@ -41,9 +37,7 @@ Available Features are synthetized in following table:
 |Control users access rights to catalogs|  :x:  | :heavy_check_mark: |
 |live chat with other users|  :x:  | :heavy_check_mark: |
 
-
-
-## Startup Guide
+## Installation Guide
 
 ### System Requirements
 
@@ -61,7 +55,7 @@ $ wsl.exe -d Debian --install
 * ensure that Docker demo application runs properly
             
 Then you can install and run MetaindeX application:
-* download tarball of latest version (.zip) (see tarballs section hereunder)    
+* download tarball of latest version from [Tarballs Page](tarballs.md)
 * unzip it in your Documents/metaindex/app folder
 
 #### Start Application on W10
@@ -77,6 +71,41 @@ $ sysctl -w vm.max_map_count=262144
 ```
 $ cd ~/Documents/metaindex/app/<latest version folder> && ./metaindex.start.sh
 ```
+
+## Video Tutorials
+
+Following are some video showing usage of MetaindeX key features.
+Please note that those videos have been done with v2.1.0 of MetaindeX, and some GUI features might have slightly evolved/improved since that time, but user actions shall be still very similar.
+
+### Introduction & Basics (5min)
+
+Create a catalog and play with basic features. 
+![Introduction & Basics](doc/tuto/tuto1.m4v?raw=true "Introduction & Basics")
+
+### Excel import / export (7min)
+
+Upload an Excel file into MetaindeX, and then download a subset in order to work offline.
+![Excel import / export](doc/tuto/tuto2.m4v?raw=true "Excel import / export")
+
+### Create statistic charts (9min)
+
+Create statistic charts of your data with Kibana from ElasticStack.
+![Create statistic charts](doc/tuto/tuto3.m4v?raw=true "Create statistic charts")
+
+### Graphs : explore connections in your data (10min)
+
+Export graph (GEXF) files and explore it with [Gephi](https://gephi.org) tool.
+![Graphs](doc/tuto/tuto4.m4v?raw=true "Graphs")
+
+### Configure fields enumerations (3min)
+
+Define fields enumerations so that editing value is done with dropdown lists or checkboxes.
+![Configure fields enumerations](doc/tuto/tuto5.m4v?raw=true "Configure fields enumerations")
+
+### Use perspectives to customize fields layout (8min)
+
+Customize how fields shall be displayed on screen.
+![Perspectives](doc/tuto/tuto6.m4v?raw=true "Perspectives")
 
 ## Building MetaindeX from sources
 
@@ -120,17 +149,9 @@ MX_PAYMENT_PASSWORD=xxx
 
 Management of thoses secrets still needs some improvements, and might change in upcoming versions.
 
-## Taeballs
-
-**Standalone Edition**
-* LATEST: [MetaindeX Standalone v3.0.2 (.zip)](https://imagingyou.me/metaindex/metaindex-3.0.2.RELEASE.standalone.zip) SHA256:  
-
-**Server Edition**
-* LATEST: [MetaindeX Standalone v3.0.2 (.tgz)](https://imagingyou.me/metaindex/metaindex-3.0.2.RELEASE.server.tgz) SHA256:  
-
 ## Architecture Overview
 
-MetaindeX app is a JE22 WebServer application with a basic MVC approach, synthetized in following figure:
+MetaindeX app is a J2EE WebServer application with a basic MVC approach, synthetized in following figure:
 
 ![Architeture Overview Figure](doc/visuals/archi.png?raw=true "MetaindeX Architecture Overview")
 
@@ -157,5 +178,5 @@ MetaindeX functionalities and usage has been described through some academical p
     * [ A Ready-to-Use Solution to Explore Linked Archives with MetaindeX and Gephi](https://ceur-ws.org/Vol-3019/LinkedArchives_2021_paper_8.pdf)
 * [FOSDEM 2022](https://archive.fosdem.org/2022/): 
     * [MetaindeX and user requirements for a generic catalog application](https://archive.fosdem.org/2022/schedule/event/open_research_metaindex/)
-    * ![Video Presentation](https://video.fosdem.org/2022/D.research/open_research_metaindex.webm)
+    * [Video Presentation](https://video.fosdem.org/2022/D.research/open_research_metaindex.webm)
 

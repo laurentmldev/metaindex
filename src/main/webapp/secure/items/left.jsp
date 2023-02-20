@@ -23,8 +23,9 @@
           <div class="mx-collapse py-2 collapse-inner rounded pt-4" style="overflow:auto;">             			 
 	 		  <label  class="_openBtn_ d-none d-sm-inline-block btn-big btn btn-info shadow-sm mx-left-button" >
 			        <a class="collapsed" style="color:inherit;text-decoration:inherit" href="<s:property value='currentUserProfile.statisticsDiscoverUrl'/>" target="_blank" >
-			          <i class="fas fa-sm fa-square-root-alt text-white"></i>
+			          <i class="fas fa-sm fa-square-root-alt text-white"></i>			          
 			          <span><s:text name="global.kibana"/></span>
+			          
 			        </a>  
 			        
 			        <span title="S.O.S" 
@@ -32,6 +33,9 @@
 		                			MxGuiHeader.showInfoModal('<s:text name="help.items.kibana.title" />','<s:text name="help.items.kibana.body" />')">
 		                   <i class="mx-help-icon far fa-question-circle" style="color:white"></i>    
 		          </span>                    		
+		          <c:if test="${mxRunMode == 'standalone'}" >
+						<a  href="<s:property value='currentUserProfile.statisticsDiscoverUrl'/>" target="_blank"  class="text-white" style="font-size:0.6rem;color:inherit;text-decoration:inherit;"><b>login</b>=<i>mxuser</i><br/><b>password</b>=<i>metaindex</i></a>
+				</c:if>
 			  </label>
 			  
 						   
