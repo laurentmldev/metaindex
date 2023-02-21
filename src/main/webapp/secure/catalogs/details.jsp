@@ -112,13 +112,14 @@
 
  var reCatalogName = /^[a-z][a-z0-9_]{3,}$/;
 	
+var details_catalogCreationWaitingMsg=null;
  function details_createCatalog(catalogName) {
 	 if (catalogName==null) { catalogName=_curCatalogDesc.name; }
 	 if (!reCatalogName.test(catalogName)) {
 		 footer_showAlert(WARNING,"<s:text name="Catalogs.create.nameSyntaxNotGood" />");
 		 return;
 	 }
-	 footer_showAlert(INFO,"<s:text name="global.pleasewait"/>",null,5000);
+	 details_catalogCreationWaitingMsg=footer_showAlert(INFO,"<s:text name="global.pleasewait"/>",null,9999999);
 	 MxApi.requestCreateCatalog(catalogName);
  }
  function details_enterCatalog() {
@@ -200,7 +201,9 @@ function details_reconfirm_delete_catalog(catId) {
  MxGuiDetails.getPerspectivesInsertSpot=function(detailsNode) { return detailsNode.querySelector('._details_perspectives_insertspot_'); }
  MxGuiDetails.memGui=details_memGui;
  MxGuiDetails.restoreGui=details_restoreGui;
+ <c:if test="${mxRunMode != 'standalone'}" >
  MxGuiDetails.updateUsersTab=details_updateUsersTab;
+ </c:if>
  MxItemsView.extractName=function(objDescr) {
 	 if (objDescr["vocabulary"] != null) { return objDescr.vocabulary.name; }
 	 else { return objDescr.name; }

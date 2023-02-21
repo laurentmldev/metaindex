@@ -62,6 +62,8 @@ Then you can install and run MetaindeX application:
 *  if not done yet, start docker Desktop application
 *  double-click on MetaindeX.START link (the first time you'll have to restart your computer)
 
+NOTE: in case of unexpected start up issue, it is often a good idea to run MetaindeX.STOP link and then start over.
+
 #### Start Application on Linux
 *  configure your system to have sufficient memory for elasticsearch: 
 ```
@@ -80,38 +82,44 @@ Please note that those videos have been done with v2.1.0 of MetaindeX, and some 
 ### Introduction & Basics (5min)
 
 Create a catalog and play with basic features. 
-![Introduction & Basics](doc/tuto/tuto1.m4v?raw=true "Introduction & Basics")
+ * Download Video: ![Introduction & Basics](doc/tuto/tuto1.m4v?raw=true "Introduction & Basics")
+ * [Subtitles En](doc/tuto/tuto1-desc-en.vtt "Subtitles En")
+ * [Subtitles Fr](doc/tuto/tuto1-desc-fr.vtt "Subtitles Fr")
 
- <video width="320" height="240" controls>
-  <source src="doc/tuto/tuto1.m4v" type="video/m4v">
-Your browser does not support the video tag.
-</video> 
-
-<h1>Test</h1>
 ### Excel import / export (7min)
 
-Upload an Excel file into MetaindeX, and then download a subset in order to work offline.
-![Excel import / export](doc/tuto/tuto2.m4v?raw=true "Excel import / export")
+Upload an Excel file into MetaindeX, and then download a subset in order to work offline:
+ * Download Video: ![Excel import / export](doc/tuto/tuto2.m4v?raw=true "Excel import / export")
+ * [Subtitles En](doc/tuto/tuto2-desc-en.vtt "Subtitles En")
+ * [Subtitles Fr](doc/tuto/tuto2-desc-fr.vtt "Subtitles Fr")
 
 ### Create statistic charts (9min)
 
 Create statistic charts of your data with Kibana from ElasticStack.
-![Create statistic charts](doc/tuto/tuto3.m4v?raw=true "Create statistic charts")
+ * Download Video: ![Create statistic charts](doc/tuto/tuto3.m4v?raw=true "Create statistic charts")
+ * [Subtitles En](doc/tuto/tuto3-desc-en.vtt "Subtitles En")
+ * [Subtitles Fr](doc/tuto/tuto3-desc-fr.vtt "Subtitles Fr")
 
 ### Graphs : explore connections in your data (10min)
 
 Export graph (GEXF) files and explore it with [Gephi](https://gephi.org) tool.
-![Graphs](doc/tuto/tuto4.m4v?raw=true "Graphs")
+ * Download Video: ![Graphs](doc/tuto/tuto4.m4v?raw=true "Graphs")
+ * [Subtitles En](doc/tuto/tuto4-desc-en.vtt "Subtitles En")
+ * [Subtitles Fr](doc/tuto/tuto4-desc-fr.vtt "Subtitles Fr")
 
 ### Configure fields enumerations (3min)
 
 Define fields enumerations so that editing value is done with dropdown lists or checkboxes.
-![Configure fields enumerations](doc/tuto/tuto5.m4v?raw=true "Configure fields enumerations")
+ * Download Video: ![Configure fields enumerations](doc/tuto/tuto5.m4v?raw=true "Configure fields enumerations")
+ * [Subtitles En](doc/tuto/tuto5-desc-en.vtt "Subtitles En")
+ * [Subtitles Fr](doc/tuto/tuto5-desc-fr.vtt "Subtitles Fr")
 
 ### Use perspectives to customize fields layout (8min)
 
 Customize how fields shall be displayed on screen.
-![Perspectives](doc/tuto/tuto6.m4v?raw=true "Perspectives")
+ * Download Video: ![Perspectives](doc/tuto/tuto6.m4v?raw=true "Perspectives")
+ * [Subtitles En](doc/tuto/tuto6-desc-en.vtt "Subtitles En")
+ * [Subtitles Fr](doc/tuto/tuto6-desc-fr.vtt "Subtitles Fr")
 
 ## Building MetaindeX from sources
 
@@ -153,7 +161,7 @@ MX_PAYMENT_LOGIN=xxx
 MX_PAYMENT_PASSWORD=xxx
 ```
 
-Management of thoses secrets still needs some improvements, and might change in upcoming versions.
+Management of thoses secrets might probably change in upcoming versions.
 
 ## Architecture Overview
 
@@ -183,6 +191,5 @@ MetaindeX functionalities and usage has been described through some academical p
 * [Link Archives 2021](https://ceur-ws.org/Vol-3019/):
     * [ A Ready-to-Use Solution to Explore Linked Archives with MetaindeX and Gephi](https://ceur-ws.org/Vol-3019/LinkedArchives_2021_paper_8.pdf)
 * [FOSDEM 2022](https://archive.fosdem.org/2022/): 
-    * [MetaindeX and user requirements for a generic catalog application](https://archive.fosdem.org/2022/schedule/event/open_research_metaindex/)
-    * [Video Presentation](https://video.fosdem.org/2022/D.research/open_research_metaindex.webm)
+    * [MetaindeX and user requirements for a generic catalog application (document & video)](https://archive.fosdem.org/2022/schedule/event/open_research_metaindex/)
 

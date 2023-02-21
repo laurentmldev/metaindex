@@ -17,7 +17,7 @@
         </a>
  </c:if>       
  <c:if test="${mxRole == 'ROLE_ADMIN' || mxRole == 'ROLE_USER'}">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+        <a id="left-create-catalog-dropdown" class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-fw fa-star"></i>
           <span><s:text name="Catalogs.createCatalog"></s:text></span>
         </a>
@@ -39,7 +39,8 @@
 					</a></center>    
 				 <div id="leftbar_create_catalog" class="mx-collapse-item collapse-item small">
 					
-			 		<input class="_query_input_ form-control bg-light border-0 small" 
+			 		<input id="left-create-catalog-name-input"
+			 			class="_query_input_ form-control bg-light border-0 small" 
 			 			type="text" value="" style="width:90%;margin-top:1rem;"
 				 		placeholder="<s:text name='global.indexname' />"
 				 		onclick='event.stopPropagation();'

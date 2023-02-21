@@ -34,11 +34,15 @@
 
  function handleMxWsSelectedItem(msg) {}
  function handleMxWsCreatedCatalog(msg) {
+	 details_catalogCreationWaitingMsg.clear();
+	 
 	 if (msg.isSuccess==false) {
 		 footer_showAlert(ERROR, "<s:text name="Catalogs.unableToCreate" /> : "+msg.rejectMessage);
 		 return;
 	 }
 	 footer_showAlert(INFO, "<s:text name="Catalogs.createdSuccessfully" />");
+	 document.getElementById("left-create-catalog-dropdown").click();
+	 document.getElementById("left-create-catalog-name-input").value="";	 
 	 MxApi.requestGetCatalogs({'catalogId':0, 'successCallback':handleMxWsCatalogs});
  }
  
