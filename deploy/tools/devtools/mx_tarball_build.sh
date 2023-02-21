@@ -26,6 +26,7 @@ function buildServerTarball() {
 
 	echo "generated SERVER $DEV_TARBALLS_PATH/$tarballName.tgz"
 	ls -l $DEV_TARBALLS_PATH/$tarballName.tgz
+	shasum -a 256 $DEV_TARBALLS_PATH/$tarballName.tgz
 }
 
 function buildStandaloneTarball() {
@@ -54,6 +55,7 @@ function buildStandaloneTarball() {
 
 	echo "generated STANDALONE tarball:"
 	ls -l $DEV_TARBALLS_PATH/$tarballName.zip
+	shasum -a 256 $DEV_TARBALLS_PATH/$tarballName.zip
 
 }
 
