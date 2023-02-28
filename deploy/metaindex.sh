@@ -161,7 +161,7 @@ fi
 
 if [  "$DEBUG" == "1" ]; then
     MX_PORT_HTTPS=$(grep MX_PORT_HTTPS $DOCKER_ENV_ROOT.current | sed 's/MX_PORT_HTTPS=//')
-    echo "You can now start your own instance of webapp and connect through port $MX_PORT_HTTPS"
+    echo "You can now start your own instance of webapp (with Eclipse) and connect to https://localhost:$MX_PORT_HTTPS/webapp/loginform"
 elif [  "$RUNMODE" == "standalone" ]; then
     echo
     echo "You can now start firefox at https://localhost$HTTPS_PORT"
