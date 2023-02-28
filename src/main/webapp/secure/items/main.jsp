@@ -109,7 +109,9 @@
 				  </div>
 			  </center></div>
 	   		 <s:include value="../commons/html/footer.jsp"></s:include>
-	   		 <s:include value="../commons/html/chat.jsp"></s:include>
+	   		 <c:if test="${mxRunMode != 'standalone'}" >
+	   		 	<s:include value="../commons/html/chat.jsp"></s:include>
+	   		 </c:if>
 	   	   </div></div>
    		 
     	</div><!-- End of Items Container -->

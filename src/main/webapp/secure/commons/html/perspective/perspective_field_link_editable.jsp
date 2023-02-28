@@ -157,7 +157,8 @@ function _buildHandleSearchedItemsFunc(itemId,linksTable,refsDocsTableNode,termD
 	return buildHandleSearchedItemsFunc;	
 }
 
-function _buildSearchInputOnChangeFunc(searchinput,selectedOnlyCheckbox,refsDocsTableNode,
+// dynamic retrieving of items in the choice list
+function _buildSearchInputOnChangeFunc(searchinput,termDesc,selectedOnlyCheckbox,refsDocsTableNode,
 								refDocsListEnabledByIdNode,linksTable,refreshDelayMs) {
 	if (refreshDelayMs==null) { refreshDelayMs=0; }
 	
@@ -175,13 +176,21 @@ function _buildSearchInputOnChangeFunc(searchinput,selectedOnlyCheckbox,refsDocs
 			 else { searchinput.style["border-color"]="grey"; }
 		 }
 		 
+		 // 1- apply custom query enterd by user 
 		 let customQuery=searchinput.value;
-		 // combine default field filter with user custom filter
-		 if (refDocsListEnabledByIdNode.mxquery!=null && refDocsListEnabledByIdNode.mxquery.length>0) {
-			 customQuery="("+customQuery+") AND ("+refDocsListEnabledByIdNode.mxquery+")";	 
+		 
+		 // 2- add default filter (i.e. using 'enumeration list' of the term as a Lucene query)
+		 if (refDocsListEnabledByIdNode.mxDefaultQuery!=null && refDocsListEnabledByIdNode.mxDefaultQuery.length>0) {
+			 if (customQuery.length>0) {
+			 customQuery="("+customQuery+") AND ("+refDocsListEnabledByIdNode.mxDefaultQuery+")";
+			 }
+			 else {
+				 customQuery="("+refDocsListEnabledByIdNode.mxDefaultQuery+")";
+			 }
 		 }
 		 
-		// combine current filter with only currently selected documents
+		 
+		// 3- if 'selected only' checkbox is selected, add currently corresponding query
 		 if (selectedOnlyCheckbox.checked) {
 			curSelectDocsRequest=_commons_perspective_buildStrQueryGetRefItems(linksTable);
 			if (curSelectDocsRequest.length>0) {
@@ -189,7 +198,8 @@ function _buildSearchInputOnChangeFunc(searchinput,selectedOnlyCheckbox,refsDocs
 				else { customQuery=curSelectDocsRequest; }
 			}
 		 }		
-		 
+		
+		 // remember the query
 		 refDocsListEnabledByIdNode.mxCustomQuery=customQuery;
 		 let queryError=function(errorMsg) { refsDocsTableNode.handleSearchedItems(null,true);}
 		 
@@ -216,7 +226,7 @@ function _buildTableOnScrollFunc(refsDocsTableNode,refDocsListEnabledByIdNode) {
 	
 	let tableOnScrollFunc=function(e) {
 		if (e.target.scrollTop >= e.target.scrollTopMax) {
-			let query=refDocsListEnabledByIdNode.mxquery;
+			let query=refDocsListEnabledByIdNode.mxDefaultQuery;
 			if(refDocsListEnabledByIdNode.mxCustomQuery!=null) {
 				query=refDocsListEnabledByIdNode.mxCustomQuery;
 			}
@@ -243,7 +253,7 @@ function _buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListE
 	
 	// legend
 	let legend= docsListFieldset.querySelector("._legend_");	
-	legend.innerHTML="Select Elements";
+	legend.innerHTML="<s:text name="Items.link.selectItems" />";
 	
 	// handle reach scroll bottom: retrieve and list additional items 
 	let refsDocsTableNode=docsListFieldset.querySelector("._refsdocs_table_");
@@ -265,10 +275,10 @@ function _buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListE
 	
 	// each time user changes input contents
 	// wait for 1s and then update listed elements
-	searchinput.oninput=_buildSearchInputOnChangeFunc(searchinput,selectedOnlyCheckbox,
+	searchinput.oninput=_buildSearchInputOnChangeFunc(searchinput,termDesc,selectedOnlyCheckbox,
 							refsDocsTableNode,refDocsListEnabledByIdNode,linksTable,
 							1000 /*delay after typing before refreshing the list (ms)*/);
-	selectedOnlyCheckbox.onchange=_buildSearchInputOnChangeFunc(searchinput,selectedOnlyCheckbox,
+	selectedOnlyCheckbox.onchange=_buildSearchInputOnChangeFunc(searchinput,termDesc,selectedOnlyCheckbox,
 			refsDocsTableNode,refDocsListEnabledByIdNode,linksTable);
 	searchinput.onkeypress=function(e) {
 		if (e) { 
@@ -282,7 +292,7 @@ function _buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListE
 		if (event) { event.stopPropagation(); }			 			 
 	}
 	
-	selectedOnlyCheckbox.onchange=_buildSearchInputOnChangeFunc(searchinput,selectedOnlyCheckbox,
+	selectedOnlyCheckbox.onchange=_buildSearchInputOnChangeFunc(searchinput,termDesc,selectedOnlyCheckbox,
 							refsDocsTableNode,refDocsListEnabledByIdNode,linksTable);
 	
 	// build 'text mode' edition
@@ -351,7 +361,13 @@ function _commons_perspective_buildRefsDocsEditableList(itemId,docIdsListStr,ter
 	}
 	let refDocsListEnabledByIdNode = document.createElement("div");
 	refDocsListEnabledByIdNode.innerHTML=docIdsListStr;
-	
+	// build default search query defined in enumsList of corresponding term
+	let enumsListQueries="";
+	 for (var i=0;i<termDesc.enumsList.length;i++) {
+		 if (enumsListQueries.length>0){ enumsListQueries+=" OR "; }
+		 enumsListQueries+=" ("+termDesc.enumsList[i]+")";
+	 }
+	 refDocsListEnabledByIdNode.mxDefaultQuery=enumsListQueries;
 	
 	_buildLinksArea(itemId,termDesc,refDocsListEnabledByIdNode,refDocsListEnabledByIdMap,linksTable,onChangeCallBack,successCallback);
 	

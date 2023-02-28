@@ -62,7 +62,7 @@ Then you can install and run MetaindeX application:
 *  if not done yet, start docker Desktop application
 *  double-click on MetaindeX.START link (the first time you'll have to restart your computer)
 
-NOTE: in case of unexpected start up issue, it is often a good idea to run MetaindeX.STOP link and then start over.
+NOTE: in case of unexpected start up issue, it is often a good idea to stop gently the whole appliation (double-click on run MetaindeX.STOP) and then start over.
 
 #### Start Application on Linux
 *  configure your system to have sufficient memory for elasticsearch: 
@@ -71,7 +71,7 @@ $ sysctl -w vm.max_map_count=262144
 ```
 *  run following command: 
 ```
-$ cd ~/Documents/metaindex/app/<latest version folder> && ./metaindex.start.sh
+$ cd ~/Documents/metaindex/app/<latest version folder> && ./metaindex.sh START
 ```
 
 ## Video Tutorials
@@ -82,44 +82,44 @@ Please note that those videos have been done with v2.1.0 of MetaindeX, and some 
 ### Introduction & Basics (5min)
 
 Create a catalog and play with basic features. 
- * Download Video: ![Introduction & Basics](doc/tuto/tuto1.m4v?raw=true "Introduction & Basics")
- * [Subtitles En](doc/tuto/tuto1-desc-en.vtt "Subtitles En")
- * [Subtitles Fr](doc/tuto/tuto1-desc-fr.vtt "Subtitles Fr")
+ * Download Video: ![Introduction & Basics](doc/tuto/tuto1.m4v?raw=true)
+ * [Subtitles En](doc/tuto/tuto1-desc-en.vtt)
+ * [Subtitles Fr](doc/tuto/tuto1-desc-fr.vtt)
 
 ### Excel import / export (7min)
 
 Upload an Excel file into MetaindeX, and then download a subset in order to work offline:
- * Download Video: ![Excel import / export](doc/tuto/tuto2.m4v?raw=true "Excel import / export")
- * [Subtitles En](doc/tuto/tuto2-desc-en.vtt "Subtitles En")
- * [Subtitles Fr](doc/tuto/tuto2-desc-fr.vtt "Subtitles Fr")
+ * Download Video: ![Excel import / export](doc/tuto/tuto2.m4v?raw=true)
+ * [Subtitles En](doc/tuto/tuto2-desc-en.vtt)
+ * [Subtitles Fr](doc/tuto/tuto2-desc-fr.vtt)
 
 ### Create statistic charts (9min)
 
 Create statistic charts of your data with Kibana from ElasticStack.
- * Download Video: ![Create statistic charts](doc/tuto/tuto3.m4v?raw=true "Create statistic charts")
- * [Subtitles En](doc/tuto/tuto3-desc-en.vtt "Subtitles En")
- * [Subtitles Fr](doc/tuto/tuto3-desc-fr.vtt "Subtitles Fr")
+ * Download Video: ![Create statistic charts](doc/tuto/tuto3.m4v?raw=true)
+ * [Subtitles En](doc/tuto/tuto3-desc-en.vtt)
+ * [Subtitles Fr](doc/tuto/tuto3-desc-fr.vtt)
 
 ### Graphs : explore connections in your data (10min)
 
 Export graph (GEXF) files and explore it with [Gephi](https://gephi.org) tool.
- * Download Video: ![Graphs](doc/tuto/tuto4.m4v?raw=true "Graphs")
- * [Subtitles En](doc/tuto/tuto4-desc-en.vtt "Subtitles En")
- * [Subtitles Fr](doc/tuto/tuto4-desc-fr.vtt "Subtitles Fr")
+ * Download Video: ![Graphs](doc/tuto/tuto4.m4v?raw=true)
+ * [Subtitles En](doc/tuto/tuto4-desc-en.vtt)
+ * [Subtitles Fr](doc/tuto/tuto4-desc-fr.vtt)
 
 ### Configure fields enumerations (3min)
 
 Define fields enumerations so that editing value is done with dropdown lists or checkboxes.
- * Download Video: ![Configure fields enumerations](doc/tuto/tuto5.m4v?raw=true "Configure fields enumerations")
- * [Subtitles En](doc/tuto/tuto5-desc-en.vtt "Subtitles En")
- * [Subtitles Fr](doc/tuto/tuto5-desc-fr.vtt "Subtitles Fr")
+ * Download Video: ![Configure fields enumerations](doc/tuto/tuto5.m4v?raw=true)
+ * [Subtitles En](doc/tuto/tuto5-desc-en.vtt)
+ * [Subtitles Fr](doc/tuto/tuto5-desc-fr.vtt)
 
 ### Use perspectives to customize fields layout (8min)
 
 Customize how fields shall be displayed on screen.
- * Download Video: ![Perspectives](doc/tuto/tuto6.m4v?raw=true "Perspectives")
- * [Subtitles En](doc/tuto/tuto6-desc-en.vtt "Subtitles En")
- * [Subtitles Fr](doc/tuto/tuto6-desc-fr.vtt "Subtitles Fr")
+ * Download Video: ![Perspectives](doc/tuto/tuto6.m4v?raw=true)
+ * [Subtitles En](doc/tuto/tuto6-desc-en.vtt)
+ * [Subtitles Fr](doc/tuto/tuto6-desc-fr.vtt)
 
 ## Building MetaindeX from sources
 
@@ -163,11 +163,13 @@ MX_PAYMENT_PASSWORD=xxx
 
 Management of thoses secrets might probably change in upcoming versions.
 
-## Architecture Overview
+## Requirements and Architecture Overview
+
+Here is an Excel file of [MetaindeX main requirements](doc/maintenance/archi/requirements.ods).
 
 MetaindeX app is a J2EE WebServer application with a basic MVC approach, synthetized in following figure:
 
-![Architeture Overview Figure](doc/visuals/archi.png?raw=true "MetaindeX Architecture Overview")
+![Architeture Overview Figure](doc/visuals/archi.png?raw=true)
 
 Client Side:
 *  HTML5/javascript pages, no special framework used (might be part of a future evolution)
@@ -189,7 +191,7 @@ MetaindeX functionalities and usage has been described through some academical p
 *  [HistoInformatics 2021](https://ceur-ws.org/Vol-2981/):
     * [Specifying a Generic Working Environment on Historical Data, based on MetaindeX, Kibana and Gephi](https://ceur-ws.org/Vol-2981/paper1.pdf)
 * [Link Archives 2021](https://ceur-ws.org/Vol-3019/):
-    * [ A Ready-to-Use Solution to Explore Linked Archives with MetaindeX and Gephi](https://ceur-ws.org/Vol-3019/LinkedArchives_2021_paper_8.pdf)
+    * [A Ready-to-Use Solution to Explore Linked Archives with MetaindeX and Gephi](https://ceur-ws.org/Vol-3019/LinkedArchives_2021_paper_8.pdf)
 * [FOSDEM 2022](https://archive.fosdem.org/2022/): 
     * [MetaindeX and user requirements for a generic catalog application (document & video)](https://archive.fosdem.org/2022/schedule/event/open_research_metaindex/)
 

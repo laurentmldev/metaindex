@@ -37,7 +37,7 @@ function _commons_perspective_buildRefsDocsList(itemId,docIdsListStr,termDesc,sh
 		let legend= docsListFieldset.querySelector("._legend_");
 		if (showHeader==false) { legend.style.display='none'; }
 		else {
-			legend.innerHTML="References : "+itemsAnswerMsg.items.length;
+			legend.innerHTML="References:"+itemsAnswerMsg.items.length;
 			legend.onclick=function() {
 				MxGuiHeader.setCurrentSearchQuery(_commons_perspective_buildStrQueryGetRefItems(linksTable));
 				MxGuiHeader.refreshSearch();		
@@ -46,10 +46,8 @@ function _commons_perspective_buildRefsDocsList(itemId,docIdsListStr,termDesc,sh
 		
 		// refs docs table
 		let refsDocsTableNode=docsListFieldset.querySelector("._refsdocs_table_");
-		
 		for (var idx=0;idx<itemsAnswerMsg.items.length;idx++) {
-			 var item=itemsAnswerMsg.items[idx];
-			 
+			 var item=itemsAnswerMsg.items[idx];			 
 			 
 			 let newRow=document.getElementById("_perspective_field_link_refsdocs_fieldset_template_raw_container_RO_").querySelector("._raw_").cloneNode(true);
 			 newRow.style.display="table-row";

@@ -50,7 +50,9 @@
 			  <img src="public/commons/media/img/mx-title-nb.png" style="opacity:0.5;width:50%;margin-bottom:4rem;" />		  
 		  </center></div>
    		 <s:include value="../commons/html/footer.jsp"></s:include>
-   		 <s:include value="../commons/html/chat.jsp"></s:include>
+   		 <c:if test="${mxRunMode != 'standalone'}" >
+   		 	<s:include value="../commons/html/chat.jsp"></s:include>
+   		 </c:if>
    		 
     	</div><!-- End of Cards Container -->
     	

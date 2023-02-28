@@ -12,6 +12,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
@@ -62,7 +63,8 @@ public class WsControllerPerspective extends AMxWSController {
     	try {   
     		c.acquireLock();
 	    	
-	    	Boolean result = Globals.Get().getDatabasesMgr().getPerspectivesDbInterface().getUpdatePerspectiveIntoDbStmt(user, c, requestMsg.getJsonDef()).execute();	    	
+	    	Boolean result = Globals.Get().getDatabasesMgr().getPerspectivesDbInterface()
+	    			.getUpdatePerspectiveIntoDbStmt(user, c, requestMsg.getJsonDef()).execute();	    	
 	    	if (!result) {
 	    		answer.setRejectMessage(user.getText("Catalogs.perspectives.unableToUpdate")+" (1)");
     			this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/perspective_updated", answer);
@@ -71,7 +73,8 @@ public class WsControllerPerspective extends AMxWSController {
     		}
 	    	c.loadPerspectivesFromdb();
 	    	answer.setIsSuccess(true);    	
-	    	ICatalogPerspective newPerspective = c.getPerspectives().get(requestMsg.getPerspectiveName());
+	    	JSONObject jsonPerspective = new JSONObject(requestMsg.getJsonDef());
+	    	ICatalogPerspective newPerspective = c.getPerspectives().get(jsonPerspective.get("name"));
 	    	answer.setPerspectiveId(newPerspective.getId());
 	    	this.messageSender.convertAndSendToUser(headerAccessor.getUser().getName(),"/queue/perspective_updated", answer);
 	    	Globals.GetStatsMgr().handleStatItem(new UpdatePerspectiveCatalogMxStat(user,c));
