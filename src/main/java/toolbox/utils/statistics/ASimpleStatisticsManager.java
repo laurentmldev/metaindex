@@ -1,5 +1,16 @@
 package toolbox.utils.statistics;
 
+
+/*
+GNU GENERAL PUBLIC LICENSE
+Version 3, 29 June 2007
+
+Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+
+See full version of LICENSE in <https://fsf.org/>
+
+*/
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -11,25 +22,12 @@ import java.util.concurrent.Semaphore;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+//TODO : remove dep to metaindex classes
 import metaindex.app.Globals;
-import metaindex.data.catalog.Catalog;
-import metaindex.data.userprofile.IUserProfileData;
 import toolbox.exceptions.DataProcessException;
-import toolbox.utils.IPeriodicProcess;
 import toolbox.utils.PeriodicProcessMonitor;
-import toolbox.utils.statistics.IStatisticItem;
-import toolbox.utils.statistics.IStatisticsManager;
 
 
-/*
-GNU GENERAL PUBLIC LICENSE
-Version 3, 29 June 2007
-
-Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
-
-See full version of LICENSE in <https://fsf.org/>
-
-*/
 
 public abstract class ASimpleStatisticsManager implements IStatisticsManager {	
 	

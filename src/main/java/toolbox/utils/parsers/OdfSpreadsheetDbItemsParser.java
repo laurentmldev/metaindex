@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import org.odftoolkit.odfdom.doc.table.OdfTableCell;
 import org.odftoolkit.odfdom.doc.table.OdfTableRow;
 
+//TODO : remove dep to metaindex classes
 import metaindex.data.catalog.UserItemContents;
 
 

@@ -1,6 +1,5 @@
 package toolbox.utils;
 
-import toolbox.exceptions.DataProcessException;
 
 /*
 GNU GENERAL PUBLIC LICENSE
@@ -12,11 +11,12 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
+import toolbox.exceptions.DataProcessException;
 import toolbox.patterns.observer.*;
-import toolbox.utils.parsers.IListParser;
 
 import java.util.List;
 
+// TODO : remove dep to metaindex classes
 import metaindex.data.userprofile.IUserProfileData;
 
 public interface IProcessingTask extends IObservable<IObserver<IProcessingTask> >, IIdentifiable<Integer>, IRunnable {

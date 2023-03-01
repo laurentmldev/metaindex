@@ -2,9 +2,6 @@ package toolbox.utils.mailing;
 
 import com.sun.mail.smtp.SMTPTransport;
 
-import metaindex.app.periodic.statistics.MxStatisticsManager;
-
-import java.security.Security;
 import java.util.Date;
 import java.util.Properties;
 import javax.mail.Message;

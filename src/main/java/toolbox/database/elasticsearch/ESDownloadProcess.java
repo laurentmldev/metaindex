@@ -17,10 +17,12 @@ import java.util.concurrent.Semaphore;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+//TODO : remove dep to metaindex classes
 import metaindex.app.Globals;
 import metaindex.data.catalog.Catalog;
 import metaindex.data.catalog.ICatalog;
 import metaindex.data.userprofile.IUserProfileData;
+
 import toolbox.database.DbSearchResult;
 import toolbox.database.IDbItem;
 import toolbox.database.IDbSearchResult.SORTING_ORDER;

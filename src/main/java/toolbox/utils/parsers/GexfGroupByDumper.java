@@ -24,8 +24,10 @@ import javax.xml.stream.XMLStreamException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+//TODO : remove dep to metaindex classes
 import metaindex.data.term.ICatalogTerm;
 import metaindex.data.userprofile.IUserProfileData;
+
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.IFieldValueMapObject;
 

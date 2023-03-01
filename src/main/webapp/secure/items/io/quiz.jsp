@@ -50,7 +50,7 @@ function _makeNewFieldsChoiceRow(parentTbl,previsuNode,quizConfTablePres,quizCon
 	
 	// add with a blank option
 	let option = document.createElement("option");
-	option.innerHTML="- click to add a field -";
+	option.innerHTML="- <s:text name="Items.quiz.clickToAddField" /> -";
 	dropdown.appendChild(option);
 	
 	let sortedTermsNames = Object.keys(MxGuiHeader.getCurCatalogTermsList()).sort();

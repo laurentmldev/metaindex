@@ -12,6 +12,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 import java.util.List;
 
+// TODO : remove dep to metaindex class
 import metaindex.data.userprofile.IUserProfileData;
 import toolbox.exceptions.DataProcessException;
 import toolbox.utils.IProcessingTask;

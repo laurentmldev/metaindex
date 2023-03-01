@@ -1,6 +1,6 @@
 package toolbox.utils;
 
-import java.io.IOException;
+
 
 /*
 GNU GENERAL PUBLIC LICENSE
@@ -12,6 +12,7 @@ See full version of LICENSE in <https://fsf.org/>
 
 */
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,11 +21,11 @@ import java.util.concurrent.Semaphore;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+//TODO : remove dep to metaindex classes
 import metaindex.data.catalog.Catalog;
 import metaindex.data.userprofile.IUserProfileData;
+
 import toolbox.exceptions.DataProcessException;
-import toolbox.utils.AProcessingTask;
-import toolbox.utils.IStreamHandler;
 
 public abstract class AStreamHandler<T> extends AProcessingTask implements IStreamHandler<T>   {
 
@@ -94,7 +95,7 @@ public abstract class AStreamHandler<T> extends AProcessingTask implements IStre
 				Thread.sleep(200);
 				
 				if (this.getProcessedNbData()==0) { beforeFirst(); }
-				if (_bufferizedDataToHandle.size()>0) { log.error("#### dumping "+_bufferizedDataToHandle.size()+" lines"); }
+				
 				_postingDataLock.acquire();
 				//if (_bufferizedDataToHandle.size()>0) { log.error("#### dumping "+_bufferizedDataToHandle.size()+" lines"); }
 				for (T d : _bufferizedDataToHandle) {

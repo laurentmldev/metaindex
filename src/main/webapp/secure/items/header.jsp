@@ -228,7 +228,7 @@ MxGuiHeader.getFiltersInsertSpot=function() {
  			}"
  		onblur="if (this.changed!=true) { this.parentNode.querySelector('._button_update_').style.display='none'; }">
  		
- 		<button class="_button_update_ btn btn-xs" style="display:none" type="button" 
+ 		<button class="_button_update_ btn btn-xs" style="display:none;color:green;" type="button" 
 			onmouseover="this.classList.add('btn-success');"
 			onmouseout="this.classList.remove('btn-success');"
 			onclick="event.stopPropagation();				
