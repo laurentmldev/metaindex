@@ -4,7 +4,7 @@
   <groupId>metaindex</groupId>
   <artifactId>metaindex</artifactId>
   <packaging>war</packaging>
-  <version>3.0.2.SNAPSHOT</version>
+  <version>3.0.2.RELEASE</version>
   <name>MetaindeX</name>
   <url>https://github.com/laurentmldev/metaindex</url>
   <repositories>
